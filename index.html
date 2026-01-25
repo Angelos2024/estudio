@@ -15,7 +15,6 @@
       position:sticky; top:0; z-index:1000;
     }
     .sitewrap{ max-width: 1200px; }
-    .crumbs{ font-size:.9rem; color:var(--muted); }
     .panel{
       background:#fff;
       border:1px solid var(--bd);
@@ -30,13 +29,22 @@
     .meta-row{ color:var(--muted); font-size:.9rem; }
     .passage-title{ font-size:1.25rem; font-weight:700; }
     .passage-text{ font-size:1.05rem; line-height:1.85; }
+    .orig-text{ font-size:1.05rem; line-height:1.85; }
     .verse-num{ color:#2563eb; font-weight:700; margin-right:.25rem; font-size:.85em; }
-    .mini-link{ color:var(--muted); text-decoration:none; }
-    .mini-link:hover{ text-decoration:underline; }
     .btn-soft{ background:#f1f5f9; border:1px solid var(--bd); }
     .btn-soft:hover{ background:#e9eef5; }
     .sticky-aside{ position: sticky; top: 86px; }
     .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace; }
+
+    /* Layout paralelo (español izquierda / original derecha) con colapsado del original */
+    .parallel{ display:flex; flex-wrap:wrap; gap:1rem; }
+    .parallel-col{ flex:1 1 360px; min-width:320px; }
+    .orig-hidden #origCol{ display:none !important; }
+    .orig-hidden #spanishCol{ flex:1 1 100%; min-width:100%; }
+
+    /* Columna de herramientas a la izquierda, más compacta */
+    .tools-panel .panel-body{ padding:.75rem; }
+    .tools-panel .btn{ padding:.4rem .6rem; font-size:.9rem; }
   </style>
 </head>
 
@@ -66,76 +74,76 @@
   </header>
 
   <main class="container sitewrap my-3 my-lg-4">
-    <!-- BREADCRUMBS + HEADER -->
+    <!-- Header: título + versión (sin navegación) -->
     <div class="d-flex flex-column gap-2 mb-3">
-     
-
-      <div class="d-flex flex-column flex-md-row justify-content-between gap-2">
+      <div class="d-flex flex-column flex-md-row justify-content-between gap-2 align-items-md-start">
         <div>
           <div class="passage-title" id="pageTitle">—</div>
-         <div class="meta-row">
-  Versión: <span class="fw-semibold" id="metaVersion">—</span>
-</div>
-
-        </div>
-
-        <div class="d-flex flex-wrap gap-2 align-items-start">
-          <button class="btn btn-soft btn-sm" type="button" disabled>Guardar</button>
+          <div class="meta-row">
+            Versión: <span class="fw-semibold" id="metaVersion">—</span>
+          </div>
         </div>
       </div>
     </div>
 
     <div class="row g-3">
+      <!-- LEFT TOOLS (compact) -->
+      <aside class="col-12 col-lg-2">
+        <div class="sticky-aside d-flex flex-column gap-3">
+          <section class="panel tools-panel">
+            <div class="panel-header">Herramientas</div>
+            <div class="panel-body d-grid gap-2">
+              <button class="btn btn-soft w-100" type="button" disabled>Comparar</button>
+              <button class="btn btn-soft w-100" type="button" disabled>Notas</button>
+              <button class="btn btn-soft w-100" type="button" disabled>Interlineal</button>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header">Ayuda</div>
+            <div class="panel-body text-muted" style="font-size:.9rem">
+              Ejemplos: <span class="mono">1Cor 3</span>, <span class="mono">1 Cor 13:1-7</span>, <span class="mono">1 Corintios 15:58</span>
+            </div>
+          </section>
+        </div>
+      </aside>
+
       <!-- MAIN CONTENT -->
-      <div class="col-12 col-lg-8">
-        <!-- Passage panel -->
-        <section class="panel mb-3">
-          <div class="panel-header d-flex justify-content-between align-items-center">
+      <div class="col-12 col-lg-10">
+        <section class="panel">
+          <div class="panel-header d-flex justify-content-between align-items-center gap-2">
             <span>Texto del pasaje</span>
-            <div class="d-flex gap-2">
-              <button id="btnPrev" class="btn btn-soft btn-sm" type="button">◀</button>
-              <button id="btnNext" class="btn btn-soft btn-sm" type="button">▶</button>
+
+            <div class="d-flex align-items-center gap-2">
+              <span class="text-muted" style="font-weight:400; font-size:.9rem" id="statusLine"></span>
+              <button id="btnToggleOrig" class="btn btn-soft btn-sm" type="button" aria-expanded="true">
+                Ocultar original
+              </button>
             </div>
           </div>
 
           <div class="panel-body">
-            <div class="passage-text" id="passageText">
-              <div class="text-muted">Cargando datos…</div>
+            <div class="parallel">
+              <!-- IZQUIERDA: Español -->
+              <div id="spanishCol" class="parallel-col">
+                <div class="fw-semibold mb-2" id="leftLabel">RVR1960</div>
+                <div class="passage-text" id="passageTextRV">
+                  <div class="text-muted">Cargando datos…</div>
+                </div>
+              </div>
+
+              <!-- DERECHA: Original -->
+              <div id="origCol" class="parallel-col">
+                <div class="fw-semibold mb-2" id="rightLabel">Original</div>
+                <div class="orig-text" id="passageTextOrig">
+                  <div class="text-muted">Cargando datos…</div>
+                </div>
+              </div>
             </div>
-            <div class="text-muted mt-3" style="font-size:.9rem" id="statusLine"></div>
           </div>
         </section>
+
       </div>
-
-      <!-- RIGHT SIDEBAR -->
-      <aside class="col-12 col-lg-4">
-        <div class="sticky-aside d-flex flex-column gap-3">
-
-          <section class="panel">
-            <div class="panel-header">Navegación</div>
-            <div class="panel-body">
-              <div class="text-muted mb-2" style="font-size:.9rem">Ir a capítulo:</div>
-              <div class="d-flex gap-2">
-                <select id="chapterSelect" class="form-select form-select-sm"></select>
-                <button id="btnGoChapter" class="btn btn-soft btn-sm" type="button">Ir</button>
-              </div>
-              <div class="text-muted mt-3" style="font-size:.9rem">
-                Ejemplos: <span class="mono">1Cor 3</span>, <span class="mono">1 Cor 13:1-7</span>, <span class="mono">1 Corintios 15:58</span>
-              </div>
-            </div>
-          </section>
-
-          <section class="panel">
-            <div class="panel-header">Herramientas</div>
-            <div class="panel-body d-grid gap-2">
-              <button class="btn btn-soft" type="button" disabled>Comparar versiones</button>
-              <button class="btn btn-soft" type="button" disabled>Notas</button>
-              <button class="btn btn-soft" type="button" disabled>Interlineal</button>
-            </div>
-          </section>
-
-        </div>
-      </aside>
     </div>
   </main>
 
@@ -143,9 +151,14 @@
     /***********************
      * Config
      ***********************/
-    const JSON_PATH = './librosRV1960/1_corintios.json';
- // mismo folder que index.html (GitHub Pages)
+    // IZQUIERDA (RVR1960)
+    const JSON_PATH_RV = './librosRV1960/1_corintios.json';
+
+    // DERECHA (Original): AJUSTA ESTA RUTA a tu archivo real (misma estructura [cap][vers])
+    const JSON_PATH_ORIG = './librosRV1960/1_corintios_griego.json';
+
     const BOOK_NAME = '1 Corintios';
+    const ORIGINAL_LABEL = 'Griego'; // cambia a 'Hebreo' cuando aplique
 
     /***********************
      * DOM
@@ -155,24 +168,25 @@
     const versionSelect = document.getElementById('versionSelect');
     const metaVersion = document.getElementById('metaVersion');
     const pageTitle = document.getElementById('pageTitle');
-    const passageText = document.getElementById('passageText');
     const statusLine = document.getElementById('statusLine');
+
+    const passageTextRV = document.getElementById('passageTextRV');
+    const passageTextOrig = document.getElementById('passageTextOrig');
+
+    const leftLabel = document.getElementById('leftLabel');
+    const rightLabel = document.getElementById('rightLabel');
 
     const btnCopyLink = document.getElementById('btnCopyLink');
     const btnCopyText = document.getElementById('btnCopyText');
     const btnPrint = document.getElementById('btnPrint');
-
-    const btnPrev = document.getElementById('btnPrev');
-    const btnNext = document.getElementById('btnNext');
-
-    const chapterSelect = document.getElementById('chapterSelect');
-    const btnGoChapter = document.getElementById('btnGoChapter');
+    const btnToggleOrig = document.getElementById('btnToggleOrig');
 
     /***********************
      * Data
      ***********************/
-    let bookData = null; // data[chapterIndex][verseIndex] = string
-    let lastRef = null;  // {chapter, verseStart, verseEnd}
+    let bookDataRV = null;    // data[chapterIndex][verseIndex] = string
+    let bookDataOrig = null;  // misma estructura
+    let lastRef = null;       // {chapter, verseStart, verseEnd}
 
     /***********************
      * Helpers
@@ -187,27 +201,11 @@
     }
 
     // Acepta: "1Cor 13:1-7", "1 Corintios 13", "1 cor 15:58"
-    // Para este MVP SOLO se permite 1 Corintios (porque el JSON es de ese libro).
+    // MVP: solo 1 Corintios (porque el JSON es de ese libro).
     function parseSearch(raw){
       const q = normalizeSpaces(raw).toLowerCase();
 
-      // detectar si menciona 1 corintios (flexible)
-      // admite: "1 cor", "1cor", "1co", "1 corintios", "1corintios"
-      const isThisBook =
-        /\b1\s*corintios\b/.test(q) ||
-        /\b1corintios\b/.test(q) ||
-        /\b1\s*cor\b/.test(q) ||
-        /\b1cor\b/.test(q) ||
-        /\b1\s*co\b/.test(q) ||
-        /\b1co\b/.test(q);
-
-      if(!isThisBook){
-        // si el usuario pone solo "13:1-7" o "13", lo interpretamos como 1 Corintios por defecto
-        // (porque este sitio de momento solo tiene 1 Corintios)
-      }
-
-      // extrae capítulo y opcional versículos
-      // patrones: "13", "13:1", "13:1-7"
+      // permite también búsquedas sin nombre del libro (por MVP)
       const m = q.match(/(\d+)(?::(\d+)(?:\s*-\s*(\d+))?)?$/);
       if(!m) return null;
 
@@ -230,28 +228,17 @@
     }
 
     async function copy(text){
-      try{
-        await navigator.clipboard.writeText(text);
-      }catch{}
-    }
-
-    function fillChapterSelect(chapterCount){
-      chapterSelect.innerHTML = '';
-      for(let i=1; i<=chapterCount; i++){
-        const opt = document.createElement('option');
-        opt.value = String(i);
-        opt.textContent = `Cap. ${i}`;
-        chapterSelect.appendChild(opt);
-      }
+      try{ await navigator.clipboard.writeText(text); }catch{}
     }
 
     function render(ref){
-      if(!bookData) return;
+      if(!bookDataRV) return;
 
-      const chapterCount = bookData.length;
+      const chapterCount = bookDataRV.length;
       const ch = clamp(ref.chapter, 1, chapterCount);
-      const verses = bookData[ch-1] || [];
-      const verseCount = verses.length;
+
+      const versesRV = bookDataRV[ch-1] || [];
+      const verseCount = versesRV.length;
 
       let v1 = ref.verseStart ?? 1;
       let v2 = ref.verseEnd ?? verseCount;
@@ -262,7 +249,6 @@
 
       lastRef = { chapter: ch, verseStart: v1, verseEnd: v2 };
 
-      // title + meta
       const range = (ref.verseStart == null)
         ? `${BOOK_NAME} ${ch}`
         : `${BOOK_NAME} ${ch}:${v1}${(v2 !== v1 ? '-' + v2 : '')}`;
@@ -270,19 +256,29 @@
       pageTitle.textContent = range;
       metaVersion.textContent = versionSelect.value;
 
-      // sidebar select sync
-      chapterSelect.value = String(ch);
-
-      // render verses
-      let html = '';
+      // Español (RV)
+      let htmlRV = '';
       for(let v=v1; v<=v2; v++){
-        const t = verses[v-1] ?? '';
-        html += `<p class="mb-2"><span class="verse-num">${v}</span>${esc(t)}</p>`;
+        const t = versesRV[v-1] ?? '';
+        htmlRV += `<p class="mb-2"><span class="verse-num">${v}</span>${esc(t)}</p>`;
       }
-      passageText.innerHTML = html || `<div class="text-muted">Sin contenido para esta referencia.</div>`;
-      statusLine.textContent = `Capítulos: ${chapterCount} · Versículos en cap. ${ch}: ${verseCount}`;
+      passageTextRV.innerHTML = htmlRV || `<div class="text-muted">Sin contenido para esta referencia.</div>`;
 
-      // update URL
+      // Original
+      if(bookDataOrig){
+        const versesOrig = bookDataOrig[ch-1] || [];
+        let htmlOrig = '';
+        for(let v=v1; v<=v2; v++){
+          const t = versesOrig[v-1] ?? '';
+          htmlOrig += `<p class="mb-2"><span class="verse-num">${v}</span>${esc(t)}</p>`;
+        }
+        passageTextOrig.innerHTML = htmlOrig || `<div class="text-muted">Sin contenido original para esta referencia.</div>`;
+      }else{
+        passageTextOrig.innerHTML = `<div class="text-muted">Original no cargado (revisa JSON_PATH_ORIG).</div>`;
+      }
+
+      statusLine.textContent = `Capítulos: ${chapterCount} · Cap ${ch}: ${verseCount} vers.`;
+
       const userSearch = normalizeSpaces(searchInput.value) || range;
       history.replaceState(null, '', `?search=${encodeURIComponent(userSearch)}&version=${encodeURIComponent(versionSelect.value)}`);
     }
@@ -290,73 +286,28 @@
     function runSearch(){
       const raw = normalizeSpaces(searchInput.value);
       if(!raw){
-        passageText.innerHTML = `<div class="text-muted">Escribe una referencia.</div>`;
+        passageTextRV.innerHTML = `<div class="text-muted">Escribe una referencia.</div>`;
+        passageTextOrig.innerHTML = `<div class="text-muted">Escribe una referencia.</div>`;
         return;
       }
 
       const ref = parseSearch(raw);
       if(!ref){
-        passageText.innerHTML = `<div class="text-muted">No se pudo interpretar la búsqueda. Ej: <span class="mono">1Cor 13:1-7</span></div>`;
+        const msg = `<div class="text-muted">No se pudo interpretar la búsqueda. Ej: <span class="mono">1Cor 13:1-7</span></div>`;
+        passageTextRV.innerHTML = msg;
+        passageTextOrig.innerHTML = msg;
         return;
       }
 
       render(ref);
     }
 
-    function goPrevNext(dir){
-      if(!lastRef) return;
-      const ch = lastRef.chapter;
-      const verses = bookData[ch-1] || [];
-      const verseCount = verses.length;
-
-      // Si el rango es capítulo completo -> ir al capítulo anterior/siguiente
-      const isFullChapter = (lastRef.verseStart === 1 && lastRef.verseEnd === verseCount);
-
-      if(isFullChapter){
-        const nextCh = ch + dir;
-        if(nextCh < 1 || nextCh > bookData.length) return;
-        searchInput.value = `${BOOK_NAME} ${nextCh}`;
-        runSearch();
-        return;
-      }
-
-      // Si es rango parcial -> desplazar el rango manteniendo longitud
-      const len = lastRef.verseEnd - lastRef.verseStart;
-      let newStart = lastRef.verseStart + dir*(len+1);
-      let newEnd = newStart + len;
-
-      // si se sale del capítulo, saltar a capítulo siguiente/anterior
-      if(newStart < 1){
-        if(ch === 1) return;
-        const prevVerses = bookData[ch-2] || [];
-        const prevCount = prevVerses.length;
-        newEnd = prevCount;
-        newStart = Math.max(1, prevCount - len);
-        searchInput.value = `${BOOK_NAME} ${ch-1}:${newStart}-${newEnd}`;
-        runSearch();
-        return;
-      }
-      if(newEnd > verseCount){
-        if(ch === bookData.length) return;
-        const nextVerses = bookData[ch] || [];
-        const nextCount = nextVerses.length;
-        newStart = 1;
-        newEnd = Math.min(nextCount, 1 + len);
-        searchInput.value = `${BOOK_NAME} ${ch+1}:${newStart}-${newEnd}`;
-        runSearch();
-        return;
-      }
-
-      searchInput.value = `${BOOK_NAME} ${ch}:${newStart}-${newEnd}`;
-      runSearch();
-    }
-
     /***********************
      * Init
      ***********************/
-    async function loadJson(){
-      const r = await fetch(JSON_PATH, { cache: 'no-store' });
-      if(!r.ok) throw new Error(`No se pudo cargar ${JSON_PATH} (HTTP ${r.status})`);
+    async function loadJson(path){
+      const r = await fetch(path, { cache: 'no-store' });
+      if(!r.ok) throw new Error(`No se pudo cargar ${path} (HTTP ${r.status})`);
       return await r.json();
     }
 
@@ -368,6 +319,12 @@
       if(v) versionSelect.value = v;
     }
 
+    function setOriginalVisible(isVisible){
+      document.body.classList.toggle('orig-hidden', !isVisible);
+      btnToggleOrig.setAttribute('aria-expanded', String(isVisible));
+      btnToggleOrig.textContent = isVisible ? 'Ocultar original' : 'Mostrar original';
+    }
+
     form.addEventListener('submit', (e) => { e.preventDefault(); runSearch(); });
 
     btnCopyLink.addEventListener('click', async () => {
@@ -376,29 +333,49 @@
     });
 
     btnCopyText.addEventListener('click', async () => {
-      await copy(passageText.innerText || '');
+      const left = (passageTextRV.innerText || '').trim();
+      const right = (passageTextOrig.innerText || '').trim();
+      const includeOrig = !document.body.classList.contains('orig-hidden');
+      const combined =
+        includeOrig
+          ? `=== ${leftLabel.textContent} ===\n${left}\n\n=== ${rightLabel.textContent} ===\n${right}\n`
+          : `=== ${leftLabel.textContent} ===\n${left}\n`;
+      await copy(combined);
     });
 
     btnPrint.addEventListener('click', () => window.print());
 
-    btnPrev.addEventListener('click', () => goPrevNext(-1));
-    btnNext.addEventListener('click', () => goPrevNext( 1));
-
-    btnGoChapter.addEventListener('click', () => {
-      const ch = parseInt(chapterSelect.value, 10);
-      searchInput.value = `${BOOK_NAME} ${ch}`;
-      runSearch();
+    btnToggleOrig.addEventListener('click', () => {
+      const isVisible = !document.body.classList.contains('orig-hidden');
+      setOriginalVisible(!isVisible);
     });
 
     (async function boot(){
       setFromUrl();
+
+      leftLabel.textContent = versionSelect.value;
+      rightLabel.textContent = ORIGINAL_LABEL;
+
+      // visible por defecto
+      setOriginalVisible(true);
+
       try{
-        bookData = await loadJson();
-        fillChapterSelect(bookData.length);
-        // búsqueda inicial
+        passageTextRV.innerHTML = `<div class="text-muted">Cargando ${leftLabel.textContent}…</div>`;
+        bookDataRV = await loadJson(JSON_PATH_RV);
+
+        try{
+          passageTextOrig.innerHTML = `<div class="text-muted">Cargando ${ORIGINAL_LABEL}…</div>`;
+          bookDataOrig = await loadJson(JSON_PATH_ORIG);
+        }catch(e){
+          bookDataOrig = null;
+          passageTextOrig.innerHTML = `<div class="text-muted">Original no cargado. Revisa <span class="mono">JSON_PATH_ORIG</span>.</div>`;
+        }
+
         runSearch();
       }catch(err){
-        passageText.innerHTML = `<div class="text-danger fw-semibold">Error:</div><div class="text-muted">${esc(err.message || String(err))}</div>`;
+        const msg = `<div class="text-danger fw-semibold">Error:</div><div class="text-muted">${esc(err.message || String(err))}</div>`;
+        passageTextRV.innerHTML = msg;
+        passageTextOrig.innerHTML = msg;
         statusLine.textContent = '';
       }
     })();
