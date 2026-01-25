@@ -52,6 +52,14 @@
       font-size: 1.1rem;
       line-height: 1.8;
     }
+    .hebrew{
+  direction: rtl;
+  unicode-bidi: plaintext;
+  font-family: 'SBL Hebrew','Ezra SIL','Times New Roman',serif;
+  font-size: 1.12rem;
+  line-height: 1.9;
+}
+
   </style>
 </head>
 
@@ -142,7 +150,7 @@
               <!-- DERECHA: Original -->
               <div id="origCol" class="parallel-col">
                 <div class="fw-semibold mb-2" id="rightLabel">Original</div>
-                <div class="orig-text greek" id="passageTextOrig">
+                <div class="orig-text" id="passageTextOrig">
                   <div class="text-muted">Cargando datos…</div>
                 </div>
               </div>
@@ -167,6 +175,8 @@ const params = new URLSearchParams(window.location.search);
 
 const RV_BASE = params.get('rvBase') || './librosRV1960/';
 const GRIEGO_PATH = './IdiomaORIGEN/Bgriega.json';
+const HEBREO_PATH = './IdiomaORIGEN/he_modern.json';
+
 
 const BOOK_SLUG = (params.get('book') || '1_corintios').trim();
 const BOOK_NAME = (params.get('name') || BOOK_SLUG.replace(/_/g, ' '))
@@ -212,6 +222,48 @@ const NT_TR_BOOKNAME = {
   judas: 'Jude',
   apocalipsis: 'Revelation'
 };
+ const AT_HE_BOOKNAME = {
+  genesis: 'Genesis',
+  exodo: 'Exodus',
+  levitico: 'Leviticus',
+  numeros: 'Numbers',
+  deuteronomio: 'Deuteronomy',
+  josue: 'Joshua',
+  jueces: 'Judges',
+  rut: 'Ruth',
+  '1_samuel': '1 Samuel',
+  '2_samuel': '2 Samuel',
+  '1_reyes': '1 Kings',
+  '2_reyes': '2 Kings',
+  '1_cronicas': '1 Chronicles',
+  '2_cronicas': '2 Chronicles',
+  esdras: 'Ezra',
+  nehemias: 'Nehemiah',
+  ester: 'Esther',
+  job: 'Job',
+  salmos: 'Psalms',
+  proverbios: 'Proverbs',
+  eclesiastes: 'Ecclesiastes',
+  cantares: 'Song of Solomon',
+  isaias: 'Isaiah',
+  jeremias: 'Jeremiah',
+  lamentaciones: 'Lamentations',
+  ezequiel: 'Ezekiel',
+  daniel: 'Daniel',
+  oseas: 'Hosea',
+  joel: 'Joel',
+  amos: 'Amos',
+  abdias: 'Obadiah',
+  jonas: 'Jonah',
+  miqueas: 'Micah',
+  nahum: 'Nahum',
+  habacuc: 'Habakkuk',
+  sofonias: 'Zephaniah',
+  hageo: 'Haggai',
+  zacarias: 'Zechariah',
+  malaquias: 'Malachi'
+};
+
 
 // IZQUIERDA (RVR1960)
 const JSON_PATH_RV = `${RV_BASE}${BOOK_SLUG}.json`;
@@ -294,16 +346,11 @@ async function copy(text){
 /***********************
  * Greek builder (TR NT)
  ***********************/
-function buildChaptersFromTRForCurrentBook(){
-  if(!isNT || !trData || !Array.isArray(trData.verses)) return null;
+function buildChaptersFromVersesForBook(allVerses, bookName){
+  if(!bookName || !Array.isArray(allVerses)) return null;
 
-  const bookName = NT_TR_BOOKNAME[BOOK_SLUG];
-  if(!bookName) return null;
+  const verses = allVerses.filter(v => v && v.book_name === bookName);
 
-  // Filtrar versos del libro
-  const verses = trData.verses.filter(v => v && v.book_name === bookName);
-
-  // Descubrir max capítulo y max verso por capítulo
   let maxCh = 0;
   const maxVerseByCh = {};
   for(const v of verses){
@@ -314,7 +361,6 @@ function buildChaptersFromTRForCurrentBook(){
   }
   if(maxCh <= 0) return null;
 
-  // Construir arreglo [cap][vers] (1-based -> 0-based)
   const chapters = Array.from({length: maxCh}, (_, i) => {
     const ch = i+1;
     const len = maxVerseByCh[ch] || 0;
@@ -465,25 +511,52 @@ btnToggleOrig.addEventListener('click', () => {
   // visible por defecto
   setOriginalVisible(true);
 
-  try{
-    passageTextRV.innerHTML = `<div class="text-muted">Cargando ${leftLabel.textContent}…</div>`;
-    bookDataRV = await loadJson(JSON_PATH_RV);
+ try{
+  passageTextRV.innerHTML = `<div class="text-muted">Cargando ${leftLabel.textContent}…</div>`;
+  bookDataRV = await loadJson(JSON_PATH_RV);
 
-    if(isNT){
-      passageTextOrig.innerHTML = `<div class="text-muted">Cargando ${ORIGINAL_LABEL}…</div>`;
-      trData = await loadJson(GRIEGO_PATH);
-      bookDataOrig = buildChaptersFromTRForCurrentBook();
+  if(isNT){
+    rightLabel.textContent = 'Griego';
+    passageTextOrig.classList.remove('hebrew');
+    passageTextOrig.classList.add('greek');
 
-      if(!bookDataOrig){
-        passageTextOrig.innerHTML = `<div class="text-muted">No se encontró el libro en <span class="mono">Bgriega.json</span> (revisa el slug o el mapeo).</div>`;
-      }
-    }else{
-      bookDataOrig = null;
-      passageTextOrig.innerHTML = `<div class="text-muted">Hebreo pendiente de integrar.</div>`;
+    passageTextOrig.innerHTML = `<div class="text-muted">Cargando Griego…</div>`;
+    const trData = await loadJson(GRIEGO_PATH);
+    const bookName = NT_TR_BOOKNAME[BOOK_SLUG];
+    bookDataOrig = buildChaptersFromVersesForBook(trData.verses, bookName);
+
+    if(!bookDataOrig){
+      passageTextOrig.innerHTML = `<div class="text-muted">No se encontró el libro en Bgriega.json (revisa slug/mapeo).</div>`;
     }
 
-    runSearch();
-  }catch(err){
+  } else {
+    rightLabel.textContent = 'Hebreo';
+    passageTextOrig.classList.remove('greek');
+    passageTextOrig.classList.add('hebrew');
+
+    passageTextOrig.innerHTML = `<div class="text-muted">Cargando Hebreo…</div>`;
+    const heData = await loadJson(HEBREO_PATH);
+    const bookName = AT_HE_BOOKNAME[BOOK_SLUG];
+    if(!bookName){
+  passageTextOrig.innerHTML = `
+    <div class="text-muted">
+      Falta mapear este libro del AT en <span class="mono">AT_HE_BOOKNAME</span>:
+      <strong>${esc(BOOK_SLUG)}</strong>
+    </div>`;
+  bookDataOrig = null;
+  runSearch();
+  return;
+}
+    bookDataOrig = buildChaptersFromVersesForBook(heData.verses, bookName);
+
+    if(!bookDataOrig){
+      passageTextOrig.innerHTML = `<div class="text-muted">No se encontró el libro en he_modern.json (revisa slug/mapeo).</div>`;
+    }
+  }
+
+  runSearch();
+
+}catch(err){
     const msg = `<div class="text-danger fw-semibold">Error:</div><div class="text-muted">${esc(err.message || String(err))}</div>`;
     passageTextRV.innerHTML = msg;
     passageTextOrig.innerHTML = msg;
