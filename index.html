@@ -164,7 +164,7 @@
 
   <script>
 /***********************
- * Config (por libro)
+ * Config
  ***********************/
 const params = new URLSearchParams(window.location.search);
 
@@ -172,93 +172,165 @@ const RV_BASE = params.get('rvBase') || './librosRV1960/';
 const GRIEGO_PATH = './IdiomaORIGEN/Bgriega.json';
 const HEBREO_PATH = './IdiomaORIGEN/he_modern.json';
 
+// Si quieres forzar ocultar original por defecto: ?orig=0
+const ORIGINAL_ENABLED_DEFAULT = (params.get('orig') ?? '1') !== '0';
+
 // Estado actual (se puede cambiar desde el buscador)
 let currentBookSlug = (params.get('book') || '1_corintios').trim();
-let currentBookName = (params.get('name') || currentBookSlug.replace(/_/g, ' '))
-  .replace(/\b\w/g, c => c.toUpperCase());
+let currentBookName = (params.get('name') || prettyBookName(currentBookSlug));
 
-// Lista de slugs del NT (ajusta si tus nombres difieren)
+/***********************
+ * Canon + aliases (Genesis -> Apocalipsis)
+ ***********************/
 const NT_BOOKS = new Set([
   'mateo','marcos','lucas','juan','hechos',
   'romanos','1_corintios','2_corintios','galatas','efesios','filipenses','colosenses',
   '1_tesalonicenses','2_tesalonicenses','1_timoteo','2_timoteo','tito','filemon',
   'hebreos','santiago','1_pedro','2_pedro','1_juan','2_juan','3_juan','judas','apocalipsis'
 ]);
-
 function isNT(slug){ return NT_BOOKS.has(slug); }
 
-// Mapeo slug -> book_name (inglés) dentro de Bgriega.json
-const NT_TR_BOOKNAME = {
-  mateo: 'Matthew',
-  marcos: 'Mark',
-  lucas: 'Luke',
-  juan: 'John',
-  hechos: 'Acts',
-  romanos: 'Romans',
-  '1_corintios': '1 Corinthians',
-  '2_corintios': '2 Corinthians',
-  galatas: 'Galatians',
-  efesios: 'Ephesians',
-  filipenses: 'Philippians',
-  colosenses: 'Colossians',
-  '1_tesalonicenses': '1 Thessalonians',
-  '2_tesalonicenses': '2 Thessalonians',
-  '1_timoteo': '1 Timothy',
-  '2_timoteo': '2 Timothy',
-  tito: 'Titus',
-  filemon: 'Philemon',
-  hebreos: 'Hebrews',
-  santiago: 'James',
-  '1_pedro': '1 Peter',
-  '2_pedro': '2 Peter',
-  '1_juan': '1 John',
-  '2_juan': '2 John',
-  '3_juan': '3 John',
-  judas: 'Jude',
-  apocalipsis: 'Revelation'
+function normalizeKey(s){
+  return (s || '')
+    .toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g,'')
+    .replace(/\./g,'')
+    .replace(/\s+/g,'')
+    .trim();
+}
+function prettyBookName(slug){
+  return (slug || '').replace(/_/g,' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+function slugifyBookName(name){
+  return (name || '')
+    .toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g,'')
+    .replace(/\./g,'')
+    .trim()
+    .replace(/\s+/g,' ')
+    .replace(/^(\d)\s+/, '$1 ')
+    .replace(/\s/g,'_');
+}
+
+// Aliases amplios (comunes). La clave es "normalizada" (sin espacios ni tildes)
+const BOOK_ALIASES = {
+  // Pentateuco
+  'genesis':'genesis','gen':'genesis','gn':'genesis',
+  'exodo':'exodo','exo':'exodo','ex':'exodo',
+  'levitico':'levitico','lev':'levitico','lv':'levitico',
+  'numeros':'numeros','num':'numeros','nm':'numeros',
+  'deuteronomio':'deuteronomio','deut':'deuteronomio','dt':'deuteronomio',
+
+  // Históricos
+  'josue':'josue','jos':'josue',
+  'jueces':'jueces','jue':'jueces','jdg':'jueces',
+  'rut':'rut','rt':'rut',
+  '1samuel':'1_samuel','1sa':'1_samuel','1sam':'1_samuel',
+  '2samuel':'2_samuel','2sa':'2_samuel','2sam':'2_samuel',
+  '1reyes':'1_reyes','1rey':'1_reyes','1ki':'1_reyes','1kgs':'1_reyes',
+  '2reyes':'2_reyes','2rey':'2_reyes','2ki':'2_reyes','2kgs':'2_reyes',
+  '1cronicas':'1_cronicas','1cro':'1_cronicas','1cr':'1_cronicas',
+  '2cronicas':'2_cronicas','2cro':'2_cronicas','2cr':'2_cronicas',
+  'esdras':'esdras','esd':'esdras','ezra':'esdras',
+  'nehemias':'nehemias','neh':'nehemias',
+  'ester':'ester','est':'ester',
+
+  // Poéticos
+  'job':'job','jb':'job',
+  'salmos':'salmos','salmo':'salmos','sal':'salmos','ps':'salmos',
+  'proverbios':'proverbios','prov':'proverbios','pr':'proverbios',
+  'eclesiastes':'eclesiastes','ecl':'eclesiastes','ec':'eclesiastes',
+  'cantares':'cantares','cantar':'cantares','cnt':'cantares','cant':'cantares',
+
+  // Profetas mayores
+  'isaias':'isaias','isa':'isaias',
+  'jeremias':'jeremias','jer':'jeremias',
+  'lamentaciones':'lamentaciones','lam':'lamentaciones',
+  'ezequiel':'ezequiel','eze':'ezequiel','ez':'ezequiel',
+  'daniel':'daniel','dan':'daniel',
+
+  // Profetas menores
+  'oseas':'oseas','os':'oseas',
+  'joel':'joel','jl':'joel',
+  'amos':'amos','am':'amos',
+  'abdias':'abdias','abd':'abdias','obadias':'abdias','obad':'abdias',
+  'jonas':'jonas','jon':'jonas',
+  'miqueas':'miqueas','miq':'miqueas','mic':'miqueas',
+  'nahum':'nahum','nah':'nahum',
+  'habacuc':'habacuc','hab':'habacuc',
+  'sofonias':'sofonias','sof':'sofonias','zep':'sofonias',
+  'hageo':'hageo','hag':'hageo',
+  'zacarias':'zacarias','zac':'zacarias','zec':'zacarias',
+  'malaquias':'malaquias','mal':'malaquias',
+
+  // Evangelios / Hechos
+  'mateo':'mateo','mt':'mateo',
+  'marcos':'marcos','mr':'marcos','mk':'marcos',
+  'lucas':'lucas','lc':'lucas','lk':'lucas',
+  'juan':'juan','jn':'juan','jhn':'juan',
+  'hechos':'hechos','hch':'hechos','actos':'hechos','act':'hechos',
+
+  // Paulinas
+  'romanos':'romanos','rom':'romanos',
+  '1corintios':'1_corintios','1cor':'1_corintios','1co':'1_corintios',
+  '2corintios':'2_corintios','2cor':'2_corintios','2co':'2_corintios',
+  'galatas':'galatas','gal':'galatas',
+  'efesios':'efesios','efe':'efesios','eph':'efesios',
+  'filipenses':'filipenses','fil':'filipenses','php':'filipenses',
+  'colosenses':'colosenses','col':'colosenses',
+  '1tesalonicenses':'1_tesalonicenses','1tes':'1_tesalonicenses','1th':'1_tesalonicenses',
+  '2tesalonicenses':'2_tesalonicenses','2tes':'2_tesalonicenses','2th':'2_tesalonicenses',
+  '1timoteo':'1_timoteo','1tim':'1_timoteo',
+  '2timoteo':'2_timoteo','2tim':'2_timoteo',
+  'tito':'tito','tit':'tito',
+  'filemon':'filemon','flm':'filemon','phm':'filemon',
+  'hebreos':'hebreos','heb':'hebreos',
+
+  // Generales + Apocalipsis
+  'santiago':'santiago','stg':'santiago','jas':'santiago',
+  '1pedro':'1_pedro','1pe':'1_pedro','1pet':'1_pedro',
+  '2pedro':'2_pedro','2pe':'2_pedro','2pet':'2_pedro',
+  '1juan':'1_juan','1jn':'1_juan','1j':'1_juan',
+  '2juan':'2_juan','2jn':'2_juan','2j':'2_juan',
+  '3juan':'3_juan','3jn':'3_juan','3j':'3_juan',
+  'judas':'judas','jud':'judas',
+  'apocalipsis':'apocalipsis','apo':'apocalipsis','apoc':'apocalipsis','rev':'apocalipsis'
 };
 
-// Mapeo AT (ajusta si he_modern.json usa nombres distintos en book_name)
+function resolveBookSlug(bookRaw){
+  const key = normalizeKey(bookRaw);
+  if(BOOK_ALIASES[key]) return BOOK_ALIASES[key];
+
+  // Manejo "1 cor" -> "1cor"
+  const key2 = key.replace(/^([123])/, '$1');
+  if(BOOK_ALIASES[key2]) return BOOK_ALIASES[key2];
+
+  return slugifyBookName(bookRaw);
+}
+
+/***********************
+ * Mapeos para Original (book_name dentro de los JSON grandes)
+ ***********************/
+const NT_TR_BOOKNAME = {
+  mateo: 'Matthew', marcos: 'Mark', lucas: 'Luke', juan: 'John', hechos: 'Acts',
+  romanos: 'Romans', '1_corintios': '1 Corinthians', '2_corintios': '2 Corinthians',
+  galatas: 'Galatians', efesios: 'Ephesians', filipenses: 'Philippians', colosenses: 'Colossians',
+  '1_tesalonicenses': '1 Thessalonians', '2_tesalonicenses': '2 Thessalonians',
+  '1_timoteo': '1 Timothy', '2_timoteo': '2 Timothy', tito: 'Titus', filemon: 'Philemon',
+  hebreos: 'Hebrews', santiago: 'James', '1_pedro': '1 Peter', '2_pedro': '2 Peter',
+  '1_juan': '1 John', '2_juan': '2 John', '3_juan': '3 John', judas: 'Jude', apocalipsis: 'Revelation'
+};
+
+// AT (ajusta si he_modern.json usa otros book_name)
 const AT_HE_BOOKNAME = {
-  genesis: 'Genesis',
-  exodo: 'Exodus',
-  levitico: 'Leviticus',
-  numeros: 'Numbers',
-  deuteronomio: 'Deuteronomy',
-  josue: 'Joshua',
-  jueces: 'Judges',
-  rut: 'Ruth',
-  '1_samuel': '1 Samuel',
-  '2_samuel': '2 Samuel',
-  '1_reyes': '1 Kings',
-  '2_reyes': '2 Kings',
-  '1_cronicas': '1 Chronicles',
-  '2_cronicas': '2 Chronicles',
-  esdras: 'Ezra',
-  nehemias: 'Nehemiah',
-  ester: 'Esther',
-  job: 'Job',
-  salmos: 'Psalms',
-  proverbios: 'Proverbs',
-  eclesiastes: 'Ecclesiastes',
-  cantares: 'Song of Solomon',
-  isaias: 'Isaiah',
-  jeremias: 'Jeremiah',
-  lamentaciones: 'Lamentations',
-  ezequiel: 'Ezekiel',
-  daniel: 'Daniel',
-  oseas: 'Hosea',
-  joel: 'Joel',
-  amos: 'Amos',
-  abdias: 'Obadiah',
-  jonas: 'Jonah',
-  miqueas: 'Micah',
-  nahum: 'Nahum',
-  habacuc: 'Habakkuk',
-  sofonias: 'Zephaniah',
-  hageo: 'Haggai',
-  zacarias: 'Zechariah',
-  malaquias: 'Malachi'
+  genesis:'Genesis', exodo:'Exodus', levitico:'Leviticus', numeros:'Numbers', deuteronomio:'Deuteronomy',
+  josue:'Joshua', jueces:'Judges', rut:'Ruth', '1_samuel':'1 Samuel', '2_samuel':'2 Samuel',
+  '1_reyes':'1 Kings', '2_reyes':'2 Kings', '1_cronicas':'1 Chronicles', '2_cronicas':'2 Chronicles',
+  esdras:'Ezra', nehemias:'Nehemiah', ester:'Esther', job:'Job', salmos:'Psalms', proverbios:'Proverbs',
+  eclesiastes:'Ecclesiastes', cantares:'Song of Solomon', isaias:'Isaiah', jeremias:'Jeremiah',
+  lamentaciones:'Lamentations', ezequiel:'Ezekiel', daniel:'Daniel', oseas:'Hosea', joel:'Joel',
+  amos:'Amos', abdias:'Obadiah', jonas:'Jonah', miqueas:'Micah', nahum:'Nahum', habacuc:'Habakkuk',
+  sofonias:'Zephaniah', hageo:'Haggai', zacarias:'Zechariah', malaquias:'Malachi'
 };
 
 /***********************
@@ -285,15 +357,15 @@ const btnToggleOrig = document.getElementById('btnToggleOrig');
 /***********************
  * Data / caches
  ***********************/
-let lastRef = null;                 // {chapter, verseStart, verseEnd}
-const rvCache = {};                 // slug -> [ [verses...] ... ]
-let trData = null;                  // JSON completo NT griego
-const trChaptersCache = {};         // slug -> chapters
-let heData = null;                  // JSON completo AT hebreo
-const heChaptersCache = {};         // slug -> chapters
+let lastRef = null;
+const rvCache = {};                 // slug -> chapters[][]
+let trData = null;                  // NT griego completo
+const trChaptersCache = {};         // slug -> chapters[][]
+let heData = null;                  // AT hebreo completo
+const heChaptersCache = {};         // slug -> chapters[][]
 
-let bookDataRV = null;              // chapters actual
-let bookDataOrig = null;            // chapters actual (griego/hebreo)
+let bookDataRV = null;
+let bookDataOrig = null;
 
 /***********************
  * Helpers
@@ -302,75 +374,26 @@ function esc(s){
   return (s ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')
     .replaceAll('"','&quot;').replaceAll("'","&#39;");
 }
-
 function normalizeSpaces(s){
   return (s || '').trim().replace(/\s+/g,' ');
 }
-
 function clamp(n, min, max){
   return Math.max(min, Math.min(max, n));
 }
-
-function slugifyBookName(name){
-  return normalizeSpaces(name)
-    .toLowerCase()
-    .normalize("NFD").replace(/[\u0300-\u036f]/g,'')
-    .replace(/\./g,'')
-    .replace(/\s+/g,' ')
-    .replace(/^(\d)\s+/, '$1 ')
-    .replace(/\s/g,'_');
-}
-
-// alias para abreviaturas típicas
-const BOOK_ALIASES = {
-  '1cor': '1_corintios',
-  '1co': '1_corintios',
-  '1corintios': '1_corintios',
-  '2cor': '2_corintios',
-  '2co': '2_corintios',
-  '2corintios': '2_corintios',
-  'gal': 'galatas',
-  'gálatas': 'galatas',
-  'deut': 'deuteronomio',
-  'dt': 'deuteronomio',
-  'amo': 'amos',
-  'am': 'amos'
-};
-
-function resolveBookSlug(bookRaw){
-  const cleaned = normalizeSpaces(bookRaw)
-    .toLowerCase()
-    .normalize("NFD").replace(/[\u0300-\u036f]/g,'')
-    .replace(/\./g,'')
-    .replace(/\s+/g,''); // sin espacios
-
-  if(BOOK_ALIASES[cleaned]) return BOOK_ALIASES[cleaned];
-
-  // Manejo de prefijos numéricos: "1cor", "1 cor", "1 corintios"
-  const m = cleaned.match(/^([123])(.+)$/);
-  if(m){
-    const key = m[1] + m[2];
-    if(BOOK_ALIASES[key]) return BOOK_ALIASES[key];
-  }
-
-  return slugifyBookName(bookRaw);
-}
-
 async function loadJson(path){
   const r = await fetch(path, { cache: 'no-store' });
   if(!r.ok) throw new Error(`No se pudo cargar ${path} (HTTP ${r.status})`);
   return await r.json();
 }
-
 function buildPermalink(search, version){
   const p = new URLSearchParams();
   p.set('book', currentBookSlug);
   p.set('name', currentBookName);
   p.set('search', search);
   p.set('version', version);
+  p.set('orig', ORIGINAL_ENABLED_DEFAULT ? '1' : '0');
   return `${location.origin}${location.pathname}?${p.toString()}`;
 }
-
 async function copy(text){
   try{ await navigator.clipboard.writeText(text); }catch{}
 }
@@ -406,67 +429,93 @@ function buildChaptersFromVersesForBook(allVerses, bookName){
       chapters[ch-1][vs-1] = v.text || '';
     }
   }
-
   return chapters;
 }
 
 /***********************
- * Cargar libro (español + original)
+ * Cargar libro: Español + (opcional) Original
  ***********************/
 async function ensureBookLoaded(slug, displayName){
-  // Español
+  // Español (requerido)
   if(!rvCache[slug]){
     const path = `${RV_BASE}${slug}.json`;
     rvCache[slug] = await loadJson(path);
   }
   bookDataRV = rvCache[slug];
 
-  // Original
+  // Original (opcional). Si falta el archivo hebreo/griego, NO debe tumbar la lectura en español.
+  bookDataOrig = null;
+
+  if(!ORIGINAL_ENABLED_DEFAULT){
+    rightLabel.textContent = 'Original (off)';
+    passageTextOrig.innerHTML = `<div class="text-muted">Original desactivado.</div>`;
+    return;
+  }
+
   if(isNT(slug)){
     rightLabel.textContent = 'Griego';
     passageTextOrig.classList.remove('hebrew');
     passageTextOrig.classList.add('greek');
 
-    if(!trData) trData = await loadJson(GRIEGO_PATH);
-
-    if(!trChaptersCache[slug]){
-      const bookName = NT_TR_BOOKNAME[slug];
-      trChaptersCache[slug] = buildChaptersFromVersesForBook(trData.verses, bookName);
+    try{
+      if(!trData) trData = await loadJson(GRIEGO_PATH);
+      if(!trChaptersCache[slug]){
+        const bookName = NT_TR_BOOKNAME[slug];
+        trChaptersCache[slug] = buildChaptersFromVersesForBook(trData.verses, bookName);
+      }
+      bookDataOrig = trChaptersCache[slug] || null;
+      if(!bookDataOrig){
+        passageTextOrig.innerHTML = `<div class="text-muted">Griego no disponible para este libro (revisa mapeo).</div>`;
+      }
+    }catch(err){
+      passageTextOrig.innerHTML = `<div class="text-muted">Griego no disponible: ${esc(err.message || String(err))}</div>`;
+      bookDataOrig = null;
     }
-    bookDataOrig = trChaptersCache[slug] || null;
 
   } else {
     rightLabel.textContent = 'Hebreo';
     passageTextOrig.classList.remove('greek');
     passageTextOrig.classList.add('hebrew');
 
-    if(!heData) heData = await loadJson(HEBREO_PATH);
-
-    if(!heChaptersCache[slug]){
-      const bookName = AT_HE_BOOKNAME[slug];
-      if(!bookName){
-        bookDataOrig = null;
-        passageTextOrig.innerHTML = `
-          <div class="text-muted">
-            Falta mapear este libro del AT en <span class="mono">AT_HE_BOOKNAME</span>:
-            <strong>${esc(slug)}</strong>
-          </div>`;
-        return;
+    // Si no tienes aún he_modern.json, no debe romper.
+    try{
+      if(!heData) heData = await loadJson(HEBREO_PATH);
+      if(!heChaptersCache[slug]){
+        const bookName = AT_HE_BOOKNAME[slug];
+        if(!bookName){
+          passageTextOrig.innerHTML = `
+            <div class="text-muted">
+              Falta mapear este libro del AT en <span class="mono">AT_HE_BOOKNAME</span>:
+              <strong>${esc(slug)}</strong>
+            </div>`;
+          bookDataOrig = null;
+        }else{
+          heChaptersCache[slug] = buildChaptersFromVersesForBook(heData.verses, bookName);
+        }
       }
-      heChaptersCache[slug] = buildChaptersFromVersesForBook(heData.verses, bookName);
+      bookDataOrig = heChaptersCache[slug] || null;
+      if(!bookDataOrig){
+        // Si no hay data, ya quedó un mensaje arriba o lo ponemos aquí
+        if(!passageTextOrig.innerText.trim()){
+          passageTextOrig.innerHTML = `<div class="text-muted">Hebreo no disponible para este libro.</div>`;
+        }
+      }
+    }catch(err){
+      // ESTE es tu caso (HTTP 404): mostramos mensaje y seguimos con español
+      passageTextOrig.innerHTML = `<div class="text-muted">Hebreo no disponible (archivo faltante). Puedes seguir leyendo en español.</div>`;
+      bookDataOrig = null;
     }
-    bookDataOrig = heChaptersCache[slug] || null;
   }
 
   currentBookSlug = slug;
-  currentBookName = displayName || slug.replace(/_/g,' ').replace(/\b\w/g, c => c.toUpperCase());
+  currentBookName = displayName || prettyBookName(slug);
 }
 
 /***********************
  * Parse búsqueda
  * Acepta:
  *  - "Amós 1:1-5"
- *  - "amos 1"
+ *  - "Genesis 1:1"
  *  - "1 Corintios 13:1-7"
  *  - "13:1-7" (usa libro actual)
  ***********************/
@@ -474,7 +523,7 @@ function parseSearch(raw){
   const q = normalizeSpaces(raw);
   if(!q) return null;
 
-  // Caso solo capítulo/verso (sin libro)
+  // Solo cap/vers (sin libro)
   const mShort = q.match(/^(\d+)(?::(\d+)(?:\s*-\s*(\d+))?)?\s*$/);
   if(mShort){
     const chapter = parseInt(mShort[1],10);
@@ -483,7 +532,7 @@ function parseSearch(raw){
     return { slug: currentBookSlug, bookDisplay: currentBookName, chapter, verseStart, verseEnd };
   }
 
-  // Caso con libro explícito
+  // Con libro explícito
   const m = q.match(/^(.+?)\s+(\d+)(?::(\d+)(?:\s*-\s*(\d+))?)?\s*$/);
   if(!m) return null;
 
@@ -493,8 +542,7 @@ function parseSearch(raw){
   const verseStart = m[3] ? parseInt(m[3],10) : null;
   const verseEnd = m[4] ? parseInt(m[4],10) : (verseStart ? verseStart : null);
 
-  const bookDisplay = bookRaw;
-  return { slug, bookDisplay, chapter, verseStart, verseEnd };
+  return { slug, bookDisplay: bookRaw, chapter, verseStart, verseEnd };
 }
 
 /***********************
@@ -525,7 +573,7 @@ function render(ref){
   pageTitle.textContent = range;
   metaVersion.textContent = versionSelect.value;
 
-  // Español (RV)
+  // Español
   let htmlRV = '';
   for(let v=v1; v<=v2; v++){
     const t = versesRV[v-1] ?? '';
@@ -533,7 +581,7 @@ function render(ref){
   }
   passageTextRV.innerHTML = htmlRV || `<div class="text-muted">Sin contenido para esta referencia.</div>`;
 
-  // Original
+  // Original (si hay data)
   if(bookDataOrig){
     const versesOrig = bookDataOrig[ch-1] || [];
     let htmlOrig = '';
@@ -542,17 +590,12 @@ function render(ref){
       htmlOrig += `<p class="mb-2"><span class="verse-num">${v}</span>${esc(t)}</p>`;
     }
     passageTextOrig.innerHTML = htmlOrig || `<div class="text-muted">Sin contenido original para esta referencia.</div>`;
-  }else{
-    // Si ya hay un mensaje (ej. falta mapear AT), respétalo
-    if(!passageTextOrig.innerText.trim()){
-      passageTextOrig.innerHTML = `<div class="text-muted">Sin contenido original para esta referencia.</div>`;
-    }
   }
 
   statusLine.textContent = `Capítulos: ${chapterCount} · Cap ${ch}: ${verseCount} vers.`;
 
   const userSearch = normalizeSpaces(searchInput.value) || range;
-  history.replaceState(null, '', `?book=${encodeURIComponent(currentBookSlug)}&name=${encodeURIComponent(currentBookName)}&search=${encodeURIComponent(userSearch)}&version=${encodeURIComponent(versionSelect.value)}`);
+  history.replaceState(null, '', `?book=${encodeURIComponent(currentBookSlug)}&name=${encodeURIComponent(currentBookName)}&search=${encodeURIComponent(userSearch)}&version=${encodeURIComponent(versionSelect.value)}&orig=${ORIGINAL_ENABLED_DEFAULT?'1':'0'}`);
 }
 
 async function runSearch(){
@@ -565,32 +608,37 @@ async function runSearch(){
 
   const ref = parseSearch(raw);
   if(!ref){
-    const msg = `<div class="text-muted">No se pudo interpretar la búsqueda. Ej: <span class="mono">Amós 1:1-5</span> / <span class="mono">1 Corintios 13:1-7</span></div>`;
+    const msg = `<div class="text-muted">No se pudo interpretar. Ej: <span class="mono">Amós 1:1-5</span>, <span class="mono">Génesis 1:1</span>, <span class="mono">1 Corintios 13:1-7</span></div>`;
     passageTextRV.innerHTML = msg;
     passageTextOrig.innerHTML = msg;
     return;
   }
 
   try{
-    // si cambia el libro, carga su JSON
     await ensureBookLoaded(ref.slug, ref.bookDisplay);
     leftLabel.textContent = versionSelect.value;
     render(ref);
   }catch(err){
     const msg = `<div class="text-danger fw-semibold">Error:</div><div class="text-muted">${esc(err.message || String(err))}</div>`;
     passageTextRV.innerHTML = msg;
-    passageTextOrig.innerHTML = msg;
+    // Si el error es solo del original, no debería llegar aquí; esto es para RV faltante.
+    passageTextOrig.innerHTML = `<div class="text-muted">—</div>`;
     statusLine.textContent = '';
   }
 }
 
 /***********************
- * UI helpers
+ * URL + UI
  ***********************/
 function setFromUrl(){
   const p = new URLSearchParams(location.search);
   const q = p.get('search');
   const v = p.get('version');
+  const bk = p.get('book');
+  const nm = p.get('name');
+
+  if(bk) currentBookSlug = bk.trim();
+  if(nm) currentBookName = nm.trim();
   if(q) searchInput.value = q;
   if(v) versionSelect.value = v;
 }
@@ -634,21 +682,20 @@ btnToggleOrig.addEventListener('click', () => {
  ***********************/
 (async function boot(){
   setFromUrl();
-  setOriginalVisible(true);
+  setOriginalVisible(ORIGINAL_ENABLED_DEFAULT);
 
   leftLabel.textContent = versionSelect.value;
+  metaVersion.textContent = versionSelect.value;
 
-  // Carga inicial del libro desde la URL (o default)
   try{
     passageTextRV.innerHTML = `<div class="text-muted">Cargando ${leftLabel.textContent}…</div>`;
     passageTextOrig.innerHTML = `<div class="text-muted">Cargando Original…</div>`;
     await ensureBookLoaded(currentBookSlug, currentBookName);
-    rightLabel.textContent = isNT(currentBookSlug) ? 'Griego' : 'Hebreo';
     await runSearch();
   }catch(err){
     const msg = `<div class="text-danger fw-semibold">Error:</div><div class="text-muted">${esc(err.message || String(err))}</div>`;
     passageTextRV.innerHTML = msg;
-    passageTextOrig.innerHTML = msg;
+    passageTextOrig.innerHTML = `<div class="text-muted">—</div>`;
     statusLine.textContent = '';
   }
 })();
