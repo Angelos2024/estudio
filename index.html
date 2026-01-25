@@ -1,598 +1,231 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Pasajes Bíblicos — Lector</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Lector de Pasajes</title>
 
-  <!-- Bootstrap 5 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
   <style>
-    :root{
-      --bg: #0b1020;
-      --card: #101a33;
-      --muted: #a9b4d0;
-      --text: #eaf0ff;
-      --accent: #6ea8fe;
-      --border: rgba(255,255,255,.08);
+    :root{ --bd:#e6e8eb; --muted:#6b7280; }
+    body{ background:#f8fafc; }
+    .topbar{
+      background:#ffffff;
+      border-bottom:1px solid var(--bd);
+      position:sticky; top:0; z-index:1000;
     }
-    body{
-      background: radial-gradient(1200px 800px at 20% 10%, rgba(110,168,254,.16), transparent 45%),
-                  radial-gradient(900px 650px at 85% 20%, rgba(34,211,238,.12), transparent 55%),
-                  var(--bg);
-      color: var(--text);
-      min-height: 100vh;
+    .sitewrap{ max-width: 1200px; }
+    .crumbs{
+      font-size:.9rem; color:var(--muted);
     }
-    .app-shell{
-      max-width: 1080px;
+    .panel{
+      background:#fff;
+      border:1px solid var(--bd);
+      border-radius:12px;
     }
-    .glass{
-      background: rgba(16,26,51,.72);
-      border: 1px solid var(--border);
-      backdrop-filter: blur(10px);
-      border-radius: 16px;
-      box-shadow: 0 12px 40px rgba(0,0,0,.35);
+    .panel-header{
+      border-bottom:1px solid var(--bd);
+      padding:.75rem 1rem;
+      font-weight:600;
     }
-    .brand-dot{
-      width: 10px; height: 10px; border-radius: 50%;
-      background: var(--accent);
-      box-shadow: 0 0 0 6px rgba(110,168,254,.16);
-      display:inline-block; margin-right:.5rem;
-      vertical-align: middle;
+    .panel-body{ padding:1rem; }
+    .meta-row{ color:var(--muted); font-size:.9rem; }
+    .passage-title{ font-size:1.25rem; font-weight:700; }
+    .passage-text{ font-size:1.05rem; line-height:1.85; }
+    .verse-num{ color:#2563eb; font-weight:700; margin-right:.25rem; font-size:.85em; }
+    .mini-link{ color:var(--muted); text-decoration:none; }
+    .mini-link:hover{ text-decoration:underline; }
+    .btn-soft{
+      background:#f1f5f9; border:1px solid var(--bd);
     }
-    .muted{ color: var(--muted); }
-    .kbd{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      border: 1px solid var(--border);
-      border-bottom-width: 2px;
-      padding: .1rem .45rem;
-      border-radius: .5rem;
-      background: rgba(255,255,255,.04);
-      color: var(--text);
-      font-size: .85rem;
-    }
-    .pill{
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: .25rem .65rem;
-      background: rgba(255,255,255,.04);
-    }
-    .btn-accent{
-      background: linear-gradient(180deg, rgba(110,168,254,.95), rgba(110,168,254,.75));
-      border: 1px solid rgba(110,168,254,.35);
-      color: #081028;
-      font-weight: 600;
-    }
-    .btn-accent:hover{ filter: brightness(1.05); }
-    .form-control, .form-select{
-      background: rgba(255,255,255,.04);
-      border: 1px solid var(--border);
-      color: var(--text);
-    }
-    .form-control::placeholder{ color: rgba(233,240,255,.55); }
-    .form-control:focus, .form-select:focus{
-      box-shadow: 0 0 0 .25rem rgba(110,168,254,.18);
-      border-color: rgba(110,168,254,.45);
-    }
-    .divider{ border-top: 1px solid var(--border); }
-    .passage-title{
-      font-size: 1.1rem;
-      font-weight: 700;
-      letter-spacing: .2px;
-    }
-    .passage-text{
-      font-size: 1.05rem;
-      line-height: 1.85;
-      white-space: pre-wrap;
-    }
-    .verse-num{
-      display:inline-block;
-      min-width: 2ch;
-      margin-right: .35rem;
-      color: rgba(110,168,254,.9);
-      font-weight: 700;
-      font-size: .85em;
-      vertical-align: baseline;
-    }
-    .reading-mode .passage-text{
-      font-size: 1.15rem;
-      line-height: 2.05;
-    }
-    .badge-soft{
-      background: rgba(110,168,254,.14);
-      border: 1px solid rgba(110,168,254,.25);
-      color: var(--text);
-    }
-    .smalllink{
-      color: rgba(234,240,255,.85);
-      text-decoration: none;
-    }
-    .smalllink:hover{ text-decoration: underline; }
-    .hint{
-      font-size: .92rem;
-      color: rgba(233,240,255,.72);
-    }
-    .footer-note{
-      font-size: .85rem;
-      color: rgba(233,240,255,.55);
-    }
-    .list-group-item{
-      background: rgba(255,255,255,.03);
-      border-color: var(--border);
-      color: var(--text);
-    }
-    .list-group-item:hover{
-      background: rgba(255,255,255,.06);
-      cursor: pointer;
-    }
+    .btn-soft:hover{ background:#e9eef5; }
+    .sticky-aside{ position: sticky; top: 86px; }
   </style>
 </head>
 
 <body>
-  <div class="container py-4 py-lg-5 app-shell">
-
-    <!-- Header -->
-    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-3">
-      <div>
-        <div class="d-flex align-items-center gap-2">
-          <span class="brand-dot"></span>
-          <h1 class="h4 mb-0">Lector de Pasajes</h1>
-          <span class="pill muted ms-2">GitHub Pages</span>
-        </div>
-        <div class="hint mt-2">
-          Escribe una referencia (ej: <span class="kbd">Apocalipsis 14</span> o <span class="kbd">Jn 3:16</span>) y selecciona versión.
-        </div>
-      </div>
-
-      <div class="d-flex align-items-center gap-2">
-        <button id="btnToggleReading" class="btn btn-sm btn-outline-light">
-          Modo lectura
-        </button>
-        <button id="btnToggleVerseNums" class="btn btn-sm btn-outline-light">
-          Números
-        </button>
-        <button id="btnCopyLink" class="btn btn-sm btn-outline-light">
-          Copiar enlace
-        </button>
-      </div>
-    </div>
-
-    <!-- Search / Controls -->
-    <div class="glass p-3 p-lg-4 mb-3">
-      <form id="searchForm" class="row g-2 g-md-3 align-items-center">
-        <div class="col-12 col-lg-6">
-          <label class="form-label muted mb-1" for="q">Buscar pasaje</label>
-          <input id="q" class="form-control form-control-lg" placeholder="Ej: Apocalipsis 14; Romanos 8:1-4" autocomplete="off" />
-          <div class="d-flex align-items-center gap-2 mt-2">
-            <span class="badge badge-soft rounded-pill">Tip</span>
-            <span class="footer-note">Atajos: <span class="kbd">Enter</span> buscar, <span class="kbd">Ctrl</span> + <span class="kbd">K</span> enfocar.</span>
-          </div>
+  <!-- TOP SEARCH BAR -->
+  <header class="topbar">
+    <div class="container sitewrap py-2">
+      <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-2 gap-lg-3">
+        <div class="d-flex align-items-center gap-2 flex-grow-1">
+          <span class="badge text-bg-dark rounded-pill">Lector</span>
+          <form id="searchForm" class="d-flex gap-2 flex-grow-1">
+            <input id="searchInput" class="form-control" value="Apocalipsis 14" placeholder="Buscar: ej. Apocalipsis 14 / Jn 3:16"/>
+            <select id="versionSelect" class="form-select" style="max-width:180px">
+              <option value="RVR1960" selected>RVR1960</option>
+              <option value="RVR1995">RVR1995</option>
+              <option value="NVI">NVI</option>
+            </select>
+            <button class="btn btn-primary" type="submit">Buscar</button>
+          </form>
         </div>
 
-        <div class="col-12 col-md-6 col-lg-3">
-          <label class="form-label muted mb-1" for="version">Versión</label>
-          <select id="version" class="form-select form-select-lg">
-            <!-- Ajusta según tus BD -->
-            <option value="RVR1960" selected>RVR1960</option>
-            <option value="RVR1995">RVR1995</option>
-            <option value="NVI">NVI</option>
-            <option value="LBLA">LBLA</option>
-            <option value="KJV">KJV</option>
-          </select>
-          <div class="footer-note mt-2">La lista debe reflejar tus textos/licencias.</div>
-        </div>
-
-        <div class="col-12 col-md-6 col-lg-3 d-grid">
-          <label class="form-label muted mb-1 d-none d-lg-block">&nbsp;</label>
-          <button class="btn btn-accent btn-lg" type="submit">Buscar</button>
-          <button id="btnClear" class="btn btn-link smalllink mt-2" type="button">Limpiar</button>
-        </div>
-      </form>
-
-      <div class="divider my-3"></div>
-
-      <div class="row g-3">
-        <div class="col-12 col-lg-6">
-          <div class="muted mb-2">Historial (clic para cargar)</div>
-          <div id="history" class="list-group small"></div>
-        </div>
-        <div class="col-12 col-lg-6">
-          <div class="muted mb-2">Opciones</div>
-          <div class="d-flex flex-wrap gap-2">
-            <span class="pill"><input class="form-check-input me-2" type="checkbox" id="optInlineChapters" checked> <label for="optInlineChapters">Encabezado compacto</label></span>
-            <span class="pill"><input class="form-check-input me-2" type="checkbox" id="optAutoScroll" checked> <label for="optAutoScroll">Auto-scroll a resultados</label></span>
-            <span class="pill"><input class="form-check-input me-2" type="checkbox" id="optPersist" checked> <label for="optPersist">Recordar preferencias</label></span>
-          </div>
-          <div class="footer-note mt-2">
-            Conecta tu API en <span class="kbd">fetchPassage()</span> (abajo) o reemplázala con lectura local.
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Results -->
-    <div id="resultsCard" class="glass p-3 p-lg-4">
-      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-start gap-2">
-        <div>
-          <div id="passageTitle" class="passage-title">Sin resultados aún</div>
-          <div id="passageMeta" class="muted small mt-1">—</div>
-        </div>
         <div class="d-flex gap-2">
-          <button id="btnCopyText" class="btn btn-sm btn-outline-light">Copiar texto</button>
-          <button id="btnDownloadTxt" class="btn btn-sm btn-outline-light">Descargar .txt</button>
+          <button class="btn btn-soft btn-sm" type="button">Compartir</button>
+          <button class="btn btn-soft btn-sm" type="button">Ajustes</button>
+          <button class="btn btn-soft btn-sm" type="button">Iniciar sesión</button>
         </div>
       </div>
-
-      <div class="divider my-3"></div>
-
-      <div id="passageBody" class="passage-text muted">
-        Aquí se mostrará el texto del pasaje. Conecta tu fuente de datos en JavaScript.
-      </div>
     </div>
+  </header>
 
-    <!-- Footer -->
-    <div class="mt-4 footer-note">
+  <main class="container sitewrap my-3 my-lg-4">
+    <!-- BREADCRUMBS + HEADER -->
+    <div class="d-flex flex-column gap-2 mb-3">
+      <div class="crumbs">
+        <a class="mini-link" href="#">Inicio</a>
+        <span class="mx-1">›</span>
+        <a class="mini-link" href="#">Biblias</a>
+        <span class="mx-1">›</span>
+        <span>Pasaje</span>
+      </div>
+
       <div class="d-flex flex-column flex-md-row justify-content-between gap-2">
         <div>
-          <span class="muted">Notas:</span> este lector es una plantilla front-end. Ajusta licencias, avisos legales y atribuciones según tus textos.
+          <div class="passage-title">Apocalipsis 14</div>
+          <div class="meta-row">Versión: <span class="fw-semibold" id="metaVersion">RVR1960</span> · <span class="text-muted">Plantilla (texto de ejemplo)</span></div>
         </div>
-        <div>
-          <a class="smalllink" href="#" id="btnResetAll">Restablecer</a>
+
+        <div class="d-flex flex-wrap gap-2 align-items-start">
+          <button class="btn btn-soft btn-sm" type="button">Copiar</button>
+          <button class="btn btn-soft btn-sm" type="button">Imprimir</button>
+          <button class="btn btn-soft btn-sm" type="button">Guardar</button>
+          <button class="btn btn-soft btn-sm" type="button">Escuchar</button>
         </div>
       </div>
     </div>
 
-  </div>
+    <div class="row g-3">
+      <!-- MAIN CONTENT -->
+      <div class="col-12 col-lg-8">
+        <!-- Passage panel -->
+        <section class="panel mb-3">
+          <div class="panel-header d-flex justify-content-between align-items-center">
+            <span>Texto del pasaje</span>
+            <div class="d-flex gap-2">
+              <button class="btn btn-soft btn-sm" type="button">Tamaño</button>
+              <button class="btn btn-soft btn-sm" type="button">Números</button>
+              <button class="btn btn-soft btn-sm" type="button">Interlineal</button>
+            </div>
+          </div>
+
+          <div class="panel-body">
+            <div class="passage-text" id="passageText">
+              <!-- Texto placeholder (simula versículos) -->
+              <p class="mb-2"><span class="verse-num">1</span>Texto de ejemplo del versículo 1. Aquí se renderiza el contenido de tu base de datos.</p>
+              <p class="mb-2"><span class="verse-num">2</span>Texto de ejemplo del versículo 2. Mantén esta estructura para luego conectar tu fuente real.</p>
+              <p class="mb-2"><span class="verse-num">3</span>Texto de ejemplo del versículo 3.</p>
+              <p class="mb-0 text-muted" style="font-size:.95rem">* Reemplaza este contenido con tu render real.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Notes / cross refs panel (optional) -->
+        <section class="panel">
+          <div class="panel-header">Notas / Referencias</div>
+          <div class="panel-body">
+            <div class="text-muted">Sección opcional para cross-references, notas, etc.</div>
+            <ul class="mb-0">
+              <li>Referencia paralela (ejemplo)</li>
+              <li>Otra nota (ejemplo)</li>
+            </ul>
+          </div>
+        </section>
+      </div>
+
+      <!-- RIGHT SIDEBAR -->
+      <aside class="col-12 col-lg-4">
+        <div class="sticky-aside d-flex flex-column gap-3">
+          <!-- Quick tools -->
+          <section class="panel">
+            <div class="panel-header">Herramientas</div>
+            <div class="panel-body d-grid gap-2">
+              <button class="btn btn-soft" type="button">Comparar versiones</button>
+              <button class="btn btn-soft" type="button">Marcadores</button>
+              <button class="btn btn-soft" type="button">Plan de lectura</button>
+            </div>
+          </section>
+
+          <!-- Navigation -->
+          <section class="panel">
+            <div class="panel-header">Navegación</div>
+            <div class="panel-body">
+              <div class="d-flex gap-2 mb-2">
+                <button class="btn btn-soft btn-sm" type="button">◀ Anterior</button>
+                <button class="btn btn-soft btn-sm" type="button">Siguiente ▶</button>
+              </div>
+
+              <div class="text-muted mb-2" style="font-size:.9rem">Ir a:</div>
+              <div class="d-flex gap-2">
+                <select class="form-select form-select-sm">
+                  <option>Apocalipsis</option>
+                </select>
+                <select class="form-select form-select-sm" style="max-width:110px">
+                  <option selected>14</option>
+                  <option>15</option>
+                  <option>16</option>
+                </select>
+              </div>
+            </div>
+          </section>
+
+          <!-- Related -->
+          <section class="panel">
+            <div class="panel-header">Relacionado</div>
+            <div class="panel-body">
+              <ul class="mb-0">
+                <li><a class="mini-link" href="#">Comentario (placeholder)</a></li>
+                <li><a class="mini-link" href="#">Diccionario (placeholder)</a></li>
+                <li><a class="mini-link" href="#">Devocional (placeholder)</a></li>
+              </ul>
+            </div>
+          </section>
+        </div>
+      </aside>
+    </div>
+  </main>
 
   <script>
-    /***********************
-     * Estado + Persistencia
-     ***********************/
-    const els = {
-      form: document.getElementById('searchForm'),
-      q: document.getElementById('q'),
-      version: document.getElementById('version'),
-      history: document.getElementById('history'),
-      resultsCard: document.getElementById('resultsCard'),
-      passageTitle: document.getElementById('passageTitle'),
-      passageMeta: document.getElementById('passageMeta'),
-      passageBody: document.getElementById('passageBody'),
-      btnClear: document.getElementById('btnClear'),
-      btnCopyLink: document.getElementById('btnCopyLink'),
-      btnCopyText: document.getElementById('btnCopyText'),
-      btnDownloadTxt: document.getElementById('btnDownloadTxt'),
-      btnToggleReading: document.getElementById('btnToggleReading'),
-      btnToggleVerseNums: document.getElementById('btnToggleVerseNums'),
-      btnResetAll: document.getElementById('btnResetAll'),
-      optInlineChapters: document.getElementById('optInlineChapters'),
-      optAutoScroll: document.getElementById('optAutoScroll'),
-      optPersist: document.getElementById('optPersist'),
-    };
+    const form = document.getElementById('searchForm');
+    const searchInput = document.getElementById('searchInput');
+    const versionSelect = document.getElementById('versionSelect');
+    const metaVersion = document.getElementById('metaVersion');
+    const title = document.querySelector('.passage-title');
 
-    const storageKey = 'passage_reader_v1';
-    const defaultState = {
-      query: 'Apocalipsis 14',
-      version: 'RVR1960',
-      showVerseNums: true,
-      readingMode: false,
-      optInlineChapters: true,
-      optAutoScroll: true,
-      optPersist: true,
-      history: []
-    };
-
-    function loadState(){
-      try{
-        const raw = localStorage.getItem(storageKey);
-        if(!raw) return {...defaultState};
-        const s = JSON.parse(raw);
-        return {...defaultState, ...s};
-      }catch{
-        return {...defaultState};
-      }
+    function setFromUrl(){
+      const p = new URLSearchParams(location.search);
+      const q = p.get('search');
+      const v = p.get('version');
+      if(q) searchInput.value = q;
+      if(v) versionSelect.value = v;
+      metaVersion.textContent = versionSelect.value;
+      title.textContent = searchInput.value || 'Pasaje';
     }
 
-    function saveState(){
-      if(!state.optPersist) return;
-      localStorage.setItem(storageKey, JSON.stringify(state));
+    function updateUrl(){
+      const q = (searchInput.value || '').trim();
+      const v = versionSelect.value;
+      const p = new URLSearchParams();
+      if(q) p.set('search', q);
+      if(v) p.set('version', v);
+      history.replaceState(null, '', `${location.pathname}?${p.toString()}`);
     }
 
-    function setState(patch){
-      Object.assign(state, patch);
-      saveState();
-    }
-
-    let state = loadState();
-
-    /***********************
-     * Utilidades
-     ***********************/
-    function escapeHtml(str){
-      return (str ?? '')
-        .replaceAll('&','&amp;')
-        .replaceAll('<','&lt;')
-        .replaceAll('>','&gt;')
-        .replaceAll('"','&quot;')
-        .replaceAll("'","&#39;");
-    }
-
-    function normalizeQuery(q){
-      return (q || '').trim().replace(/\s+/g,' ');
-    }
-
-    function buildPermalink(query, version){
-      const params = new URLSearchParams();
-      params.set('search', query);
-      params.set('version', version);
-      return `${location.origin}${location.pathname}?${params.toString()}`;
-    }
-
-    function pushHistory(item){
-      const key = `${item.version}::${item.query}`;
-      state.history = state.history.filter(x => `${x.version}::${x.query}` !== key);
-      state.history.unshift(item);
-      state.history = state.history.slice(0, 10);
-      saveState();
-      renderHistory();
-    }
-
-    function renderHistory(){
-      els.history.innerHTML = '';
-      if(!state.history.length){
-        els.history.innerHTML = `<div class="list-group-item muted">Sin historial.</div>`;
-        return;
-      }
-      for(const h of state.history){
-        const div = document.createElement('div');
-        div.className = 'list-group-item d-flex justify-content-between align-items-center';
-        div.innerHTML = `
-          <div>
-            <div class="fw-semibold">${escapeHtml(h.query)}</div>
-            <div class="muted small">${escapeHtml(h.version)} · ${escapeHtml(h.when)}</div>
-          </div>
-          <span class="badge badge-soft rounded-pill">Abrir</span>
-        `;
-        div.addEventListener('click', () => {
-          els.q.value = h.query;
-          els.version.value = h.version;
-          runSearch();
-        });
-        els.history.appendChild(div);
-      }
-    }
-
-    function applyUiFromState(){
-      els.q.value = state.query;
-      els.version.value = state.version;
-      els.optInlineChapters.checked = !!state.optInlineChapters;
-      els.optAutoScroll.checked = !!state.optAutoScroll;
-      els.optPersist.checked = !!state.optPersist;
-
-      document.body.classList.toggle('reading-mode', !!state.readingMode);
-      els.btnToggleReading.textContent = state.readingMode ? 'Salir lectura' : 'Modo lectura';
-      els.btnToggleVerseNums.textContent = state.showVerseNums ? 'Ocultar números' : 'Números';
-      renderHistory();
-    }
-
-    function scrollToResults(){
-      if(!state.optAutoScroll) return;
-      els.resultsCard.scrollIntoView({behavior: 'smooth', block: 'start'});
-    }
-
-    async function copyToClipboard(text){
-      try{
-        await navigator.clipboard.writeText(text);
-        toast('Copiado al portapapeles');
-      }catch{
-        toast('No se pudo copiar (permiso del navegador).', true);
-      }
-    }
-
-    function downloadText(filename, text){
-      const blob = new Blob([text], {type: 'text/plain;charset=utf-8'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-    }
-
-    function toast(msg, danger=false){
-      const el = document.createElement('div');
-      el.className = `position-fixed top-0 start-50 translate-middle-x mt-3 alert ${danger ? 'alert-danger' : 'alert-success'} shadow`;
-      el.style.zIndex = 9999;
-      el.textContent = msg;
-      document.body.appendChild(el);
-      setTimeout(() => el.remove(), 1800);
-    }
-
-    /***********************
-     * Render de pasaje
-     * - Sustituye fetchPassage() por tu implementación real
-     ***********************/
-    function renderPassage(p){
-      // p: { title, version, range, text, verses?: [{n, t}] }
-      els.passageTitle.textContent = p.title || 'Resultado';
-      els.passageMeta.textContent = `${p.version || state.version} · ${p.range || normalizeQuery(state.query)}`;
-
-      if(p.verses && Array.isArray(p.verses)){
-        const html = p.verses.map(v => {
-          const num = state.showVerseNums ? `<span class="verse-num">${escapeHtml(String(v.n))}</span>` : '';
-          return `${num}${escapeHtml(v.t)}`;
-        }).join(state.showVerseNums ? ' ' : ' ');
-        els.passageBody.innerHTML = html;
-        els.passageBody.classList.remove('muted');
-        return;
-      }
-
-      // Texto plano
-      els.passageBody.textContent = p.text || '';
-      els.passageBody.classList.remove('muted');
-    }
-
-    /**
-     * IMPLEMENTA ESTO:
-     * - Opción A (recomendada): fetch a tu backend:
-     *   const r = await fetch(`/api/passage?search=${encodeURIComponent(query)}&version=${encodeURIComponent(version)}`);
-     *   return await r.json();
-     *
-     * - Opción B (sin backend): cargar un JSON estático por capítulo:
-     *   /data/RVR1960/REV/14.json
-     */
-    async function fetchPassage(query, version){
-      // DEMO (placeholder): reemplaza por tu fuente real
-      // Este mock solo muestra estructura para que veas el render.
-      const demo = {
-        title: `Pasaje: ${query}`,
-        version,
-        range: query,
-        verses: [
-          { n: 1, t: 'Texto de ejemplo del versículo 1 (conecta tu base de datos).' },
-          { n: 2, t: 'Texto de ejemplo del versículo 2.' },
-          { n: 3, t: 'Texto de ejemplo del versículo 3.' }
-        ]
-      };
-      await new Promise(r => setTimeout(r, 150));
-      return demo;
-    }
-
-    async function runSearch(){
-      const query = normalizeQuery(els.q.value);
-      const version = els.version.value;
-
-      if(!query){
-        toast('Escribe una referencia para buscar.', true);
-        els.q.focus();
-        return;
-      }
-
-      setState({ query, version });
-
-      // UI: loading
-      els.passageTitle.textContent = 'Buscando…';
-      els.passageMeta.textContent = `${version} · ${query}`;
-      els.passageBody.textContent = 'Cargando texto...';
-      els.passageBody.classList.add('muted');
-
-      try{
-        const data = await fetchPassage(query, version);
-        renderPassage(data);
-
-        pushHistory({
-          query,
-          version,
-          when: new Date().toLocaleString()
-        });
-
-        // Actualiza URL
-        const url = buildPermalink(query, version);
-        history.replaceState(null, '', url);
-
-        scrollToResults();
-      }catch(err){
-        els.passageTitle.textContent = 'Error';
-        els.passageMeta.textContent = 'No se pudo cargar el pasaje';
-        els.passageBody.textContent = String(err?.message || err || 'Error desconocido');
-        els.passageBody.classList.add('muted');
-      }
-    }
-
-    /***********************
-     * Eventos
-     ***********************/
-    els.form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', (e) => {
       e.preventDefault();
-      runSearch();
+      metaVersion.textContent = versionSelect.value;
+      title.textContent = (searchInput.value || '').trim() || 'Pasaje';
+      updateUrl();
+      // Aquí conectarías tu render real del texto
     });
 
-    els.btnClear.addEventListener('click', () => {
-      els.q.value = '';
-      els.q.focus();
+    versionSelect.addEventListener('change', () => {
+      metaVersion.textContent = versionSelect.value;
+      updateUrl();
     });
 
-    els.btnCopyLink.addEventListener('click', async () => {
-      const q = normalizeQuery(els.q.value) || state.query;
-      const v = els.version.value || state.version;
-      const link = buildPermalink(q, v);
-      await copyToClipboard(link);
-    });
-
-    els.btnCopyText.addEventListener('click', async () => {
-      const text = els.passageBody.innerText || '';
-      await copyToClipboard(text);
-    });
-
-    els.btnDownloadTxt.addEventListener('click', () => {
-      const q = normalizeQuery(els.q.value) || 'pasaje';
-      const v = els.version.value || state.version;
-      const nameSafe = q.replace(/[^\w\s\-:]/g,'').trim().replace(/\s+/g,'_').slice(0,60) || 'pasaje';
-      const filename = `${nameSafe}_${v}.txt`;
-      downloadText(filename, els.passageBody.innerText || '');
-    });
-
-    els.btnToggleReading.addEventListener('click', () => {
-      setState({ readingMode: !state.readingMode });
-      applyUiFromState();
-    });
-
-    els.btnToggleVerseNums.addEventListener('click', () => {
-      setState({ showVerseNums: !state.showVerseNums });
-      // Re-render básico: vuelve a correr búsqueda para aplicar números (si ya hay query)
-      applyUiFromState();
-      if(normalizeQuery(els.q.value)) runSearch();
-    });
-
-    els.optInlineChapters.addEventListener('change', () => setState({ optInlineChapters: els.optInlineChapters.checked }));
-    els.optAutoScroll.addEventListener('change', () => setState({ optAutoScroll: els.optAutoScroll.checked }));
-    els.optPersist.addEventListener('change', () => {
-      state.optPersist = els.optPersist.checked;
-      if(!state.optPersist){
-        localStorage.removeItem(storageKey);
-        toast('Preferencias no se guardarán.');
-      }else{
-        saveState();
-        toast('Preferencias activadas.');
-      }
-    });
-
-    els.btnResetAll.addEventListener('click', (e) => {
-      e.preventDefault();
-      localStorage.removeItem(storageKey);
-      state = {...defaultState};
-      applyUiFromState();
-      toast('Restablecido.');
-    });
-
-    // Atajo Ctrl+K para enfocar búsqueda
-    document.addEventListener('keydown', (e) => {
-      if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k'){
-        e.preventDefault();
-        els.q.focus();
-      }
-    });
-
-    /***********************
-     * Bootstrap inicial
-     ***********************/
-    function initFromUrl(){
-      const params = new URLSearchParams(location.search);
-      const q = params.get('search');
-      const v = params.get('version');
-      if(q) state.query = normalizeQuery(q);
-      if(v) state.version = v;
-    }
-
-    initFromUrl();
-    applyUiFromState();
-
-    // Carga inicial automática si viene con parámetros o si hay query por defecto
-    if(state.query){
-      runSearch();
-    }
+    setFromUrl();
   </script>
 </body>
 </html>
