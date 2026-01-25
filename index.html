@@ -15,9 +15,7 @@
       position:sticky; top:0; z-index:1000;
     }
     .sitewrap{ max-width: 1200px; }
-    .crumbs{
-      font-size:.9rem; color:var(--muted);
-    }
+    .crumbs{ font-size:.9rem; color:var(--muted); }
     .panel{
       background:#fff;
       border:1px solid var(--bd);
@@ -35,11 +33,10 @@
     .verse-num{ color:#2563eb; font-weight:700; margin-right:.25rem; font-size:.85em; }
     .mini-link{ color:var(--muted); text-decoration:none; }
     .mini-link:hover{ text-decoration:underline; }
-    .btn-soft{
-      background:#f1f5f9; border:1px solid var(--bd);
-    }
+    .btn-soft{ background:#f1f5f9; border:1px solid var(--bd); }
     .btn-soft:hover{ background:#e9eef5; }
     .sticky-aside{ position: sticky; top: 86px; }
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace; }
   </style>
 </head>
 
@@ -51,20 +48,18 @@
         <div class="d-flex align-items-center gap-2 flex-grow-1">
           <span class="badge text-bg-dark rounded-pill">Lector</span>
           <form id="searchForm" class="d-flex gap-2 flex-grow-1">
-            <input id="searchInput" class="form-control" value="Apocalipsis 14" placeholder="Buscar: ej. Apocalipsis 14 / Jn 3:16"/>
+            <input id="searchInput" class="form-control" value="1 Corintios 13:1-7" placeholder="Buscar: ej. 1 Corintios 13 / 1Co 13:1-7"/>
             <select id="versionSelect" class="form-select" style="max-width:180px">
               <option value="RVR1960" selected>RVR1960</option>
-              <option value="RVR1995">RVR1995</option>
-              <option value="NVI">NVI</option>
             </select>
             <button class="btn btn-primary" type="submit">Buscar</button>
           </form>
         </div>
 
         <div class="d-flex gap-2">
-          <button class="btn btn-soft btn-sm" type="button">Compartir</button>
-          <button class="btn btn-soft btn-sm" type="button">Ajustes</button>
-          <button class="btn btn-soft btn-sm" type="button">Iniciar sesión</button>
+          <button id="btnCopyLink" class="btn btn-soft btn-sm" type="button">Compartir</button>
+          <button id="btnCopyText" class="btn btn-soft btn-sm" type="button">Copiar</button>
+          <button id="btnPrint" class="btn btn-soft btn-sm" type="button">Imprimir</button>
         </div>
       </div>
     </div>
@@ -83,15 +78,16 @@
 
       <div class="d-flex flex-column flex-md-row justify-content-between gap-2">
         <div>
-          <div class="passage-title">Apocalipsis 14</div>
-          <div class="meta-row">Versión: <span class="fw-semibold" id="metaVersion">RVR1960</span> · <span class="text-muted">Plantilla (texto de ejemplo)</span></div>
+          <div class="passage-title" id="pageTitle">—</div>
+          <div class="meta-row">
+            Versión: <span class="fw-semibold" id="metaVersion">—</span>
+            · Fuente: <span class="mono">1_corintios.json</span>
+          </div>
         </div>
 
         <div class="d-flex flex-wrap gap-2 align-items-start">
-          <button class="btn btn-soft btn-sm" type="button">Copiar</button>
-          <button class="btn btn-soft btn-sm" type="button">Imprimir</button>
-          <button class="btn btn-soft btn-sm" type="button">Guardar</button>
-          <button class="btn btn-soft btn-sm" type="button">Escuchar</button>
+          <button class="btn btn-soft btn-sm" type="button" disabled>Guardar</button>
+          <button class="btn btn-soft btn-sm" type="button" disabled>Escuchar</button>
         </div>
       </div>
     </div>
@@ -104,32 +100,16 @@
           <div class="panel-header d-flex justify-content-between align-items-center">
             <span>Texto del pasaje</span>
             <div class="d-flex gap-2">
-              <button class="btn btn-soft btn-sm" type="button">Tamaño</button>
-              <button class="btn btn-soft btn-sm" type="button">Números</button>
-              <button class="btn btn-soft btn-sm" type="button">Interlineal</button>
+              <button id="btnPrev" class="btn btn-soft btn-sm" type="button">◀</button>
+              <button id="btnNext" class="btn btn-soft btn-sm" type="button">▶</button>
             </div>
           </div>
 
           <div class="panel-body">
             <div class="passage-text" id="passageText">
-              <!-- Texto placeholder (simula versículos) -->
-              <p class="mb-2"><span class="verse-num">1</span>Texto de ejemplo del versículo 1. Aquí se renderiza el contenido de tu base de datos.</p>
-              <p class="mb-2"><span class="verse-num">2</span>Texto de ejemplo del versículo 2. Mantén esta estructura para luego conectar tu fuente real.</p>
-              <p class="mb-2"><span class="verse-num">3</span>Texto de ejemplo del versículo 3.</p>
-              <p class="mb-0 text-muted" style="font-size:.95rem">* Reemplaza este contenido con tu render real.</p>
+              <div class="text-muted">Cargando datos…</div>
             </div>
-          </div>
-        </section>
-
-        <!-- Notes / cross refs panel (optional) -->
-        <section class="panel">
-          <div class="panel-header">Notas / Referencias</div>
-          <div class="panel-body">
-            <div class="text-muted">Sección opcional para cross-references, notas, etc.</div>
-            <ul class="mb-0">
-              <li>Referencia paralela (ejemplo)</li>
-              <li>Otra nota (ejemplo)</li>
-            </ul>
+            <div class="text-muted mt-3" style="font-size:.9rem" id="statusLine"></div>
           </div>
         </section>
       </div>
@@ -137,61 +117,254 @@
       <!-- RIGHT SIDEBAR -->
       <aside class="col-12 col-lg-4">
         <div class="sticky-aside d-flex flex-column gap-3">
-          <!-- Quick tools -->
-          <section class="panel">
-            <div class="panel-header">Herramientas</div>
-            <div class="panel-body d-grid gap-2">
-              <button class="btn btn-soft" type="button">Comparar versiones</button>
-              <button class="btn btn-soft" type="button">Marcadores</button>
-              <button class="btn btn-soft" type="button">Plan de lectura</button>
-            </div>
-          </section>
 
-          <!-- Navigation -->
           <section class="panel">
             <div class="panel-header">Navegación</div>
             <div class="panel-body">
-              <div class="d-flex gap-2 mb-2">
-                <button class="btn btn-soft btn-sm" type="button">◀ Anterior</button>
-                <button class="btn btn-soft btn-sm" type="button">Siguiente ▶</button>
-              </div>
-
-              <div class="text-muted mb-2" style="font-size:.9rem">Ir a:</div>
+              <div class="text-muted mb-2" style="font-size:.9rem">Ir a capítulo:</div>
               <div class="d-flex gap-2">
-                <select class="form-select form-select-sm">
-                  <option>Apocalipsis</option>
-                </select>
-                <select class="form-select form-select-sm" style="max-width:110px">
-                  <option selected>14</option>
-                  <option>15</option>
-                  <option>16</option>
-                </select>
+                <select id="chapterSelect" class="form-select form-select-sm"></select>
+                <button id="btnGoChapter" class="btn btn-soft btn-sm" type="button">Ir</button>
+              </div>
+              <div class="text-muted mt-3" style="font-size:.9rem">
+                Ejemplos: <span class="mono">1Cor 3</span>, <span class="mono">1 Cor 13:1-7</span>, <span class="mono">1 Corintios 15:58</span>
               </div>
             </div>
           </section>
 
-          <!-- Related -->
           <section class="panel">
-            <div class="panel-header">Relacionado</div>
-            <div class="panel-body">
-              <ul class="mb-0">
-                <li><a class="mini-link" href="#">Comentario (placeholder)</a></li>
-                <li><a class="mini-link" href="#">Diccionario (placeholder)</a></li>
-                <li><a class="mini-link" href="#">Devocional (placeholder)</a></li>
-              </ul>
+            <div class="panel-header">Herramientas</div>
+            <div class="panel-body d-grid gap-2">
+              <button class="btn btn-soft" type="button" disabled>Comparar versiones</button>
+              <button class="btn btn-soft" type="button" disabled>Notas</button>
+              <button class="btn btn-soft" type="button" disabled>Interlineal</button>
             </div>
           </section>
+
         </div>
       </aside>
     </div>
   </main>
 
   <script>
+    /***********************
+     * Config
+     ***********************/
+    const JSON_PATH = './1_corintios.json'; // mismo folder que index.html (GitHub Pages)
+    const BOOK_NAME = '1 Corintios';
+
+    /***********************
+     * DOM
+     ***********************/
     const form = document.getElementById('searchForm');
     const searchInput = document.getElementById('searchInput');
     const versionSelect = document.getElementById('versionSelect');
     const metaVersion = document.getElementById('metaVersion');
-    const title = document.querySelector('.passage-title');
+    const pageTitle = document.getElementById('pageTitle');
+    const passageText = document.getElementById('passageText');
+    const statusLine = document.getElementById('statusLine');
+
+    const btnCopyLink = document.getElementById('btnCopyLink');
+    const btnCopyText = document.getElementById('btnCopyText');
+    const btnPrint = document.getElementById('btnPrint');
+
+    const btnPrev = document.getElementById('btnPrev');
+    const btnNext = document.getElementById('btnNext');
+
+    const chapterSelect = document.getElementById('chapterSelect');
+    const btnGoChapter = document.getElementById('btnGoChapter');
+
+    /***********************
+     * Data
+     ***********************/
+    let bookData = null; // data[chapterIndex][verseIndex] = string
+    let lastRef = null;  // {chapter, verseStart, verseEnd}
+
+    /***********************
+     * Helpers
+     ***********************/
+    function esc(s){
+      return (s ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')
+        .replaceAll('"','&quot;').replaceAll("'","&#39;");
+    }
+
+    function normalizeSpaces(s){
+      return (s || '').trim().replace(/\s+/g,' ');
+    }
+
+    // Acepta: "1Cor 13:1-7", "1 Corintios 13", "1 cor 15:58"
+    // Para este MVP SOLO se permite 1 Corintios (porque el JSON es de ese libro).
+    function parseSearch(raw){
+      const q = normalizeSpaces(raw).toLowerCase();
+
+      // detectar si menciona 1 corintios (flexible)
+      // admite: "1 cor", "1cor", "1co", "1 corintios", "1corintios"
+      const isThisBook =
+        /\b1\s*corintios\b/.test(q) ||
+        /\b1corintios\b/.test(q) ||
+        /\b1\s*cor\b/.test(q) ||
+        /\b1cor\b/.test(q) ||
+        /\b1\s*co\b/.test(q) ||
+        /\b1co\b/.test(q);
+
+      if(!isThisBook){
+        // si el usuario pone solo "13:1-7" o "13", lo interpretamos como 1 Corintios por defecto
+        // (porque este sitio de momento solo tiene 1 Corintios)
+      }
+
+      // extrae capítulo y opcional versículos
+      // patrones: "13", "13:1", "13:1-7"
+      const m = q.match(/(\d+)(?::(\d+)(?:\s*-\s*(\d+))?)?$/);
+      if(!m) return null;
+
+      const chapter = parseInt(m[1], 10);
+      const verseStart = m[2] ? parseInt(m[2], 10) : null;
+      const verseEnd = m[3] ? parseInt(m[3], 10) : (verseStart ? verseStart : null);
+
+      return { book: BOOK_NAME, chapter, verseStart, verseEnd };
+    }
+
+    function clamp(n, min, max){
+      return Math.max(min, Math.min(max, n));
+    }
+
+    function buildPermalink(search, version){
+      const p = new URLSearchParams();
+      p.set('search', search);
+      p.set('version', version);
+      return `${location.origin}${location.pathname}?${p.toString()}`;
+    }
+
+    async function copy(text){
+      try{
+        await navigator.clipboard.writeText(text);
+      }catch{}
+    }
+
+    function fillChapterSelect(chapterCount){
+      chapterSelect.innerHTML = '';
+      for(let i=1; i<=chapterCount; i++){
+        const opt = document.createElement('option');
+        opt.value = String(i);
+        opt.textContent = `Cap. ${i}`;
+        chapterSelect.appendChild(opt);
+      }
+    }
+
+    function render(ref){
+      if(!bookData) return;
+
+      const chapterCount = bookData.length;
+      const ch = clamp(ref.chapter, 1, chapterCount);
+      const verses = bookData[ch-1] || [];
+      const verseCount = verses.length;
+
+      let v1 = ref.verseStart ?? 1;
+      let v2 = ref.verseEnd ?? verseCount;
+
+      v1 = clamp(v1, 1, verseCount);
+      v2 = clamp(v2, 1, verseCount);
+      if(v2 < v1) [v1, v2] = [v2, v1];
+
+      lastRef = { chapter: ch, verseStart: v1, verseEnd: v2 };
+
+      // title + meta
+      const range = (ref.verseStart == null)
+        ? `${BOOK_NAME} ${ch}`
+        : `${BOOK_NAME} ${ch}:${v1}${(v2 !== v1 ? '-' + v2 : '')}`;
+
+      pageTitle.textContent = range;
+      metaVersion.textContent = versionSelect.value;
+
+      // sidebar select sync
+      chapterSelect.value = String(ch);
+
+      // render verses
+      let html = '';
+      for(let v=v1; v<=v2; v++){
+        const t = verses[v-1] ?? '';
+        html += `<p class="mb-2"><span class="verse-num">${v}</span>${esc(t)}</p>`;
+      }
+      passageText.innerHTML = html || `<div class="text-muted">Sin contenido para esta referencia.</div>`;
+      statusLine.textContent = `Capítulos: ${chapterCount} · Versículos en cap. ${ch}: ${verseCount}`;
+
+      // update URL
+      const userSearch = normalizeSpaces(searchInput.value) || range;
+      history.replaceState(null, '', `?search=${encodeURIComponent(userSearch)}&version=${encodeURIComponent(versionSelect.value)}`);
+    }
+
+    function runSearch(){
+      const raw = normalizeSpaces(searchInput.value);
+      if(!raw){
+        passageText.innerHTML = `<div class="text-muted">Escribe una referencia.</div>`;
+        return;
+      }
+
+      const ref = parseSearch(raw);
+      if(!ref){
+        passageText.innerHTML = `<div class="text-muted">No se pudo interpretar la búsqueda. Ej: <span class="mono">1Cor 13:1-7</span></div>`;
+        return;
+      }
+
+      render(ref);
+    }
+
+    function goPrevNext(dir){
+      if(!lastRef) return;
+      const ch = lastRef.chapter;
+      const verses = bookData[ch-1] || [];
+      const verseCount = verses.length;
+
+      // Si el rango es capítulo completo -> ir al capítulo anterior/siguiente
+      const isFullChapter = (lastRef.verseStart === 1 && lastRef.verseEnd === verseCount);
+
+      if(isFullChapter){
+        const nextCh = ch + dir;
+        if(nextCh < 1 || nextCh > bookData.length) return;
+        searchInput.value = `${BOOK_NAME} ${nextCh}`;
+        runSearch();
+        return;
+      }
+
+      // Si es rango parcial -> desplazar el rango manteniendo longitud
+      const len = lastRef.verseEnd - lastRef.verseStart;
+      let newStart = lastRef.verseStart + dir*(len+1);
+      let newEnd = newStart + len;
+
+      // si se sale del capítulo, saltar a capítulo siguiente/anterior
+      if(newStart < 1){
+        if(ch === 1) return;
+        const prevVerses = bookData[ch-2] || [];
+        const prevCount = prevVerses.length;
+        newEnd = prevCount;
+        newStart = Math.max(1, prevCount - len);
+        searchInput.value = `${BOOK_NAME} ${ch-1}:${newStart}-${newEnd}`;
+        runSearch();
+        return;
+      }
+      if(newEnd > verseCount){
+        if(ch === bookData.length) return;
+        const nextVerses = bookData[ch] || [];
+        const nextCount = nextVerses.length;
+        newStart = 1;
+        newEnd = Math.min(nextCount, 1 + len);
+        searchInput.value = `${BOOK_NAME} ${ch+1}:${newStart}-${newEnd}`;
+        runSearch();
+        return;
+      }
+
+      searchInput.value = `${BOOK_NAME} ${ch}:${newStart}-${newEnd}`;
+      runSearch();
+    }
+
+    /***********************
+     * Init
+     ***********************/
+    async function loadJson(){
+      const r = await fetch(JSON_PATH, { cache: 'no-store' });
+      if(!r.ok) throw new Error(`No se pudo cargar ${JSON_PATH} (HTTP ${r.status})`);
+      return await r.json();
+    }
 
     function setFromUrl(){
       const p = new URLSearchParams(location.search);
@@ -199,33 +372,42 @@
       const v = p.get('version');
       if(q) searchInput.value = q;
       if(v) versionSelect.value = v;
-      metaVersion.textContent = versionSelect.value;
-      title.textContent = searchInput.value || 'Pasaje';
     }
 
-    function updateUrl(){
-      const q = (searchInput.value || '').trim();
-      const v = versionSelect.value;
-      const p = new URLSearchParams();
-      if(q) p.set('search', q);
-      if(v) p.set('version', v);
-      history.replaceState(null, '', `${location.pathname}?${p.toString()}`);
-    }
+    form.addEventListener('submit', (e) => { e.preventDefault(); runSearch(); });
 
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      metaVersion.textContent = versionSelect.value;
-      title.textContent = (searchInput.value || '').trim() || 'Pasaje';
-      updateUrl();
-      // Aquí conectarías tu render real del texto
+    btnCopyLink.addEventListener('click', async () => {
+      const link = buildPermalink(searchInput.value || pageTitle.textContent, versionSelect.value);
+      await copy(link);
     });
 
-    versionSelect.addEventListener('change', () => {
-      metaVersion.textContent = versionSelect.value;
-      updateUrl();
+    btnCopyText.addEventListener('click', async () => {
+      await copy(passageText.innerText || '');
     });
 
-    setFromUrl();
+    btnPrint.addEventListener('click', () => window.print());
+
+    btnPrev.addEventListener('click', () => goPrevNext(-1));
+    btnNext.addEventListener('click', () => goPrevNext( 1));
+
+    btnGoChapter.addEventListener('click', () => {
+      const ch = parseInt(chapterSelect.value, 10);
+      searchInput.value = `${BOOK_NAME} ${ch}`;
+      runSearch();
+    });
+
+    (async function boot(){
+      setFromUrl();
+      try{
+        bookData = await loadJson();
+        fillChapterSelect(bookData.length);
+        // búsqueda inicial
+        runSearch();
+      }catch(err){
+        passageText.innerHTML = `<div class="text-danger fw-semibold">Error:</div><div class="text-muted">${esc(err.message || String(err))}</div>`;
+        statusLine.textContent = '';
+      }
+    })();
   </script>
 </body>
 </html>
