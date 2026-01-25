@@ -166,20 +166,15 @@
 /***********************
  * Config (por libro)
  ***********************/
-// Convención asumida:
-//  - Español (izquierda):  ./librosRV1960/<slug>.json
-//  - Original NT (derecha): ./IdiomaORIGEN/Bgriega.json   (TR NT completo; se filtra por libro/cap)
-//  - Original AT (derecha): (pendiente; por ahora no se carga)
-
 const params = new URLSearchParams(window.location.search);
 
 const RV_BASE = params.get('rvBase') || './librosRV1960/';
 const GRIEGO_PATH = './IdiomaORIGEN/Bgriega.json';
 const HEBREO_PATH = './IdiomaORIGEN/he_modern.json';
 
-
-const BOOK_SLUG = (params.get('book') || '1_corintios').trim();
-const BOOK_NAME = (params.get('name') || BOOK_SLUG.replace(/_/g, ' '))
+// Estado actual (se puede cambiar desde el buscador)
+let currentBookSlug = (params.get('book') || '1_corintios').trim();
+let currentBookName = (params.get('name') || currentBookSlug.replace(/_/g, ' '))
   .replace(/\b\w/g, c => c.toUpperCase());
 
 // Lista de slugs del NT (ajusta si tus nombres difieren)
@@ -190,7 +185,7 @@ const NT_BOOKS = new Set([
   'hebreos','santiago','1_pedro','2_pedro','1_juan','2_juan','3_juan','judas','apocalipsis'
 ]);
 
-const isNT = NT_BOOKS.has(BOOK_SLUG);
+function isNT(slug){ return NT_BOOKS.has(slug); }
 
 // Mapeo slug -> book_name (inglés) dentro de Bgriega.json
 const NT_TR_BOOKNAME = {
@@ -222,7 +217,9 @@ const NT_TR_BOOKNAME = {
   judas: 'Jude',
   apocalipsis: 'Revelation'
 };
- const AT_HE_BOOKNAME = {
+
+// Mapeo AT (ajusta si he_modern.json usa nombres distintos en book_name)
+const AT_HE_BOOKNAME = {
   genesis: 'Genesis',
   exodo: 'Exodus',
   levitico: 'Leviticus',
@@ -264,13 +261,6 @@ const NT_TR_BOOKNAME = {
   malaquias: 'Malachi'
 };
 
-
-// IZQUIERDA (RVR1960)
-const JSON_PATH_RV = `${RV_BASE}${BOOK_SLUG}.json`;
-
-// DERECHA (Original)
-const ORIGINAL_LABEL = isNT ? 'Griego' : 'Hebreo';
-
 /***********************
  * DOM
  ***********************/
@@ -293,12 +283,17 @@ const btnPrint = document.getElementById('btnPrint');
 const btnToggleOrig = document.getElementById('btnToggleOrig');
 
 /***********************
- * Data
+ * Data / caches
  ***********************/
-let bookDataRV = null;    // data[chapterIndex][verseIndex] = string
-let bookDataOrig = null;  // misma estructura (solo NT por ahora)
-let trData = null;        // JSON completo TR (Bgriega.json)
-let lastRef = null;       // {chapter, verseStart, verseEnd}
+let lastRef = null;                 // {chapter, verseStart, verseEnd}
+const rvCache = {};                 // slug -> [ [verses...] ... ]
+let trData = null;                  // JSON completo NT griego
+const trChaptersCache = {};         // slug -> chapters
+let heData = null;                  // JSON completo AT hebreo
+const heChaptersCache = {};         // slug -> chapters
+
+let bookDataRV = null;              // chapters actual
+let bookDataOrig = null;            // chapters actual (griego/hebreo)
 
 /***********************
  * Helpers
@@ -312,28 +307,65 @@ function normalizeSpaces(s){
   return (s || '').trim().replace(/\s+/g,' ');
 }
 
-// Acepta: "1Cor 13:1-7", "1 Corintios 13", "1 cor 15:58"
-// MVP: se interpreta solo capítulo/versículos (el libro se toma de ?book=...).
-function parseSearch(raw){
-  const q = normalizeSpaces(raw).toLowerCase();
-  const m = q.match(/(\d+)(?::(\d+)(?:\s*-\s*(\d+))?)?$/);
-  if(!m) return null;
-
-  const chapter = parseInt(m[1], 10);
-  const verseStart = m[2] ? parseInt(m[2], 10) : null;
-  const verseEnd = m[3] ? parseInt(m[3], 10) : (verseStart ? verseStart : null);
-
-  return { book: BOOK_NAME, chapter, verseStart, verseEnd };
-}
-
 function clamp(n, min, max){
   return Math.max(min, Math.min(max, n));
 }
 
+function slugifyBookName(name){
+  return normalizeSpaces(name)
+    .toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g,'')
+    .replace(/\./g,'')
+    .replace(/\s+/g,' ')
+    .replace(/^(\d)\s+/, '$1 ')
+    .replace(/\s/g,'_');
+}
+
+// alias para abreviaturas típicas
+const BOOK_ALIASES = {
+  '1cor': '1_corintios',
+  '1co': '1_corintios',
+  '1corintios': '1_corintios',
+  '2cor': '2_corintios',
+  '2co': '2_corintios',
+  '2corintios': '2_corintios',
+  'gal': 'galatas',
+  'gálatas': 'galatas',
+  'deut': 'deuteronomio',
+  'dt': 'deuteronomio',
+  'amo': 'amos',
+  'am': 'amos'
+};
+
+function resolveBookSlug(bookRaw){
+  const cleaned = normalizeSpaces(bookRaw)
+    .toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g,'')
+    .replace(/\./g,'')
+    .replace(/\s+/g,''); // sin espacios
+
+  if(BOOK_ALIASES[cleaned]) return BOOK_ALIASES[cleaned];
+
+  // Manejo de prefijos numéricos: "1cor", "1 cor", "1 corintios"
+  const m = cleaned.match(/^([123])(.+)$/);
+  if(m){
+    const key = m[1] + m[2];
+    if(BOOK_ALIASES[key]) return BOOK_ALIASES[key];
+  }
+
+  return slugifyBookName(bookRaw);
+}
+
+async function loadJson(path){
+  const r = await fetch(path, { cache: 'no-store' });
+  if(!r.ok) throw new Error(`No se pudo cargar ${path} (HTTP ${r.status})`);
+  return await r.json();
+}
+
 function buildPermalink(search, version){
   const p = new URLSearchParams();
-  p.set('book', BOOK_SLUG);
-  p.set('name', BOOK_NAME);
+  p.set('book', currentBookSlug);
+  p.set('name', currentBookName);
   p.set('search', search);
   p.set('version', version);
   return `${location.origin}${location.pathname}?${p.toString()}`;
@@ -344,7 +376,7 @@ async function copy(text){
 }
 
 /***********************
- * Greek builder (TR NT)
+ * Builder: verses[] -> chapters[][]
  ***********************/
 function buildChaptersFromVersesForBook(allVerses, bookName){
   if(!bookName || !Array.isArray(allVerses)) return null;
@@ -379,6 +411,93 @@ function buildChaptersFromVersesForBook(allVerses, bookName){
 }
 
 /***********************
+ * Cargar libro (español + original)
+ ***********************/
+async function ensureBookLoaded(slug, displayName){
+  // Español
+  if(!rvCache[slug]){
+    const path = `${RV_BASE}${slug}.json`;
+    rvCache[slug] = await loadJson(path);
+  }
+  bookDataRV = rvCache[slug];
+
+  // Original
+  if(isNT(slug)){
+    rightLabel.textContent = 'Griego';
+    passageTextOrig.classList.remove('hebrew');
+    passageTextOrig.classList.add('greek');
+
+    if(!trData) trData = await loadJson(GRIEGO_PATH);
+
+    if(!trChaptersCache[slug]){
+      const bookName = NT_TR_BOOKNAME[slug];
+      trChaptersCache[slug] = buildChaptersFromVersesForBook(trData.verses, bookName);
+    }
+    bookDataOrig = trChaptersCache[slug] || null;
+
+  } else {
+    rightLabel.textContent = 'Hebreo';
+    passageTextOrig.classList.remove('greek');
+    passageTextOrig.classList.add('hebrew');
+
+    if(!heData) heData = await loadJson(HEBREO_PATH);
+
+    if(!heChaptersCache[slug]){
+      const bookName = AT_HE_BOOKNAME[slug];
+      if(!bookName){
+        bookDataOrig = null;
+        passageTextOrig.innerHTML = `
+          <div class="text-muted">
+            Falta mapear este libro del AT en <span class="mono">AT_HE_BOOKNAME</span>:
+            <strong>${esc(slug)}</strong>
+          </div>`;
+        return;
+      }
+      heChaptersCache[slug] = buildChaptersFromVersesForBook(heData.verses, bookName);
+    }
+    bookDataOrig = heChaptersCache[slug] || null;
+  }
+
+  currentBookSlug = slug;
+  currentBookName = displayName || slug.replace(/_/g,' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+
+/***********************
+ * Parse búsqueda
+ * Acepta:
+ *  - "Amós 1:1-5"
+ *  - "amos 1"
+ *  - "1 Corintios 13:1-7"
+ *  - "13:1-7" (usa libro actual)
+ ***********************/
+function parseSearch(raw){
+  const q = normalizeSpaces(raw);
+  if(!q) return null;
+
+  // Caso solo capítulo/verso (sin libro)
+  const mShort = q.match(/^(\d+)(?::(\d+)(?:\s*-\s*(\d+))?)?\s*$/);
+  if(mShort){
+    const chapter = parseInt(mShort[1],10);
+    const verseStart = mShort[2] ? parseInt(mShort[2],10) : null;
+    const verseEnd = mShort[3] ? parseInt(mShort[3],10) : (verseStart ? verseStart : null);
+    return { slug: currentBookSlug, bookDisplay: currentBookName, chapter, verseStart, verseEnd };
+  }
+
+  // Caso con libro explícito
+  const m = q.match(/^(.+?)\s+(\d+)(?::(\d+)(?:\s*-\s*(\d+))?)?\s*$/);
+  if(!m) return null;
+
+  const bookRaw = m[1];
+  const slug = resolveBookSlug(bookRaw);
+  const chapter = parseInt(m[2],10);
+  const verseStart = m[3] ? parseInt(m[3],10) : null;
+  const verseEnd = m[4] ? parseInt(m[4],10) : (verseStart ? verseStart : null);
+
+  const bookDisplay = bookRaw;
+  return { slug, bookDisplay, chapter, verseStart, verseEnd };
+}
+
+/***********************
  * Render
  ***********************/
 function render(ref){
@@ -400,8 +519,8 @@ function render(ref){
   lastRef = { chapter: ch, verseStart: v1, verseEnd: v2 };
 
   const range = (ref.verseStart == null)
-    ? `${BOOK_NAME} ${ch}`
-    : `${BOOK_NAME} ${ch}:${v1}${(v2 !== v1 ? '-' + v2 : '')}`;
+    ? `${currentBookName} ${ch}`
+    : `${currentBookName} ${ch}:${v1}${(v2 !== v1 ? '-' + v2 : '')}`;
 
   pageTitle.textContent = range;
   metaVersion.textContent = versionSelect.value;
@@ -424,18 +543,19 @@ function render(ref){
     }
     passageTextOrig.innerHTML = htmlOrig || `<div class="text-muted">Sin contenido original para esta referencia.</div>`;
   }else{
-    passageTextOrig.innerHTML = isNT
-      ? `<div class="text-muted">Original no cargado (revisa <span class="mono">${esc(GRIEGO_PATH)}</span>).</div>`
-      : `<div class="text-muted">Hebreo pendiente de integrar.</div>`;
+    // Si ya hay un mensaje (ej. falta mapear AT), respétalo
+    if(!passageTextOrig.innerText.trim()){
+      passageTextOrig.innerHTML = `<div class="text-muted">Sin contenido original para esta referencia.</div>`;
+    }
   }
 
   statusLine.textContent = `Capítulos: ${chapterCount} · Cap ${ch}: ${verseCount} vers.`;
 
   const userSearch = normalizeSpaces(searchInput.value) || range;
-  history.replaceState(null, '', `?book=${encodeURIComponent(BOOK_SLUG)}&name=${encodeURIComponent(BOOK_NAME)}&search=${encodeURIComponent(userSearch)}&version=${encodeURIComponent(versionSelect.value)}`);
+  history.replaceState(null, '', `?book=${encodeURIComponent(currentBookSlug)}&name=${encodeURIComponent(currentBookName)}&search=${encodeURIComponent(userSearch)}&version=${encodeURIComponent(versionSelect.value)}`);
 }
 
-function runSearch(){
+async function runSearch(){
   const raw = normalizeSpaces(searchInput.value);
   if(!raw){
     passageTextRV.innerHTML = `<div class="text-muted">Escribe una referencia.</div>`;
@@ -445,24 +565,28 @@ function runSearch(){
 
   const ref = parseSearch(raw);
   if(!ref){
-    const msg = `<div class="text-muted">No se pudo interpretar la búsqueda. Ej: <span class="mono">1Cor 13:1-7</span></div>`;
+    const msg = `<div class="text-muted">No se pudo interpretar la búsqueda. Ej: <span class="mono">Amós 1:1-5</span> / <span class="mono">1 Corintios 13:1-7</span></div>`;
     passageTextRV.innerHTML = msg;
     passageTextOrig.innerHTML = msg;
     return;
   }
 
-  render(ref);
+  try{
+    // si cambia el libro, carga su JSON
+    await ensureBookLoaded(ref.slug, ref.bookDisplay);
+    leftLabel.textContent = versionSelect.value;
+    render(ref);
+  }catch(err){
+    const msg = `<div class="text-danger fw-semibold">Error:</div><div class="text-muted">${esc(err.message || String(err))}</div>`;
+    passageTextRV.innerHTML = msg;
+    passageTextOrig.innerHTML = msg;
+    statusLine.textContent = '';
+  }
 }
 
 /***********************
- * Init
+ * UI helpers
  ***********************/
-async function loadJson(path){
-  const r = await fetch(path, { cache: 'no-store' });
-  if(!r.ok) throw new Error(`No se pudo cargar ${path} (HTTP ${r.status})`);
-  return await r.json();
-}
-
 function setFromUrl(){
   const p = new URLSearchParams(location.search);
   const q = p.get('search');
@@ -477,6 +601,9 @@ function setOriginalVisible(isVisible){
   btnToggleOrig.textContent = isVisible ? 'Ocultar original' : 'Mostrar original';
 }
 
+/***********************
+ * Events
+ ***********************/
 form.addEventListener('submit', (e) => { e.preventDefault(); runSearch(); });
 
 btnCopyLink.addEventListener('click', async () => {
@@ -502,67 +629,29 @@ btnToggleOrig.addEventListener('click', () => {
   setOriginalVisible(!isVisible);
 });
 
+/***********************
+ * Boot
+ ***********************/
 (async function boot(){
   setFromUrl();
-
-  leftLabel.textContent = versionSelect.value;
-  rightLabel.textContent = ORIGINAL_LABEL;
-
-  // visible por defecto
   setOriginalVisible(true);
 
- try{
-  passageTextRV.innerHTML = `<div class="text-muted">Cargando ${leftLabel.textContent}…</div>`;
-  bookDataRV = await loadJson(JSON_PATH_RV);
+  leftLabel.textContent = versionSelect.value;
 
-  if(isNT){
-    rightLabel.textContent = 'Griego';
-    passageTextOrig.classList.remove('hebrew');
-    passageTextOrig.classList.add('greek');
-
-    passageTextOrig.innerHTML = `<div class="text-muted">Cargando Griego…</div>`;
-    const trData = await loadJson(GRIEGO_PATH);
-    const bookName = NT_TR_BOOKNAME[BOOK_SLUG];
-    bookDataOrig = buildChaptersFromVersesForBook(trData.verses, bookName);
-
-    if(!bookDataOrig){
-      passageTextOrig.innerHTML = `<div class="text-muted">No se encontró el libro en Bgriega.json (revisa slug/mapeo).</div>`;
-    }
-
-  } else {
-    rightLabel.textContent = 'Hebreo';
-    passageTextOrig.classList.remove('greek');
-    passageTextOrig.classList.add('hebrew');
-
-    passageTextOrig.innerHTML = `<div class="text-muted">Cargando Hebreo…</div>`;
-    const heData = await loadJson(HEBREO_PATH);
-    const bookName = AT_HE_BOOKNAME[BOOK_SLUG];
-    if(!bookName){
-  passageTextOrig.innerHTML = `
-    <div class="text-muted">
-      Falta mapear este libro del AT en <span class="mono">AT_HE_BOOKNAME</span>:
-      <strong>${esc(BOOK_SLUG)}</strong>
-    </div>`;
-  bookDataOrig = null;
-  runSearch();
-  return;
-}
-    bookDataOrig = buildChaptersFromVersesForBook(heData.verses, bookName);
-
-    if(!bookDataOrig){
-      passageTextOrig.innerHTML = `<div class="text-muted">No se encontró el libro en he_modern.json (revisa slug/mapeo).</div>`;
-    }
-  }
-
-  runSearch();
-
-}catch(err){
+  // Carga inicial del libro desde la URL (o default)
+  try{
+    passageTextRV.innerHTML = `<div class="text-muted">Cargando ${leftLabel.textContent}…</div>`;
+    passageTextOrig.innerHTML = `<div class="text-muted">Cargando Original…</div>`;
+    await ensureBookLoaded(currentBookSlug, currentBookName);
+    rightLabel.textContent = isNT(currentBookSlug) ? 'Griego' : 'Hebreo';
+    await runSearch();
+  }catch(err){
     const msg = `<div class="text-danger fw-semibold">Error:</div><div class="text-muted">${esc(err.message || String(err))}</div>`;
     passageTextRV.innerHTML = msg;
     passageTextOrig.innerHTML = msg;
     statusLine.textContent = '';
   }
 })();
-  </script>
+</script>
 </body>
 </html>
