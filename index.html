@@ -149,18 +149,47 @@
 
   <script>
     /***********************
-     * Config
-     ***********************/
-    // IZQUIERDA (RVR1960)
-    const JSON_PATH_RV = './librosRV1960/1_corintios.json';
+ * Config (dinámico por libro)
+ ***********************/
+// Convención asumida:
+//  - Español (izquierda):  ./librosRV1960/<slug>.json
+//  - Original NT (derecha): ./librosOriginal/<slug>_griego.json
+//  - Original AT (derecha): ./librosOriginal/<slug>_hebreo.json
+//
+// Puedes sobrescribir por URL:
+//   ?book=galatas
+//   ?book=deuteronomio
+//   ?rvBase=./librosRV1960/&origBase=./librosRV1960/   (si tus originales están ahí)
+//   ?name=Gálatas   (título visible)
 
-    // DERECHA (Original): AJUSTA ESTA RUTA a tu archivo real (misma estructura [cap][vers])
-    const JSON_PATH_ORIG = './librosRV1960/1_corintios_griego.json';
+const params = new URLSearchParams(window.location.search);
 
-    const BOOK_NAME = '1 Corintios';
-    const ORIGINAL_LABEL = 'Griego'; // cambia a 'Hebreo' cuando aplique
+const RV_BASE = params.get('rvBase') || './librosRV1960/';
+const ORIG_BASE = params.get('origBase') || './librosOriginal/';
 
-    /***********************
+const BOOK_SLUG = (params.get('book') || '1_corintios').trim();
+const BOOK_NAME = (params.get('name') || BOOK_SLUG.replace(/_/g, ' '))
+  .replace(/\b\w/g, c => c.toUpperCase());
+
+// Lista de slugs del NT (ajusta si tus nombres difieren)
+const NT_BOOKS = new Set([
+  'mateo','marcos','lucas','juan','hechos',
+  'romanos','1_corintios','2_corintios','galatas','efesios','filipenses','colosenses',
+  '1_tesalonicenses','2_tesalonicenses','1_timoteo','2_timoteo','tito','filemon',
+  'hebreos','santiago','1_pedro','2_pedro','1_juan','2_juan','3_juan','judas','apocalipsis'
+]);
+
+const isNT = NT_BOOKS.has(BOOK_SLUG);
+
+// IZQUIERDA (RVR1960)
+const JSON_PATH_RV = `${RV_BASE}${BOOK_SLUG}.json`;
+
+// DERECHA (Original)
+const ORIGINAL_LABEL = isNT ? 'Griego' : 'Hebreo';
+const JSON_PATH_ORIG = isNT
+  ? `${ORIG_BASE}${BOOK_SLUG}_griego.json`
+  : `${ORIG_BASE}${BOOK_SLUG}_hebreo.json`;
+/***********************
      * DOM
      ***********************/
     const form = document.getElementById('searchForm');
