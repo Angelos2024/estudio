@@ -60,6 +60,69 @@
   line-height: 1.9;
 }
 
+      /* Feedback animation */
+    .feedback-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:.4rem;
+      padding:.25rem .55rem;
+      border-radius:999px;
+      border:1px solid var(--bd);
+      background:#f8fafc;
+      font-size:.85rem;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .feedback-badge.ok{ background:#ecfdf5; border-color:#bbf7d0; color:#065f46; }
+    .feedback-badge.err{ background:#fef2f2; border-color:#fecaca; color:#991b1b; }
+
+    .feedback-animate-pop{ animation: pop .18s ease-out; }
+    .feedback-animate-shake{ animation: shake .28s ease-in-out; }
+
+    .icon-check{
+      width:14px;height:14px; display:inline-block;
+      border-radius:50%;
+      border:2px solid currentColor;
+      position:relative;
+    }
+    .icon-check:after{
+      content:"";
+      position:absolute;
+      left:3px; top:1px;
+      width:4px; height:8px;
+      border-right:2px solid currentColor;
+      border-bottom:2px solid currentColor;
+      transform:rotate(35deg);
+    }
+
+    .icon-x{
+      width:14px;height:14px; display:inline-block;
+      border-radius:50%;
+      border:2px solid currentColor;
+      position:relative;
+    }
+    .icon-x:before, .icon-x:after{
+      content:"";
+      position:absolute;
+      left:5px; top:2px;
+      width:2px; height:8px;
+      background:currentColor;
+      transform:rotate(45deg);
+    }
+    .icon-x:after{ transform:rotate(-45deg); }
+
+    @keyframes pop{
+      from{ transform:scale(.92); opacity:.6; }
+      to{ transform:scale(1); opacity:1; }
+    }
+    @keyframes shake{
+      0%{ transform:translateX(0); }
+      25%{ transform:translateX(-3px); }
+      50%{ transform:translateX(3px); }
+      75%{ transform:translateX(-2px); }
+      100%{ transform:translateX(0); }
+    }
+
   </style>
 </head>
 
@@ -131,6 +194,7 @@
 
             <div class="d-flex align-items-center gap-2">
               <span class="text-muted" style="font-weight:400; font-size:.9rem" id="statusLine"></span>
+              <span id="feedbackBadge" class="feedback-badge" style="display:none"></span>
               <button id="btnToggleOrig" class="btn btn-soft btn-sm" type="button" aria-expanded="true">
                 Ocultar original
               </button>
@@ -548,20 +612,63 @@ function parseSearch(raw){
 /***********************
  * Render
  ***********************/
+function clearFeedback(){
+  const b = document.getElementById('feedbackBadge');
+  if(!b) return;
+  b.style.display = 'none';
+  b.className = 'feedback-badge';
+  b.innerHTML = '';
+}
+
+function showFeedback(kind, text){
+  const b = document.getElementById('feedbackBadge');
+  if(!b) return;
+  b.style.display = 'inline-flex';
+  b.className = 'feedback-badge ' + (kind === 'ok' ? 'ok feedback-animate-pop' : 'err feedback-animate-shake');
+  const icon = kind === 'ok' ? '<span class="icon-check" aria-hidden="true"></span>' : '<span class="icon-x" aria-hidden="true"></span>';
+  b.innerHTML = icon + '<span>' + esc(text) + '</span>';
+  setTimeout(() => b.classList.remove('feedback-animate-pop','feedback-animate-shake'), 350);
+}
+
 function render(ref){
   if(!bookDataRV) return;
 
-  const chapterCount = bookDataRV.length;
-  const ch = clamp(ref.chapter, 1, chapterCount);
+  clearFeedback();
 
+  const chapterCount = bookDataRV.length;
+
+  // Validación: capítulo solicitado
+  if(ref.chapter < 1 || ref.chapter > chapterCount){
+    pageTitle.textContent = `${currentBookName} ${ref.chapter}`;
+    metaVersion.textContent = versionSelect.value;
+    statusLine.textContent = `Capítulos: ${chapterCount}`;
+    passageTextRV.innerHTML = `<div class="text-muted">No existe el capítulo <strong>${esc(String(ref.chapter))}</strong> en <strong>${esc(currentBookName)}</strong>.</div>`;
+    passageTextOrig.innerHTML = `<div class="text-muted">—</div>`;
+    showFeedback('err', 'Verso / capítulo no encontrado');
+    return;
+  }
+
+  const ch = ref.chapter;
   const versesRV = bookDataRV[ch-1] || [];
   const verseCount = versesRV.length;
 
+  // Validación: versículo solicitado
+  if(ref.verseStart != null){
+    const v1req = ref.verseStart;
+    const v2req = ref.verseEnd ?? v1req;
+    if(v1req < 1 || v1req > verseCount || v2req < 1 || v2req > verseCount){
+      pageTitle.textContent = `${currentBookName} ${ch}:${v1req}${(v2req!==v1req?'-'+v2req:'')}`;
+      metaVersion.textContent = versionSelect.value;
+      statusLine.textContent = `Capítulos: ${chapterCount} · Cap ${ch}: ${verseCount} vers.`;
+      passageTextRV.innerHTML = `<div class="text-muted">No existe ese versículo en <strong>${esc(currentBookName)} ${ch}</strong>. Rango válido: 1–${verseCount}.</div>`;
+      passageTextOrig.innerHTML = `<div class="text-muted">—</div>`;
+      showFeedback('err', 'Verso / capítulo no encontrado');
+      return;
+    }
+  }
+
   let v1 = ref.verseStart ?? 1;
   let v2 = ref.verseEnd ?? verseCount;
-
-  v1 = clamp(v1, 1, verseCount);
-  v2 = clamp(v2, 1, verseCount);
   if(v2 < v1) [v1, v2] = [v2, v1];
 
   lastRef = { chapter: ch, verseStart: v1, verseEnd: v2 };
@@ -593,6 +700,7 @@ function render(ref){
   }
 
   statusLine.textContent = `Capítulos: ${chapterCount} · Cap ${ch}: ${verseCount} vers.`;
+  showFeedback('ok', 'Cita encontrada');
 
   const userSearch = normalizeSpaces(searchInput.value) || range;
   history.replaceState(null, '', `?book=${encodeURIComponent(currentBookSlug)}&name=${encodeURIComponent(currentBookName)}&search=${encodeURIComponent(userSearch)}&version=${encodeURIComponent(versionSelect.value)}&orig=${ORIGINAL_ENABLED_DEFAULT?'1':'0'}`);
