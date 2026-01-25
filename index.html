@@ -45,6 +45,13 @@
     /* Columna de herramientas a la izquierda, más compacta */
     .tools-panel .panel-body{ padding:.75rem; }
     .tools-panel .btn{ padding:.4rem .6rem; font-size:.9rem; }
+
+    /* Greek font */
+    .greek{
+      font-family: 'Gentium Plus','SBL Greek','Times New Roman',serif;
+      font-size: 1.1rem;
+      line-height: 1.8;
+    }
   </style>
 </head>
 
@@ -135,7 +142,7 @@
               <!-- DERECHA: Original -->
               <div id="origCol" class="parallel-col">
                 <div class="fw-semibold mb-2" id="rightLabel">Original</div>
-                <div class="orig-text" id="passageTextOrig">
+                <div class="orig-text greek" id="passageTextOrig">
                   <div class="text-muted">Cargando datos…</div>
                 </div>
               </div>
@@ -148,24 +155,18 @@
   </main>
 
   <script>
-    /***********************
- * Config (dinámico por libro)
+/***********************
+ * Config (por libro)
  ***********************/
 // Convención asumida:
 //  - Español (izquierda):  ./librosRV1960/<slug>.json
-//  - Original NT (derecha): ./librosOriginal/<slug>_griego.json
-//  - Original AT (derecha): ./librosOriginal/<slug>_hebreo.json
-//
-// Puedes sobrescribir por URL:
-//   ?book=galatas
-//   ?book=deuteronomio
-//   ?rvBase=./librosRV1960/&origBase=./librosRV1960/   (si tus originales están ahí)
-//   ?name=Gálatas   (título visible)
+//  - Original NT (derecha): ./IdiomaORIGEN/Bgriega.json   (TR NT completo; se filtra por libro/cap)
+//  - Original AT (derecha): (pendiente; por ahora no se carga)
 
 const params = new URLSearchParams(window.location.search);
 
 const RV_BASE = params.get('rvBase') || './librosRV1960/';
-const ORIG_BASE = params.get('origBase') || './librosOriginal/';
+const GRIEGO_PATH = './IdiomaORIGEN/Bgriega.json';
 
 const BOOK_SLUG = (params.get('book') || '1_corintios').trim();
 const BOOK_NAME = (params.get('name') || BOOK_SLUG.replace(/_/g, ' '))
@@ -181,233 +182,314 @@ const NT_BOOKS = new Set([
 
 const isNT = NT_BOOKS.has(BOOK_SLUG);
 
+// Mapeo slug -> book_name (inglés) dentro de Bgriega.json
+const NT_TR_BOOKNAME = {
+  mateo: 'Matthew',
+  marcos: 'Mark',
+  lucas: 'Luke',
+  juan: 'John',
+  hechos: 'Acts',
+  romanos: 'Romans',
+  '1_corintios': '1 Corinthians',
+  '2_corintios': '2 Corinthians',
+  galatas: 'Galatians',
+  efesios: 'Ephesians',
+  filipenses: 'Philippians',
+  colosenses: 'Colossians',
+  '1_tesalonicenses': '1 Thessalonians',
+  '2_tesalonicenses': '2 Thessalonians',
+  '1_timoteo': '1 Timothy',
+  '2_timoteo': '2 Timothy',
+  tito: 'Titus',
+  filemon: 'Philemon',
+  hebreos: 'Hebrews',
+  santiago: 'James',
+  '1_pedro': '1 Peter',
+  '2_pedro': '2 Peter',
+  '1_juan': '1 John',
+  '2_juan': '2 John',
+  '3_juan': '3 John',
+  judas: 'Jude',
+  apocalipsis: 'Revelation'
+};
+
 // IZQUIERDA (RVR1960)
 const JSON_PATH_RV = `${RV_BASE}${BOOK_SLUG}.json`;
 
 // DERECHA (Original)
 const ORIGINAL_LABEL = isNT ? 'Griego' : 'Hebreo';
-const JSON_PATH_ORIG = isNT
-  ? `${ORIG_BASE}${BOOK_SLUG}_griego.json`
-  : `${ORIG_BASE}${BOOK_SLUG}_hebreo.json`;
+
 /***********************
-     * DOM
-     ***********************/
-    const form = document.getElementById('searchForm');
-    const searchInput = document.getElementById('searchInput');
-    const versionSelect = document.getElementById('versionSelect');
-    const metaVersion = document.getElementById('metaVersion');
-    const pageTitle = document.getElementById('pageTitle');
-    const statusLine = document.getElementById('statusLine');
+ * DOM
+ ***********************/
+const form = document.getElementById('searchForm');
+const searchInput = document.getElementById('searchInput');
+const versionSelect = document.getElementById('versionSelect');
+const metaVersion = document.getElementById('metaVersion');
+const pageTitle = document.getElementById('pageTitle');
+const statusLine = document.getElementById('statusLine');
 
-    const passageTextRV = document.getElementById('passageTextRV');
-    const passageTextOrig = document.getElementById('passageTextOrig');
+const passageTextRV = document.getElementById('passageTextRV');
+const passageTextOrig = document.getElementById('passageTextOrig');
 
-    const leftLabel = document.getElementById('leftLabel');
-    const rightLabel = document.getElementById('rightLabel');
+const leftLabel = document.getElementById('leftLabel');
+const rightLabel = document.getElementById('rightLabel');
 
-    const btnCopyLink = document.getElementById('btnCopyLink');
-    const btnCopyText = document.getElementById('btnCopyText');
-    const btnPrint = document.getElementById('btnPrint');
-    const btnToggleOrig = document.getElementById('btnToggleOrig');
+const btnCopyLink = document.getElementById('btnCopyLink');
+const btnCopyText = document.getElementById('btnCopyText');
+const btnPrint = document.getElementById('btnPrint');
+const btnToggleOrig = document.getElementById('btnToggleOrig');
 
-    /***********************
-     * Data
-     ***********************/
-    let bookDataRV = null;    // data[chapterIndex][verseIndex] = string
-    let bookDataOrig = null;  // misma estructura
-    let lastRef = null;       // {chapter, verseStart, verseEnd}
+/***********************
+ * Data
+ ***********************/
+let bookDataRV = null;    // data[chapterIndex][verseIndex] = string
+let bookDataOrig = null;  // misma estructura (solo NT por ahora)
+let trData = null;        // JSON completo TR (Bgriega.json)
+let lastRef = null;       // {chapter, verseStart, verseEnd}
 
-    /***********************
-     * Helpers
-     ***********************/
-    function esc(s){
-      return (s ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')
-        .replaceAll('"','&quot;').replaceAll("'","&#39;");
+/***********************
+ * Helpers
+ ***********************/
+function esc(s){
+  return (s ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')
+    .replaceAll('"','&quot;').replaceAll("'","&#39;");
+}
+
+function normalizeSpaces(s){
+  return (s || '').trim().replace(/\s+/g,' ');
+}
+
+// Acepta: "1Cor 13:1-7", "1 Corintios 13", "1 cor 15:58"
+// MVP: se interpreta solo capítulo/versículos (el libro se toma de ?book=...).
+function parseSearch(raw){
+  const q = normalizeSpaces(raw).toLowerCase();
+  const m = q.match(/(\d+)(?::(\d+)(?:\s*-\s*(\d+))?)?$/);
+  if(!m) return null;
+
+  const chapter = parseInt(m[1], 10);
+  const verseStart = m[2] ? parseInt(m[2], 10) : null;
+  const verseEnd = m[3] ? parseInt(m[3], 10) : (verseStart ? verseStart : null);
+
+  return { book: BOOK_NAME, chapter, verseStart, verseEnd };
+}
+
+function clamp(n, min, max){
+  return Math.max(min, Math.min(max, n));
+}
+
+function buildPermalink(search, version){
+  const p = new URLSearchParams();
+  p.set('book', BOOK_SLUG);
+  p.set('name', BOOK_NAME);
+  p.set('search', search);
+  p.set('version', version);
+  return `${location.origin}${location.pathname}?${p.toString()}`;
+}
+
+async function copy(text){
+  try{ await navigator.clipboard.writeText(text); }catch{}
+}
+
+/***********************
+ * Greek builder (TR NT)
+ ***********************/
+function buildChaptersFromTRForCurrentBook(){
+  if(!isNT || !trData || !Array.isArray(trData.verses)) return null;
+
+  const bookName = NT_TR_BOOKNAME[BOOK_SLUG];
+  if(!bookName) return null;
+
+  // Filtrar versos del libro
+  const verses = trData.verses.filter(v => v && v.book_name === bookName);
+
+  // Descubrir max capítulo y max verso por capítulo
+  let maxCh = 0;
+  const maxVerseByCh = {};
+  for(const v of verses){
+    const ch = Number(v.chapter);
+    const vs = Number(v.verse);
+    if(Number.isFinite(ch) && ch > maxCh) maxCh = ch;
+    if(!maxVerseByCh[ch] || vs > maxVerseByCh[ch]) maxVerseByCh[ch] = vs;
+  }
+  if(maxCh <= 0) return null;
+
+  // Construir arreglo [cap][vers] (1-based -> 0-based)
+  const chapters = Array.from({length: maxCh}, (_, i) => {
+    const ch = i+1;
+    const len = maxVerseByCh[ch] || 0;
+    return Array.from({length: len}, () => '');
+  });
+
+  for(const v of verses){
+    const ch = Number(v.chapter);
+    const vs = Number(v.verse);
+    if(ch >= 1 && ch <= chapters.length && vs >= 1 && vs <= chapters[ch-1].length){
+      chapters[ch-1][vs-1] = v.text || '';
     }
+  }
 
-    function normalizeSpaces(s){
-      return (s || '').trim().replace(/\s+/g,' ');
+  return chapters;
+}
+
+/***********************
+ * Render
+ ***********************/
+function render(ref){
+  if(!bookDataRV) return;
+
+  const chapterCount = bookDataRV.length;
+  const ch = clamp(ref.chapter, 1, chapterCount);
+
+  const versesRV = bookDataRV[ch-1] || [];
+  const verseCount = versesRV.length;
+
+  let v1 = ref.verseStart ?? 1;
+  let v2 = ref.verseEnd ?? verseCount;
+
+  v1 = clamp(v1, 1, verseCount);
+  v2 = clamp(v2, 1, verseCount);
+  if(v2 < v1) [v1, v2] = [v2, v1];
+
+  lastRef = { chapter: ch, verseStart: v1, verseEnd: v2 };
+
+  const range = (ref.verseStart == null)
+    ? `${BOOK_NAME} ${ch}`
+    : `${BOOK_NAME} ${ch}:${v1}${(v2 !== v1 ? '-' + v2 : '')}`;
+
+  pageTitle.textContent = range;
+  metaVersion.textContent = versionSelect.value;
+
+  // Español (RV)
+  let htmlRV = '';
+  for(let v=v1; v<=v2; v++){
+    const t = versesRV[v-1] ?? '';
+    htmlRV += `<p class="mb-2"><span class="verse-num">${v}</span>${esc(t)}</p>`;
+  }
+  passageTextRV.innerHTML = htmlRV || `<div class="text-muted">Sin contenido para esta referencia.</div>`;
+
+  // Original
+  if(bookDataOrig){
+    const versesOrig = bookDataOrig[ch-1] || [];
+    let htmlOrig = '';
+    for(let v=v1; v<=v2; v++){
+      const t = versesOrig[v-1] ?? '';
+      htmlOrig += `<p class="mb-2"><span class="verse-num">${v}</span>${esc(t)}</p>`;
     }
+    passageTextOrig.innerHTML = htmlOrig || `<div class="text-muted">Sin contenido original para esta referencia.</div>`;
+  }else{
+    passageTextOrig.innerHTML = isNT
+      ? `<div class="text-muted">Original no cargado (revisa <span class="mono">${esc(GRIEGO_PATH)}</span>).</div>`
+      : `<div class="text-muted">Hebreo pendiente de integrar.</div>`;
+  }
 
-    // Acepta: "1Cor 13:1-7", "1 Corintios 13", "1 cor 15:58"
-    // MVP: solo 1 Corintios (porque el JSON es de ese libro).
-    function parseSearch(raw){
-      const q = normalizeSpaces(raw).toLowerCase();
+  statusLine.textContent = `Capítulos: ${chapterCount} · Cap ${ch}: ${verseCount} vers.`;
 
-      // permite también búsquedas sin nombre del libro (por MVP)
-      const m = q.match(/(\d+)(?::(\d+)(?:\s*-\s*(\d+))?)?$/);
-      if(!m) return null;
+  const userSearch = normalizeSpaces(searchInput.value) || range;
+  history.replaceState(null, '', `?book=${encodeURIComponent(BOOK_SLUG)}&name=${encodeURIComponent(BOOK_NAME)}&search=${encodeURIComponent(userSearch)}&version=${encodeURIComponent(versionSelect.value)}`);
+}
 
-      const chapter = parseInt(m[1], 10);
-      const verseStart = m[2] ? parseInt(m[2], 10) : null;
-      const verseEnd = m[3] ? parseInt(m[3], 10) : (verseStart ? verseStart : null);
+function runSearch(){
+  const raw = normalizeSpaces(searchInput.value);
+  if(!raw){
+    passageTextRV.innerHTML = `<div class="text-muted">Escribe una referencia.</div>`;
+    passageTextOrig.innerHTML = `<div class="text-muted">Escribe una referencia.</div>`;
+    return;
+  }
 
-      return { book: BOOK_NAME, chapter, verseStart, verseEnd };
-    }
+  const ref = parseSearch(raw);
+  if(!ref){
+    const msg = `<div class="text-muted">No se pudo interpretar la búsqueda. Ej: <span class="mono">1Cor 13:1-7</span></div>`;
+    passageTextRV.innerHTML = msg;
+    passageTextOrig.innerHTML = msg;
+    return;
+  }
 
-    function clamp(n, min, max){
-      return Math.max(min, Math.min(max, n));
-    }
+  render(ref);
+}
 
-    function buildPermalink(search, version){
-      const p = new URLSearchParams();
-      p.set('search', search);
-      p.set('version', version);
-      return `${location.origin}${location.pathname}?${p.toString()}`;
-    }
+/***********************
+ * Init
+ ***********************/
+async function loadJson(path){
+  const r = await fetch(path, { cache: 'no-store' });
+  if(!r.ok) throw new Error(`No se pudo cargar ${path} (HTTP ${r.status})`);
+  return await r.json();
+}
 
-    async function copy(text){
-      try{ await navigator.clipboard.writeText(text); }catch{}
-    }
+function setFromUrl(){
+  const p = new URLSearchParams(location.search);
+  const q = p.get('search');
+  const v = p.get('version');
+  if(q) searchInput.value = q;
+  if(v) versionSelect.value = v;
+}
 
-    function render(ref){
-      if(!bookDataRV) return;
+function setOriginalVisible(isVisible){
+  document.body.classList.toggle('orig-hidden', !isVisible);
+  btnToggleOrig.setAttribute('aria-expanded', String(isVisible));
+  btnToggleOrig.textContent = isVisible ? 'Ocultar original' : 'Mostrar original';
+}
 
-      const chapterCount = bookDataRV.length;
-      const ch = clamp(ref.chapter, 1, chapterCount);
+form.addEventListener('submit', (e) => { e.preventDefault(); runSearch(); });
 
-      const versesRV = bookDataRV[ch-1] || [];
-      const verseCount = versesRV.length;
+btnCopyLink.addEventListener('click', async () => {
+  const link = buildPermalink(searchInput.value || pageTitle.textContent, versionSelect.value);
+  await copy(link);
+});
 
-      let v1 = ref.verseStart ?? 1;
-      let v2 = ref.verseEnd ?? verseCount;
+btnCopyText.addEventListener('click', async () => {
+  const left = (passageTextRV.innerText || '').trim();
+  const right = (passageTextOrig.innerText || '').trim();
+  const includeOrig = !document.body.classList.contains('orig-hidden');
+  const combined =
+    includeOrig
+      ? `=== ${leftLabel.textContent} ===\n${left}\n\n=== ${rightLabel.textContent} ===\n${right}\n`
+      : `=== ${leftLabel.textContent} ===\n${left}\n`;
+  await copy(combined);
+});
 
-      v1 = clamp(v1, 1, verseCount);
-      v2 = clamp(v2, 1, verseCount);
-      if(v2 < v1) [v1, v2] = [v2, v1];
+btnPrint.addEventListener('click', () => window.print());
 
-      lastRef = { chapter: ch, verseStart: v1, verseEnd: v2 };
+btnToggleOrig.addEventListener('click', () => {
+  const isVisible = !document.body.classList.contains('orig-hidden');
+  setOriginalVisible(!isVisible);
+});
 
-      const range = (ref.verseStart == null)
-        ? `${BOOK_NAME} ${ch}`
-        : `${BOOK_NAME} ${ch}:${v1}${(v2 !== v1 ? '-' + v2 : '')}`;
+(async function boot(){
+  setFromUrl();
 
-      pageTitle.textContent = range;
-      metaVersion.textContent = versionSelect.value;
+  leftLabel.textContent = versionSelect.value;
+  rightLabel.textContent = ORIGINAL_LABEL;
 
-      // Español (RV)
-      let htmlRV = '';
-      for(let v=v1; v<=v2; v++){
-        const t = versesRV[v-1] ?? '';
-        htmlRV += `<p class="mb-2"><span class="verse-num">${v}</span>${esc(t)}</p>`;
+  // visible por defecto
+  setOriginalVisible(true);
+
+  try{
+    passageTextRV.innerHTML = `<div class="text-muted">Cargando ${leftLabel.textContent}…</div>`;
+    bookDataRV = await loadJson(JSON_PATH_RV);
+
+    if(isNT){
+      passageTextOrig.innerHTML = `<div class="text-muted">Cargando ${ORIGINAL_LABEL}…</div>`;
+      trData = await loadJson(GRIEGO_PATH);
+      bookDataOrig = buildChaptersFromTRForCurrentBook();
+
+      if(!bookDataOrig){
+        passageTextOrig.innerHTML = `<div class="text-muted">No se encontró el libro en <span class="mono">Bgriega.json</span> (revisa el slug o el mapeo).</div>`;
       }
-      passageTextRV.innerHTML = htmlRV || `<div class="text-muted">Sin contenido para esta referencia.</div>`;
-
-      // Original
-      if(bookDataOrig){
-        const versesOrig = bookDataOrig[ch-1] || [];
-        let htmlOrig = '';
-        for(let v=v1; v<=v2; v++){
-          const t = versesOrig[v-1] ?? '';
-          htmlOrig += `<p class="mb-2"><span class="verse-num">${v}</span>${esc(t)}</p>`;
-        }
-        passageTextOrig.innerHTML = htmlOrig || `<div class="text-muted">Sin contenido original para esta referencia.</div>`;
-      }else{
-        passageTextOrig.innerHTML = `<div class="text-muted">Original no cargado (revisa JSON_PATH_ORIG).</div>`;
-      }
-
-      statusLine.textContent = `Capítulos: ${chapterCount} · Cap ${ch}: ${verseCount} vers.`;
-
-      const userSearch = normalizeSpaces(searchInput.value) || range;
-      history.replaceState(null, '', `?search=${encodeURIComponent(userSearch)}&version=${encodeURIComponent(versionSelect.value)}`);
+    }else{
+      bookDataOrig = null;
+      passageTextOrig.innerHTML = `<div class="text-muted">Hebreo pendiente de integrar.</div>`;
     }
 
-    function runSearch(){
-      const raw = normalizeSpaces(searchInput.value);
-      if(!raw){
-        passageTextRV.innerHTML = `<div class="text-muted">Escribe una referencia.</div>`;
-        passageTextOrig.innerHTML = `<div class="text-muted">Escribe una referencia.</div>`;
-        return;
-      }
-
-      const ref = parseSearch(raw);
-      if(!ref){
-        const msg = `<div class="text-muted">No se pudo interpretar la búsqueda. Ej: <span class="mono">1Cor 13:1-7</span></div>`;
-        passageTextRV.innerHTML = msg;
-        passageTextOrig.innerHTML = msg;
-        return;
-      }
-
-      render(ref);
-    }
-
-    /***********************
-     * Init
-     ***********************/
-    async function loadJson(path){
-      const r = await fetch(path, { cache: 'no-store' });
-      if(!r.ok) throw new Error(`No se pudo cargar ${path} (HTTP ${r.status})`);
-      return await r.json();
-    }
-
-    function setFromUrl(){
-      const p = new URLSearchParams(location.search);
-      const q = p.get('search');
-      const v = p.get('version');
-      if(q) searchInput.value = q;
-      if(v) versionSelect.value = v;
-    }
-
-    function setOriginalVisible(isVisible){
-      document.body.classList.toggle('orig-hidden', !isVisible);
-      btnToggleOrig.setAttribute('aria-expanded', String(isVisible));
-      btnToggleOrig.textContent = isVisible ? 'Ocultar original' : 'Mostrar original';
-    }
-
-    form.addEventListener('submit', (e) => { e.preventDefault(); runSearch(); });
-
-    btnCopyLink.addEventListener('click', async () => {
-      const link = buildPermalink(searchInput.value || pageTitle.textContent, versionSelect.value);
-      await copy(link);
-    });
-
-    btnCopyText.addEventListener('click', async () => {
-      const left = (passageTextRV.innerText || '').trim();
-      const right = (passageTextOrig.innerText || '').trim();
-      const includeOrig = !document.body.classList.contains('orig-hidden');
-      const combined =
-        includeOrig
-          ? `=== ${leftLabel.textContent} ===\n${left}\n\n=== ${rightLabel.textContent} ===\n${right}\n`
-          : `=== ${leftLabel.textContent} ===\n${left}\n`;
-      await copy(combined);
-    });
-
-    btnPrint.addEventListener('click', () => window.print());
-
-    btnToggleOrig.addEventListener('click', () => {
-      const isVisible = !document.body.classList.contains('orig-hidden');
-      setOriginalVisible(!isVisible);
-    });
-
-    (async function boot(){
-      setFromUrl();
-
-      leftLabel.textContent = versionSelect.value;
-      rightLabel.textContent = ORIGINAL_LABEL;
-
-      // visible por defecto
-      setOriginalVisible(true);
-
-      try{
-        passageTextRV.innerHTML = `<div class="text-muted">Cargando ${leftLabel.textContent}…</div>`;
-        bookDataRV = await loadJson(JSON_PATH_RV);
-
-        try{
-          passageTextOrig.innerHTML = `<div class="text-muted">Cargando ${ORIGINAL_LABEL}…</div>`;
-          bookDataOrig = await loadJson(JSON_PATH_ORIG);
-        }catch(e){
-          bookDataOrig = null;
-          passageTextOrig.innerHTML = `<div class="text-muted">Original no cargado. Revisa <span class="mono">JSON_PATH_ORIG</span>.</div>`;
-        }
-
-        runSearch();
-      }catch(err){
-        const msg = `<div class="text-danger fw-semibold">Error:</div><div class="text-muted">${esc(err.message || String(err))}</div>`;
-        passageTextRV.innerHTML = msg;
-        passageTextOrig.innerHTML = msg;
-        statusLine.textContent = '';
-      }
-    })();
+    runSearch();
+  }catch(err){
+    const msg = `<div class="text-danger fw-semibold">Error:</div><div class="text-muted">${esc(err.message || String(err))}</div>`;
+    passageTextRV.innerHTML = msg;
+    passageTextOrig.innerHTML = msg;
+    statusLine.textContent = '';
+  }
+})();
   </script>
 </body>
 </html>
