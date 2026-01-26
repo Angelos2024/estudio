@@ -174,6 +174,33 @@ menu.appendChild(dot);
       lastSelection = '';
     }
   }
+function clearHighlightAtSelection() {
+  // Si hay selección, intenta encontrar un .hl que la contenga
+  const sel = window.getSelection();
+  let node = null;
+
+  if (sel && sel.rangeCount > 0) {
+    node = sel.getRangeAt(0).commonAncestorContainer;
+  } else if (lastRange) {
+    node = lastRange.commonAncestorContainer;
+  }
+
+  if (!node) return;
+
+  const el = (node.nodeType === 1 ? node : node.parentElement);
+  const hl = el?.closest?.('.hl');
+  if (!hl) return;
+
+  // Desenrollar: reemplaza el span por sus hijos (texto plano)
+  const parent = hl.parentNode;
+  while (hl.firstChild) parent.insertBefore(hl.firstChild, hl);
+  parent.removeChild(hl);
+
+  // Limpia selección guardada
+  if (sel) sel.removeAllRanges();
+  lastRange = null;
+  lastSelection = '';
+}
 
   function openNote(ref, selectionText) {
     const txt = prompt(
