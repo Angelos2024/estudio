@@ -205,8 +205,12 @@ dot.addEventListener('mousedown', (ev) => ev.preventDefault());
 
 dot.addEventListener('click', async () => {
   if (!lastTarget) return;
-  const ref = getRefFromNode(lastTarget);
-  await highlightSelection(ref, c.key);
+  if (c.key === 'clear') {
+    await clearHighlightAtSelection();
+  } else {
+    const ref = getRefFromNode(lastTarget);
+    await highlightSelection(ref, c.key);
+  }
   hideMenu();
 });
 
@@ -278,13 +282,11 @@ async function highlightSelection(ref, colorKey) {
   lastSelection = '';
 }
 
-function clearHighlightAtSelection() {
-  // Prioriza el rango guardado (es el que sí sobrevive al click del menú)
+async function clearHighlightAtSelection() {
   let node = null;
 
-  if (lastRange) {
-    node = lastRange.commonAncestorContainer;
-  } else {
+  if (lastRange) node = lastRange.commonAncestorContainer;
+  else {
     const sel = window.getSelection();
     if (sel && sel.rangeCount > 0) node = sel.getRangeAt(0).commonAncestorContainer;
   }
@@ -292,28 +294,24 @@ function clearHighlightAtSelection() {
   if (!node) return;
 
   const el = (node.nodeType === 1 ? node : node.parentElement);
-
-  // Si el click fue en el menú (fuera del texto), busca el .hl dentro del verso actual
-  let hl = el?.closest?.('.hl');
-
-  if (!hl && lastTarget) {
-    const verseTextEl = getVerseTextNode(lastTarget);
-    if (verseTextEl) hl = verseTextEl.querySelector('.hl');
-  }
-
+  const hl = el?.closest?.('span.hl');
   if (!hl) return;
 
-  // Desenrollar: reemplaza el span por sus hijos (texto plano)
+  const annId = Number(hl.dataset.annId || 0);
+  if (annId && window.AnnotationsDB) {
+    await window.AnnotationsDB.deleteHighlight(annId);
+  }
+
   const parent = hl.parentNode;
   while (hl.firstChild) parent.insertBefore(hl.firstChild, hl);
   parent.removeChild(hl);
 
-  // Limpia rangos
   const sel = window.getSelection();
   if (sel) sel.removeAllRanges();
   lastRange = null;
   lastSelection = '';
 }
+
 
   function openNote(ref, selectionText) {
     const txt = prompt(
