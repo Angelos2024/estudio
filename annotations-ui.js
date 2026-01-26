@@ -191,6 +191,9 @@
     // ==============================
     // Notes UI: CSS + ventana flotante inyectada
     // ==============================
+
+
+
 function ensureNotesUI() {
   // CSS
   if (!document.getElementById('notes-ui-style')) {
@@ -361,49 +364,6 @@ function ensureNotesUI() {
   return { overlay, win };
 }
 
-
-
-      let overlay = document.getElementById('noteOverlay');
-      let win = document.getElementById('noteWin');
-
-      if (!overlay) {
-        overlay = document.createElement('div');
-        overlay.id = 'noteOverlay';
-        overlay.className = 'note-overlay';
-        document.body.appendChild(overlay);
-      }
-
-      if (!win) {
-        win = document.createElement('div');
-        win.id = 'noteWin';
-        win.className = 'note-window';
-        win.setAttribute('role', 'dialog');
-        win.setAttribute('aria-modal', 'true');
-        win.setAttribute('aria-hidden', 'true');
-        win.innerHTML = `
-          <div class="note-header" id="noteHeader">
-            <div class="note-title">
-              <strong id="noteTitle">Nota</strong>
-              <span id="noteSub">—</span>
-            </div>
-            <div class="note-actions">
-              <button class="note-iconbtn" id="noteDelete" title="Borrar nota">🗑</button>
-              <button class="note-iconbtn" id="noteCloseX" title="Cerrar">✕</button>
-            </div>
-          </div>
-          <div class="note-body">
-            <div class="note-meta" id="noteMeta">—</div>
-            <textarea class="note-textarea" id="noteText" placeholder="Escribe aquí tu nota…"></textarea>
-          </div>
-          <div class="note-footer">
-            <button class="note-btn" id="noteCancel">Cancelar</button>
-            <button class="note-btn primary" id="noteSave">Guardar</button>
-          </div>
-        `;
-        document.body.appendChild(win);
-      }
-
-      return { overlay, win };
     }
 
     const NotesUI = (() => {
