@@ -572,6 +572,23 @@
 
       return { openNew, openEdit, close };
     })();
+// ✅ Delegación global: abrir nota aunque haya highlight encima o re-render
+document.addEventListener('click', async (ev) => {
+  const mark = ev.target?.closest?.('.note-mark');
+  if (!mark) return;
+
+  const id = Number(mark.dataset.noteId || 0);
+  if (!id) return;
+
+  const note = await window.AnnotationsDB?.getNote?.(id);
+  if (!note) return;
+
+  // Evita que otros handlers “ganen”
+  ev.preventDefault();
+  ev.stopPropagation();
+
+  NotesUI.openEdit({ note, anchorEl: mark });
+}, true); // 👈 captura (clave)
 
     // ==============================
     // Notes: wrap / unwrap / apply
@@ -603,18 +620,6 @@
         r.insertNode(span);
       }
 
-      span.addEventListener('click', async (ev) => {
-        ev.preventDefault();
-        ev.stopPropagation();
-
-        const id = Number(span.dataset.noteId || 0);
-        if (!id) return;
-
-        const note = await window.AnnotationsDB?.getNote?.(id);
-        if (!note) return;
-
-        NotesUI.openEdit({ note, anchorEl: span });
-      });
 
       return true;
     }
