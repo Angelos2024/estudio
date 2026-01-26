@@ -54,21 +54,65 @@ let lastRange = null; // copia del rango seleccionado (se conserva al hacer clic
   function buildMenuUI() {
     menu.innerHTML = '';
 
-    // dots
-    for (const c of COLORS) {
-      const dot = document.createElement('button');
-      dot.type = 'button';
-      dot.className = 'ctx-dot';
-      dot.style.background = c.css;
-      dot.title = `Subrayar (${c.key})`;
-      dot.addEventListener('click', () => {
-        if (!lastTarget) return;
-        const ref = getRefFromNode(lastTarget);
-        highlightVerse(ref, c.key, lastSelection);
-        hideMenu();
-      });
-      menu.appendChild(dot);
-    }
+ // dots
+for (const c of COLORS) {
+  const dot = document.createElement('button');
+  dot.type = 'button';
+  dot.className = 'ctx-dot';
+  dot.style.background = c.css;
+  dot.title = `Subrayar (${c.key})`;
+
+  // ✅ Evita que el click en el menú mate la selección guardada
+  dot.addEventListener('mousedown', (ev) => ev.preventDefault());
+
+  dot.addEventListener('click', () => {
+    if (!lastTarget) return;
+    const ref = getRefFromNode(lastTarget);
+
+    // ✅ SOLO 2 parámetros
+    highlightVerse(ref, c.key);
+
+    hideMenu();
+  });
+
+  menu.appendChild(dot);
+}
+
+function highlightVerse(ref, colorKey) {
+  if (!lastTarget) return;
+
+  // ✅ si no hay selección guardada, NO subrayes
+  if (!lastRange || !lastSelection) return;
+
+  if (!lastTarget.contains(lastRange.commonAncestorContainer)) return;
+
+  const colors = {
+    yellow: '#fbbf24',
+    pink:   '#fb7185',
+    blue:   '#60a5fa',
+    green:  '#4ade80'
+  };
+
+  const span = document.createElement('span');
+  span.style.backgroundColor = colors[colorKey] || colors.yellow;
+  span.style.padding = '0 2px';
+  span.style.borderRadius = '4px';
+
+  try {
+    lastRange.surroundContents(span);
+  } catch (e) {
+    // fallback para selecciones que cruzan nodos
+    const frag = lastRange.extractContents();
+    span.appendChild(frag);
+    lastRange.insertNode(span);
+  } finally {
+    const sel = window.getSelection();
+    if (sel) sel.removeAllRanges();
+    lastRange = null;
+    lastSelection = '';
+  }
+}
+
 
     // separator
     const sep = document.createElement('div');
