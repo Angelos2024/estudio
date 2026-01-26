@@ -163,7 +163,13 @@
 .ctx-btn svg{ width: 16px; height: 16px; opacity:.85; }
 
   </style>
+
+
+<!-- ✅ ANTES del script grande: DB + UI (notas + highlights) -->
+<script src="./annotations-db.js"></script>
+<script src="./annotations-ui.js"></script>
 </head>
+
 
 <body>
   <!-- TOP SEARCH BAR -->
@@ -725,10 +731,15 @@ function render(ref){
     `?book=${encodeURIComponent(currentBookSlug)}&name=${encodeURIComponent(currentBookName)}&search=${encodeURIComponent(userSearch)}&version=${encodeURIComponent(versionSelect.value)}&orig=${ORIGINAL_ENABLED_DEFAULT?'1':'0'}`
   );
 
-  // ✅ Aplicar subrayados guardados (IndexedDB) después de renderizar el DOM
-  if (window.AnnotationsUI_applyHighlightsToPassage) {
-    window.AnnotationsUI_applyHighlightsToPassage(currentBookSlug, ch, v1, v2);
-  }
+
+// ✅ Aplicar subrayados y notas guardadas (IndexedDB) después de renderizar el DOM
+if (window.AnnotationsUI_applyHighlightsToPassage) {
+  window.AnnotationsUI_applyHighlightsToPassage(currentBookSlug, ch, v1, v2);
+}
+if (window.AnnotationsUI_applyNotesToPassage) {
+  window.AnnotationsUI_applyNotesToPassage(currentBookSlug, ch, v1, v2);
+}
+
 }
 
 
@@ -837,8 +848,7 @@ btnToggleOrig.addEventListener('click', () => {
   </script>
 
   <div id="ctxMenu" class="ctx-menu" style="display:none" aria-hidden="true"></div>
-<script src="./annotations-db.js"></script>
-<script src="./annotations-ui.js"></script>
+
 
 </body>
 </html>
