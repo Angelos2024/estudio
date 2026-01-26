@@ -602,11 +602,11 @@ async function ensureBookLoaded(slug, displayName){
 /***********************
  * Parse búsqueda
  ***********************/
-const msg = `<div class="text-muted">No se pudo
+function parseSearch(raw){
   const q = normalizeSpaces(raw);
   if(!q) return null;
 
-  // Con libro explícito
+  // ✅ Solo acepta búsquedas que incluyan libro
   const m = q.match(/^(.+?)\s+(\d+)(?::(\d+)(?:\s*-\s*(\d+))?)?\s*$/);
   if(!m) return null;
 
