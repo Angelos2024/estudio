@@ -68,19 +68,23 @@ dot.type = 'button';
 dot.className = 'ctx-dot';
 
 if (c.key === 'clear') {
-  dot.textContent = c.label || '✕';
-  dot.title = c.title || 'Quitar subrayado';
-  dot.style.background = '#fff';
-  dot.style.border = '1px solid #e6e8eb';
+  dot.textContent = '✕';
+  dot.title = 'Quitar subrayado';
+
+  dot.style.background = '#ffffff';
+  dot.style.border = '2px solid #111827';   // borde fuerte
+  dot.style.color = '#111827';              // X negra
   dot.style.display = 'flex';
   dot.style.alignItems = 'center';
   dot.style.justifyContent = 'center';
-  dot.style.fontWeight = '800';
-  dot.style.fontSize = '14px';
+  dot.style.fontWeight = '900';
+  dot.style.fontSize = '16px';
+  dot.style.lineHeight = '1';
 } else {
   dot.style.background = c.css;
   dot.title = `Subrayar (${c.key})`;
 }
+
 
 dot.addEventListener('mousedown', (ev) => ev.preventDefault());
 
