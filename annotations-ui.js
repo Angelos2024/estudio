@@ -12,6 +12,7 @@
 
   let lastTarget = null;   // <p class="verse-line"...>
   let lastSelection = '';
+let lastRange = null; // copia del rango seleccionado (se conserva al hacer click en el menú)
 
   // --- Helpers ---
   function getVerseNodeFromEvent(e) {
@@ -93,17 +94,18 @@
     });
     menu.appendChild(noteBtn);
   }
+function highlightVerse(ref, colorKey) {
+  if (!lastTarget) return;
 
-function highlightVerse(ref, colorKey, selectionText) {
-  const sel = window.getSelection();
-  if (!sel || sel.rangeCount === 0) return;
+  // Si no hay selección guardada, no subrayes todo el verso
+  if (!lastRange || !lastSelection) {
+    console.warn('No hay selección guardada para subrayar.');
+    return;
+  }
 
-  const range = sel.getRangeAt(0);
+  // Seguridad: el rango debe seguir dentro del verso
+  if (!lastTarget.contains(lastRange.commonAncestorContainer)) return;
 
-  // Validación: la selección debe estar dentro del mismo versículo
-  if (!lastTarget.contains(range.commonAncestorContainer)) return;
-
-  // Colores
   const colors = {
     yellow: '#fbbf24',
     pink:   '#fb7185',
@@ -111,18 +113,32 @@ function highlightVerse(ref, colorKey, selectionText) {
     green:  '#4ade80'
   };
 
-  const mark = document.createElement('mark');
-  mark.style.backgroundColor = colors[colorKey] || colors.yellow;
-  mark.style.padding = '0 2px';
-  mark.style.borderRadius = '4px';
+  // Envolver solo la selección
+  const span = document.createElement('span');
+  span.style.backgroundColor = colors[colorKey] || colors.yellow;
+  span.style.padding = '0 2px';
+  span.style.borderRadius = '4px';
 
   try {
-    range.surroundContents(mark);
-    sel.removeAllRanges(); // limpia selección
+    lastRange.surroundContents(span);
   } catch (e) {
-    console.warn('No se pudo subrayar esta selección:', e);
+    // Si la selección cruza nodos complejos, fallback: envolver texto con extract/insert (más tolerante)
+    try {
+      const frag = lastRange.extractContents();
+      span.appendChild(frag);
+      lastRange.insertNode(span);
+    } catch (e2) {
+      console.warn('No se pudo subrayar esta selección:', e2);
+    }
+  } finally {
+    // limpiar selección “visual”
+    const sel = window.getSelection();
+    if (sel) sel.removeAllRanges();
+    lastRange = null;
+    lastSelection = '';
   }
 }
+
 
 
   function openNote(ref, selectionText) {
@@ -144,16 +160,30 @@ function highlightVerse(ref, colorKey, selectionText) {
   });
 
   // Click derecho: abrir menú SOLO sobre versículos
-  document.addEventListener('contextmenu', (e) => {
-    const node = getVerseNodeFromEvent(e);
-    if (!node) return; // fuera de versículos: deja menú normal del navegador
-    e.preventDefault();
+document.addEventListener('contextmenu', (e) => {
+  const node = getVerseNodeFromEvent(e);
+  if (!node) return;
 
-    lastTarget = node;
+  // Guardar selección actual (si existe) antes de abrir el menú
+  const sel = window.getSelection();
+  lastRange = null;
+  lastSelection = '';
 
-    // si hay selección, lo más normal es mostrar menú cerca del mouse
-    showMenu(e.clientX, e.clientY);
-  });
+  if (sel && sel.rangeCount > 0 && !sel.isCollapsed) {
+    const r = sel.getRangeAt(0);
+
+    // Validación: debe estar dentro del mismo versículo
+    if (node.contains(r.commonAncestorContainer)) {
+      lastRange = r.cloneRange();
+      lastSelection = String(sel).trim();
+    }
+  }
+
+  e.preventDefault();
+  lastTarget = node;
+  showMenu(e.clientX, e.clientY);
+});
+
 
   // Ocultar al hacer click fuera o scroll
   document.addEventListener('mousedown', (e) => {
