@@ -61,6 +61,121 @@ const COLORS = [
   function buildMenuUI() {
     menu.innerHTML = '';
 
+
+
+
+    function getOffsetInVerseText(verseTextEl, range) {
+  // Devuelve offset (caracteres) desde el inicio de verseTextEl hasta el inicio del range
+  const pre = document.createRange();
+  pre.selectNodeContents(verseTextEl);
+  pre.setEnd(range.startContainer, range.startOffset);
+  return pre.toString().length;
+}
+
+function wrapOffsetLength(verseTextEl, offset, length, colorKey, annId) {
+  // Envuelve exactamente offset/length en el texto del verso, aunque haya varios nodos
+  const colors = {
+    yellow: '#fbbf24',
+    pink:   '#fb7185',
+    blue:   '#60a5fa',
+    green:  '#4ade80'
+  };
+
+  // Walk text nodes
+  const walker = document.createTreeWalker(verseTextEl, NodeFilter.SHOW_TEXT, null);
+  let node, pos = 0;
+
+  let startNode = null, startOffset = 0;
+  let endNode = null, endOffset = 0;
+
+  const endPos = offset + length;
+
+  while ((node = walker.nextNode())) {
+    const nLen = node.nodeValue.length;
+    const nextPos = pos + nLen;
+
+    if (!startNode && offset >= pos && offset <= nextPos) {
+      startNode = node;
+      startOffset = offset - pos;
+    }
+
+    if (!endNode && endPos >= pos && endPos <= nextPos) {
+      endNode = node;
+      endOffset = endPos - pos;
+      break;
+    }
+
+    pos = nextPos;
+  }
+
+  if (!startNode || !endNode) return false;
+
+  const r = document.createRange();
+  r.setStart(startNode, startOffset);
+  r.setEnd(endNode, endOffset);
+
+  const span = document.createElement('span');
+  span.className = 'hl';
+  span.style.backgroundColor = colors[colorKey] || colors.yellow;
+  span.style.padding = '0 2px';
+  span.style.borderRadius = '4px';
+  span.dataset.hlColor = colorKey;
+  span.dataset.annId = String(annId);
+
+  try {
+    r.surroundContents(span);
+  } catch {
+    const frag = r.extractContents();
+    span.appendChild(frag);
+    r.insertNode(span);
+  }
+
+  return true;
+}
+
+async function applyHighlightsToPassage(book, ch, vStart, vEnd) {
+  if (!window.AnnotationsDB) return;
+
+  // Aplica en ambos lados que existan en DOM (rv y orig)
+  const sides = ['rv', 'orig'];
+
+  for (const side of sides) {
+    const rows = await window.AnnotationsDB.getHighlightsForPassage(side, book, ch, vStart, vEnd);
+
+    // Agrupar por verso
+    const byV = new Map();
+    for (const r of rows) {
+      if (!byV.has(r.v)) byV.set(r.v, []);
+      byV.get(r.v).push(r);
+    }
+
+    for (const [v, list] of byV.entries()) {
+      const verseNode = document.querySelector(`.verse-line[data-side="${side}"][data-book="${book}"][data-ch="${ch}"][data-v="${v}"]`);
+      if (!verseNode) continue;
+
+      const verseTextEl = verseNode.querySelector('.verse-text');
+      if (!verseTextEl) continue;
+
+      // Limpia spans viejos (para evitar duplicar al re-render)
+      verseTextEl.querySelectorAll('span.hl').forEach(hl => {
+        const parent = hl.parentNode;
+        while (hl.firstChild) parent.insertBefore(hl.firstChild, hl);
+        parent.removeChild(hl);
+      });
+
+      // Importante: envolver desde el final para no “mover” offsets
+      list.sort((a, b) => (b.offset - a.offset));
+
+      for (const h of list) {
+        wrapOffsetLength(verseTextEl, h.offset, h.length, h.color, h.id);
+      }
+    }
+  }
+}
+
+// Exponer para que index.html lo llame al final del render()
+window.AnnotationsUI_applyHighlightsToPassage = applyHighlightsToPassage;
+
     // Dots de colores (subrayado)
     for (const c of COLORS) {
      const dot = document.createElement('button');
@@ -88,18 +203,13 @@ if (c.key === 'clear') {
 
 dot.addEventListener('mousedown', (ev) => ev.preventDefault());
 
-dot.addEventListener('click', () => {
+dot.addEventListener('click', async () => {
   if (!lastTarget) return;
   const ref = getRefFromNode(lastTarget);
-
-  if (c.key === 'clear') {
-    clearHighlightAtSelection();
-  } else {
-    highlightSelection(ref, c.key);
-  }
-
+  await highlightSelection(ref, c.key);
   hideMenu();
 });
+
 
 menu.appendChild(dot);
 }
@@ -133,51 +243,41 @@ menu.appendChild(dot);
   }
 
   // ✅ Subrayado SOLO de lo seleccionado (no todo el verso)
-  function highlightSelection(ref, colorKey) {
-    if (!lastTarget) return;
+async function highlightSelection(ref, colorKey) {
+  if (!lastTarget || !lastRange || !lastSelection) return;
 
-    // Solo subraya si hubo selección al abrir el menú
-    if (!lastRange || !lastSelection) return;
+  const verseTextEl = lastTarget.querySelector('.verse-text');
+  if (!verseTextEl) return;
+  if (!verseTextEl.contains(lastRange.commonAncestorContainer)) return;
 
-    // Solo permite subrayar dentro del span.verse-text (para no incluir el numerito)
-    const verseTextEl = getVerseTextNode(lastTarget);
-    if (!verseTextEl) return;
-    if (!verseTextEl.contains(lastRange.commonAncestorContainer)) return;
+  const offset = getOffsetInVerseText(verseTextEl, lastRange);
+  const length = lastRange.toString().length;
 
-    const colors = {
-      yellow: '#fbbf24',
-      pink:   '#fb7185',
-      blue:   '#60a5fa',
-      green:  '#4ade80'
-    };
+  // Guardar en DB primero
+  const payload = {
+    side: ref.side,      // "rv" o "orig"
+    book: ref.book,
+    ch: ref.ch,
+    v: ref.v,
+    offset,
+    length,
+    quote: lastSelection, // útil para debug/export
+    color: colorKey,
+    created_at: Date.now()
+  };
 
-    const span = document.createElement('span');
-    span.className = 'hl';
-    span.style.backgroundColor = colors[colorKey] || colors.yellow;
-    span.style.padding = '0 2px';
-    span.style.borderRadius = '4px';
+  const id = await window.AnnotationsDB.addHighlight(payload);
 
-    // (Opcional para futuro DB)
-    span.dataset.hlColor = colorKey;
-    span.dataset.book = ref.book;
-    span.dataset.ch = String(ref.ch);
-    span.dataset.v = String(ref.v);
+  // Aplicar visual (envolver offset/length con el id)
+  wrapOffsetLength(verseTextEl, offset, length, colorKey, id);
 
-    try {
-      // Caso ideal (selección en un solo nodo de texto)
-      lastRange.surroundContents(span);
-    } catch {
-      // Fallback robusto
-      const frag = lastRange.extractContents();
-      span.appendChild(frag);
-      lastRange.insertNode(span);
-    } finally {
-      const sel = window.getSelection();
-      if (sel) sel.removeAllRanges();
-      lastRange = null;
-      lastSelection = '';
-    }
-  }
+  // limpiar selección
+  const sel = window.getSelection();
+  if (sel) sel.removeAllRanges();
+  lastRange = null;
+  lastSelection = '';
+}
+
 function clearHighlightAtSelection() {
   // Prioriza el rango guardado (es el que sí sobrevive al click del menú)
   let node = null;
