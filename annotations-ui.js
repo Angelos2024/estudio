@@ -4,12 +4,14 @@
   if (!menu) return;
 
   // Colores del menú (puedes cambiar/añadir)
-  const COLORS = [
-    { key: 'yellow', css: '#fbbf24' },
-    { key: 'pink',   css: '#fb7185' },
-    { key: 'blue',   css: '#60a5fa' },
-    { key: 'green',  css: '#4ade80' },
-  ];
+const COLORS = [
+  { key: 'clear',  css: 'transparent', label: '✕', title: 'Quitar subrayado' },
+  { key: 'yellow', css: '#fbbf24' },
+  { key: 'pink',   css: '#fb7185' },
+  { key: 'blue',   css: '#60a5fa' },
+  { key: 'green',  css: '#4ade80' },
+];
+
 
   // Estado
   let lastTarget = null;      // <p class="verse-line"...>
@@ -61,24 +63,42 @@
 
     // Dots de colores (subrayado)
     for (const c of COLORS) {
-      const dot = document.createElement('button');
-      dot.type = 'button';
-      dot.className = 'ctx-dot';
-      dot.style.background = c.css;
-      dot.title = `Subrayar (${c.key})`;
+     const dot = document.createElement('button');
+dot.type = 'button';
+dot.className = 'ctx-dot';
 
-      // ✅ Evita que el click en el menú colapse la selección guardada
-      dot.addEventListener('mousedown', (ev) => ev.preventDefault());
+if (c.key === 'clear') {
+  dot.textContent = c.label || '✕';
+  dot.title = c.title || 'Quitar subrayado';
+  dot.style.background = '#fff';
+  dot.style.border = '1px solid #e6e8eb';
+  dot.style.display = 'flex';
+  dot.style.alignItems = 'center';
+  dot.style.justifyContent = 'center';
+  dot.style.fontWeight = '800';
+  dot.style.fontSize = '14px';
+} else {
+  dot.style.background = c.css;
+  dot.title = `Subrayar (${c.key})`;
+}
 
-      dot.addEventListener('click', () => {
-        if (!lastTarget) return;
-        const ref = getRefFromNode(lastTarget);
-        highlightSelection(ref, c.key);
-        hideMenu();
-      });
+dot.addEventListener('mousedown', (ev) => ev.preventDefault());
 
-      menu.appendChild(dot);
-    }
+dot.addEventListener('click', () => {
+  if (!lastTarget) return;
+  const ref = getRefFromNode(lastTarget);
+
+  if (c.key === 'clear') {
+    clearHighlightAtSelection();
+  } else {
+    highlightSelection(ref, c.key);
+  }
+
+  hideMenu();
+});
+
+menu.appendChild(dot);
+}
 
     // Separador
     const sep = document.createElement('div');
