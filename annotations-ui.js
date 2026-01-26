@@ -94,19 +94,36 @@
     menu.appendChild(noteBtn);
   }
 
-  // --- Acciones (por ahora “stubs”; luego se conectan a IndexedDB) ---
-  function highlightVerse(ref, colorKey, selectionText) {
-    // mínimo: marcar visualmente el versículo completo (fase 1)
-    // luego: guardar en IndexedDB
-    lastTarget.style.background = 'rgba(251, 191, 36, .20)'; // fallback
-    // si quieres diferenciar por color:
-    const map = { yellow:'rgba(251,191,36,.20)', pink:'rgba(251,113,133,.20)', blue:'rgba(96,165,250,.20)', green:'rgba(74,222,128,.20)' };
-    lastTarget.style.background = map[colorKey] || map.yellow;
+function highlightVerse(ref, colorKey, selectionText) {
+  const sel = window.getSelection();
+  if (!sel || sel.rangeCount === 0) return;
 
-    // opcional: guardar en dataset (solo para debug)
-    lastTarget.dataset.hl = colorKey;
-    // console.log('highlight', ref, colorKey, selectionText);
+  const range = sel.getRangeAt(0);
+
+  // Validación: la selección debe estar dentro del mismo versículo
+  if (!lastTarget.contains(range.commonAncestorContainer)) return;
+
+  // Colores
+  const colors = {
+    yellow: '#fbbf24',
+    pink:   '#fb7185',
+    blue:   '#60a5fa',
+    green:  '#4ade80'
+  };
+
+  const mark = document.createElement('mark');
+  mark.style.backgroundColor = colors[colorKey] || colors.yellow;
+  mark.style.padding = '0 2px';
+  mark.style.borderRadius = '4px';
+
+  try {
+    range.surroundContents(mark);
+    sel.removeAllRanges(); // limpia selección
+  } catch (e) {
+    console.warn('No se pudo subrayar esta selección:', e);
   }
+}
+
 
   function openNote(ref, selectionText) {
     // por ahora: prompt simple. Luego lo cambias por modal bootstrap.
