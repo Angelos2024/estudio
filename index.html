@@ -563,18 +563,9 @@ async function ensureBookLoaded(slug, displayName){
 /***********************
  * Parse búsqueda
  ***********************/
-function parseSearch(raw){
+const msg = `<div class="text-muted">No se pudo
   const q = normalizeSpaces(raw);
   if(!q) return null;
-
-  // Solo cap/vers (sin libro)
-  const mShort = q.match(/^(\d+)(?::(\d+)(?:\s*-\s*(\d+))?)?\s*$/);
-  if(mShort){
-    const chapter = parseInt(mShort[1],10);
-    const verseStart = mShort[2] ? parseInt(mShort[2],10) : null;
-    const verseEnd = mShort[3] ? parseInt(mShort[3],10) : (verseStart ? verseStart : null);
-    return { slug: currentBookSlug, bookDisplay: currentBookName, chapter, verseStart, verseEnd };
-  }
 
   // Con libro explícito
   const m = q.match(/^(.+?)\s+(\d+)(?::(\d+)(?:\s*-\s*(\d+))?)?\s*$/);
@@ -699,7 +690,9 @@ async function runSearch(){
 
   const ref = parseSearch(raw);
   if(!ref){
-    const msg = `<div class="text-muted">No se pudo interpretar. Ej: <span class="mono">Amós 1:1-5</span>, <span class="mono">Génesis 1:1</span>, <span class="mono">1 Corintios 13:1-7</span></div>`;
+    const msg = `<div class="text-muted">
+Debes incluir el <strong>libro</strong>. Ej: <span class="mono">Gn 1:1</span>, <span class="mono">Amos 3</span>, <span class="mono">1Co 13:1-7</span>
+</div>`;
     passageTextRV.innerHTML = msg;
     passageTextOrig.innerHTML = msg;
     return;
