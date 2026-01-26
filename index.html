@@ -52,15 +52,16 @@
       font-size: 1.1rem;
       line-height: 1.8;
     }
-    .hebrew{
-  direction: rtl;
-  unicode-bidi: plaintext;
-  font-family: 'SBL Hebrew','Ezra SIL','Times New Roman',serif;
-  font-size: 1.12rem;
-  line-height: 1.9;
-}
 
-      /* Feedback animation */
+    .hebrew{
+      direction: rtl;
+      unicode-bidi: plaintext;
+      font-family: 'SBL Hebrew','Ezra SIL','Times New Roman',serif;
+      font-size: 1.12rem;
+      line-height: 1.9;
+    }
+
+    /* Feedback animation */
     .feedback-badge{
       display:inline-flex;
       align-items:center;
@@ -122,7 +123,6 @@
       75%{ transform:translateX(-2px); }
       100%{ transform:translateX(0); }
     }
-
   </style>
 </head>
 
@@ -193,6 +193,7 @@
             <span>Texto del pasaje</span>
 
             <div class="d-flex align-items-center gap-2">
+              <span class="text-muted" style="font-weight:400; font-size:.9rem" id="statusLine"></span>
               <span id="feedbackBadge" class="feedback-badge" style="display:none"></span>
               <button id="btnToggleOrig" class="btn btn-soft btn-sm" type="button" aria-expanded="true">
                 Ocultar original
@@ -233,7 +234,9 @@ const params = new URLSearchParams(window.location.search);
 
 const RV_BASE = params.get('rvBase') || './librosRV1960/';
 const GRIEGO_PATH = './IdiomaORIGEN/Bgriega.json';
-const HEBREO_PATH = './IdiomaORIGEN/he_modern.json';
+
+// ✅ Hebreo por libro (con nikkud): IdiomaORIGEN/genesis.json, exodo.json, amos.json, etc.
+const HEBREO_BOOK_BASE = params.get('heBase') || './IdiomaORIGEN/';
 
 // Si quieres forzar ocultar original por defecto: ?orig=0
 const ORIGINAL_ENABLED_DEFAULT = (params.get('orig') ?? '1') !== '0';
@@ -384,50 +387,6 @@ const NT_TR_BOOKNAME = {
   '1_juan': '1 John', '2_juan': '2 John', '3_juan': '3 John', judas: 'Jude', apocalipsis: 'Revelation'
 };
 
-// AT (ajusta si he_modern.json usa otros book_name)
-const AT_HE_BOOKNAME = {
-  genesis: 'בְּרֵאשִׁית',
-  exodo: 'שְׁמֹות',
-  levitico: 'וַיִּקְרָא',
-  numeros: 'בְּמִדְבַּר',
-  deuteronomio: 'דְּבָרִים',
-  josue: 'יְהוֹשֻעַ',
-  jueces: 'שֹׁפְטִים',
-  rut: 'רוּת',
-  '1_samuel': '1 שְׁמוּאֵל',
-  '2_samuel': '2 שְׁמוּאֵל',
-  '1_reyes': '1 מְלָכִים',
-  '2_reyes': '2 מְלָכִים',
-  '1_cronicas': '1 דִּבְרֵי הַיָּמִים',
-  '2_cronicas': '2 דִּבְרֵי הַיָּמִים',
-  esdras: 'עֶזְרָא',
-  nehemias: 'נחמיה',
-  ester: 'אֶסְתֵר',
-  job: 'אִיּוֹב',
-  salmos: 'תְהִלִּים',
-  proverbios: 'מִשְׁלֵי',
-  eclesiastes: 'קֹהֶלֶת',
-  cantares: 'שִׁיר הַשִּׁירִים',
-  isaias: 'יְשַׁעְיָהוּ',
-  jeremias: 'יִרְמְיָהוּ',
-  lamentaciones: 'אֵיכָה',
-  ezequiel: 'יְחֶזְקֵאל',
-  daniel: 'דָּנִיֵּאל',
-  oseas: 'הוֹשֵׁעַ',
-  joel: 'יוֹאֵל',
-  amos: 'עָמוֹס',
-  abdias: 'עֹבַדְיָה',
-  jonas: 'יוֹנָה',
-  miqueas: 'מִיכָה',
-  nahum: 'נַחוּם',
-  habacuc: 'חֲבַקּוּק',
-  sofonias: 'צְפַנְיָה',
-  hageo: 'חַגַּי',
-  zacarias: 'זְכַרְיָה',
-  malaquias: 'מַלְאָכִי'
-};
-
-
 /***********************
  * DOM
  ***********************/
@@ -454,10 +413,11 @@ const btnToggleOrig = document.getElementById('btnToggleOrig');
  ***********************/
 let lastRef = null;
 const rvCache = {};                 // slug -> chapters[][]
-let trData = null;                  // NT griego completo
+let trData = null;                  // NT griego completo (verses[])
 const trChaptersCache = {};         // slug -> chapters[][]
-let heData = null;                  // AT hebreo completo
-const heChaptersCache = {};         // slug -> chapters[][]
+
+// ✅ Hebreo por libro (cada archivo ya trae text[][])
+const heBookCache = {};             // slug -> chapters[][]
 
 let bookDataRV = null;
 let bookDataOrig = null;
@@ -466,14 +426,12 @@ let bookDataOrig = null;
  * Helpers
  ***********************/
 function esc(s){
-  return (s ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')
+  return (s ?? '')
+    .replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')
     .replaceAll('"','&quot;').replaceAll("'","&#39;");
 }
 function normalizeSpaces(s){
   return (s || '').trim().replace(/\s+/g,' ');
-}
-function clamp(n, min, max){
-  return Math.max(min, Math.min(max, n));
 }
 async function loadJson(path){
   const r = await fetch(path, { cache: 'no-store' });
@@ -538,7 +496,7 @@ async function ensureBookLoaded(slug, displayName){
   }
   bookDataRV = rvCache[slug];
 
-  // Original (opcional). Si falta el archivo hebreo/griego, NO debe tumbar la lectura en español.
+  // Original (opcional). Si falla, NO tumba el español.
   bookDataOrig = null;
 
   if(!ORIGINAL_ENABLED_DEFAULT){
@@ -559,6 +517,7 @@ async function ensureBookLoaded(slug, displayName){
         trChaptersCache[slug] = buildChaptersFromVersesForBook(trData.verses, bookName);
       }
       bookDataOrig = trChaptersCache[slug] || null;
+
       if(!bookDataOrig){
         passageTextOrig.innerHTML = `<div class="text-muted">Griego no disponible para este libro (revisa mapeo).</div>`;
       }
@@ -568,36 +527,31 @@ async function ensureBookLoaded(slug, displayName){
     }
 
   } else {
+    // ✅ AT: Hebreo por libro: IdiomaORIGEN/<slug>.json, con raíz: { metadata, text: [[...],[...]] }
     rightLabel.textContent = 'Hebreo';
     passageTextOrig.classList.remove('greek');
     passageTextOrig.classList.add('hebrew');
 
-    // Si no tienes aún he_modern.json, no debe romper.
     try{
-      if(!heData) heData = await loadJson(HEBREO_PATH);
-      if(!heChaptersCache[slug]){
-        const bookName = AT_HE_BOOKNAME[slug];
-        if(!bookName){
-          passageTextOrig.innerHTML = `
-            <div class="text-muted">
-              Falta mapear este libro del AT en <span class="mono">AT_HE_BOOKNAME</span>:
-              <strong>${esc(slug)}</strong>
-            </div>`;
-          bookDataOrig = null;
-        }else{
-          heChaptersCache[slug] = buildChaptersFromVersesForBook(heData.verses, bookName);
+      if(!heBookCache[slug]){
+        const path = `${HEBREO_BOOK_BASE}${slug}.json`;
+        const heBook = await loadJson(path);
+
+        if(!heBook || !Array.isArray(heBook.text)){
+          throw new Error(`Estructura hebrea inválida en ${path}: falta "text" como array (chapters[][]).`);
         }
+
+        // Normaliza a strings (por si hay nulls)
+        heBookCache[slug] = heBook.text.map(ch => Array.isArray(ch) ? ch.map(v => (v ?? '')) : []);
       }
-      bookDataOrig = heChaptersCache[slug] || null;
+
+      bookDataOrig = heBookCache[slug] || null;
+
       if(!bookDataOrig){
-        // Si no hay data, ya quedó un mensaje arriba o lo ponemos aquí
-        if(!passageTextOrig.innerText.trim()){
-          passageTextOrig.innerHTML = `<div class="text-muted">Hebreo no disponible para este libro.</div>`;
-        }
+        passageTextOrig.innerHTML = `<div class="text-muted">Hebreo no disponible para este libro.</div>`;
       }
     }catch(err){
-      // ESTE es tu caso (HTTP 404): mostramos mensaje y seguimos con español
-      passageTextOrig.innerHTML = `<div class="text-muted">Hebreo no disponible (archivo faltante). Puedes seguir leyendo en español.</div>`;
+      passageTextOrig.innerHTML = `<div class="text-muted">Hebreo no disponible: ${esc(err.message || String(err))}</div>`;
       bookDataOrig = null;
     }
   }
@@ -608,11 +562,6 @@ async function ensureBookLoaded(slug, displayName){
 
 /***********************
  * Parse búsqueda
- * Acepta:
- *  - "Amós 1:1-5"
- *  - "Genesis 1:1"
- *  - "1 Corintios 13:1-7"
- *  - "13:1-7" (usa libro actual)
  ***********************/
 function parseSearch(raw){
   const q = normalizeSpaces(raw);
@@ -719,7 +668,7 @@ function render(ref){
   }
   passageTextRV.innerHTML = htmlRV || `<div class="text-muted">Sin contenido para esta referencia.</div>`;
 
-  // Original (si hay data)
+  // Original
   if(bookDataOrig){
     const versesOrig = bookDataOrig[ch-1] || [];
     let htmlOrig = '';
@@ -728,6 +677,9 @@ function render(ref){
       htmlOrig += `<p class="mb-2"><span class="verse-num">${v}</span>${esc(t)}</p>`;
     }
     passageTextOrig.innerHTML = htmlOrig || `<div class="text-muted">Sin contenido original para esta referencia.</div>`;
+  } else {
+    // ✅ evita quedarse pegado en "Cargando..."
+    passageTextOrig.innerHTML = `<div class="text-muted">Original no disponible para esta referencia.</div>`;
   }
 
   statusLine.textContent = `Capítulos: ${chapterCount} · Cap ${ch}: ${verseCount} vers.`;
@@ -760,7 +712,6 @@ async function runSearch(){
   }catch(err){
     const msg = `<div class="text-danger fw-semibold">Error:</div><div class="text-muted">${esc(err.message || String(err))}</div>`;
     passageTextRV.innerHTML = msg;
-    // Si el error es solo del original, no debería llegar aquí; esto es para RV faltante.
     passageTextOrig.innerHTML = `<div class="text-muted">—</div>`;
     statusLine.textContent = '';
   }
@@ -838,6 +789,6 @@ btnToggleOrig.addEventListener('click', () => {
     statusLine.textContent = '';
   }
 })();
-</script>
+  </script>
 </body>
 </html>
