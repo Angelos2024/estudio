@@ -191,9 +191,9 @@
     // ==============================
     // Notes UI: CSS + ventana flotante inyectada
     // ==============================
-
-
-
+// ==============================
+// Notes UI: CSS + ventana flotante inyectada
+// ==============================
 function ensureNotesUI() {
   // CSS
   if (!document.getElementById('notes-ui-style')) {
@@ -364,188 +364,171 @@ function ensureNotesUI() {
   return { overlay, win };
 }
 
-    }
+const NotesUI = (() => {
+  const { overlay, win } = ensureNotesUI();
 
-    const NotesUI = (() => {
-      const { overlay, win } = ensureNotesUI();
+  const hdr = win.querySelector('#noteHeader');
+  const titleEl = win.querySelector('#noteTitle');
+  const subEl = win.querySelector('#noteSub');
+  const metaEl = win.querySelector('#noteMeta');
+  const textEl = win.querySelector('#noteText');
 
-      const hdr = win.querySelector('#noteHeader');
-      const titleEl = win.querySelector('#noteTitle');
-      const subEl = win.querySelector('#noteSub');
-      const metaEl = win.querySelector('#noteMeta');
-      const textEl = win.querySelector('#noteText');
+  const btnSave = win.querySelector('#noteSave');
+  const btnCancel = win.querySelector('#noteCancel');
+  const btnCloseX = win.querySelector('#noteCloseX');
+  const btnDelete = win.querySelector('#noteDelete');
 
-      const btnSave = win.querySelector('#noteSave');
-      const btnCancel = win.querySelector('#noteCancel');
-      const btnCloseX = win.querySelector('#noteCloseX');
-      const btnDelete = win.querySelector('#noteDelete');
+  let state = {
+    mode: 'new',
+    ref: null,
+    anchor: null,
+    note: null,
+    anchorEl: null,
+    verseTextEl: null,
+  };
 
-      let state = {
-        mode: 'new',        // 'new' | 'edit'
-        ref: null,          // {side,book,ch,v}
-        anchor: null,       // {offset,length,quote}
-        note: null,         // note object (edit)
-        anchorEl: null,     // .note-mark
-        verseTextEl: null,  // verseTextEl para envolver en new
+  function show() {
+    overlay.style.display = 'block';
+    win.style.display = 'block';
+    win.setAttribute('aria-hidden', 'false');
+    setTimeout(() => textEl.focus(), 0);
+  }
+
+  function close() {
+    overlay.style.display = 'none';
+    win.style.display = 'none';
+    win.setAttribute('aria-hidden', 'true');
+    textEl.value = '';
+    state = { mode:'new', ref:null, anchor:null, note:null, anchorEl:null, verseTextEl:null };
+  }
+
+  function setMetaNew(ref, anchor) {
+    titleEl.textContent = 'Nueva nota';
+    subEl.textContent = `${ref.book} ${ref.ch}:${ref.v} (${ref.side})`;
+    metaEl.textContent = `Selección: "${anchor.quote}"\nOffset: ${anchor.offset} | Len: ${anchor.length}`;
+    btnDelete.style.display = 'none';
+  }
+
+  function setMetaEdit(note) {
+    titleEl.textContent = 'Editar nota';
+    subEl.textContent = `${note.book} ${note.ch}:${note.v} (${note.side})`;
+    metaEl.textContent =
+      `Selección: "${note.quote}"\nOffset: ${note.offset} | Len: ${note.length}\nCreada: ${new Date(note.created_at).toLocaleString()}`;
+    btnDelete.style.display = '';
+  }
+
+  function openNew({ ref, anchor, verseTextEl }) {
+    state.mode = 'new';
+    state.ref = ref;
+    state.anchor = anchor;
+    state.verseTextEl = verseTextEl;
+
+    textEl.value = '';
+    setMetaNew(ref, anchor);
+    show();
+  }
+
+  function openEdit({ note, anchorEl }) {
+    state.mode = 'edit';
+    state.note = note;
+    state.anchorEl = anchorEl || null;
+
+    textEl.value = note.text || '';
+    setMetaEdit(note);
+    show();
+  }
+
+  // Drag
+  (function makeDraggable() {
+    let dragging = false, startX=0, startY=0, origX=0, origY=0;
+
+    hdr.addEventListener('mousedown', (e) => {
+      if (e.button !== 0) return;
+      dragging = true;
+      const rect = win.getBoundingClientRect();
+      startX = e.clientX; startY = e.clientY;
+      origX = rect.left; origY = rect.top;
+      e.preventDefault();
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!dragging) return;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+
+      const w = win.getBoundingClientRect().width;
+      const h = win.getBoundingClientRect().height;
+
+      const x = Math.max(8, Math.min(origX + dx, window.innerWidth - w - 8));
+      const y = Math.max(8, Math.min(origY + dy, window.innerHeight - h - 8));
+      win.style.left = x + 'px';
+      win.style.top  = y + 'px';
+    });
+
+    window.addEventListener('mouseup', () => dragging = false);
+  })();
+
+  overlay.addEventListener('mousedown', close);
+  btnCloseX.addEventListener('click', close);
+  btnCancel.addEventListener('click', close);
+
+  btnSave.addEventListener('click', async () => {
+    const txt = textEl.value.trim();
+    if (!txt) { alert('Escribe una nota antes de guardar.'); textEl.focus(); return; }
+    if (!window.AnnotationsDB) { alert('AnnotationsDB no está disponible.'); return; }
+
+    if (state.mode === 'new') {
+      const ref = state.ref;
+      const a = state.anchor;
+
+      const existing = await window.AnnotationsDB.getNoteByAnchor?.(
+        ref.side, ref.book, ref.ch, ref.v, a.offset, a.length
+      );
+      if (existing) {
+        const mark = document.querySelector(`.note-mark[data-note-id="${existing.id}"]`);
+        openEdit({ note: existing, anchorEl: mark });
+        return;
+      }
+
+      const note = {
+        side: ref.side, book: ref.book, ch: ref.ch, v: ref.v,
+        offset: a.offset, length: a.length, quote: a.quote,
+        text: txt, created_at: Date.now(), updated_at: Date.now(),
       };
 
-      function show() {
-        overlay.style.display = 'block';
-        win.style.display = 'block';
-        win.setAttribute('aria-hidden', 'false');
-        setTimeout(() => textEl.focus(), 0);
-      }
+      const id = await window.AnnotationsDB.addNote(note);
 
-      function close() {
-        overlay.style.display = 'none';
-        win.style.display = 'none';
-        win.setAttribute('aria-hidden', 'true');
-        textEl.value = '';
-        state = { mode:'new', ref:null, anchor:null, note:null, anchorEl:null, verseTextEl:null };
-      }
+      // wrapNoteMark existe más abajo (se usa cuando guardas)
+      wrapNoteMark(state.verseTextEl, a.offset, a.length, id);
+      close();
+      clearSelection();
+      return;
+    }
 
-      function setMetaNew(ref, anchor) {
-        titleEl.textContent = 'Nueva nota';
-        subEl.textContent = `${ref.book} ${ref.ch}:${ref.v} (${ref.side})`;
-        metaEl.textContent = `Selección: "${anchor.quote}"\nOffset: ${anchor.offset} | Len: ${anchor.length}`;
-        btnDelete.style.display = 'none';
-      }
+    // edit
+    if (!state.note) return;
+    state.note.text = txt;
+    state.note.updated_at = Date.now();
+    await window.AnnotationsDB.updateNote(state.note);
+    close();
+  });
 
-      function setMetaEdit(note) {
-        titleEl.textContent = 'Editar nota';
-        subEl.textContent = `${note.book} ${note.ch}:${note.v} (${note.side})`;
-        metaEl.textContent =
-          `Selección: "${note.quote}"\nOffset: ${note.offset} | Len: ${note.length}\nCreada: ${new Date(note.created_at).toLocaleString()}`;
-        btnDelete.style.display = '';
-      }
+  btnDelete.addEventListener('click', async () => {
+    if (state.mode !== 'edit' || !state.note) return;
+    if (!confirm('¿Borrar esta nota?')) return;
 
-      function openNew({ ref, anchor, verseTextEl }) {
-        state.mode = 'new';
-        state.ref = ref;
-        state.anchor = anchor;
-        state.verseTextEl = verseTextEl;
+    const id = state.note.id;
+    await window.AnnotationsDB.deleteNote(id);
 
-        textEl.value = '';
-        setMetaNew(ref, anchor);
-        show();
-      }
+    const el = state.anchorEl || document.querySelector(`.note-mark[data-note-id="${id}"]`);
+    if (el) unwrapNoteMark(el);
 
-      function openEdit({ note, anchorEl }) {
-        state.mode = 'edit';
-        state.note = note;
-        state.anchorEl = anchorEl || null;
+    close();
+  });
 
-        textEl.value = note.text || '';
-        setMetaEdit(note);
-        show();
-      }
+  return { openNew, openEdit, close };
+})();
 
-      // Drag
-      (function makeDraggable() {
-        let dragging = false, startX=0, startY=0, origX=0, origY=0;
-
-        hdr.addEventListener('mousedown', (e) => {
-          if (e.button !== 0) return;
-          dragging = true;
-          const rect = win.getBoundingClientRect();
-          startX = e.clientX; startY = e.clientY;
-          origX = rect.left; origY = rect.top;
-          e.preventDefault();
-        });
-
-        window.addEventListener('mousemove', (e) => {
-          if (!dragging) return;
-          const dx = e.clientX - startX;
-          const dy = e.clientY - startY;
-
-          const w = win.getBoundingClientRect().width;
-          const h = win.getBoundingClientRect().height;
-
-          const x = Math.max(8, Math.min(origX + dx, window.innerWidth - w - 8));
-          const y = Math.max(8, Math.min(origY + dy, window.innerHeight - h - 8));
-          win.style.left = x + 'px';
-          win.style.top  = y + 'px';
-        });
-
-        window.addEventListener('mouseup', () => dragging = false);
-      })();
-
-      overlay.addEventListener('mousedown', close);
-      btnCloseX.addEventListener('click', close);
-      btnCancel.addEventListener('click', close);
-
-      btnSave.addEventListener('click', async () => {
-        const txt = textEl.value.trim();
-        if (!txt) {
-          alert('Escribe una nota antes de guardar.');
-          textEl.focus();
-          return;
-        }
-
-        if (!window.AnnotationsDB) {
-          alert('AnnotationsDB no está disponible.');
-          return;
-        }
-
-        if (state.mode === 'new') {
-          const ref = state.ref;
-          const a = state.anchor;
-
-          const existing = await window.AnnotationsDB.getNoteByAnchor?.(
-            ref.side, ref.book, ref.ch, ref.v, a.offset, a.length
-          );
-          if (existing) {
-            const mark = document.querySelector(`.note-mark[data-note-id="${existing.id}"]`);
-            openEdit({ note: existing, anchorEl: mark });
-            return;
-          }
-
-          const note = {
-            side: ref.side,
-            book: ref.book,
-            ch: ref.ch,
-            v: ref.v,
-            offset: a.offset,
-            length: a.length,
-            quote: a.quote,
-            text: txt,
-            created_at: Date.now(),
-            updated_at: Date.now(),
-          };
-
-          const id = await window.AnnotationsDB.addNote(note);
-
-          wrapNoteMark(state.verseTextEl, a.offset, a.length, id);
-          close();
-          clearSelection();
-          return;
-        }
-
-        // edit
-        if (!state.note) return;
-        state.note.text = txt;
-        state.note.updated_at = Date.now();
-        await window.AnnotationsDB.updateNote(state.note);
-
-        close();
-      });
-
-      btnDelete.addEventListener('click', async () => {
-        if (state.mode !== 'edit' || !state.note) return;
-        const ok = confirm('¿Borrar esta nota?');
-        if (!ok) return;
-
-        const id = state.note.id;
-        await window.AnnotationsDB.deleteNote(id);
-
-        const el = state.anchorEl || document.querySelector(`.note-mark[data-note-id="${id}"]`);
-        if (el) unwrapNoteMark(el);
-
-        close();
-      });
-
-      return { openNew, openEdit, close };
-    })();
 // ✅ Delegación global: abrir nota aunque haya highlight encima o re-render
 document.addEventListener('click', async (ev) => {
   const mark = ev.target?.closest?.('.note-mark');
@@ -557,12 +540,10 @@ document.addEventListener('click', async (ev) => {
   const note = await window.AnnotationsDB?.getNote?.(id);
   if (!note) return;
 
-  // Evita que otros handlers “ganen”
   ev.preventDefault();
   ev.stopPropagation();
-
   NotesUI.openEdit({ note, anchorEl: mark });
-}, true); // 👈 captura (clave)
+}, true);
 
     // ==============================
     // Notes: wrap / unwrap / apply
