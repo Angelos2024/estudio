@@ -191,114 +191,163 @@
     // ==============================
     // Notes UI: CSS + ventana flotante inyectada
     // ==============================
-    function ensureNotesUI() {
-      if (!document.getElementById('notes-ui-style')) {
-        const st = document.createElement('style');
-        st.id = 'notes-ui-style';
-        st.textContent = `
-          .note-overlay{ position:fixed; inset:0; background:rgba(0,0,0,.25); display:none; z-index:9998; }
-          .note-window{
-            position:fixed; left:40px; top:60px;
-            width:min(520px, calc(100vw - 20px));
-            background:rgba(17,26,46,.98);
-            border:1px solid rgba(255,255,255,.10);
-            border-radius:16px;
-            box-shadow:0 20px 50px rgba(0,0,0,.45);
-            display:none; z-index:9999; overflow:hidden;
-            backdrop-filter: blur(10px);
-            color:#e5e7eb;
-            font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-          }
-          .note-header{
-            display:flex; align-items:center; justify-content:space-between; gap:10px;
-            padding:10px 12px; background:rgba(255,255,255,.04);
-            border-bottom:1px solid rgba(255,255,255,.10);
-            cursor:move; user-select:none;
-          }
-          .note-title{display:flex; flex-direction:column; gap:2px; min-width:0}
-          .note-title strong{font-size:13px;color:#f1f5f9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-          .note-title span{font-size:12px;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-          .note-actions{display:flex;gap:8px;align-items:center}
-          .note-iconbtn{
-            width:34px;height:34px;border-radius:12px;
-            border:1px solid rgba(255,255,255,.10);
-            background:rgba(255,255,255,.06);
-            cursor:pointer;color:#e5e7eb;
-            display:flex;align-items:center;justify-content:center;
-            user-select:none;
-          }
-          .note-iconbtn:hover{background:rgba(255,255,255,.09)}
-          .note-body{padding:12px}
-          .note-meta{
-            font-size:12px;color:#94a3b8;
-            background:rgba(255,255,255,.03);
-            border:1px solid rgba(255,255,255,.10);
-            border-radius:12px;
-            padding:10px; margin-bottom:10px;
-            line-height:1.35; white-space:pre-wrap;
-          }
-          .note-textarea{
-            width:100%; min-height:160px; resize:vertical;
-            border-radius:14px;
-            border:1px solid rgba(255,255,255,.10);
-            background:rgba(15,23,42,.65);
-            color:#e5e7eb;
-            padding:12px;
-            outline:none;
-            font-size:14px; line-height:1.5;
-          }
-          .note-textarea:focus{
-            border-color:rgba(96,165,250,.45);
-            box-shadow:0 0 0 3px rgba(96,165,250,.12);
-          }
-          .note-footer{
-            display:flex; gap:10px; justify-content:flex-end;
-            padding:10px 12px 12px;
-            border-top:1px solid rgba(255,255,255,.10);
-            background:rgba(255,255,255,.03);
-          }
-          .note-btn{
-            border:1px solid rgba(255,255,255,.10);
-            background:rgba(255,255,255,.06);
-            color:#e5e7eb;
-            padding:8px 10px;
-            border-radius:10px;
-            cursor:pointer;
-            font-weight:650; font-size:13px;
-            display:inline-flex; align-items:center; gap:8px;
-            user-select:none;
-          }
-          .note-btn:hover{background:rgba(255,255,255,.09)}
-          .note-btn.primary{border-color:rgba(96,165,250,.35); background:rgba(96,165,250,.12)}
-          .note-btn.danger{border-color:rgba(239,68,68,.35); background:rgba(239,68,68,.10)}
+   function ensureNotesUI() {
+  if (!document.getElementById('notes-ui-style')) {
+    const st = document.createElement('style');
+    st.id = 'notes-ui-style';
+    st.textContent = `
+      .note-overlay{ position:fixed; inset:0; background:rgba(0,0,0,.25); display:none; z-index:9998; }
 
-          /* Marca roja de nota + icono */
-          .note-mark{
-            position:relative;
-            text-decoration: underline;
-            text-decoration-color: #ef4444;
-            text-decoration-thickness: 2px;
-            text-underline-offset: 3px;
-            cursor:pointer;
-            border-radius:6px;
-            padding:0 1px;
-          }
-          .note-mark:hover{background:rgba(239,68,68,.08)}
-          .note-mark .note-icon{
-            display:none;
-            position:absolute;
-            top:-18px; right:-10px;
-            width:22px;height:22px;border-radius:999px;
-            border:1px solid rgba(255,255,255,.10);
-            background:rgba(17,26,46,.95);
-            box-shadow:0 8px 18px rgba(0,0,0,.35);
-            align-items:center;justify-content:center;
-            font-size:12px;color:#f8fafc;
-          }
-          .note-mark:hover .note-icon{display:flex}
-        `;
-        document.head.appendChild(st);
+      .note-window{
+        position:fixed; left:40px; top:60px;
+        width:min(520px, calc(100vw - 20px));
+        background:rgba(17,26,46,.98);
+        border:1px solid rgba(255,255,255,.10);
+        border-radius:16px;
+        box-shadow:0 20px 50px rgba(0,0,0,.45);
+        display:none; z-index:9999; overflow:hidden;
+        backdrop-filter: blur(10px);
+
+        /* ✅ MÁS BLANCO / LEGIBLE */
+        color:#f8fafc;
+        font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       }
+
+      .note-header{
+        display:flex; align-items:center; justify-content:space-between; gap:10px;
+        padding:10px 12px; background:rgba(255,255,255,.04);
+        border-bottom:1px solid rgba(255,255,255,.10);
+        cursor:move; user-select:none;
+      }
+
+      .note-title{display:flex; flex-direction:column; gap:2px; min-width:0}
+
+      /* ✅ Título más blanco y fuerte */
+      .note-title strong{
+        font-size:13px;
+        color:#ffffff;
+        font-weight:700;
+        white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+      }
+
+      /* ✅ Subtítulo más claro */
+      .note-title span{
+        font-size:12px;
+        color:#e5e7eb;
+        white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+      }
+
+      .note-actions{display:flex;gap:8px;align-items:center}
+
+      .note-iconbtn{
+        width:34px;height:34px;border-radius:12px;
+        border:1px solid rgba(255,255,255,.10);
+        background:rgba(255,255,255,.06);
+        cursor:pointer;
+
+        /* ✅ Botones con texto más blanco */
+        color:#f8fafc;
+
+        display:flex;align-items:center;justify-content:center;
+        user-select:none;
+      }
+      .note-iconbtn:hover{background:rgba(255,255,255,.09)}
+
+      .note-body{padding:12px}
+
+      /* ✅ Meta más legible */
+      .note-meta{
+        font-size:12px;
+        color:#f1f5f9;
+        background:rgba(255,255,255,.03);
+        border:1px solid rgba(255,255,255,.10);
+        border-radius:12px;
+        padding:10px; margin-bottom:10px;
+        line-height:1.35; white-space:pre-wrap;
+      }
+
+      .note-textarea{
+        width:100%; min-height:160px; resize:vertical;
+        border-radius:14px;
+        border:1px solid rgba(255,255,255,.10);
+        background:rgba(15,23,42,.65);
+
+        /* ✅ Texto más blanco */
+        color:#ffffff;
+
+        padding:12px;
+        outline:none;
+        font-size:14px; line-height:1.5;
+      }
+
+      /* ✅ Placeholder más claro */
+      .note-textarea::placeholder{
+        color:#cbd5f5;
+      }
+
+      .note-textarea:focus{
+        border-color:rgba(96,165,250,.45);
+        box-shadow:0 0 0 3px rgba(96,165,250,.12);
+      }
+
+      .note-footer{
+        display:flex; gap:10px; justify-content:flex-end;
+        padding:10px 12px 12px;
+        border-top:1px solid rgba(255,255,255,.10);
+        background:rgba(255,255,255,.03);
+      }
+
+      .note-btn{
+        border:1px solid rgba(255,255,255,.10);
+        background:rgba(255,255,255,.06);
+
+        /* ✅ Botones más blancos */
+        color:#f8fafc;
+
+        padding:8px 10px;
+        border-radius:10px;
+        cursor:pointer;
+        font-weight:650; font-size:13px;
+        display:inline-flex; align-items:center; gap:8px;
+        user-select:none;
+      }
+      .note-btn:hover{background:rgba(255,255,255,.09)}
+      .note-btn.primary{border-color:rgba(96,165,250,.35); background:rgba(96,165,250,.12)}
+      .note-btn.danger{border-color:rgba(239,68,68,.35); background:rgba(239,68,68,.10)}
+
+      /* Marca roja de nota + icono */
+      .note-mark{
+        position:relative;
+        text-decoration: underline;
+        text-decoration-color: #ef4444;
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+        cursor:pointer;
+        border-radius:6px;
+        padding:0 1px;
+      }
+      .note-mark:hover{background:rgba(239,68,68,.08)}
+
+      .note-mark .note-icon{
+        display:none;
+        position:absolute;
+        top:-18px; right:-10px;
+        width:22px;height:22px;border-radius:999px;
+        border:1px solid rgba(255,255,255,.10);
+        background:rgba(17,26,46,.95);
+        box-shadow:0 8px 18px rgba(0,0,0,.35);
+        align-items:center;justify-content:center;
+        font-size:12px;
+
+        /* ya estaba bien */
+        color:#f8fafc;
+      }
+      .note-mark:hover .note-icon{display:flex}
+    `;
+    document.head.appendChild(st);
+  }
+}
+
 
       let overlay = document.getElementById('noteOverlay');
       let win = document.getElementById('noteWin');
