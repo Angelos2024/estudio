@@ -3,22 +3,21 @@
   const menu = document.getElementById('ctxMenu');
   if (!menu) return;
 
-  // Colores del menú (puedes cambiar/añadir)
-const COLORS = [
-  { key: 'clear',  css: 'transparent', label: '✕', title: 'Quitar subrayado' },
-  { key: 'yellow', css: '#fbbf24' },
-  { key: 'pink',   css: '#fb7185' },
-  { key: 'blue',   css: '#60a5fa' },
-  { key: 'green',  css: '#4ade80' },
-];
-
+  // Colores del menú
+  const COLORS = [
+    { key: 'clear',  css: 'transparent', label: '✕', title: 'Quitar subrayado' },
+    { key: 'yellow', css: '#fbbf24' },
+    { key: 'pink',   css: '#fb7185' },
+    { key: 'blue',   css: '#60a5fa' },
+    { key: 'green',  css: '#4ade80' },
+  ];
 
   // Estado
   let lastTarget = null;      // <p class="verse-line"...>
   let lastSelection = '';
   let lastRange = null;       // Range clonado antes de abrir el menú
 
-  // Helpers
+  // Helpers DOM
   function getVerseNodeFromEvent(e) {
     return e.target.closest?.('.verse-line') || null;
   }
@@ -58,165 +57,175 @@ const COLORS = [
     menu.style.top  = pos.y + 'px';
   }
 
-  function buildMenuUI() {
-    menu.innerHTML = '';
+  // ==============================
+  // ✅ FIX: Estas funciones DEBEN estar fuera de buildMenuUI()
+  // ==============================
 
-
-
-
-    function getOffsetInVerseText(verseTextEl, range) {
-  // Devuelve offset (caracteres) desde el inicio de verseTextEl hasta el inicio del range
-  const pre = document.createRange();
-  pre.selectNodeContents(verseTextEl);
-  pre.setEnd(range.startContainer, range.startOffset);
-  return pre.toString().length;
-}
-
-function wrapOffsetLength(verseTextEl, offset, length, colorKey, annId) {
-  // Envuelve exactamente offset/length en el texto del verso, aunque haya varios nodos
-  const colors = {
-    yellow: '#fbbf24',
-    pink:   '#fb7185',
-    blue:   '#60a5fa',
-    green:  '#4ade80'
-  };
-
-  // Walk text nodes
-  const walker = document.createTreeWalker(verseTextEl, NodeFilter.SHOW_TEXT, null);
-  let node, pos = 0;
-
-  let startNode = null, startOffset = 0;
-  let endNode = null, endOffset = 0;
-
-  const endPos = offset + length;
-
-  while ((node = walker.nextNode())) {
-    const nLen = node.nodeValue.length;
-    const nextPos = pos + nLen;
-
-    if (!startNode && offset >= pos && offset <= nextPos) {
-      startNode = node;
-      startOffset = offset - pos;
-    }
-
-    if (!endNode && endPos >= pos && endPos <= nextPos) {
-      endNode = node;
-      endOffset = endPos - pos;
-      break;
-    }
-
-    pos = nextPos;
+  function getOffsetInVerseText(verseTextEl, range) {
+    // Offset (en caracteres) desde el inicio del verso hasta el inicio del range
+    const pre = document.createRange();
+    pre.selectNodeContents(verseTextEl);
+    pre.setEnd(range.startContainer, range.startOffset);
+    return pre.toString().length;
   }
 
-  if (!startNode || !endNode) return false;
+  function wrapOffsetLength(verseTextEl, offset, length, colorKey, annId) {
+    // Envuelve exactamente offset/length en el texto del verso (aunque haya varios nodos)
+    const colors = {
+      yellow: '#fbbf24',
+      pink:   '#fb7185',
+      blue:   '#60a5fa',
+      green:  '#4ade80'
+    };
 
-  const r = document.createRange();
-  r.setStart(startNode, startOffset);
-  r.setEnd(endNode, endOffset);
+    const walker = document.createTreeWalker(verseTextEl, NodeFilter.SHOW_TEXT, null);
+    let node, pos = 0;
 
-  const span = document.createElement('span');
-  span.className = 'hl';
-  span.style.backgroundColor = colors[colorKey] || colors.yellow;
-  span.style.padding = '0 2px';
-  span.style.borderRadius = '4px';
-  span.dataset.hlColor = colorKey;
-  span.dataset.annId = String(annId);
+    let startNode = null, startOffset = 0;
+    let endNode = null, endOffset = 0;
 
-  try {
-    r.surroundContents(span);
-  } catch {
-    const frag = r.extractContents();
-    span.appendChild(frag);
-    r.insertNode(span);
-  }
+    const endPos = offset + length;
 
-  return true;
-}
+    while ((node = walker.nextNode())) {
+      const nLen = node.nodeValue.length;
+      const nextPos = pos + nLen;
 
-async function applyHighlightsToPassage(book, ch, vStart, vEnd) {
-  if (!window.AnnotationsDB) return;
+      if (!startNode && offset >= pos && offset <= nextPos) {
+        startNode = node;
+        startOffset = offset - pos;
+      }
 
-  // Aplica en ambos lados que existan en DOM (rv y orig)
-  const sides = ['rv', 'orig'];
+      if (!endNode && endPos >= pos && endPos <= nextPos) {
+        endNode = node;
+        endOffset = endPos - pos;
+        break;
+      }
 
-  for (const side of sides) {
-    const rows = await window.AnnotationsDB.getHighlightsForPassage(side, book, ch, vStart, vEnd);
-
-    // Agrupar por verso
-    const byV = new Map();
-    for (const r of rows) {
-      if (!byV.has(r.v)) byV.set(r.v, []);
-      byV.get(r.v).push(r);
+      pos = nextPos;
     }
 
-    for (const [v, list] of byV.entries()) {
-      const verseNode = document.querySelector(`.verse-line[data-side="${side}"][data-book="${book}"][data-ch="${ch}"][data-v="${v}"]`);
-      if (!verseNode) continue;
+    if (!startNode || !endNode) return false;
 
-      const verseTextEl = verseNode.querySelector('.verse-text');
-      if (!verseTextEl) continue;
+    const r = document.createRange();
+    r.setStart(startNode, startOffset);
+    r.setEnd(endNode, endOffset);
 
-      // Limpia spans viejos (para evitar duplicar al re-render)
-      verseTextEl.querySelectorAll('span.hl').forEach(hl => {
-        const parent = hl.parentNode;
-        while (hl.firstChild) parent.insertBefore(hl.firstChild, hl);
-        parent.removeChild(hl);
-      });
+    const span = document.createElement('span');
+    span.className = 'hl';
+    span.style.backgroundColor = colors[colorKey] || colors.yellow;
+    span.style.padding = '0 2px';
+    span.style.borderRadius = '4px';
+    span.dataset.hlColor = colorKey;
+    span.dataset.annId = String(annId);
 
-      // Importante: envolver desde el final para no “mover” offsets
-      list.sort((a, b) => (b.offset - a.offset));
+    try {
+      r.surroundContents(span);
+    } catch {
+      // fallback cuando surroundContents falla (por estructura del DOM)
+      const frag = r.extractContents();
+      span.appendChild(frag);
+      r.insertNode(span);
+    }
 
-      for (const h of list) {
-        wrapOffsetLength(verseTextEl, h.offset, h.length, h.color, h.id);
+    return true;
+  }
+
+  async function applyHighlightsToPassage(book, ch, vStart, vEnd) {
+    if (!window.AnnotationsDB) return;
+
+    const sides = ['rv', 'orig'];
+
+    for (const side of sides) {
+      const rows = await window.AnnotationsDB.getHighlightsForPassage(side, book, ch, vStart, vEnd);
+
+      // Agrupar por verso
+      const byV = new Map();
+      for (const r of rows) {
+        if (!byV.has(r.v)) byV.set(r.v, []);
+        byV.get(r.v).push(r);
+      }
+
+      for (const [v, list] of byV.entries()) {
+        const verseNode = document.querySelector(
+          `.verse-line[data-side="${side}"][data-book="${book}"][data-ch="${ch}"][data-v="${v}"]`
+        );
+        if (!verseNode) continue;
+
+        const verseTextEl = verseNode.querySelector('.verse-text');
+        if (!verseTextEl) continue;
+
+        // Limpia spans viejos para evitar duplicados
+        verseTextEl.querySelectorAll('span.hl').forEach(hl => {
+          const parent = hl.parentNode;
+          while (hl.firstChild) parent.insertBefore(hl.firstChild, hl);
+          parent.removeChild(hl);
+        });
+
+        // Envolver desde el final para no “mover” offsets
+        list.sort((a, b) => (b.offset - a.offset));
+
+        for (const h of list) {
+          wrapOffsetLength(verseTextEl, h.offset, h.length, h.color, h.id);
+        }
       }
     }
   }
-}
 
-// Exponer para que index.html lo llame al final del render()
-window.AnnotationsUI_applyHighlightsToPassage = applyHighlightsToPassage;
+  // Exponer para que index.html lo llame al final del render()
+  window.AnnotationsUI_applyHighlightsToPassage = applyHighlightsToPassage;
+
+  // ==============================
+  // UI del menú contextual
+  // ==============================
+
+  function buildMenuUI() {
+    menu.innerHTML = '';
 
     // Dots de colores (subrayado)
     for (const c of COLORS) {
-     const dot = document.createElement('button');
-dot.type = 'button';
-dot.className = 'ctx-dot';
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'ctx-dot';
 
-if (c.key === 'clear') {
-  dot.textContent = '✕';
-  dot.title = 'Quitar subrayado';
+      if (c.key === 'clear') {
+        dot.textContent = '✕';
+        dot.title = 'Quitar subrayado';
+        dot.style.background = '#ffffff';
+        dot.style.border = '2px solid #111827';
+        dot.style.color = '#111827';
+        dot.style.display = 'flex';
+        dot.style.alignItems = 'center';
+        dot.style.justifyContent = 'center';
+        dot.style.fontWeight = '900';
+        dot.style.fontSize = '16px';
+        dot.style.lineHeight = '1';
+      } else {
+        dot.style.background = c.css;
+        dot.title = `Subrayar (${c.key})`;
+      }
 
-  dot.style.background = '#ffffff';
-  dot.style.border = '2px solid #111827';   // borde fuerte
-  dot.style.color = '#111827';              // X negra
-  dot.style.display = 'flex';
-  dot.style.alignItems = 'center';
-  dot.style.justifyContent = 'center';
-  dot.style.fontWeight = '900';
-  dot.style.fontSize = '16px';
-  dot.style.lineHeight = '1';
-} else {
-  dot.style.background = c.css;
-  dot.title = `Subrayar (${c.key})`;
-}
+      dot.addEventListener('mousedown', (ev) => ev.preventDefault());
 
+      dot.addEventListener('click', async () => {
+        if (!lastTarget) return;
 
-dot.addEventListener('mousedown', (ev) => ev.preventDefault());
+        if (!window.AnnotationsDB) {
+          console.warn('AnnotationsDB no está disponible. ¿Cargaste annotations-db.js antes?');
+          hideMenu();
+          return;
+        }
 
-dot.addEventListener('click', async () => {
-  if (!lastTarget) return;
-  if (c.key === 'clear') {
-    await clearHighlightAtSelection();
-  } else {
-    const ref = getRefFromNode(lastTarget);
-    await highlightSelection(ref, c.key);
-  }
-  hideMenu();
-});
+        if (c.key === 'clear') {
+          await clearHighlightAtSelection();
+        } else {
+          const ref = getRefFromNode(lastTarget);
+          await highlightSelection(ref, c.key);
+        }
+        hideMenu();
+      });
 
-
-menu.appendChild(dot);
-}
+      menu.appendChild(dot);
+    }
 
     // Separador
     const sep = document.createElement('div');
@@ -247,71 +256,69 @@ menu.appendChild(dot);
   }
 
   // ✅ Subrayado SOLO de lo seleccionado (no todo el verso)
-async function highlightSelection(ref, colorKey) {
-  if (!lastTarget || !lastRange || !lastSelection) return;
+  async function highlightSelection(ref, colorKey) {
+    if (!lastTarget || !lastRange || !lastSelection) return;
 
-  const verseTextEl = lastTarget.querySelector('.verse-text');
-  if (!verseTextEl) return;
-  if (!verseTextEl.contains(lastRange.commonAncestorContainer)) return;
+    const verseTextEl = lastTarget.querySelector('.verse-text');
+    if (!verseTextEl) return;
+    if (!verseTextEl.contains(lastRange.commonAncestorContainer)) return;
 
-  const offset = getOffsetInVerseText(verseTextEl, lastRange);
-  const length = lastRange.toString().length;
+    const offset = getOffsetInVerseText(verseTextEl, lastRange);
+    const length = lastRange.toString().length;
 
-  // Guardar en DB primero
-  const payload = {
-    side: ref.side,      // "rv" o "orig"
-    book: ref.book,
-    ch: ref.ch,
-    v: ref.v,
-    offset,
-    length,
-    quote: lastSelection, // útil para debug/export
-    color: colorKey,
-    created_at: Date.now()
-  };
+    const payload = {
+      side: ref.side,       // "rv" o "orig"
+      book: ref.book,
+      ch: ref.ch,
+      v: ref.v,
+      offset,
+      length,
+      quote: lastSelection, // útil para debug/export
+      color: colorKey,
+      created_at: Date.now()
+    };
 
-  const id = await window.AnnotationsDB.addHighlight(payload);
+    const id = await window.AnnotationsDB.addHighlight(payload);
 
-  // Aplicar visual (envolver offset/length con el id)
-  wrapOffsetLength(verseTextEl, offset, length, colorKey, id);
+    // Aplicar visual
+    wrapOffsetLength(verseTextEl, offset, length, colorKey, id);
 
-  // limpiar selección
-  const sel = window.getSelection();
-  if (sel) sel.removeAllRanges();
-  lastRange = null;
-  lastSelection = '';
-}
-
-async function clearHighlightAtSelection() {
-  let node = null;
-
-  if (lastRange) node = lastRange.commonAncestorContainer;
-  else {
+    // limpiar selección
     const sel = window.getSelection();
-    if (sel && sel.rangeCount > 0) node = sel.getRangeAt(0).commonAncestorContainer;
+    if (sel) sel.removeAllRanges();
+    lastRange = null;
+    lastSelection = '';
   }
 
-  if (!node) return;
+  async function clearHighlightAtSelection() {
+    let node = null;
 
-  const el = (node.nodeType === 1 ? node : node.parentElement);
-  const hl = el?.closest?.('span.hl');
-  if (!hl) return;
+    if (lastRange) node = lastRange.commonAncestorContainer;
+    else {
+      const sel = window.getSelection();
+      if (sel && sel.rangeCount > 0) node = sel.getRangeAt(0).commonAncestorContainer;
+    }
 
-  const annId = Number(hl.dataset.annId || 0);
-  if (annId && window.AnnotationsDB) {
-    await window.AnnotationsDB.deleteHighlight(annId);
+    if (!node) return;
+
+    const el = (node.nodeType === 1 ? node : node.parentElement);
+    const hl = el?.closest?.('span.hl');
+    if (!hl) return;
+
+    const annId = Number(hl.dataset.annId || 0);
+    if (annId && window.AnnotationsDB) {
+      await window.AnnotationsDB.deleteHighlight(annId);
+    }
+
+    const parent = hl.parentNode;
+    while (hl.firstChild) parent.insertBefore(hl.firstChild, hl);
+    parent.removeChild(hl);
+
+    const sel = window.getSelection();
+    if (sel) sel.removeAllRanges();
+    lastRange = null;
+    lastSelection = '';
   }
-
-  const parent = hl.parentNode;
-  while (hl.firstChild) parent.insertBefore(hl.firstChild, hl);
-  parent.removeChild(hl);
-
-  const sel = window.getSelection();
-  if (sel) sel.removeAllRanges();
-  lastRange = null;
-  lastSelection = '';
-}
-
 
   function openNote(ref, selectionText) {
     const txt = prompt(
@@ -327,7 +334,7 @@ async function clearHighlightAtSelection() {
   // Init UI
   buildMenuUI();
 
-  // Guarda selección (texto) en vivo (opcional; el Range real lo clonamos en contextmenu)
+  // Guarda selección (texto) en vivo
   document.addEventListener('selectionchange', () => {
     const sel = window.getSelection();
     lastSelection = (sel && !sel.isCollapsed) ? String(sel).trim() : '';
