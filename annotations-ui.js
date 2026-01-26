@@ -1,22 +1,28 @@
+// annotations-ui.js
 (() => {
   const menu = document.getElementById('ctxMenu');
   if (!menu) return;
 
-  // Colores (ajusta si quieres)
+  // Colores del menú (puedes cambiar/añadir)
   const COLORS = [
-    { key: 'yellow',  css: '#fbbf24' },
-    { key: 'pink',    css: '#fb7185' },
-    { key: 'blue',    css: '#60a5fa' },
-    { key: 'green',   css: '#4ade80' },
+    { key: 'yellow', css: '#fbbf24' },
+    { key: 'pink',   css: '#fb7185' },
+    { key: 'blue',   css: '#60a5fa' },
+    { key: 'green',  css: '#4ade80' },
   ];
 
-  let lastTarget = null;   // <p class="verse-line"...>
+  // Estado
+  let lastTarget = null;      // <p class="verse-line"...>
   let lastSelection = '';
-let lastRange = null; // copia del rango seleccionado (se conserva al hacer click en el menú)
+  let lastRange = null;       // Range clonado antes de abrir el menú
 
-  // --- Helpers ---
+  // Helpers
   function getVerseNodeFromEvent(e) {
     return e.target.closest?.('.verse-line') || null;
+  }
+
+  function getVerseTextNode(verseNode) {
+    return verseNode?.querySelector?.('.verse-text') || null;
   }
 
   function getRefFromNode(node) {
@@ -45,7 +51,6 @@ let lastRange = null; // copia del rango seleccionado (se conserva al hacer clic
   function showMenu(x, y) {
     menu.style.display = 'flex';
     menu.setAttribute('aria-hidden', 'false');
-    // primero mostrar para medir tamaño, luego clamp
     const pos = clampMenu(x, y);
     menu.style.left = pos.x + 'px';
     menu.style.top  = pos.y + 'px';
@@ -54,72 +59,33 @@ let lastRange = null; // copia del rango seleccionado (se conserva al hacer clic
   function buildMenuUI() {
     menu.innerHTML = '';
 
- // dots
-for (const c of COLORS) {
-  const dot = document.createElement('button');
-  dot.type = 'button';
-  dot.className = 'ctx-dot';
-  dot.style.background = c.css;
-  dot.title = `Subrayar (${c.key})`;
+    // Dots de colores (subrayado)
+    for (const c of COLORS) {
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'ctx-dot';
+      dot.style.background = c.css;
+      dot.title = `Subrayar (${c.key})`;
 
-  // ✅ Evita que el click en el menú mate la selección guardada
-  dot.addEventListener('mousedown', (ev) => ev.preventDefault());
+      // ✅ Evita que el click en el menú colapse la selección guardada
+      dot.addEventListener('mousedown', (ev) => ev.preventDefault());
 
-  dot.addEventListener('click', () => {
-    if (!lastTarget) return;
-    const ref = getRefFromNode(lastTarget);
+      dot.addEventListener('click', () => {
+        if (!lastTarget) return;
+        const ref = getRefFromNode(lastTarget);
+        highlightSelection(ref, c.key);
+        hideMenu();
+      });
 
-    // ✅ SOLO 2 parámetros
-    highlightVerse(ref, c.key);
+      menu.appendChild(dot);
+    }
 
-    hideMenu();
-  });
-
-  menu.appendChild(dot);
-}
-
-function highlightVerse(ref, colorKey) {
-  if (!lastTarget) return;
-
-  // ✅ si no hay selección guardada, NO subrayes
-  if (!lastRange || !lastSelection) return;
-
-  if (!lastTarget.contains(lastRange.commonAncestorContainer)) return;
-
-  const colors = {
-    yellow: '#fbbf24',
-    pink:   '#fb7185',
-    blue:   '#60a5fa',
-    green:  '#4ade80'
-  };
-
-  const span = document.createElement('span');
-  span.style.backgroundColor = colors[colorKey] || colors.yellow;
-  span.style.padding = '0 2px';
-  span.style.borderRadius = '4px';
-
-  try {
-    lastRange.surroundContents(span);
-  } catch (e) {
-    // fallback para selecciones que cruzan nodos
-    const frag = lastRange.extractContents();
-    span.appendChild(frag);
-    lastRange.insertNode(span);
-  } finally {
-    const sel = window.getSelection();
-    if (sel) sel.removeAllRanges();
-    lastRange = null;
-    lastSelection = '';
-  }
-}
-
-
-    // separator
+    // Separador
     const sep = document.createElement('div');
     sep.className = 'ctx-sep';
     menu.appendChild(sep);
 
-    // note button (icono lápiz)
+    // Botón de nota (lápiz)
     const noteBtn = document.createElement('button');
     noteBtn.type = 'button';
     noteBtn.className = 'ctx-btn';
@@ -130,113 +96,118 @@ function highlightVerse(ref, colorKey) {
         <path d="M13.5 6.5l4 4" stroke="currentColor" stroke-width="2" />
       </svg>
     `;
+
+    noteBtn.addEventListener('mousedown', (ev) => ev.preventDefault());
     noteBtn.addEventListener('click', () => {
       if (!lastTarget) return;
       const ref = getRefFromNode(lastTarget);
       openNote(ref, lastSelection);
       hideMenu();
     });
+
     menu.appendChild(noteBtn);
   }
-function highlightVerse(ref, colorKey) {
-  if (!lastTarget) return;
 
-  // Si no hay selección guardada, no subrayes todo el verso
-  if (!lastRange || !lastSelection) {
-    console.warn('No hay selección guardada para subrayar.');
-    return;
-  }
+  // ✅ Subrayado SOLO de lo seleccionado (no todo el verso)
+  function highlightSelection(ref, colorKey) {
+    if (!lastTarget) return;
 
-  // Seguridad: el rango debe seguir dentro del verso
-  if (!lastTarget.contains(lastRange.commonAncestorContainer)) return;
+    // Solo subraya si hubo selección al abrir el menú
+    if (!lastRange || !lastSelection) return;
 
-  const colors = {
-    yellow: '#fbbf24',
-    pink:   '#fb7185',
-    blue:   '#60a5fa',
-    green:  '#4ade80'
-  };
+    // Solo permite subrayar dentro del span.verse-text (para no incluir el numerito)
+    const verseTextEl = getVerseTextNode(lastTarget);
+    if (!verseTextEl) return;
+    if (!verseTextEl.contains(lastRange.commonAncestorContainer)) return;
 
-  // Envolver solo la selección
-  const span = document.createElement('span');
-  span.style.backgroundColor = colors[colorKey] || colors.yellow;
-  span.style.padding = '0 2px';
-  span.style.borderRadius = '4px';
+    const colors = {
+      yellow: '#fbbf24',
+      pink:   '#fb7185',
+      blue:   '#60a5fa',
+      green:  '#4ade80'
+    };
 
-  try {
-    lastRange.surroundContents(span);
-  } catch (e) {
-    // Si la selección cruza nodos complejos, fallback: envolver texto con extract/insert (más tolerante)
+    const span = document.createElement('span');
+    span.className = 'hl';
+    span.style.backgroundColor = colors[colorKey] || colors.yellow;
+    span.style.padding = '0 2px';
+    span.style.borderRadius = '4px';
+
+    // (Opcional para futuro DB)
+    span.dataset.hlColor = colorKey;
+    span.dataset.book = ref.book;
+    span.dataset.ch = String(ref.ch);
+    span.dataset.v = String(ref.v);
+
     try {
+      // Caso ideal (selección en un solo nodo de texto)
+      lastRange.surroundContents(span);
+    } catch {
+      // Fallback robusto
       const frag = lastRange.extractContents();
       span.appendChild(frag);
       lastRange.insertNode(span);
-    } catch (e2) {
-      console.warn('No se pudo subrayar esta selección:', e2);
+    } finally {
+      const sel = window.getSelection();
+      if (sel) sel.removeAllRanges();
+      lastRange = null;
+      lastSelection = '';
     }
-  } finally {
-    // limpiar selección “visual”
-    const sel = window.getSelection();
-    if (sel) sel.removeAllRanges();
-    lastRange = null;
-    lastSelection = '';
   }
-}
-
-
 
   function openNote(ref, selectionText) {
-    // por ahora: prompt simple. Luego lo cambias por modal bootstrap.
-    const txt = prompt(`Nota para ${ref.book} ${ref.ch}:${ref.v}` + (selectionText ? `\nSelección: "${selectionText}"` : ''), '');
+    const txt = prompt(
+      `Nota para ${ref.book} ${ref.ch}:${ref.v}` + (selectionText ? `\nSelección: "${selectionText}"` : ''),
+      ''
+    );
     if (txt == null) return;
-    // console.log('note', ref, selectionText, txt);
-    // aquí luego guardas en IndexedDB.
+
+    // Aquí luego conectas IndexedDB. Por ahora:
     alert('Nota guardada (pendiente de implementar DB).');
   }
 
-  // --- Eventos globales ---
+  // Init UI
   buildMenuUI();
 
-  // Captura selección
+  // Guarda selección (texto) en vivo (opcional; el Range real lo clonamos en contextmenu)
   document.addEventListener('selectionchange', () => {
     const sel = window.getSelection();
     lastSelection = (sel && !sel.isCollapsed) ? String(sel).trim() : '';
   });
 
-  // Click derecho: abrir menú SOLO sobre versículos
-document.addEventListener('contextmenu', (e) => {
-  const node = getVerseNodeFromEvent(e);
-  if (!node) return;
+  // Click derecho SOLO sobre versículos
+  document.addEventListener('contextmenu', (e) => {
+    const node = getVerseNodeFromEvent(e);
+    if (!node) return;
 
-  // Guardar selección actual (si existe) antes de abrir el menú
-  const sel = window.getSelection();
-  lastRange = null;
-  lastSelection = '';
+    // Clonar rango ANTES de abrir menú
+    const sel = window.getSelection();
+    lastRange = null;
+    lastSelection = '';
 
-  if (sel && sel.rangeCount > 0 && !sel.isCollapsed) {
-    const r = sel.getRangeAt(0);
+    const verseTextEl = getVerseTextNode(node);
 
-    // Validación: debe estar dentro del mismo versículo
-    if (node.contains(r.commonAncestorContainer)) {
-      lastRange = r.cloneRange();
-      lastSelection = String(sel).trim();
+    if (sel && sel.rangeCount > 0 && !sel.isCollapsed && verseTextEl) {
+      const r = sel.getRangeAt(0);
+
+      // Solo si la selección está dentro del texto del verso (no el número)
+      if (verseTextEl.contains(r.commonAncestorContainer)) {
+        lastRange = r.cloneRange();
+        lastSelection = String(sel).trim();
+      }
     }
-  }
 
-  e.preventDefault();
-  lastTarget = node;
-  showMenu(e.clientX, e.clientY);
-});
+    e.preventDefault();
+    lastTarget = node;
+    showMenu(e.clientX, e.clientY);
+  });
 
-
-  // Ocultar al hacer click fuera o scroll
+  // Cerrar menú al click fuera o scroll/resize
   document.addEventListener('mousedown', (e) => {
     if (menu.style.display !== 'none' && !menu.contains(e.target)) hideMenu();
   });
   document.addEventListener('scroll', hideMenu, true);
   window.addEventListener('resize', hideMenu);
-
-  // ESC cierra
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') hideMenu();
   });
