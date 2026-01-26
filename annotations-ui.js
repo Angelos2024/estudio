@@ -175,20 +175,28 @@ menu.appendChild(dot);
     }
   }
 function clearHighlightAtSelection() {
-  // Si hay selección, intenta encontrar un .hl que la contenga
-  const sel = window.getSelection();
+  // Prioriza el rango guardado (es el que sí sobrevive al click del menú)
   let node = null;
 
-  if (sel && sel.rangeCount > 0) {
-    node = sel.getRangeAt(0).commonAncestorContainer;
-  } else if (lastRange) {
+  if (lastRange) {
     node = lastRange.commonAncestorContainer;
+  } else {
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount > 0) node = sel.getRangeAt(0).commonAncestorContainer;
   }
 
   if (!node) return;
 
   const el = (node.nodeType === 1 ? node : node.parentElement);
-  const hl = el?.closest?.('.hl');
+
+  // Si el click fue en el menú (fuera del texto), busca el .hl dentro del verso actual
+  let hl = el?.closest?.('.hl');
+
+  if (!hl && lastTarget) {
+    const verseTextEl = getVerseTextNode(lastTarget);
+    if (verseTextEl) hl = verseTextEl.querySelector('.hl');
+  }
+
   if (!hl) return;
 
   // Desenrollar: reemplaza el span por sus hijos (texto plano)
@@ -196,7 +204,8 @@ function clearHighlightAtSelection() {
   while (hl.firstChild) parent.insertBefore(hl.firstChild, hl);
   parent.removeChild(hl);
 
-  // Limpia selección guardada
+  // Limpia rangos
+  const sel = window.getSelection();
   if (sel) sel.removeAllRanges();
   lastRange = null;
   lastSelection = '';
