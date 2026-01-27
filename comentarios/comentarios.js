@@ -59,4 +59,19 @@
       const comment = chapterComments[String(v)];
       if(!comment) return; // SOLO crea UI si hay comentario
 
-      // Evita duplicado si re
+      // Evita duplicado si re-render
+      if(p.querySelector('.cm-box')) return;
+
+      const frag = tpl.content.cloneNode(true);
+      const body = frag.querySelector('.cm-body');
+      body.innerHTML = textToSafeHtml(comment);
+
+      p.appendChild(frag);
+    });
+  }
+
+  // API pública
+  window.BibleComments = {
+    attachCommentsToRV
+  };
+})();
