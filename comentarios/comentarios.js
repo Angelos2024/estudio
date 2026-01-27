@@ -68,12 +68,27 @@ const body = frag.querySelector('.cm-body');
 body.innerHTML = textToSafeHtml(comment);
 
 // ✅ Insertar ANTES del número del versículo
+// ✅ Forzar icono + número en el mismo "ancla" inline
 const verseNum = p.querySelector('.verse-num');
+
 if (verseNum) {
-  p.insertBefore(frag, verseNum);
+  // Evita duplicados si re-render
+  if (p.querySelector('.cm-anchor')) return;
+
+  const anchor = document.createElement('span');
+  anchor.className = 'cm-anchor';
+
+  // Inserta el ancla antes del número
+  verseNum.parentNode.insertBefore(anchor, verseNum);
+
+  // Dentro del ancla: primero icono, luego número
+  anchor.appendChild(frag);
+  anchor.appendChild(verseNum);
 } else {
+  // fallback
   p.prepend(frag);
 }
+
 
     });
   }
