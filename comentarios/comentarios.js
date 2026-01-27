@@ -62,11 +62,18 @@
       // Evita duplicado si re-render
       if(p.querySelector('.cm-box')) return;
 
-      const frag = tpl.content.cloneNode(true);
-      const body = frag.querySelector('.cm-body');
-      body.innerHTML = textToSafeHtml(comment);
+     const frag = tpl.content.cloneNode(true);
+const body = frag.querySelector('.cm-body');
+body.innerHTML = textToSafeHtml(comment);
 
-      p.appendChild(frag);
+// ✅ Insertar ANTES del número del versículo
+const verseNum = p.querySelector('.verse-num');
+if (verseNum) {
+  p.insertBefore(frag, verseNum);
+} else {
+  p.prepend(frag);
+}
+
     });
   }
 
