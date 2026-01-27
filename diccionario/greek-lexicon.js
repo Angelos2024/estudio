@@ -1,7 +1,8 @@
-/* diccionario/greek-lexicon.js  (ES5, sin ?. sin ?? y sin ternarios)
-   - Convierte el texto griego de cada verso a spans clickeables.
-   - Click izquierdo abre popup.
-   - No toca contextmenu (click derecho queda intacto).
+/* diccionario/greek-lexicon.js  (ES5 puro)
+   - Solo decora Mateo usando mt-morphgnt.translit.json
+   - Si NO es Mateo, restaura el texto original renderizado por tu app
+   - Click izquierdo abre popup
+   - NO toca contextmenu (click derecho intacto)
 */
 (function () {
   var MORPH_URL = './diccionario/mt-morphgnt.translit.json';
@@ -30,6 +31,49 @@
         morph = json;
         return morph;
       });
+  }
+
+  // Parse ES5 del querystring sin URLSearchParams
+  function getQueryParam(name) {
+    var qs = window.location.search || '';
+    if (!qs) return '';
+    if (qs.charAt(0) === '?') qs = qs.slice(1);
+    var parts = qs.split('&');
+    for (var i = 0; i < parts.length; i++) {
+      var kv = parts[i].split('=');
+      var k = decodeURIComponent(kv[0] || '');
+      if (k === name) return decodeURIComponent(kv[1] || '');
+    }
+    return '';
+  }
+
+  function isMateoNow() {
+    var b = (getQueryParam('book') || '').toLowerCase();
+    // en tu site usas ?book=mateo
+    if (b === 'mateo') return true;
+    if (b === 'mt') return true;
+    // por si en algún momento usas inglés
+    if (b.indexOf('matt') !== -1) return true;
+    return false;
+  }
+
+  // Restaura el texto original (sin spans), usando lo que guardamos en data-raw
+  function restoreRawGreek(rootEl) {
+    if (!rootEl) return;
+    var vts = rootEl.querySelectorAll('.verse-line[data-side="orig"] .verse-text');
+    for (var i = 0; i < vts.length; i++) {
+      var vt = vts[i];
+      var raw = vt.getAttribute('data-raw');
+      if (raw != null && raw !== '') {
+        vt.textContent = raw;        // vuelve a texto plano
+        vt.removeAttribute('data-raw');
+      } else {
+        // Si no había data-raw pero sí quedaron spans, lo dejamos en texto plano del contenido actual
+        if (vt.querySelector && vt.querySelector('.gk-w')) {
+          vt.textContent = vt.textContent || '';
+        }
+      }
+    }
   }
 
   // Tu JSON de Mt está segmentado en chapters[9/10/11] con índice por 100
@@ -129,7 +173,6 @@
     var x = r.left;
     var y = r.bottom + 8;
 
-    // clamp simple
     if (x < 12) x = 12;
     if (y < 12) y = 12;
 
@@ -138,9 +181,16 @@
     pop.style.display = 'block';
   }
 
+  // ✅ Decora SOLO cuando el libro actual es Mateo.
+  // ✅ Si no es Mateo, restaura y sale.
   function decorateVisibleOrigPanel(rootEl) {
     if (!rootEl) return;
     if (!rootEl.classList || !rootEl.classList.contains('greek')) return;
+
+    if (!isMateoNow()) {
+      restoreRawGreek(rootEl);
+      return;
+    }
 
     var lines = rootEl.querySelectorAll('.verse-line[data-side="orig"][data-ch][data-v]');
     if (!lines || !lines.length) return;
@@ -154,8 +204,13 @@
       var verseText = line.querySelector('.verse-text');
       if (!verseText) continue;
 
+      // Guardar texto original antes de tocar el DOM (solo 1 vez)
+      if (!verseText.getAttribute('data-raw')) {
+        verseText.setAttribute('data-raw', verseText.textContent || '');
+      }
+
       // ya decorado
-      if (verseText.querySelector('.gk-w')) continue;
+      if (verseText.querySelector && verseText.querySelector('.gk-w')) continue;
 
       var tokens = getMtTokens(ch, v);
       if (!tokens) continue;
@@ -172,6 +227,7 @@
           '</span>'
         );
       }
+
       verseText.innerHTML = out.join(' ');
     }
   }
@@ -183,6 +239,9 @@
     rootEl.addEventListener('click', function (e) {
       // solo click izquierdo
       if (e.button !== 0) return;
+
+      // si no es Mateo, no abrir nada
+      if (!isMateoNow()) return;
 
       var w = e.target && e.target.closest ? e.target.closest('.gk-w') : null;
       if (!w) return;
@@ -208,7 +267,6 @@
 
     var obs = new MutationObserver(function () {
       try {
-        // OJO: tu render aplica subrayados/notas después, así que redecoramos cuando el DOM cambie
         decorateVisibleOrigPanel(rootEl);
         attachLeftClickHandler(rootEl);
       } catch (err) {
@@ -233,7 +291,6 @@
       });
   }
 
-  // auto init
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {
