@@ -345,11 +345,11 @@ function getTokens(ch, v) {
       var t = ev.target;
       if (!t) return;
 
-      // No chocar con marcas de nota
-      if (t.closest && t.closest('.note-mark')) return;
+ // Debe ser palabra griega
+if (!t.classList || !t.classList.contains('gk-w')) return;
 
-      // Debe ser palabra griega
-      if (!t.classList || !t.classList.contains('gk-w')) return;
+// Si está dentro de un .note-mark, NO bloquear (porque la palabra clickeable puede estar envuelta)
+
 
       // Si hay selección activa (subrayar), no abrir popup
       var sel = window.getSelection ? window.getSelection() : null;
