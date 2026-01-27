@@ -169,6 +169,8 @@
 <script defer src="./annotations-db.js?v=2"></script>
 <script defer src="./annotations-ui.js?v=4"></script>
   <script src="./greek-lexicon-ui.js"></script>
+  <script src="./diccionario/greek-lexicon.js"></script>
+
 
 
 
@@ -730,6 +732,11 @@ function render(ref){
       </p>`;
     }
     passageTextOrig.innerHTML = htmlOrig || `<div class="text-muted">Sin contenido original para esta referencia.</div>`;
+    // ✅ Hacer cada palabra griega clickeable (antes de subrayados/notas)
+if (window.GreekLexicon?.decoratePassage) {
+  window.GreekLexicon.decoratePassage(passageTextOrig, currentBookSlug, ch, v1, v2);
+}
+
   } else {
     passageTextOrig.innerHTML = `<div class="text-muted">Original no disponible para esta referencia.</div>`;
   }
