@@ -24,6 +24,8 @@
 
     position:relative; /* tooltip */
     opacity:.85;
+    margin-left:-0.25rem;   /* mueve el icono levemente a la izquierda */
+
   }
   .cm-summary:hover{ opacity:1; }
 
@@ -33,8 +35,8 @@
 
   /* Icono PNG */
   .cm-icon{
-    width:20px;
-    height:20px;
+    width:16px;
+    height:16px;
     display:block;
     opacity:.85;
     transition: opacity .12s ease, transform .12s ease;
@@ -46,32 +48,44 @@
 
   /* Tooltip (globo) */
   .cm-summary[data-tip]:hover::after{
-    content: attr(data-tip);
-    position:absolute;
-    left: 22px;
-    top: 50%;
-    transform: translateY(-50%);
-    white-space: nowrap;
+  content: attr(data-tip);
+  position:absolute;
+  left: 22px;
+  top: 50%;
+  transform: translateY(-50%);
+  white-space: nowrap;
 
-    padding:.30rem .45rem;
-    border-radius:8px;
+  padding:.30rem .45rem;
+  border-radius:8px;
+  background: rgba(0,0,0,.82);
+  color:#fff;
+  font-size:12px;
+  z-index:9999;
 
-    background: rgba(0,0,0,.82);
-    color:#fff;
-    font-size:12px;
-    z-index:9999;
-  }
-  .cm-summary[data-tip]:hover::before{
-    content:"";
-    position:absolute;
-    left: 14px;
-    top: 50%;
-    transform: translateY(-50%);
+  opacity:0;
+  animation: cmTipFade .9s ease forwards;
+}
 
-    border:6px solid transparent;
-    border-right-color: rgba(0,0,0,.82);
-    z-index:9999;
-  }
+.cm-summary[data-tip]:hover::before{
+  content:"";
+  position:absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  border:6px solid transparent;
+  border-right-color: rgba(0,0,0,.82);
+
+  opacity:0;
+  animation: cmTipFade .9s ease forwards;
+}
+
+@keyframes cmTipFade{
+  0%   { opacity:0; }
+  15%  { opacity:1; }
+  70%  { opacity:1; }
+  100% { opacity:0; }
+}
+
 
   /* Panel del comentario (siempre debajo) */
   .cm-body{
@@ -100,4 +114,3 @@
     <div class="cm-body"></div>
   </details>
 </template>
- 
