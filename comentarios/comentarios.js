@@ -62,18 +62,26 @@
       // Evita duplicado si re-render
       if (p.querySelector('.cm-details')) return;
 
-
-     const frag = tpl.content.cloneNode(true);
+const frag = tpl.content.cloneNode(true);
+const details = frag.querySelector('.cm-details');
 const body = frag.querySelector('.cm-body');
 body.innerHTML = textToSafeHtml(comment);
 
-// ✅ Insertar ANTES del número del versículo
+// --- 1) Crear SOLO el icono (summary) dentro del verso ---
+const icon = details.querySelector('.cm-summary');
+details.removeChild(icon);
+
+// Insertar el icono antes del número
 const verseNum = p.querySelector('.verse-num');
 if (verseNum) {
-  p.insertBefore(frag, verseNum);
+  p.insertBefore(icon, verseNum);
 } else {
-  p.prepend(frag);
+  p.prepend(icon);
 }
+
+// --- 2) Insertar el BLOQUE del comentario DEBAJO del verso ---
+p.after(details);
+ 
 
     });
   }
