@@ -1,0 +1,41 @@
+<!-- comentarios/ui.html -->
+<style id="comments-ui-style">
+  .cm-box{ margin:.55rem 0 0 2.1rem; }
+  .cm-details{
+    border:1px solid rgba(255,255,255,.10);
+    border-radius:12px;
+    background:rgba(255,255,255,.03);
+    overflow:hidden;
+  }
+  .cm-summary{
+    cursor:pointer;
+    user-select:none;
+    padding:.55rem .75rem;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    gap:.55rem;
+  }
+  .cm-summary:focus{ outline:2px solid rgba(255,255,255,.18); outline-offset:2px; border-radius:12px; }
+  .cm-caret{ opacity:.85; font-size:.95em; }
+  .cm-details[open] .cm-caret{ transform:rotate(90deg); }
+  .cm-body{
+    padding:.65rem .85rem .85rem .85rem;
+    border-top:1px solid rgba(255,255,255,.08);
+    line-height:1.55;
+    opacity:.96;
+  }
+  .cm-muted{ opacity:.75; font-size:.95em; }
+</style>
+
+<template id="cm-template">
+  <div class="cm-box">
+    <details class="cm-details">
+      <summary class="cm-summary">
+        <span class="cm-caret">▶</span>
+        <span>Comentario</span>
+      </summary>
+      <div class="cm-body"></div>
+    </details>
+  </div>
+</template>
