@@ -73,17 +73,10 @@
   }
 
   .cm-muted{ opacity:.72; font-size:.95em; }
+
+  .cm-details:not([open]){
+  background:transparent;
+  box-shadow:none;
+}
+
 </style>
-
-
-<template id="cm-template">
-  <div class="cm-box">
-    <details class="cm-details">
-      <summary class="cm-summary">
-        <span class="cm-caret">▶</span>
-        <span>Comentario</span>
-      </summary>
-      <div class="cm-body"></div>
-    </details>
-  </div>
-</template>
