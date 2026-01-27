@@ -396,8 +396,9 @@ function getTokens(ch, v) {
           morph = data;
           morphKey = abbr;
 
-          var built = buildMorphIndex(data);
-          morphMap = built.map || {};
+var built = buildMorphIndex(data, abbr);
+morphMap = built.map || null;
+
 
           // valida que haya algo
           var hasAny = false;
