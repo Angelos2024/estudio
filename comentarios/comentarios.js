@@ -10,7 +10,7 @@
     const wrap = document.createElement('div');
     wrap.innerHTML = html;
 
-    // Inserta estilos + template en <body> (o al final)
+    // Inserta estilos + template en <body>
     document.body.appendChild(wrap);
   }
 
@@ -21,13 +21,11 @@
   }
 
   function textToSafeHtml(t){
-    // texto plano -> html seguro + saltos
     const normalized = String(t ?? '').replace(/\r\n/g, '\n');
     return esc(normalized).replace(/\n/g, '<br>');
   }
 
   async function loadChapterComments(bookSlug, chapter){
-    // ejemplo: ./comentarios/galatas/1.json
     const url = `./comentarios/${encodeURIComponent(bookSlug)}/${encodeURIComponent(String(chapter))}.json`;
     const res = await fetch(url, { cache: 'no-store' });
     if(!res.ok) return null;
@@ -49,45 +47,30 @@
     const tpl = document.getElementById('cm-template');
     if(!tpl) return;
 
-    // Busca todos los versos RV renderizados
-    const verseNodes = containerEl.querySelectorAll(`.verse-line[data-side="rv"][data-book="${CSS.escape(bookSlug)}"][data-ch="${CSS.escape(String(chapter))}"]`);
+    const verseNodes = containerEl.querySelectorAll(
+      `.verse-line[data-side="rv"][data-book="${CSS.escape(bookSlug)}"][data-ch="${CSS.escape(String(chapter))}"]`
+    );
 
     verseNodes.forEach(p => {
       const v = p.getAttribute('data-v');
       if(!v) return;
 
       const comment = chapterComments[String(v)];
-      if(!comment) return; // SOLO crea UI si hay comentario
+      if(!comment) return; // solo versos con comentario
 
-      // Evita duplicado si re-render
-      if (p.querySelector('.cm-details')) return;
+      // ✅ Anti-duplicado: si ya hay un details justo debajo, no reinserta
+      const next = p.nextElementSibling;
+      if (next && next.classList && next.classList.contains('cm-details')) return;
 
-const frag = tpl.content.cloneNode(true);
-const details = frag.querySelector('.cm-details');
-const body = frag.querySelector('.cm-body');
-body.innerHTML = textToSafeHtml(comment);
+      const frag = tpl.content.cloneNode(true);
+      const details = frag.querySelector('.cm-details');
+      const body = frag.querySelector('.cm-body');
+      body.innerHTML = textToSafeHtml(comment);
 
-// --- 1) Crear SOLO el icono (summary) dentro del verso ---
-const icon = details.querySelector('.cm-summary');
-details.removeChild(icon);
-
-// Insertar el icono antes del número
-const verseNum = p.querySelector('.verse-num');
-if (verseNum) {
-  p.insertBefore(icon, verseNum);
-} else {
-  p.prepend(icon);
-}
-
-// --- 2) Insertar el BLOQUE del comentario DEBAJO del verso ---
-p.after(details);
- 
-
+      // ✅ Insertar el details COMPLETO debajo del verso
+      p.after(details);
     });
   }
 
-  // API pública
-  window.BibleComments = {
-    attachCommentsToRV
-  };
+  window.BibleComments = { attachCommentsToRV };
 })();
