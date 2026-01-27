@@ -1,174 +1,184 @@
 /* diccionario/greek-lexicon.js
-   - Hace cada palabra griega clickeable (click IZQUIERDO).
-   - No interfiere con click DERECHO (subrayar / comentar).
-   - Se auto-reaplica si el DOM cambia (MutationObserver), para convivir con subrayados/notas.
+   - Convierte cada palabra griega en <span class="gk-w">...</span>
+   - Click izquierdo abre popup (NO interfiere con click derecho)
 */
 (function () {
-  const MORPH_URL = './diccionario/mt-morphgnt.translit.json';
+  // ✅ tu JSON está dentro de /diccionario
+  var MORPH_URL = './diccionario/mt-morphgnt.translit.json';
 
-  let morph = null;
-  let loaded = false;
-  let observing = false;
-  let decorating = false;
+  var morph = null; // estructura del JSON
+  var observing = false;
+  var decorating = false;
 
   function esc(s) {
-    return String(s ?? '')
-      .replaceAll('&', '&amp;')
-      .replaceAll('<', '&lt;')
-      .replaceAll('>', '&gt;')
-      .replaceAll('"', '&quot;')
-      .replaceAll("'", '&#39;');
+    s = String(s == null ? '' : s);
+    return s
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
   }
 
-  async function loadMorphOnce() {
-    if (loaded) return morph;
-    const res = await fetch(MORPH_URL, { cache: 'no-store' });
-    if (!res.ok) throw new Error(`No pude cargar ${MORPH_URL} (${res.status})`);
-    morph = await res.json();
-    loaded = true;
-    return morph;
+  function safeText(x) {
+    return (x == null) ? '' : String(x);
   }
 
-  function isMatthewSlug(slug) {
-    const s = String(slug || '').toLowerCase().trim();
-    // Ajusta aquí si tu slug real es otro
-    return s === 'mt' || s.startsWith('mt') || s.includes('mateo') || s.includes('matt');
+  function loadMorphOnce() {
+    if (morph) return Promise.resolve(morph);
+    return fetch(MORPH_URL, { cache: 'no-store' })
+      .then(function (res) {
+        if (!res.ok) throw new Error('No pude cargar ' + MORPH_URL + ' (' + res.status + ')');
+        return res.json();
+      })
+      .then(function (json) {
+        morph = json;
+        return morph;
+      });
   }
 
-  // Estructura esperada:
-  // morph[chapterIndex][verseIndex] => [ {g,tr,lemma}, ... ]
+  // mt-morphgnt.translit.json (Mt) viene segmentado:
+  // - chapters[9]  => caps 1–9    index = ch*100 + (v-1)
+  // - chapters[10] => caps 10–19  index = (ch-10)*100 + (v-1)
+  // - chapters[11] => caps 20–28  index = (ch-20)*100 + (v-1)
   function getMtTokens(ch, v) {
-    if (!Array.isArray(morph)) return null;
-    const chArr = morph[ch - 1];
-    if (!Array.isArray(chArr)) return null;
-    const tokens = chArr[v - 1];
+    if (!morph) return null;
+
+    // algunas versiones traen book:"Mt", otras no; lo dejamos flexible
+    var chapters = morph.chapters || morph;
+    if (!chapters) return null;
+
+    var seg = null;
+    if (ch <= 9) seg = chapters[9];
+    else if (ch <= 19) seg = chapters[10];
+    else seg = chapters[11];
+
+    if (!seg) return null;
+
+    var idx;
+    if (ch <= 9) idx = (ch * 100 + (v - 1));
+    else if (ch <= 19) idx = ((ch - 10) * 100 + (v - 1));
+    else idx = ((ch - 20) * 100 + (v - 1));
+
+    var tokens = seg[idx];
     return Array.isArray(tokens) ? tokens : null;
   }
 
   function ensurePopup() {
     if (document.getElementById('gk-lex-popup')) return;
 
-    const st = document.createElement('style');
+    var st = document.createElement('style');
     st.id = 'gk-lex-style';
-    st.textContent = `
-      .gk-w{ cursor:pointer; }
-      .gk-w:hover{ text-decoration: underline; }
-
-      .gk-lex-popup{
-        position: fixed;
-        z-index: 9997; /* por debajo del overlay de notas (si usas 9998/9999) */
-        min-width: 260px;
-        max-width: min(420px, calc(100vw - 24px));
-        background: rgba(17,26,46,0.98);
-        border: 1px solid rgba(255,255,255,0.10);
-        border-radius: 14px;
-        box-shadow: 0 20px 50px rgba(0,0,0,0.35);
-        padding: 12px;
-        color: #e9eefc;
-        display:none;
-      }
-      .gk-lex-popup .t1{ font-weight:700; font-size:14px; margin-bottom:6px; padding-right:18px; }
-      .gk-lex-popup .t2{ font-size:13px; opacity:.92; }
-      .gk-lex-popup .close{
-        position:absolute; right:10px; top:8px;
-        background: transparent; border:0; color:#cbd6ff; cursor:pointer;
-        font-size: 16px;
-      }
-      .gk-lex-popup .row{ margin-top:6px; }
-      .gk-lex-popup .lab{ opacity:.75; margin-right:6px; }
-      .gk-lex-popup .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
-    `;
+    st.textContent = [
+      '.gk-w{ cursor:pointer; }',
+      '.gk-w:hover{ text-decoration: underline; }',
+      '.gk-lex-popup{',
+      '  position: fixed; z-index: 9999;',
+      '  min-width: 260px; max-width: min(420px, calc(100vw - 24px));',
+      '  background: rgba(17,26,46,.98);',
+      '  border: 1px solid rgba(255,255,255,.10);',
+      '  border-radius: 14px;',
+      '  box-shadow: 0 20px 50px rgba(0,0,0,.35);',
+      '  padding: 12px 12px;',
+      '  color: #e9eefc;',
+      '  display:none;',
+      '}',
+      '.gk-lex-popup .t1{ font-weight: 700; font-size: 14px; margin-bottom: 6px; }',
+      '.gk-lex-popup .t2{ font-size: 13px; opacity: .92; line-height: 1.35; }',
+      '.gk-lex-popup .lab{ opacity: .70; margin-right: 6px; }',
+      '.gk-lex-popup .close{',
+      '  position:absolute; right:10px; top:8px;',
+      '  background: transparent; border:0; color:#cbd6ff; cursor:pointer;',
+      '  font-size: 16px; line-height: 1;',
+      '}'
+    ].join('\n');
     document.head.appendChild(st);
 
-    const p = document.createElement('div');
-    p.id = 'gk-lex-popup';
-    p.className = 'gk-lex-popup';
-    p.innerHTML = `
-      <button class="close" title="Cerrar">×</button>
-      <div class="t1" id="gk-lex-h"></div>
-      <div class="t2" id="gk-lex-b"></div>
-    `;
-    document.body.appendChild(p);
+    var pop = document.createElement('div');
+    pop.id = 'gk-lex-popup';
+    pop.className = 'gk-lex-popup';
+    pop.innerHTML =
+      '<button class="close" type="button" aria-label="Cerrar">×</button>' +
+      '<div class="t1" id="gk-lex-title"></div>' +
+      '<div class="t2" id="gk-lex-body"></div>';
 
-    p.querySelector('.close').addEventListener('click', () => hidePopup());
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') hidePopup(); });
+    document.body.appendChild(pop);
 
-    // Click afuera cierra, pero NO bloquea click derecho
-    document.addEventListener('click', (e) => {
-      const pop = document.getElementById('gk-lex-popup');
-      if (!pop || pop.style.display === 'none') return;
-      if (pop.contains(e.target)) return;
-      if (e.target.closest && e.target.closest('.gk-w')) return;
-      hidePopup();
+    pop.querySelector('.close').addEventListener('click', function () {
+      pop.style.display = 'none';
     });
+
+    // click fuera cierra (sin interferir con tu UI)
+    document.addEventListener('click', function (e) {
+      var p = document.getElementById('gk-lex-popup');
+      if (!p || p.style.display === 'none') return;
+      if (p.contains(e.target)) return;
+      p.style.display = 'none';
+    }, false);
   }
 
-  function showPopupNear(el, g, lemma, tr) {
+  function showPopupNear(anchorEl, g, lemma, tr) {
     ensurePopup();
-    const pop = document.getElementById('gk-lex-popup');
-    const h = document.getElementById('gk-lex-h');
-    const b = document.getElementById('gk-lex-b');
 
-    h.textContent = g || '';
-    b.innerHTML = `
-      <div class="row"><span class="lab">Lemma:</span> <span class="mono">${esc(lemma)}</span></div>
-      ${tr ? `<div class="row"><span class="lab">Translit:</span> <span class="mono">${esc(tr)}</span></div>` : ``}
-    `;
+    var pop = document.getElementById('gk-lex-popup');
+    var title = document.getElementById('gk-lex-title');
+    var body = document.getElementById('gk-lex-body');
 
+    title.textContent = safeText(g);
+
+    var html = '';
+    if (lemma) html += '<div><span class="lab">Lema:</span><b>' + esc(lemma) + '</b></div>';
+    if (tr) html += '<div><span class="lab">Translit:</span>' + esc(tr) + '</div>';
+    if (!html) html = '<div class="lab">Sin datos</div>';
+
+    body.innerHTML = html;
+
+    var r = anchorEl.getBoundingClientRect();
+    var x = Math.min(r.left, window.innerWidth - 24 - 420);
+    var y = r.bottom + 8;
+
+    pop.style.left = Math.max(12, x) + 'px';
+    pop.style.top = Math.max(12, y) + 'px';
     pop.style.display = 'block';
-
-    const r = el.getBoundingClientRect();
-    const pad = 10;
-    let x = r.left;
-    let y = r.bottom + 8;
-
-    // Ajuste a pantalla
-    const pr = pop.getBoundingClientRect();
-    if (x + pr.width > window.innerWidth - pad) x = window.innerWidth - pr.width - pad;
-    if (y + pr.height > window.innerHeight - pad) y = r.top - pr.height - 8;
-    if (x < pad) x = pad;
-    if (y < pad) y = pad;
-
-    pop.style.left = `${x}px`;
-    pop.style.top = `${y}px`;
   }
 
-  function hidePopup() {
-    const pop = document.getElementById('gk-lex-popup');
-    if (pop) pop.style.display = 'none';
-  }
+  function decorateMatthewRange(rootEl, ch, v1, v2) {
+    // Solo si el panel realmente está en modo griego
+    if (!rootEl.classList || !rootEl.classList.contains('greek')) return;
 
-  function decorateMatthewRange(rootEl, bookSlug, chFrom, v1, v2) {
-    if (!rootEl) return;
-    if (!isMatthewSlug(bookSlug)) return;
+    var lines = rootEl.querySelectorAll('.verse-line[data-side="orig"][data-ch][data-v]');
+    if (!lines || !lines.length) return;
 
-    // Solo tiene sentido si el panel está mostrando griego
-    // (tu app alterna hebreo/griego; en griego agrega clase "greek")
-    if (!rootEl.classList.contains('greek')) return;
-
-    const lines = rootEl.querySelectorAll('.verse-line[data-side="orig"]');
-    for (const line of lines) {
-      const ch = parseInt(line.dataset.ch, 10);
-      const v = parseInt(line.dataset.v, 10);
-      if (Number.isNaN(ch) || Number.isNaN(v)) continue;
-      if (ch !== chFrom) continue;
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i];
+      var v = parseInt(line.getAttribute('data-v'), 10);
+      var chLine = parseInt(line.getAttribute('data-ch'), 10);
+      if (isNaN(v) || isNaN(chLine)) continue;
+      if (chLine !== ch) continue;
       if (v < v1 || v > v2) continue;
 
-      const verseText = line.querySelector('.verse-text');
+      var verseText = line.querySelector('.verse-text');
       if (!verseText) continue;
 
-      // Evita redecorar si ya está
+      // ya decorado
       if (verseText.querySelector('.gk-w')) continue;
 
-      const tokens = getMtTokens(ch, v);
+      var tokens = getMtTokens(ch, v);
       if (!tokens) continue;
 
-      verseText.innerHTML = tokens.map((t) => {
-        const g = t.g ?? '';
-        const lemma = t.lemma ?? '';
-        const tr = t.tr ?? '';
-        return `<span class="gk-w" data-lemma="${esc(lemma)}" data-tr="${esc(tr)}">${esc(g)}</span>`;
-      }).join(' ');
+      var out = [];
+      for (var t = 0; t < tokens.length; t++) {
+        var tok = tokens[t] || {};
+        var g = tok.g ? safeText(tok.g) : '';
+        var lemma = tok.lemma ? safeText(tok.lemma) : '';
+        var tr = tok.tr ? safeText(tok.tr) : '';
+        out.push(
+          '<span class="gk-w" data-lemma="' + esc(lemma) + '" data-tr="' + esc(tr) + '">' +
+          esc(g) +
+          '</span>'
+        );
+      }
+      verseText.innerHTML = out.join(' ');
     }
   }
 
@@ -176,49 +186,50 @@
     if (!rootEl || rootEl.__gkLexClickBound) return;
     rootEl.__gkLexClickBound = true;
 
-    rootEl.addEventListener('click', (e) => {
-      // Solo click izquierdo
+    rootEl.addEventListener('click', function (e) {
+      // SOLO click izquierdo; no tocamos click derecho
       if (e.button !== 0) return;
 
-      const w = e.target && e.target.closest ? e.target.closest('.gk-w') : null;
+      var target = e.target;
+      if (!target) return;
+
+      var w = (target.closest ? target.closest('.gk-w') : null);
       if (!w) return;
 
-      // Si hay selección activa (usuario marcando para subrayar), no abrir popup
-      const sel = window.getSelection ? window.getSelection() : null;
+      // Si hay selección activa (usuario marcando para subrayar), NO abrir popup
+      var sel = window.getSelection ? window.getSelection() : null;
       if (sel && String(sel).trim().length > 0) return;
 
-      const lemma = w.dataset.lemma || '';
-      const tr = w.dataset.tr || '';
-      const g = w.textContent || '';
+      var lemma = w.getAttribute('data-lemma') || '';
+      var tr = w.getAttribute('data-tr') || '';
+      var g = w.textContent || '';
       showPopupNear(w, g, lemma, tr);
     }, false);
   }
 
   function observeOrigPanel() {
     if (observing) return;
-    const rootEl = document.getElementById('passageTextOrig');
+    var rootEl = document.getElementById('passageTextOrig');
     if (!rootEl) return;
 
     observing = true;
 
-    const obs = new MutationObserver(() => {
+    var obs = new MutationObserver(function () {
       if (decorating) return;
       try {
         decorating = true;
 
-        // Detecta rango actual desde el DOM (lo renderizas con data-ch / data-v)【turn11file16†L31-L33】
-        const first = rootEl.querySelector('.verse-line[data-side="orig"][data-ch][data-v]');
-        const last = rootEl.querySelector('.verse-line[data-side="orig"][data-ch][data-v]:last-of-type');
-
+        var first = rootEl.querySelector('.verse-line[data-side="orig"][data-ch][data-v]');
+        var last = rootEl.querySelector('.verse-line[data-side="orig"][data-ch][data-v]:last-of-type');
         if (!first) return;
 
-        const bookSlug = first.dataset.book || window.currentBookSlug || '';
-        const ch = parseInt(first.dataset.ch, 10);
-        const v1 = parseInt(first.dataset.v, 10);
-        const v2 = last ? parseInt(last.dataset.v, 10) : v1;
+        // por ahora solo Mateo (tu JSON es Mt)
+        var ch = parseInt(first.getAttribute('data-ch'), 10);
+        var v1 = parseInt(first.getAttribute('data-v'), 10);
+        var v2 = last ? parseInt(last.getAttribute('data-v'), 10) : v1;
 
-        if (!Number.isNaN(ch) && !Number.isNaN(v1) && !Number.isNaN(v2)) {
-          decorateMatthewRange(rootEl, bookSlug, ch, v1, v2);
+        if (!isNaN(ch) && !isNaN(v1) && !isNaN(v2)) {
+          decorateMatthewRange(rootEl, ch, v1, v2);
           attachLeftClickHandler(rootEl);
         }
       } catch (err) {
@@ -231,32 +242,41 @@
     obs.observe(rootEl, { childList: true, subtree: true });
   }
 
-  async function init() {
-    try {
-      await loadMorphOnce();
-      observeOrigPanel();
-      // Primer intento inmediato (por si ya había contenido)
-      const rootEl = document.getElementById('passageTextOrig');
-      if (rootEl) {
-        // fuerza un “tick” para que el observer corra aunque no haya mutación
-        setTimeout(() => {
-          const first = rootEl.querySelector('.verse-line[data-side="orig"][data-ch][data-v]');
+  function init() {
+    loadMorphOnce()
+      .then(function () {
+        observeOrigPanel();
+
+        // intento inmediato (por si ya había contenido renderizado)
+        var rootEl = document.getElementById('passageTextOrig');
+        if (!rootEl) return;
+
+        setTimeout(function () {
+          var first = rootEl.querySelector('.verse-line[data-side="orig"][data-ch][data-v]');
+          var last = rootEl.querySelector('.verse-line[data-side="orig"][data-ch][data-v]:last-of-type');
           if (!first) return;
-          const bookSlug = first.dataset.book || window.currentBookSlug || '';
-          const ch = parseInt(first.dataset.ch, 10);
-          const v1 = parseInt(first.dataset.v, 10);
-          const last = rootEl.querySelector('.verse-line[data-side="orig"][data-ch][data-v]:last-of-type');
-          const v2 = last ? parseInt(last.dataset.v, 10) : v1;
-          if (!Number.isNaN(ch) && !Number.isNaN(v1) && !Number.isNaN(v2)) {
-            decorateMatthewRange(rootEl, bookSlug, ch, v1, v2);
+
+          var ch = parseInt(first.getAttribute('data-ch'), 10);
+          var v1 = parseInt(first.getAttribute('data-v'), 10);
+          var v2 = last ? parseInt(last.getAttribute('data-v'), 10) : v1;
+
+          if (!isNaN(ch) && !isNaN(v1) && !isNaN(v2)) {
+            decorateMatthewRange(rootEl, ch, v1, v2);
             attachLeftClickHandler(rootEl);
           }
         }, 0);
-      }
-    } catch (err) {
-      console.warn('[GreekLexicon] init error:', err);
-    }
+      })
+      .catch(function (err) {
+        console.warn('[GreekLexicon] init error:', err);
+      });
   }
 
-  window.GreekLexicon = { init };
+  // auto-init
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+  window.GreekLexicon = { init: init };
 })();
