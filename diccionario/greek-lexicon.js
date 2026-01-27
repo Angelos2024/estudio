@@ -1,14 +1,18 @@
 /* diccionario/greek-lexicon.js
-   - Convierte cada palabra griega en <span class="gk-w">...</span>
-   - Click izquierdo abre popup (NO interfiere con click derecho)
+   - Hace cada palabra griega clickeable (click IZQUIERDO).
+   - No interfiere con click DERECHO (subrayar / comentar).
+   - Se auto-reaplica si el DOM cambia (MutationObserver), para convivir con subrayados/notas.
 */
 (function () {
   const MORPH_URL = './diccionario/mt-morphgnt.translit.json';
 
-  let morph = null; // { book:'Mt', chapters:[...], meta:... }
+  let morph = null;
+  let loaded = false;
+  let observing = false;
+  let decorating = false;
 
   function esc(s) {
-    return String(s)
+    return String(s ?? '')
       .replaceAll('&', '&amp;')
       .replaceAll('<', '&lt;')
       .replaceAll('>', '&gt;')
@@ -17,33 +21,27 @@
   }
 
   async function loadMorphOnce() {
-    if (morph) return morph;
+    if (loaded) return morph;
     const res = await fetch(MORPH_URL, { cache: 'no-store' });
     if (!res.ok) throw new Error(`No pude cargar ${MORPH_URL} (${res.status})`);
     morph = await res.json();
+    loaded = true;
     return morph;
   }
 
-  // mt-morphgnt.translit.json (Mt) viene segmentado:
-  // - chapters[9]  => caps 1–9    index = ch*100 + (v-1)
-  // - chapters[10] => caps 10–19  index = (ch-10)*100 + (v-1)
-  // - chapters[11] => caps 20–28  index = (ch-20)*100 + (v-1)
+  function isMatthewSlug(slug) {
+    const s = String(slug || '').toLowerCase().trim();
+    // Ajusta aquí si tu slug real es otro
+    return s === 'mt' || s.startsWith('mt') || s.includes('mateo') || s.includes('matt');
+  }
+
+  // Estructura esperada:
+  // morph[chapterIndex][verseIndex] => [ {g,tr,lemma}, ... ]
   function getMtTokens(ch, v) {
-    if (!morph || morph.book !== 'Mt') return null;
-
-    const seg =
-      ch <= 9 ?  ? morph.chapters[9]
-    : ch <= 19 ? morph.chapters[10]
-    :           morph.chapters[11];
-
-    if (!seg) return null;
-
-    const idx =
-      ch <= 9  ? (ch * 100 + (v - 1))
-    : ch <= 19 ? ((ch - 10) * 100 + (v - 1))
-    :            ((ch - 20) * 100 + (v - 1));
-
-    const tokens = seg[idx];
+    if (!Array.isArray(morph)) return null;
+    const chArr = morph[ch - 1];
+    if (!Array.isArray(chArr)) return null;
+    const tokens = chArr[v - 1];
     return Array.isArray(tokens) ? tokens : null;
   }
 
@@ -55,24 +53,30 @@
     st.textContent = `
       .gk-w{ cursor:pointer; }
       .gk-w:hover{ text-decoration: underline; }
+
       .gk-lex-popup{
-        position: fixed; z-index: 9999;
-        min-width: 260px; max-width: min(420px, calc(100vw - 24px));
-        background: rgba(17,26,46,.98);
-        border: 1px solid rgba(255,255,255,.10);
+        position: fixed;
+        z-index: 9997; /* por debajo del overlay de notas (si usas 9998/9999) */
+        min-width: 260px;
+        max-width: min(420px, calc(100vw - 24px));
+        background: rgba(17,26,46,0.98);
+        border: 1px solid rgba(255,255,255,0.10);
         border-radius: 14px;
-        box-shadow: 0 20px 50px rgba(0,0,0,.35);
-        padding: 12px 12px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+        padding: 12px;
         color: #e9eefc;
         display:none;
       }
-      .gk-lex-popup .t1{ font-weight: 700; font-size: 14px; margin-bottom: 6px; }
-      .gk-lex-popup .t2{ font-size: 13px; opacity: .9; }
+      .gk-lex-popup .t1{ font-weight:700; font-size:14px; margin-bottom:6px; padding-right:18px; }
+      .gk-lex-popup .t2{ font-size:13px; opacity:.92; }
       .gk-lex-popup .close{
         position:absolute; right:10px; top:8px;
         background: transparent; border:0; color:#cbd6ff; cursor:pointer;
         font-size: 16px;
       }
+      .gk-lex-popup .row{ margin-top:6px; }
+      .gk-lex-popup .lab{ opacity:.75; margin-right:6px; }
+      .gk-lex-popup .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
     `;
     document.head.appendChild(st);
 
@@ -88,6 +92,8 @@
 
     p.querySelector('.close').addEventListener('click', () => hidePopup());
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') hidePopup(); });
+
+    // Click afuera cierra, pero NO bloquea click derecho
     document.addEventListener('click', (e) => {
       const pop = document.getElementById('gk-lex-popup');
       if (!pop || pop.style.display === 'none') return;
@@ -97,13 +103,17 @@
     });
   }
 
-  function showPopupNear(el, header, body) {
+  function showPopupNear(el, g, lemma, tr) {
     ensurePopup();
     const pop = document.getElementById('gk-lex-popup');
     const h = document.getElementById('gk-lex-h');
     const b = document.getElementById('gk-lex-b');
-    h.textContent = header;
-    b.textContent = body;
+
+    h.textContent = g || '';
+    b.innerHTML = `
+      <div class="row"><span class="lab">Lemma:</span> <span class="mono">${esc(lemma)}</span></div>
+      ${tr ? `<div class="row"><span class="lab">Translit:</span> <span class="mono">${esc(tr)}</span></div>` : ``}
+    `;
 
     pop.style.display = 'block';
 
@@ -128,19 +138,26 @@
     if (pop) pop.style.display = 'none';
   }
 
-  // Convierte el texto de cada verso a spans clickeables usando los tokens del morph
-  function decorateMtPassage(rootEl, chFrom, v1, v2) {
+  function decorateMatthewRange(rootEl, bookSlug, chFrom, v1, v2) {
+    if (!rootEl) return;
+    if (!isMatthewSlug(bookSlug)) return;
+
+    // Solo tiene sentido si el panel está mostrando griego
+    // (tu app alterna hebreo/griego; en griego agrega clase "greek")
+    if (!rootEl.classList.contains('greek')) return;
+
     const lines = rootEl.querySelectorAll('.verse-line[data-side="orig"]');
     for (const line of lines) {
       const ch = parseInt(line.dataset.ch, 10);
-      const v  = parseInt(line.dataset.v, 10);
+      const v = parseInt(line.dataset.v, 10);
+      if (Number.isNaN(ch) || Number.isNaN(v)) continue;
       if (ch !== chFrom) continue;
       if (v < v1 || v > v2) continue;
 
       const verseText = line.querySelector('.verse-text');
       if (!verseText) continue;
 
-      // Evita redecorar (si vuelves a renderizar rápido)
+      // Evita redecorar si ya está
       if (verseText.querySelector('.gk-w')) continue;
 
       const tokens = getMtTokens(ch, v);
@@ -155,45 +172,91 @@
     }
   }
 
-  function attachClickHandler(rootEl) {
-    // Click IZQUIERDO solamente => no choca con click derecho (subrayar/comentar)
+  function attachLeftClickHandler(rootEl) {
+    if (!rootEl || rootEl.__gkLexClickBound) return;
+    rootEl.__gkLexClickBound = true;
+
     rootEl.addEventListener('click', (e) => {
+      // Solo click izquierdo
       if (e.button !== 0) return;
 
-      const w = e.target.closest?.('.gk-w');
+      const w = e.target && e.target.closest ? e.target.closest('.gk-w') : null;
       if (!w) return;
 
-      // Si el usuario está seleccionando texto para subrayar, no abrir popup
-      const sel = window.getSelection?.();
+      // Si hay selección activa (usuario marcando para subrayar), no abrir popup
+      const sel = window.getSelection ? window.getSelection() : null;
       if (sel && String(sel).trim().length > 0) return;
 
       const lemma = w.dataset.lemma || '';
       const tr = w.dataset.tr || '';
       const g = w.textContent || '';
-
-      // Por ahora: muestra lemma + transliteración.
-      // (Cuando metas diccionario fuerte, aquí haces lookup por lemma.)
-      showPopupNear(w, `${g} — ${lemma}`, tr ? `Translit: ${tr}` : '');
-    });
+      showPopupNear(w, g, lemma, tr);
+    }, false);
   }
 
-  // API pública
-  window.GreekLexicon = {
-    async decoratePassage(rootEl, bookSlug, ch, v1, v2) {
+  function observeOrigPanel() {
+    if (observing) return;
+    const rootEl = document.getElementById('passageTextOrig');
+    if (!rootEl) return;
+
+    observing = true;
+
+    const obs = new MutationObserver(() => {
+      if (decorating) return;
       try {
-        await loadMorphOnce();
-        if (!rootEl) return;
+        decorating = true;
 
-        // Por ahora solo Mt (tú dijiste “este doc de mateo”)
-        // bookSlug puede ser "mt" o similar; ajusta si en tu app es distinto.
-        const isMt = String(bookSlug).toLowerCase().startsWith('mt') || String(bookSlug).toLowerCase().includes('mateo');
-        if (!isMt) return;
+        // Detecta rango actual desde el DOM (lo renderizas con data-ch / data-v)【turn11file16†L31-L33】
+        const first = rootEl.querySelector('.verse-line[data-side="orig"][data-ch][data-v]');
+        const last = rootEl.querySelector('.verse-line[data-side="orig"][data-ch][data-v]:last-of-type');
 
-        decorateMtPassage(rootEl, ch, v1, v2);
-        attachClickHandler(rootEl);
+        if (!first) return;
+
+        const bookSlug = first.dataset.book || window.currentBookSlug || '';
+        const ch = parseInt(first.dataset.ch, 10);
+        const v1 = parseInt(first.dataset.v, 10);
+        const v2 = last ? parseInt(last.dataset.v, 10) : v1;
+
+        if (!Number.isNaN(ch) && !Number.isNaN(v1) && !Number.isNaN(v2)) {
+          decorateMatthewRange(rootEl, bookSlug, ch, v1, v2);
+          attachLeftClickHandler(rootEl);
+        }
       } catch (err) {
-        console.warn('[GreekLexicon] error:', err);
+        console.warn('[GreekLexicon] observer error:', err);
+      } finally {
+        decorating = false;
       }
+    });
+
+    obs.observe(rootEl, { childList: true, subtree: true });
+  }
+
+  async function init() {
+    try {
+      await loadMorphOnce();
+      observeOrigPanel();
+      // Primer intento inmediato (por si ya había contenido)
+      const rootEl = document.getElementById('passageTextOrig');
+      if (rootEl) {
+        // fuerza un “tick” para que el observer corra aunque no haya mutación
+        setTimeout(() => {
+          const first = rootEl.querySelector('.verse-line[data-side="orig"][data-ch][data-v]');
+          if (!first) return;
+          const bookSlug = first.dataset.book || window.currentBookSlug || '';
+          const ch = parseInt(first.dataset.ch, 10);
+          const v1 = parseInt(first.dataset.v, 10);
+          const last = rootEl.querySelector('.verse-line[data-side="orig"][data-ch][data-v]:last-of-type');
+          const v2 = last ? parseInt(last.dataset.v, 10) : v1;
+          if (!Number.isNaN(ch) && !Number.isNaN(v1) && !Number.isNaN(v2)) {
+            decorateMatthewRange(rootEl, bookSlug, ch, v1, v2);
+            attachLeftClickHandler(rootEl);
+          }
+        }, 0);
+      }
+    } catch (err) {
+      console.warn('[GreekLexicon] init error:', err);
     }
-  };
+  }
+
+  window.GreekLexicon = { init };
 })();
