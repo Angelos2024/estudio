@@ -750,6 +750,11 @@ if (window.AnnotationsUI_applyHighlightsToPassage) {
 if (window.AnnotationsUI_applyNotesToPassage) {
   window.AnnotationsUI_applyNotesToPassage(currentBookSlug, ch, v1, v2);
 }
+  // ✅ Comentarios bíblicos (solo si hay JSON para ese capítulo)
+if (window.BibleComments?.attachCommentsToRV) {
+  window.BibleComments.attachCommentsToRV(passageTextRV, currentBookSlug, ch);
+}
+
 
 }
 
