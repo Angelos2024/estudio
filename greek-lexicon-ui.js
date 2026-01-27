@@ -6,7 +6,8 @@
   'use strict';
 
   // Ajusta la ruta donde pongas el JSON
-  const MORPH_PATH = './mt-morphgnt.translit.json';
+ const MORPH_PATH = './diccionario/mt-morphgnt.translit.json';
+
 
   // Si luego tienes un diccionario por lema:
   // window.GREEK_DICTIONARY = { "λέγω": { gloss: "decir", ... }, ... }
