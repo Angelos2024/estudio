@@ -78,66 +78,89 @@
   // Soporta:
   // A) { chapters: [ ... seg arrays ... ] } con idx -> ch:v (100-based)
   // B) [ [ [tokens]... ]... ] (simple)
-  function buildMorphIndex(data) {
-    if (!data) return { map: {}, scheme: 'none' };
+function buildMorphIndex(data, abbr) {
+  // Devuelve un "map-like" con:
+  //   { abbr: 'mt'|'mk'|'lk'|'jn', segs: [seg0, seg1, ...] }
+  // donde cada seg es un array de versos indexado por fórmula (capítulos en bloques de 10).
 
-    // Simple: morph[cap-1][verso-1] = tokens
-    if (Array.isArray(data)) {
-      var m1 = {};
-      for (var c = 0; c < data.length; c++) {
-        if (!Array.isArray(data[c])) continue;
-        for (var v = 0; v < data[c].length; v++) {
-          if (!Array.isArray(data[c][v])) continue;
-          m1[(c + 1) + ':' + (v + 1)] = data[c][v];
-        }
-      }
-      return { map: m1, scheme: 'simple' };
+  if (!data) return { map: null };
+
+  // Caso típico MorphGNT: { book:'..', meta:{..}, chapters:[ ... ] }
+  if (!data.chapters || !Array.isArray(data.chapters)) return { map: null };
+
+  var chapters = data.chapters;
+
+  // Recolecta SOLO los arrays-segmento (los que contienen listas largas de versos)
+  var segs = [];
+  for (var i = 0; i < chapters.length; i++) {
+    if (Array.isArray(chapters[i])) {
+      segs.push(chapters[i]);
     }
-
-    var chapters = data.chapters;
-    if (!Array.isArray(chapters)) return { map: {}, scheme: 'none' };
-
-    var segs = [];
-    for (var i = 0; i < chapters.length; i++) {
-      if (Array.isArray(chapters[i])) segs.push(chapters[i]);
-    }
-    if (!segs.length) return { map: {}, scheme: 'none' };
-
-    // Detecta si ch = floor(idx/100) o +1
-    var scoreA = 0, scoreB = 0;
-    for (var s = 0; s < segs.length; s++) {
-      var seg = segs[s];
-      for (var idx = 0; idx < seg.length; idx++) {
-        if (!Array.isArray(seg[idx])) continue;
-        var vv = (idx % 100) + 1;
-        var chA = Math.floor(idx / 100);
-        var chB = chA + 1;
-        if (chA >= 1 && chA <= 200 && vv >= 1 && vv <= 99) scoreA++;
-        if (chB >= 1 && chB <= 200 && vv >= 1 && vv <= 99) scoreB++;
-      }
-    }
-    var useB = (scoreB >= scoreA);
-
-    var out = {};
-    for (var s2 = 0; s2 < segs.length; s2++) {
-      var seg2 = segs[s2];
-      for (var idx2 = 0; idx2 < seg2.length; idx2++) {
-        var tokens = seg2[idx2];
-        if (!Array.isArray(tokens)) continue;
-        var v2 = (idx2 % 100) + 1;
-        var chBase = Math.floor(idx2 / 100);
-        var ch2 = useB ? (chBase + 1) : chBase;
-        if (ch2 < 1) continue;
-        out[ch2 + ':' + v2] = tokens;
-      }
-    }
-    return { map: out, scheme: useB ? 'B' : 'A' };
   }
 
-  function getTokens(ch, v) {
-    if (!morphMap) return null;
-    return morphMap[ch + ':' + v] || null;
+  if (!segs.length) return { map: null };
+
+  // Devuelve un objeto que luego consume getTokens(ch,v)
+  return {
+    map: {
+      abbr: abbr,
+      segs: segs
+    }
+  };
+}
+
+
+
+function getTokens(ch, v) {
+  if (!morphMap) return null;
+
+  var abbr = morphMap.abbr;
+  var segs = morphMap.segs;
+  if (!abbr || !segs || !segs.length) return null;
+
+  // Helper: idx para un capítulo dentro de un bloque base
+  function idxFor(chNum, baseCh) {
+    return ((chNum - baseCh) * 100) + (v - 1);
   }
+
+  // ✅ Rangos reales por libro (Evangelios)
+  // Mt: 1–9 | 10–19 | 20–28   (3 segmentos)
+  // Mk: 1–9 | 10–16           (2 segmentos)
+  // Lk: 1–9 | 10–19 | 20–24   (3 segmentos)
+  // Jn: 1–9 | 10–19 | 20–21   (3 segmentos)
+
+  var seg = null;
+  var idx = -1;
+
+  if (abbr === 'mt') {
+    if (segs.length < 3) return null;
+    if (ch >= 1 && ch <= 9) { seg = segs[0]; idx = idxFor(ch, 0); }          // ch*100+(v-1)
+    else if (ch >= 10 && ch <= 19) { seg = segs[1]; idx = idxFor(ch, 10); }
+    else if (ch >= 20 && ch <= 28) { seg = segs[2]; idx = idxFor(ch, 20); }
+  } else if (abbr === 'mk') {
+    if (segs.length < 2) return null;
+    if (ch >= 1 && ch <= 9) { seg = segs[0]; idx = idxFor(ch, 0); }
+    else if (ch >= 10 && ch <= 16) { seg = segs[1]; idx = idxFor(ch, 10); }
+  } else if (abbr === 'lk') {
+    if (segs.length < 3) return null;
+    if (ch >= 1 && ch <= 9) { seg = segs[0]; idx = idxFor(ch, 0); }
+    else if (ch >= 10 && ch <= 19) { seg = segs[1]; idx = idxFor(ch, 10); }
+    else if (ch >= 20 && ch <= 24) { seg = segs[2]; idx = idxFor(ch, 20); }
+  } else if (abbr === 'jn') {
+    if (segs.length < 3) return null;
+    if (ch >= 1 && ch <= 9) { seg = segs[0]; idx = idxFor(ch, 0); }
+    else if (ch >= 10 && ch <= 19) { seg = segs[1]; idx = idxFor(ch, 10); }
+    else if (ch >= 20 && ch <= 21) { seg = segs[2]; idx = idxFor(ch, 20); }
+  } else {
+    // Otros libros: aún no implementado aquí
+    return null;
+  }
+
+  if (!seg) return null;
+
+  var tokens = seg[idx];
+  return Array.isArray(tokens) ? tokens : null;
+}
 
   // -------------------- popup --------------------
   function ensurePopup() {
