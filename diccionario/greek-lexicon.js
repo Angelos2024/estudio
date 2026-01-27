@@ -1,14 +1,13 @@
-/* diccionario/greek-lexicon.js
-   - Convierte cada palabra griega en <span class="gk-w">...</span>
-   - Click izquierdo abre popup (NO interfiere con click derecho)
+/* diccionario/greek-lexicon.js  (ES5, sin ?. sin ?? y sin ternarios)
+   - Convierte el texto griego de cada verso a spans clickeables.
+   - Click izquierdo abre popup.
+   - No toca contextmenu (click derecho queda intacto).
 */
 (function () {
-  // ✅ tu JSON está dentro de /diccionario
   var MORPH_URL = './diccionario/mt-morphgnt.translit.json';
 
-  var morph = null; // estructura del JSON
+  var morph = null;
   var observing = false;
-  var decorating = false;
 
   function esc(s) {
     s = String(s == null ? '' : s);
@@ -18,10 +17,6 @@
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#39;');
-  }
-
-  function safeText(x) {
-    return (x == null) ? '' : String(x);
   }
 
   function loadMorphOnce() {
@@ -37,14 +32,10 @@
       });
   }
 
-  // mt-morphgnt.translit.json (Mt) viene segmentado:
-  // - chapters[9]  => caps 1–9    index = ch*100 + (v-1)
-  // - chapters[10] => caps 10–19  index = (ch-10)*100 + (v-1)
-  // - chapters[11] => caps 20–28  index = (ch-20)*100 + (v-1)
+  // Tu JSON de Mt está segmentado en chapters[9/10/11] con índice por 100
   function getMtTokens(ch, v) {
     if (!morph) return null;
 
-    // algunas versiones traen book:"Mt", otras no; lo dejamos flexible
     var chapters = morph.chapters || morph;
     if (!chapters) return null;
 
@@ -55,13 +46,14 @@
 
     if (!seg) return null;
 
-    var idx;
+    var idx = 0;
     if (ch <= 9) idx = (ch * 100 + (v - 1));
     else if (ch <= 19) idx = ((ch - 10) * 100 + (v - 1));
     else idx = ((ch - 20) * 100 + (v - 1));
 
     var tokens = seg[idx];
-    return Array.isArray(tokens) ? tokens : null;
+    if (Array.isArray(tokens)) return tokens;
+    return null;
   }
 
   function ensurePopup() {
@@ -79,18 +71,14 @@
       '  border: 1px solid rgba(255,255,255,.10);',
       '  border-radius: 14px;',
       '  box-shadow: 0 20px 50px rgba(0,0,0,.35);',
-      '  padding: 12px 12px;',
+      '  padding: 12px;',
       '  color: #e9eefc;',
       '  display:none;',
       '}',
-      '.gk-lex-popup .t1{ font-weight: 700; font-size: 14px; margin-bottom: 6px; }',
-      '.gk-lex-popup .t2{ font-size: 13px; opacity: .92; line-height: 1.35; }',
-      '.gk-lex-popup .lab{ opacity: .70; margin-right: 6px; }',
-      '.gk-lex-popup .close{',
-      '  position:absolute; right:10px; top:8px;',
-      '  background: transparent; border:0; color:#cbd6ff; cursor:pointer;',
-      '  font-size: 16px; line-height: 1;',
-      '}'
+      '.gk-lex-popup .t1{ font-weight:700; font-size:14px; margin-bottom:6px; padding-right:18px; }',
+      '.gk-lex-popup .t2{ font-size:13px; opacity:.92; line-height:1.35; }',
+      '.gk-lex-popup .lab{ opacity:.70; margin-right:6px; }',
+      '.gk-lex-popup .close{ position:absolute; right:10px; top:8px; background:transparent; border:0; color:#cbd6ff; cursor:pointer; font-size:16px; }'
     ].join('\n');
     document.head.appendChild(st);
 
@@ -108,11 +96,15 @@
       pop.style.display = 'none';
     });
 
-    // click fuera cierra (sin interferir con tu UI)
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') pop.style.display = 'none';
+    });
+
     document.addEventListener('click', function (e) {
       var p = document.getElementById('gk-lex-popup');
       if (!p || p.style.display === 'none') return;
       if (p.contains(e.target)) return;
+      if (e.target && e.target.closest && e.target.closest('.gk-w')) return;
       p.style.display = 'none';
     }, false);
   }
@@ -124,7 +116,7 @@
     var title = document.getElementById('gk-lex-title');
     var body = document.getElementById('gk-lex-body');
 
-    title.textContent = safeText(g);
+    title.textContent = g || '';
 
     var html = '';
     if (lemma) html += '<div><span class="lab">Lema:</span><b>' + esc(lemma) + '</b></div>';
@@ -134,16 +126,20 @@
     body.innerHTML = html;
 
     var r = anchorEl.getBoundingClientRect();
-    var x = Math.min(r.left, window.innerWidth - 24 - 420);
+    var x = r.left;
     var y = r.bottom + 8;
 
-    pop.style.left = Math.max(12, x) + 'px';
-    pop.style.top = Math.max(12, y) + 'px';
+    // clamp simple
+    if (x < 12) x = 12;
+    if (y < 12) y = 12;
+
+    pop.style.left = x + 'px';
+    pop.style.top = y + 'px';
     pop.style.display = 'block';
   }
 
-  function decorateMatthewRange(rootEl, ch, v1, v2) {
-    // Solo si el panel realmente está en modo griego
+  function decorateVisibleOrigPanel(rootEl) {
+    if (!rootEl) return;
     if (!rootEl.classList || !rootEl.classList.contains('greek')) return;
 
     var lines = rootEl.querySelectorAll('.verse-line[data-side="orig"][data-ch][data-v]');
@@ -151,11 +147,9 @@
 
     for (var i = 0; i < lines.length; i++) {
       var line = lines[i];
+      var ch = parseInt(line.getAttribute('data-ch'), 10);
       var v = parseInt(line.getAttribute('data-v'), 10);
-      var chLine = parseInt(line.getAttribute('data-ch'), 10);
-      if (isNaN(v) || isNaN(chLine)) continue;
-      if (chLine !== ch) continue;
-      if (v < v1 || v > v2) continue;
+      if (isNaN(ch) || isNaN(v)) continue;
 
       var verseText = line.querySelector('.verse-text');
       if (!verseText) continue;
@@ -169,9 +163,9 @@
       var out = [];
       for (var t = 0; t < tokens.length; t++) {
         var tok = tokens[t] || {};
-        var g = tok.g ? safeText(tok.g) : '';
-        var lemma = tok.lemma ? safeText(tok.lemma) : '';
-        var tr = tok.tr ? safeText(tok.tr) : '';
+        var g = tok.g ? String(tok.g) : '';
+        var lemma = tok.lemma ? String(tok.lemma) : '';
+        var tr = tok.tr ? String(tok.tr) : '';
         out.push(
           '<span class="gk-w" data-lemma="' + esc(lemma) + '" data-tr="' + esc(tr) + '">' +
           esc(g) +
@@ -187,16 +181,13 @@
     rootEl.__gkLexClickBound = true;
 
     rootEl.addEventListener('click', function (e) {
-      // SOLO click izquierdo; no tocamos click derecho
+      // solo click izquierdo
       if (e.button !== 0) return;
 
-      var target = e.target;
-      if (!target) return;
-
-      var w = (target.closest ? target.closest('.gk-w') : null);
+      var w = e.target && e.target.closest ? e.target.closest('.gk-w') : null;
       if (!w) return;
 
-      // Si hay selección activa (usuario marcando para subrayar), NO abrir popup
+      // si hay selección (para subrayar), no abrir popup
       var sel = window.getSelection ? window.getSelection() : null;
       if (sel && String(sel).trim().length > 0) return;
 
@@ -209,69 +200,40 @@
 
   function observeOrigPanel() {
     if (observing) return;
+
     var rootEl = document.getElementById('passageTextOrig');
     if (!rootEl) return;
 
     observing = true;
 
     var obs = new MutationObserver(function () {
-      if (decorating) return;
       try {
-        decorating = true;
-
-        var first = rootEl.querySelector('.verse-line[data-side="orig"][data-ch][data-v]');
-        var last = rootEl.querySelector('.verse-line[data-side="orig"][data-ch][data-v]:last-of-type');
-        if (!first) return;
-
-        // por ahora solo Mateo (tu JSON es Mt)
-        var ch = parseInt(first.getAttribute('data-ch'), 10);
-        var v1 = parseInt(first.getAttribute('data-v'), 10);
-        var v2 = last ? parseInt(last.getAttribute('data-v'), 10) : v1;
-
-        if (!isNaN(ch) && !isNaN(v1) && !isNaN(v2)) {
-          decorateMatthewRange(rootEl, ch, v1, v2);
-          attachLeftClickHandler(rootEl);
-        }
+        // OJO: tu render aplica subrayados/notas después, así que redecoramos cuando el DOM cambie
+        decorateVisibleOrigPanel(rootEl);
+        attachLeftClickHandler(rootEl);
       } catch (err) {
         console.warn('[GreekLexicon] observer error:', err);
-      } finally {
-        decorating = false;
       }
     });
 
     obs.observe(rootEl, { childList: true, subtree: true });
+
+    // primer intento
+    decorateVisibleOrigPanel(rootEl);
+    attachLeftClickHandler(rootEl);
   }
 
   function init() {
     loadMorphOnce()
       .then(function () {
         observeOrigPanel();
-
-        // intento inmediato (por si ya había contenido renderizado)
-        var rootEl = document.getElementById('passageTextOrig');
-        if (!rootEl) return;
-
-        setTimeout(function () {
-          var first = rootEl.querySelector('.verse-line[data-side="orig"][data-ch][data-v]');
-          var last = rootEl.querySelector('.verse-line[data-side="orig"][data-ch][data-v]:last-of-type');
-          if (!first) return;
-
-          var ch = parseInt(first.getAttribute('data-ch'), 10);
-          var v1 = parseInt(first.getAttribute('data-v'), 10);
-          var v2 = last ? parseInt(last.getAttribute('data-v'), 10) : v1;
-
-          if (!isNaN(ch) && !isNaN(v1) && !isNaN(v2)) {
-            decorateMatthewRange(rootEl, ch, v1, v2);
-            attachLeftClickHandler(rootEl);
-          }
-        }, 0);
       })
       .catch(function (err) {
         console.warn('[GreekLexicon] init error:', err);
       });
   }
 
-  // auto-init
+  // auto init
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {
