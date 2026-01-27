@@ -50,6 +50,18 @@
     opacity:.75;
     transition: transform .12s ease, opacity .12s ease;
   }
+  .cm-icon{
+  width:14px;
+  height:14px;
+  opacity:.75;
+  transition: opacity .12s ease, transform .12s ease;
+}
+
+.cm-details[open] .cm-icon{
+  opacity:.95;
+  transform: scale(1.05);
+}
+
   .cm-details[open] .cm-caret{
     transform:rotate(90deg);
     opacity:.95;
@@ -104,7 +116,10 @@
     <summary class="cm-summary"
              aria-label="Comentarios Eric de Jesús Rodríguez"
              data-tip="Comentarios Eric de Jesús Rodríguez">
-      <span class="cm-caret">▶</span>
+     <img src="./comentarios/icons/comments.png"
+     class="cm-icon"
+     alt="Comentario bíblico">
+
     </summary>
     <div class="cm-body"></div>
   </details>
