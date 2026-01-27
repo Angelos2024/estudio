@@ -1,89 +1,88 @@
+<!-- comentarios/ui.html -->
 <style id="comments-ui-style">
-  /* Contenedor: más pegado al verso y con look discreto */
-  .cm-box{
-    margin:.40rem 0 0 2.05rem;
-  }
-
-  /* Bloque: fondo sutil + borde suave + ligera sombra */
+  /* ícono inline antes del número */
   .cm-details{
-    border:1px solid rgba(255,255,255,.08);
-    border-radius:14px;
-    background:rgba(255,255,255,.028);
-    box-shadow: 0 6px 18px rgba(0,0,0,.18);
-    overflow:hidden;
+    display:inline-block;
+    vertical-align:baseline;
+    margin-right:.35rem;
   }
 
-  /* La pestaña (summary) como "chip" discreto */
+  /* summary = botón mini */
   .cm-summary{
+    list-style:none;
     cursor:pointer;
     user-select:none;
-    padding:.42rem .60rem;
-    font-weight:600;
     display:inline-flex;
     align-items:center;
-    gap:.45rem;
-
-    /* apariencia de chip */
-    margin:.45rem;
-    border-radius:999px;
-    border:1px solid rgba(255,255,255,.10);
-    background:rgba(255,255,255,.035);
-    opacity:.92;
+    justify-content:center;
+    width:18px;
+    height:18px;
+    border-radius:5px;
+    border:1px solid rgba(0,0,0,.18);
+    background:rgba(0,0,0,.04);
+    padding:0;
+    position:relative; /* para tooltip */
   }
-
-  /* Quitar marcador del summary (triángulo del navegador) */
   .cm-summary::-webkit-details-marker{ display:none; }
   .cm-summary::marker{ content:""; }
 
-  /* Hover/active discreto */
-  .cm-summary:hover{
-    background:rgba(255,255,255,.05);
-    border-color:rgba(255,255,255,.14);
-  }
-
-  /* Focus accesible pero suave */
-  .cm-summary:focus{
-    outline:2px solid rgba(255,255,255,.14);
-    outline-offset:2px;
-  }
-
-  /* Caret pequeño, sutil */
   .cm-caret{
+    font-size:12px;
     opacity:.75;
-    font-size:.9em;
-    transform:translateY(-.5px);
+    line-height:1;
     transition: transform .12s ease, opacity .12s ease;
   }
   .cm-details[open] .cm-caret{
-    transform:rotate(90deg) translateY(-.5px);
-    opacity:.9;
+    transform:rotate(90deg);
+    opacity:.95;
   }
 
-  /* Cuerpo: se ve como bloque interno sin “gritar” */
+  /* Tooltip (globo) al hover */
+  .cm-summary[data-tip]:hover::after{
+    content: attr(data-tip);
+    position:absolute;
+    left: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    white-space: nowrap;
+    padding:.32rem .45rem;
+    border-radius:8px;
+    background: rgba(0,0,0,.82);
+    color:#fff;
+    font-size:12px;
+    z-index:9999;
+  }
+  .cm-summary[data-tip]:hover::before{
+    content:"";
+    position:absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    border:6px solid transparent;
+    border-right-color: rgba(0,0,0,.82);
+    z-index:9999;
+  }
+
+  /* Panel desplegable: discreto y compacto */
   .cm-body{
-    padding:.65rem .85rem .85rem .85rem;
-    border-top:1px solid rgba(255,255,255,.06);
-    line-height:1.6;
-    opacity:.92;
+    margin-top:.35rem;
+    margin-left: 1.35rem; /* baja un poco alineado con el texto */
+    padding:.55rem .7rem;
+    border-radius:12px;
+    border:1px solid rgba(0,0,0,.10);
+    background:rgba(0,0,0,.03);
+    line-height:1.55;
+    max-width: 900px;
   }
-
-  /* Texto un poco más “comentario” */
-  .cm-body{
-    font-size:.98em;
-  }
-
-  .cm-muted{ opacity:.72; font-size:.95em; }
 </style>
 
-
 <template id="cm-template">
-  <div class="cm-box">
-    <details class="cm-details">
-      <summary class="cm-summary">
-        <span class="cm-caret">▶</span>
-        <span>Comentario</span>
-      </summary>
-      <div class="cm-body"></div>
-    </details>
-  </div>
+  <details class="cm-details">
+    <summary class="cm-summary"
+             aria-label="Comentarios Eric de Jesús Rodríguez"
+             data-tip="Comentarios Eric de Jesús Rodríguez">
+      <span class="cm-caret">▶</span>
+    </summary>
+    <div class="cm-body"></div>
+  </details>
 </template>
