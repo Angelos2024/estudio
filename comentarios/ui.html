@@ -1,15 +1,15 @@
 <!-- comentarios/ui.html -->
 <style id="comments-ui-style">
-  /* ===== Icono (cerrado) ===== */
+  /* Details como bloque debajo del versículo */
   .cm-details{
-    display:inline-block;         /* icono inline junto al número */
-    vertical-align:baseline;
-    margin-right:.30rem;
+    display:block;
+    margin:.25rem 0 .15rem 2.05rem; /* alineado con el texto del verso */
     border:0;
     background:transparent;
     box-shadow:none;
   }
 
+  /* Summary = SOLO icono (sin caja, sin texto) */
   .cm-summary{
     list-style:none;
     cursor:pointer;
@@ -17,61 +17,38 @@
 
     display:inline-flex;
     align-items:center;
-    justify-content:center;
 
-    width:18px;
-    height:18px;
+    border:none;
+    background:transparent;
     padding:0;
 
-    border-radius:6px;
-    border:1px solid rgba(0,0,0,.16);
-    background:rgba(0,0,0,.03);
-    opacity:.92;
-
     position:relative; /* tooltip */
+    opacity:.85;
   }
+  .cm-summary:hover{ opacity:1; }
+
+  /* Oculta el marcador/flecha nativa del navegador */
   .cm-summary::-webkit-details-marker{ display:none; }
   .cm-summary::marker{ content:""; }
 
-  .cm-summary:hover{
-    background:rgba(0,0,0,.055);
-    border-color:rgba(0,0,0,.22);
-    opacity:1;
-  }
-
-  .cm-summary:focus{
-    outline:2px solid rgba(0,0,0,.18);
-    outline-offset:2px;
-  }
-
-  .cm-caret{
-    font-size:12px;
-    line-height:1;
-    opacity:.75;
-    transition: transform .12s ease, opacity .12s ease;
-  }
+  /* Icono PNG */
   .cm-icon{
-  width:14px;
-  height:14px;
-  opacity:.75;
-  transition: opacity .12s ease, transform .12s ease;
-}
-
-.cm-details[open] .cm-icon{
-  opacity:.95;
-  transform: scale(1.05);
-}
-
-  .cm-details[open] .cm-caret{
-    transform:rotate(90deg);
-    opacity:.95;
+    width:16px;
+    height:16px;
+    display:block;
+    opacity:.85;
+    transition: opacity .12s ease, transform .12s ease;
+  }
+  .cm-details[open] .cm-icon{
+    opacity:1;
+    transform: scale(1.05);
   }
 
-  /* ===== Tooltip (globo) ===== */
+  /* Tooltip (globo) */
   .cm-summary[data-tip]:hover::after{
     content: attr(data-tip);
     position:absolute;
-    left: 26px;
+    left: 22px;
     top: 50%;
     transform: translateY(-50%);
     white-space: nowrap;
@@ -87,7 +64,7 @@
   .cm-summary[data-tip]:hover::before{
     content:"";
     position:absolute;
-    left: 18px;
+    left: 14px;
     top: 50%;
     transform: translateY(-50%);
 
@@ -96,10 +73,10 @@
     z-index:9999;
   }
 
-  /* ===== Panel (abierto) — siempre abajo ===== */
+  /* Panel del comentario (siempre debajo) */
   .cm-body{
     margin-top:.35rem;
-    margin-left:1.35rem;          /* alinea el bloque con el texto del verso */
+    margin-left:.0rem;
     padding:.55rem .70rem;
 
     border-radius:12px;
@@ -116,10 +93,9 @@
     <summary class="cm-summary"
              aria-label="Comentarios Eric de Jesús Rodríguez"
              data-tip="Comentarios Eric de Jesús Rodríguez">
-     <img src="./comentarios/icons/comments.png"
-     class="cm-icon"
-     alt="Comentario bíblico">
-
+      <img src="./comentarios/icons/comments.png"
+           class="cm-icon"
+           alt="Comentario bíblico">
     </summary>
     <div class="cm-body"></div>
   </details>
