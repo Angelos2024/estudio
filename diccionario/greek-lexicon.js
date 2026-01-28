@@ -426,36 +426,64 @@ var tr = normalizeTranslit((t.tr != null) ? String(t.tr) : '');
     }
   }
 
-  function decorateVisibleOrigPanel(rootEl) {
-    if (!rootEl) return;
+function extractChV(line){
+  // 1) directo
+  var ch = parseInt(line.getAttribute('data-ch') || '0', 10);
+  var v  = parseInt(line.getAttribute('data-v')  || '0', 10);
+  if (ch > 0 && v > 0) return { ch: ch, v: v };
 
-    // Si no hay diccionario para el libro actual, restaura
-    if (!morphMap) {
-      restoreRawGreek(rootEl);
-      return;
-    }
+  // 2) intentar atributos comunes: data-ref / data-verse / data-vref  (ej "1:3")
+  var ref =
+    line.getAttribute('data-ref') ||
+    line.getAttribute('data-verse') ||
+    line.getAttribute('data-vref') ||
+    '';
 
-    var lines = rootEl.querySelectorAll('.verse-line[data-side="orig"][data-ch][data-v]');
-    for (var i = 0; i < lines.length; i++) {
-      var line = lines[i];
-      var ch = parseInt(line.getAttribute('data-ch') || '0', 10);
-      var v = parseInt(line.getAttribute('data-v') || '0', 10);
-      if (!ch || !v) continue;
+  // 3) intentar id (ej "orig-1-3" o "v-1-3")
+  if (!ref) ref = line.id || '';
 
-      var vt = line.querySelector('.verse-text');
-      if (!vt) continue;
-
-      // Marca por libro+verso para no redecorar infinito
-      var doneKey = morphKey + ':' + ch + ':' + v;
-      if (vt.getAttribute('data-gk-done') === doneKey) continue;
-
-      var tokens = getTokens(ch, v);
-      if (!tokens) continue;
-
-      decorateVerseText(vt, tokens);
-      vt.setAttribute('data-gk-done', doneKey);
-    }
+  // 4) intentar texto del numerito (ej "1:3")
+  if (!ref) {
+    var vn = line.querySelector('.verse-num, .vnum, .num, [data-verse-num]');
+    if (vn) ref = (vn.textContent || '').trim();
   }
+
+  var m = String(ref).match(/(\d+)\s*[:.]\s*(\d+)/);
+  if (m) return { ch: parseInt(m[1],10), v: parseInt(m[2],10) };
+
+  return null;
+}
+
+function decorateVisibleOrigPanel(rootEl) {
+  if (!rootEl) return;
+
+  if (!morphMap) {
+    restoreRawGreek(rootEl);
+    return;
+  }
+
+  // 👇 ya NO exige data-ch/data-v
+  var lines = rootEl.querySelectorAll('.verse-line[data-side="orig"]');
+  for (var i = 0; i < lines.length; i++) {
+    var line = lines[i];
+
+    var cv = extractChV(line);
+    if (!cv) continue;
+
+    var vt = line.querySelector('.verse-text');
+    if (!vt) continue;
+
+    var doneKey = morphKey + ':' + cv.ch + ':' + cv.v;
+    if (vt.getAttribute('data-gk-done') === doneKey) continue;
+
+    var tokens = getTokens(cv.ch, cv.v);
+    if (!tokens) continue;
+
+    decorateVerseText(vt, tokens);
+    vt.setAttribute('data-gk-done', doneKey);
+  }
+}
+
 
   // -------------------- click handler (SOLO click izquierdo) --------------------
   function attachLeftClickHandler(rootEl) {
