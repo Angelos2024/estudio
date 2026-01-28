@@ -196,51 +196,49 @@ function getBookSlug() {
   //
   // Construimos: map["ch:v"] = tokens[]
 function buildMorphIndex(data, abbr) {
-  if (!data || !data.chapters || !Array.isArray(data.chapters)) return null;
-
-  // extraer solo los arrays (segmentos) en el orden en que vienen
   var segs = [];
-  for (var i = 0; i < data.chapters.length; i++) {
-    if (Array.isArray(data.chapters[i])) segs.push(data.chapters[i]);
+
+  // Caso A: JSON como arreglo plano (tu caso actual)
+  if (Array.isArray(data)) {
+    // 10 capítulos * 100 versos “slots” = 1000 posiciones por segmento
+    var CHUNK = 1000;
+    for (var i = 0; i < data.length; i += CHUNK) {
+      segs.push(data.slice(i, i + CHUNK));
+    }
   }
+  // Caso B: JSON como {chapters:[seg0,seg1,...]}
+  else if (data && Array.isArray(data.chapters)) {
+    for (var j = 0; j < data.chapters.length; j++) {
+      if (Array.isArray(data.chapters[j])) segs.push(data.chapters[j]);
+    }
+  }
+
   if (!segs.length) return null;
 
-  var map = Object.create(null); // "ch:v" -> tokens[]
-  var chapterBase = 0;           // acumulado de capítulos ya cubiertos por segmentos previos
-
-  for (var s = 0; s < segs.length; s++) {
-    var seg = segs[s];
-    if (!Array.isArray(seg)) continue;
-
-    // 1) detectar cuántos capítulos locales contiene este segmento (max localCh)
-    var maxLocalCh = 0;
-    for (var idx = 0; idx < seg.length; idx++) {
-      if (!Array.isArray(seg[idx])) continue;
-      var localCh = Math.floor(idx / 100);
-      if (localCh > maxLocalCh) maxLocalCh = localCh;
-    }
-
-    // 2) volcar tokens a mapa global: globalCh = chapterBase + localCh
-    for (var j = 0; j < seg.length; j++) {
-      var tokens = seg[j];
-      if (!Array.isArray(tokens)) continue;
-
-      var lc = Math.floor(j / 100);     // capítulo local (1..9)
-      var v  = (j % 100) + 1;           // verso (1..)
-      if (lc < 1 || v < 1) continue;
-
-      var ch = chapterBase + lc;        // capítulo global
-      map[ch + ':' + v] = tokens;
-    }
-
-    chapterBase += maxLocalCh;
-  }
-
-  // opcional: validar que el libro no exceda lo esperado
-  var totalCh = ABBR_CHAPTERS[abbr] || 0;
-
-  return { abbr: abbr, totalCh: totalCh, map: map };
+  return {
+    abbr: abbr,
+    totalCh: (ABBR_CHAPTERS && ABBR_CHAPTERS[abbr]) ? ABBR_CHAPTERS[abbr] : 0,
+    segs: segs
+  };
 }
+
+function getTokens(ch, v) {
+  if (!morphMap || !morphMap.segs || !morphMap.segs.length) return null;
+  if (ch < 1 || v < 1) return null;
+
+  var segs = morphMap.segs;
+
+  // segmento por bloque de 10 capítulos (1–10 => seg 0, 11–20 => seg 1, etc.)
+  var segIndex = Math.floor((ch - 1) / 10);
+  if (segIndex < 0 || segIndex >= segs.length) return null;
+
+  var base = segIndex * 10;
+  var idx = ((ch - 1 - base) * 100) + (v - 1);
+
+  var tokens = segs[segIndex][idx];
+  return Array.isArray(tokens) ? tokens : null;
+}
+
 
 
 
