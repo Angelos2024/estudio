@@ -6,7 +6,7 @@
    - Si no hay JSON del libro: restaura texto plano (sin spans)
 */
 (function () {
- var DICT_DIR = './diccionario/'; // en tu caso está bien así para GitHub Pages dentro de /estudio/
+  var DICT_DIR = './diccionario/';
 var ABBR_CHAPTERS = {
   mt: 28,
   mk: 16,
@@ -198,55 +198,18 @@ function getBookSlug() {
 function buildMorphIndex(data, abbr) {
   var segs = [];
 
-  function chunkSlotsToSegs(slots) {
-    var CHUNK = 1000; // 10 capítulos * 100 versos “slots”
-    for (var i = 0; i < slots.length; i += CHUNK) {
-      segs.push(slots.slice(i, i + CHUNK));
+  // Caso A: JSON como arreglo plano (tu caso actual)
+  if (Array.isArray(data)) {
+    // 10 capítulos * 100 versos “slots” = 1000 posiciones por segmento
+    var CHUNK = 1000;
+    for (var i = 0; i < data.length; i += CHUNK) {
+      segs.push(data.slice(i, i + CHUNK));
     }
   }
-
-  function countArrayItems(a, maxCheck) {
-    var c = 0;
-    for (var i = 0; i < a.length && i < maxCheck; i++) if (Array.isArray(a[i])) c++;
-    return c;
-  }
-
-  // Caso A: JSON como arreglo plano
-  if (Array.isArray(data)) {
-    chunkSlotsToSegs(data);
-  }
-  // Caso B: JSON como {chapters:[...]}
+  // Caso B: JSON como {chapters:[seg0,seg1,...]}
   else if (data && Array.isArray(data.chapters)) {
-    var ch = data.chapters;
-
-    // B1) "Slots directos": chapters es enorme y contiene MUCHOS versos sueltos (Mateo, etc.)
-    //     Ej: chapters.length > 1000 y hay bastantes entries que ya son arrays (versos).
-    if (ch.length > 1000 && countArrayItems(ch, Math.min(ch.length, 5000)) > 20) {
-      chunkSlotsToSegs(ch);
-    } else {
-      // B2) "Segmento anidado": chapters es pequeño/mediano pero trae 1 array grande dentro (1Pe, etc.)
-      //     Ej: la mayoría son null y solo 1 posición es un array grande con slots.
-      var inner = null;
-      for (var j = 0; j < ch.length; j++) {
-        if (Array.isArray(ch[j])) {
-          // si ese array interno parece "slots" (muchos null y algunos arrays dentro),
-          // lo tomamos como el verdadero contenedor
-          if (ch[j].length > 200 && countArrayItems(ch[j], Math.min(ch[j].length, 2000)) > 10) {
-            inner = ch[j];
-            break;
-          }
-          // si en vez de slots fueran “segmentos ya listos”, se agregan abajo
-        }
-      }
-
-      if (inner) {
-        chunkSlotsToSegs(inner);
-      } else {
-        // B3) "Segmentos ya listos": chapters ya viene como [seg0, seg1, ...] (cada seg ~1000)
-        for (var k = 0; k < ch.length; k++) {
-          if (Array.isArray(ch[k])) segs.push(ch[k]);
-        }
-      }
+    for (var j = 0; j < data.chapters.length; j++) {
+      if (Array.isArray(data.chapters[j])) segs.push(data.chapters[j]);
     }
   }
 
@@ -258,7 +221,6 @@ function buildMorphIndex(data, abbr) {
     segs: segs
   };
 }
-
 
 function getTokens(ch, v) {
   if (!morphMap || !morphMap.segs || !morphMap.segs.length) return null;
@@ -279,6 +241,18 @@ function getTokens(ch, v) {
 
 
 
+
+function getTokens(ch, v) {
+  if (!morphMap || !morphMap.map) return null;
+  if (ch < 1 || v < 1) return null;
+
+  var totalCh = morphMap.totalCh || 0;
+  if (totalCh && ch > totalCh) return null;
+
+  var key = ch + ':' + v;
+  var tokens = morphMap.map[key];
+  return Array.isArray(tokens) ? tokens : null;
+}
   // ✅ ESTE CIERRE ES OBLIGATORIO
 
   // -------------------- popup --------------------
@@ -426,64 +400,36 @@ var tr = normalizeTranslit((t.tr != null) ? String(t.tr) : '');
     }
   }
 
-function extractChV(line){
-  // 1) directo
-  var ch = parseInt(line.getAttribute('data-ch') || '0', 10);
-  var v  = parseInt(line.getAttribute('data-v')  || '0', 10);
-  if (ch > 0 && v > 0) return { ch: ch, v: v };
+  function decorateVisibleOrigPanel(rootEl) {
+    if (!rootEl) return;
 
-  // 2) intentar atributos comunes: data-ref / data-verse / data-vref  (ej "1:3")
-  var ref =
-    line.getAttribute('data-ref') ||
-    line.getAttribute('data-verse') ||
-    line.getAttribute('data-vref') ||
-    '';
+    // Si no hay diccionario para el libro actual, restaura
+    if (!morphMap) {
+      restoreRawGreek(rootEl);
+      return;
+    }
 
-  // 3) intentar id (ej "orig-1-3" o "v-1-3")
-  if (!ref) ref = line.id || '';
+    var lines = rootEl.querySelectorAll('.verse-line[data-side="orig"][data-ch][data-v]');
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i];
+      var ch = parseInt(line.getAttribute('data-ch') || '0', 10);
+      var v = parseInt(line.getAttribute('data-v') || '0', 10);
+      if (!ch || !v) continue;
 
-  // 4) intentar texto del numerito (ej "1:3")
-  if (!ref) {
-    var vn = line.querySelector('.verse-num, .vnum, .num, [data-verse-num]');
-    if (vn) ref = (vn.textContent || '').trim();
+      var vt = line.querySelector('.verse-text');
+      if (!vt) continue;
+
+      // Marca por libro+verso para no redecorar infinito
+      var doneKey = morphKey + ':' + ch + ':' + v;
+      if (vt.getAttribute('data-gk-done') === doneKey) continue;
+
+      var tokens = getTokens(ch, v);
+      if (!tokens) continue;
+
+      decorateVerseText(vt, tokens);
+      vt.setAttribute('data-gk-done', doneKey);
+    }
   }
-
-  var m = String(ref).match(/(\d+)\s*[:.]\s*(\d+)/);
-  if (m) return { ch: parseInt(m[1],10), v: parseInt(m[2],10) };
-
-  return null;
-}
-
-function decorateVisibleOrigPanel(rootEl) {
-  if (!rootEl) return;
-
-  if (!morphMap) {
-    restoreRawGreek(rootEl);
-    return;
-  }
-
-  // 👇 ya NO exige data-ch/data-v
-  var lines = rootEl.querySelectorAll('.verse-line[data-side="orig"]');
-  for (var i = 0; i < lines.length; i++) {
-    var line = lines[i];
-
-    var cv = extractChV(line);
-    if (!cv) continue;
-
-    var vt = line.querySelector('.verse-text');
-    if (!vt) continue;
-
-    var doneKey = morphKey + ':' + cv.ch + ':' + cv.v;
-    if (vt.getAttribute('data-gk-done') === doneKey) continue;
-
-    var tokens = getTokens(cv.ch, cv.v);
-    if (!tokens) continue;
-
-    decorateVerseText(vt, tokens);
-    vt.setAttribute('data-gk-done', doneKey);
-  }
-}
-
 
   // -------------------- click handler (SOLO click izquierdo) --------------------
   function attachLeftClickHandler(rootEl) {
@@ -646,4 +592,3 @@ function loadMorphForCurrentBook() {
 
 // Si tu script expone morphMap en global no, pero al menos revisa Network.
 // Si Network NO muestra 404 y AÚN así no decora, entonces el problema es tokens/ch-v.
-
