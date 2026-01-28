@@ -20,7 +20,15 @@ var ABBR_CHAPTERS = {
     eph: 6,   // Efesios
   col: 4,   // Colosenses
   php: 4,   // Filipenses
-  '1th': 5  // 1 Tesalonicenses
+  '1th': 5,  // 1 Tesalonicenses
+     eph: 6,
+  php: 4,
+  col: 4,
+  '1th': 5,
+  '2th': 3,
+  '1ti': 6,
+  '2ti': 4,
+  tit: 3
 };
 
   // ?book=...  -> abbr de archivo (abbr-morphgnt.translit.json)
@@ -43,7 +51,31 @@ var ABBR_CHAPTERS = {
   'filipenses': 'php', 'php': 'php', 'phil': 'php', 'philippians': 'php',
   'colosenses': 'col', 'col': 'col', 'colossians': 'col',
   '1tesalonicenses': '1th', '1th': '1th', '1thess': '1th', '1thessalonians': '1th',
-  '1tes': '1th', '1tesa': '1th', '1tesal': '1th'
+  '1tes': '1th', '1tesa': '1th', '1tesal': '1th',
+     'efesios': 'eph', 'eph': 'eph', 'ephesians': 'eph',
+
+  // Filipenses
+  'filipenses': 'php', 'php': 'php', 'philippians': 'php',
+
+  // Colosenses
+  'colosenses': 'col', 'col': 'col', 'colossians': 'col',
+
+  // 1 Tesalonicenses
+  '1tesalonicenses': '1th', '1th': '1th', '1thessalonians': '1th',
+  '1tes': '1th', '1ts': '1th',
+
+  // 2 Tesalonicenses
+  '2tesalonicenses': '2th', '2th': '2th', '2thessalonians': '2th',
+  '2tes': '2th', '2ts': '2th',
+
+  // 1 Timoteo
+  '1timoteo': '1ti', '1ti': '1ti', '1timothy': '1ti',
+
+  // 2 Timoteo
+  '2timoteo': '2ti', '2ti': '2ti', '2timothy': '2ti',
+
+  // Tito
+  'tito': 'tit', 'tit': 'tit', 'titus': 'tit'
   };
 
   var morphKey = null;  // abbr cargada (mt/mk/...)
