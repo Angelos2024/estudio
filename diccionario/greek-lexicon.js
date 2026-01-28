@@ -6,7 +6,7 @@
    - Si no hay JSON del libro: restaura texto plano (sin spans)
 */
 (function () {
-  var DICT_DIR = './';
+ var DICT_DIR = './diccionario/'; // en tu caso está bien así para GitHub Pages dentro de /estudio/
 var ABBR_CHAPTERS = {
   mt: 28,
   mk: 16,
