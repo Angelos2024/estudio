@@ -241,18 +241,6 @@ function getTokens(ch, v) {
 
 
 
-
-function getTokens(ch, v) {
-  if (!morphMap || !morphMap.map) return null;
-  if (ch < 1 || v < 1) return null;
-
-  var totalCh = morphMap.totalCh || 0;
-  if (totalCh && ch > totalCh) return null;
-
-  var key = ch + ':' + v;
-  var tokens = morphMap.map[key];
-  return Array.isArray(tokens) ? tokens : null;
-}
   // ✅ ESTE CIERRE ES OBLIGATORIO
 
   // -------------------- popup --------------------
