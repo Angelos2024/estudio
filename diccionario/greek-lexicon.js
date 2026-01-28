@@ -25,7 +25,17 @@ var ABBR_CHAPTERS = {
   '2th': 3,
   '1ti': 6,
   '2ti': 4,
-  tit: 3
+  tit: 3,
+   phm: 1,
+  heb: 13,
+  jas: 5,
+  '1pe': 5,
+  '2pe': 3,
+  '1jn': 5,
+  '2jn': 1,
+  '3jn': 1,
+  jud: 1,
+  re: 22
 };
 
 
@@ -63,7 +73,33 @@ var ABBR_CHAPTERS = {
   '1ti': '1ti', '2ti': '2ti',
 
   // Tito
-  'tito': 'tit', 'tit': 'tit', 'titus': 'tit'
+  'tito': 'tit', 'tit': 'tit', 'titus': 'tit',
+      // ✅ Filemón
+  'filemon': 'phm', 'filemón': 'phm', 'phm': 'phm', 'philemon': 'phm',
+
+  // ✅ Hebreos
+  'hebreos': 'heb', 'heb': 'heb', 'hebrews': 'heb',
+
+  // ✅ Santiago
+  'santiago': 'jas', 'jas': 'jas', 'james': 'jas',
+
+  // ✅ 1–2 Pedro
+  '1pedro': '1pe', '2pedro': '2pe',
+  '1pe': '1pe', '2pe': '2pe',
+  '1peter': '1pe', '2peter': '2pe',
+
+  // ✅ 1–3 Juan
+  '1juan': '1jn', '2juan': '2jn', '3juan': '3jn',
+  '1jn': '1jn', '2jn': '2jn', '3jn': '3jn',
+  '1john': '1jn', '2john': '2jn', '3john': '3jn',
+
+  // ✅ Judas
+  'judas': 'jud', 'jud': 'jud', 'jude': 'jud',
+
+  // ✅ Apocalipsis
+  'apocalipsis': 're', 'apocalípsis': 're',
+  'revelacion': 're', 'revelación': 're',
+  're': 're', 'rev': 're', 'revelation': 're'
   };
 
   var morphKey = null;  // abbr cargada (mt/mk/...)
