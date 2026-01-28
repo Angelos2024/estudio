@@ -525,3 +525,10 @@ rootEl.addEventListener('click', function (ev) {
 
   window.GreekLexicon = { init: init };
 })();
+
+// Debe imprimir true si el JSON cargó y el diccionario está activo
+console.log(!!window.GreekLexicon);
+
+// Si tu script expone morphMap en global no, pero al menos revisa Network.
+// Si Network NO muestra 404 y AÚN así no decora, entonces el problema es tokens/ch-v.
+
