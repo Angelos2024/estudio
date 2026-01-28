@@ -8,75 +8,77 @@
 (function () {
   var DICT_DIR = './diccionario/';
 var ABBR_CHAPTERS = {
-  mt: 28,
-  mk: 16,
-  lk: 24,
-  jn: 21,
-  ac: 28,
-  ro: 16,
-  '1co': 16,
-  '2co': 13,
+  mt: 28, mk: 16, lk: 24, jn: 21,
+  ac: 28, ro: 16,
+  '1co': 16, '2co': 13,
   ga: 6,
-    eph: 6,   // Efesios
-  col: 4,   // Colosenses
-  php: 4,   // Filipenses
-  '1th': 5,  // 1 Tesalonicenses
-     eph: 6,
+  eph: 6,
   php: 4,
   col: 4,
-  '1th': 5,
-  '2th': 3,
-  '1ti': 6,
-  '2ti': 4,
-  tit: 3
+  '1th': 5, '2th': 3,
+  '1ti': 6, '2ti': 4,
+  tit: 3,
+  phm: 1,
+  heb: 13,
+  jas: 5,
+  '1pe': 5, '2pe': 3,
+  '1jn': 5, '2jn': 1, '3jn': 1,
+  jud: 1,
+  re: 22
 };
+
 
   // ?book=...  -> abbr de archivo (abbr-morphgnt.translit.json)
   // Agrega aquí más slugs si los usas en tu proyecto.
-  var BOOK_SLUG_TO_ABBR = {
-    // Evangelios
-    'mateo': 'mt', 'mt': 'mt', 'matt': 'mt', 'matthew': 'mt',
-    'marcos': 'mk', 'mc': 'mk', 'mk': 'mk', 'mark': 'mk',
-    'lucas': 'lk', 'lc': 'lk', 'lk': 'lk', 'luke': 'lk',
-    'juan': 'jn', 'jn': 'jn', 'john': 'jn',
+var BOOK_SLUG_TO_ABBR = {
+  // Evangelios
+  'mateo':'mt','mt':'mt','matt':'mt','matthew':'mt',
+  'marcos':'mk','mk':'mk','mark':'mk',
+  'lucas':'lk','lk':'lk','luke':'lk',
+  'juan':'jn','jn':'jn','john':'jn',
 
-    // Hechos / Romanos / Corintios / Gálatas
-    'hechos': 'ac', 'actos': 'ac', 'ac': 'ac', 'acts': 'ac',
-    'romanos': 'ro', 'ro': 'ro', 'rom': 'ro', 'romans': 'ro',
-    '1corintios': '1co', '1co': '1co', '1cor': '1co', '1corinthians': '1co',
-    '2corintios': '2co', '2co': '2co', '2cor': '2co', '2corinthians': '2co',
-    'galatas': 'ga', 'gálatas': 'ga', 'ga': 'ga', 'gal': 'ga', 'galatians': 'ga',
-      'efesios': 'eph', 'eph': 'eph', 'ephesians': 'eph',
+  // Hechos / Romanos
+  'hechos':'ac','actos':'ac','ac':'ac','acts':'ac',
+  'romanos':'ro','ro':'ro','rom':'ro','romans':'ro',
 
-  'filipenses': 'php', 'php': 'php', 'phil': 'php', 'philippians': 'php',
-  'colosenses': 'col', 'col': 'col', 'colossians': 'col',
-  '1tesalonicenses': '1th', '1th': '1th', '1thess': '1th', '1thessalonians': '1th',
-  '1tes': '1th', '1tesa': '1th', '1tesal': '1th',
-     'efesios': 'eph', 'eph': 'eph', 'ephesians': 'eph',
+  // Corintios
+  '1corintios':'1co','1co':'1co','1cor':'1co','1corinthians':'1co',
+  '2corintios':'2co','2co':'2co','2cor':'2co','2corinthians':'2co',
 
-  // Filipenses
-  'filipenses': 'php', 'php': 'php', 'philippians': 'php',
+  // Gálatas / Efesios / Filipenses / Colosenses
+  'galatas':'ga','gálatas':'ga','ga':'ga','gal':'ga','galatians':'ga',
+  'efesios':'eph','eph':'eph','ephesians':'eph',
+  'filipenses':'php','php':'php','philippians':'php',
+  'colosenses':'col','col':'col','colossians':'col',
 
-  // Colosenses
-  'colosenses': 'col', 'col': 'col', 'colossians': 'col',
+  // Tesalonicenses
+  '1tesalonicenses':'1th','1th':'1th',
+  '2tesalonicenses':'2th','2th':'2th',
 
-  // 1 Tesalonicenses
-  '1tesalonicenses': '1th', '1th': '1th', '1thessalonians': '1th',
-  '1tes': '1th', '1ts': '1th',
+  // Pastorales
+  '1timoteo':'1ti','1ti':'1ti',
+  '2timoteo':'2ti','2ti':'2ti',
+  'tito':'tit','tit':'tit','titus':'tit',
+  'filemon':'phm','filemón':'phm','phm':'phm','philemon':'phm',
 
-  // 2 Tesalonicenses
-  '2tesalonicenses': '2th', '2th': '2th', '2thessalonians': '2th',
-  '2tes': '2th', '2ts': '2th',
+  // Hebreos / Santiago
+  'hebreos':'heb','heb':'heb','hebrews':'heb',
+  'santiago':'jas','jas':'jas','james':'jas',
 
-  // 1 Timoteo
-  '1timoteo': '1ti', '1ti': '1ti', '1timothy': '1ti',
+  // Pedro
+  '1pedro':'1pe','1pe':'1pe','1peter':'1pe',
+  '2pedro':'2pe','2pe':'2pe','2peter':'2pe',
 
-  // 2 Timoteo
-  '2timoteo': '2ti', '2ti': '2ti', '2timothy': '2ti',
+  // Juan (epístolas)
+  '1juan':'1jn','1jn':'1jn','1john':'1jn',
+  '2juan':'2jn','2jn':'2jn','2john':'2jn',
+  '3juan':'3jn','3jn':'3jn','3john':'3jn',
 
-  // Tito
-  'tito': 'tit', 'tit': 'tit', 'titus': 'tit'
-  };
+  // Judas / Apocalipsis
+  'judas':'jud','jud':'jud','jude':'jud',
+  'apocalipsis':'re','re':'re','rev':'re','revelation':'re'
+};
+
 
   var morphKey = null;  // abbr cargada (mt/mk/...)
   var morphMap = null;  // map: "ch:v" => tokens[]
