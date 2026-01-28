@@ -97,11 +97,13 @@ function normalizeTranslit(tr) {
 }
 
   // -------------------- utils --------------------
-  function normalizeSlug(s) {
-    s = (s || '').toLowerCase().trim();
-    s = s.replace(/\s+/g, ' ');
-    return s;
-  }
+function normalizeSlug(s) {
+  s = (s || '').toLowerCase().trim();
+  s = s.replace(/[_-]+/g, ' ');   // ✅ nuevo: "_" y "-" como espacios
+  s = s.replace(/\s+/g, ' ');
+  return s;
+}
+
 
   function slugToAbbr(slug) {
     slug = normalizeSlug(slug);
