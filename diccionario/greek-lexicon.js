@@ -17,11 +17,8 @@ var ABBR_CHAPTERS = {
   '1co': 16,
   '2co': 13,
   ga: 6,
-    eph: 6,   // Efesios
-  col: 4,   // Colosenses
-  php: 4,   // Filipenses
-  '1th': 5,  // 1 Tesalonicenses
-     eph: 6,
+
+  eph: 6,
   php: 4,
   col: 4,
   '1th': 5,
@@ -30,6 +27,7 @@ var ABBR_CHAPTERS = {
   '2ti': 4,
   tit: 3
 };
+
 
   // ?book=...  -> abbr de archivo (abbr-morphgnt.translit.json)
   // Agrega aquí más slugs si los usas en tu proyecto.
@@ -55,18 +53,14 @@ var ABBR_CHAPTERS = {
   'colosenses': 'col', 'col': 'col', 'colossians': 'col',
 
   // 1 Tesalonicenses
-  '1tesalonicenses': '1th', '1th': '1th', '1thessalonians': '1th',
-  '1tes': '1th', '1ts': '1th',
+ '1tesalonicenses': '1th',
+  '2tesalonicenses': '2th',
+  '1timoteo': '1ti',
+  '2timoteo': '2ti',
 
-  // 2 Tesalonicenses
-  '2tesalonicenses': '2th', '2th': '2th', '2thessalonians': '2th',
-  '2tes': '2th', '2ts': '2th',
-
-  // 1 Timoteo
-  '1timoteo': '1ti', '1ti': '1ti', '1timothy': '1ti',
-
-  // 2 Timoteo
-  '2timoteo': '2ti', '2ti': '2ti', '2timothy': '2ti',
+  // abreviaturas opcionales
+  '1th': '1th', '2th': '2th',
+  '1ti': '1ti', '2ti': '2ti',
 
   // Tito
   'tito': 'tit', 'tit': 'tit', 'titus': 'tit'
@@ -414,43 +408,53 @@ rootEl.addEventListener('click', function (ev) {
     hidePopup();
   }
 
-  function loadMorphForCurrentBook() {
-    var slug = getBookSlug();
-    var abbr = slugToAbbr(slug);
+function loadMorphForCurrentBook() {
+  var slug = getBookSlug();
+  var abbr = slugToAbbr(slug);
 
-    // si no sabemos el libro => sin diccionario
-    if (!abbr) {
-      clearMorph();
-      return Promise.resolve(false);
-    }
+  setLexDebug('GreekLexicon: slug=' + slug + ' | abbr=' + (abbr || 'NULL'));
 
-    // si ya está cargado => ok
-    if (morphKey === abbr && morphMap) return Promise.resolve(true);
+  if (!abbr) {
+    clearMorph();
+    return Promise.resolve(false);
+  }
 
-    var url = getMorphUrl(abbr);
+  if (morphKey === abbr && morphMap) {
+    setLexDebug('GreekLexicon: OK (cached) ' + abbr);
+    return Promise.resolve(true);
+  }
 
-    return fetch(url, { cache: 'no-store' })
-      .then(function (res) {
-        if (!res.ok) {
+  var url = getMorphUrl(abbr);
+  setLexDebug('GreekLexicon: fetching ' + url);
+
+  return fetch(url, { cache: 'no-store' })
+    .then(function (res) {
+      if (!res.ok) {
+        setLexDebug('GreekLexicon: FETCH FAIL ' + res.status + ' ' + url);
+        clearMorph();
+        return false;
+      }
+      return res.json().then(function (data) {
+        morphKey = abbr;
+        morphMap = buildMorphIndex(data, abbr);
+
+        if (!morphMap) {
+          setLexDebug('GreekLexicon: morphMap NULL (JSON cargó pero no indexó) ' + abbr);
           clearMorph();
           return false;
         }
-        return res.json().then(function (data) {
-          morphKey = abbr;
-          morphMap = buildMorphIndex(data, abbr);
 
-          if (!morphMap) {
-            clearMorph();
-            return false;
-          }
-          return true;
-        });
-      })
-      .catch(function () {
-        clearMorph();
-        return false;
+        setLexDebug('GreekLexicon: OK ' + abbr + ' (segments=' + morphMap.segs.length + ')');
+        return true;
       });
-  }
+    })
+    .catch(function (e) {
+      setLexDebug('GreekLexicon: FETCH ERROR ' + (e && e.message ? e.message : e));
+      clearMorph();
+      return false;
+    });
+}
+
 
   // -------------------- scheduler (debounce) --------------------
   function scheduleWork(rootEl) {
@@ -463,6 +467,16 @@ rootEl.addEventListener('click', function (ev) {
       runWork(rootEl);
     }, 30);
   }
+function setLexDebug(msg) {
+  var el = document.getElementById('gk-lex-debug');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'gk-lex-debug';
+    el.style.cssText = 'position:fixed;left:10px;bottom:10px;z-index:99999;background:rgba(0,0,0,.75);color:#fff;padding:6px 10px;border-radius:10px;font:12px/1.2 system-ui;max-width:60vw';
+    document.body.appendChild(el);
+  }
+  el.textContent = msg;
+}
 
   function runWork(rootEl) {
     if (decorating) return;
