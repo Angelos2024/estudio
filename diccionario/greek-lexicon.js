@@ -32,10 +32,15 @@
   var scheduled = false;
   var scheduleTimer = null;
 
-   function normalizeTranslit(tr) {
-  tr = (tr == null) ? '' : String(tr);
+function normalizeTranslit(tr) {
+  if (tr == null) return '';
 
-  // dataset usa y para upsilon en diptongos: ay/ey/oy -> au/eu/ou
+  tr = String(tr);
+
+  // 1) eliminar puntuación adyacente (coma, punto, etc.)
+  tr = tr.replace(/[.,;:·]/g, '');
+
+  // 2) normalizar upsilon en diptongos
   tr = tr
     .replace(/ay/g, 'au').replace(/Ay/g, 'Au')
     .replace(/ey/g, 'eu').replace(/Ey/g, 'Eu')
