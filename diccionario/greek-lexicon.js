@@ -48,12 +48,6 @@ var ABBR_CHAPTERS = {
     'galatas': 'ga', 'gálatas': 'ga', 'ga': 'ga', 'gal': 'ga', 'galatians': 'ga',
       'efesios': 'eph', 'eph': 'eph', 'ephesians': 'eph',
 
-  'filipenses': 'php', 'php': 'php', 'phil': 'php', 'philippians': 'php',
-  'colosenses': 'col', 'col': 'col', 'colossians': 'col',
-  '1tesalonicenses': '1th', '1th': '1th', '1thess': '1th', '1thessalonians': '1th',
-  '1tes': '1th', '1tesa': '1th', '1tesal': '1th',
-     'efesios': 'eph', 'eph': 'eph', 'ephesians': 'eph',
-
   // Filipenses
   'filipenses': 'php', 'php': 'php', 'philippians': 'php',
 
@@ -127,20 +121,24 @@ function normalizeTranslit(tr) {
     return DICT_DIR + abbr + '-morphgnt.translit.json';
   }
 
-  function getBookSlug() {
-    var qs = window.location.search || '';
-    if (!qs) return '';
-    if (qs.charAt(0) === '?') qs = qs.slice(1);
+function getBookSlug() {
+  var qs = window.location.search || '';
+  if (!qs) return '';
+  if (qs.charAt(0) === '?') qs = qs.slice(1);
 
-    var parts = qs.split('&');
-    for (var i = 0; i < parts.length; i++) {
-      var kv = parts[i].split('=');
-      var k = decodeURIComponent(kv[0] || '');
-      var v = decodeURIComponent(kv[1] || '');
-      if (k === 'book') return (v || '').toLowerCase();
-    }
-    return '';
+  var parts = qs.split('&');
+  for (var i = 0; i < parts.length; i++) {
+    var kv = parts[i].split('=');
+    var k = decodeURIComponent(kv[0] || '');
+
+    var v = (kv[1] || '').replace(/\+/g, ' ');
+    v = decodeURIComponent(v);
+
+    if (k === 'book') return (v || '').toLowerCase();
   }
+  return '';
+}
+
 
   // -------------------- build index (robusto, sin rangos hardcodeados) --------------------
   // Lee MorphGNT translit JSON:
