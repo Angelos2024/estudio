@@ -16,7 +16,11 @@ var ABBR_CHAPTERS = {
   ro: 16,
   '1co': 16,
   '2co': 13,
-  ga: 6
+  ga: 6,
+    eph: 6,   // Efesios
+  col: 4,   // Colosenses
+  php: 4,   // Filipenses
+  '1th': 5  // 1 Tesalonicenses
 };
 
   // ?book=...  -> abbr de archivo (abbr-morphgnt.translit.json)
@@ -33,7 +37,13 @@ var ABBR_CHAPTERS = {
     'romanos': 'ro', 'ro': 'ro', 'rom': 'ro', 'romans': 'ro',
     '1corintios': '1co', '1co': '1co', '1cor': '1co', '1corinthians': '1co',
     '2corintios': '2co', '2co': '2co', '2cor': '2co', '2corinthians': '2co',
-    'galatas': 'ga', 'gálatas': 'ga', 'ga': 'ga', 'gal': 'ga', 'galatians': 'ga'
+    'galatas': 'ga', 'gálatas': 'ga', 'ga': 'ga', 'gal': 'ga', 'galatians': 'ga',
+      'efesios': 'eph', 'eph': 'eph', 'ephesians': 'eph',
+
+  'filipenses': 'php', 'php': 'php', 'phil': 'php', 'philippians': 'php',
+  'colosenses': 'col', 'col': 'col', 'colossians': 'col',
+  '1tesalonicenses': '1th', '1th': '1th', '1thess': '1th', '1thessalonians': '1th',
+  '1tes': '1th', '1tesa': '1th', '1tesal': '1th'
   };
 
   var morphKey = null;  // abbr cargada (mt/mk/...)
