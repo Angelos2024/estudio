@@ -198,52 +198,64 @@ function getBookSlug() {
 function buildMorphIndex(data, abbr) {
   if (!data || !data.chapters || !Array.isArray(data.chapters)) return null;
 
+  // extraer solo los arrays (segmentos) en el orden en que vienen
   var segs = [];
   for (var i = 0; i < data.chapters.length; i++) {
     if (Array.isArray(data.chapters[i])) segs.push(data.chapters[i]);
   }
   if (!segs.length) return null;
 
+  var map = Object.create(null); // "ch:v" -> tokens[]
+  var chapterBase = 0;           // acumulado de capítulos ya cubiertos por segmentos previos
+
+  for (var s = 0; s < segs.length; s++) {
+    var seg = segs[s];
+    if (!Array.isArray(seg)) continue;
+
+    // 1) detectar cuántos capítulos locales contiene este segmento (max localCh)
+    var maxLocalCh = 0;
+    for (var idx = 0; idx < seg.length; idx++) {
+      if (!Array.isArray(seg[idx])) continue;
+      var localCh = Math.floor(idx / 100);
+      if (localCh > maxLocalCh) maxLocalCh = localCh;
+    }
+
+    // 2) volcar tokens a mapa global: globalCh = chapterBase + localCh
+    for (var j = 0; j < seg.length; j++) {
+      var tokens = seg[j];
+      if (!Array.isArray(tokens)) continue;
+
+      var lc = Math.floor(j / 100);     // capítulo local (1..9)
+      var v  = (j % 100) + 1;           // verso (1..)
+      if (lc < 1 || v < 1) continue;
+
+      var ch = chapterBase + lc;        // capítulo global
+      map[ch + ':' + v] = tokens;
+    }
+
+    chapterBase += maxLocalCh;
+  }
+
+  // opcional: validar que el libro no exceda lo esperado
   var totalCh = ABBR_CHAPTERS[abbr] || 0;
 
-  return {
-    abbr: abbr,
-    totalCh: totalCh,
-    segs: segs
-  };
+  return { abbr: abbr, totalCh: totalCh, map: map };
 }
 
 
+
 function getTokens(ch, v) {
-  if (!morphMap) return null;
-
-  var segs = morphMap.segs;
-  var totalCh = morphMap.totalCh || 0;
-  if (!segs || !segs.length) return null;
-
+  if (!morphMap || !morphMap.map) return null;
   if (ch < 1 || v < 1) return null;
+
+  var totalCh = morphMap.totalCh || 0;
   if (totalCh && ch > totalCh) return null;
 
-  var segIndex = 0;
-  if (ch >= 10) segIndex = 1 + Math.floor((ch - 10) / 10);
-  if (segIndex < 0 || segIndex >= segs.length) return null;
-
-  var base = segIndex * 10;
-  var idx;
-
-  if (segIndex === 0) idx = (ch * 100) + (v - 1);
-  else idx = ((ch - base) * 100) + (v - 1);
-
-  var tokens = segs[segIndex][idx];
-
-  // (opcional) fallback, si lo quieres conservar:
-  if (!Array.isArray(tokens) && segIndex === 0) {
-    idx = ((ch - 0) * 100) + (v - 1);
-    tokens = segs[segIndex][idx];
-  }
-
+  var key = ch + ':' + v;
+  var tokens = morphMap.map[key];
   return Array.isArray(tokens) ? tokens : null;
-}  // ✅ ESTE CIERRE ES OBLIGATORIO
+}
+  // ✅ ESTE CIERRE ES OBLIGATORIO
 
   // -------------------- popup --------------------
   function ensurePopup() {
