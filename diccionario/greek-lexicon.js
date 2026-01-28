@@ -73,6 +73,19 @@ var ABBR_CHAPTERS = {
   var scheduled = false;
   var scheduleTimer = null;
 
+   function setLexDebug(msg) {
+  var el = document.getElementById('gk-lex-debug');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'gk-lex-debug';
+    el.style.cssText =
+      'position:fixed;left:10px;bottom:10px;z-index:99999;' +
+      'background:rgba(0,0,0,.75);color:#fff;padding:6px 10px;' +
+      'border-radius:10px;font:12px/1.2 system-ui;max-width:60vw';
+    document.body.appendChild(el);
+  }
+  el.textContent = msg;
+}
 function normalizeTranslit(tr) {
   if (tr == null) return '';
 
@@ -467,16 +480,6 @@ function loadMorphForCurrentBook() {
       runWork(rootEl);
     }, 30);
   }
-function setLexDebug(msg) {
-  var el = document.getElementById('gk-lex-debug');
-  if (!el) {
-    el = document.createElement('div');
-    el.id = 'gk-lex-debug';
-    el.style.cssText = 'position:fixed;left:10px;bottom:10px;z-index:99999;background:rgba(0,0,0,.75);color:#fff;padding:6px 10px;border-radius:10px;font:12px/1.2 system-ui;max-width:60vw';
-    document.body.appendChild(el);
-  }
-  el.textContent = msg;
-}
 
   function runWork(rootEl) {
     if (decorating) return;
@@ -540,8 +543,6 @@ function setLexDebug(msg) {
   window.GreekLexicon = { init: init };
 })();
 
-// Debe imprimir true si el JSON cargó y el diccionario está activo
-console.log(!!window.GreekLexicon);
 
 // Si tu script expone morphMap en global no, pero al menos revisa Network.
 // Si Network NO muestra 404 y AÚN así no decora, entonces el problema es tokens/ch-v.
