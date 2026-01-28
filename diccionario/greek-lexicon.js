@@ -198,18 +198,55 @@ function getBookSlug() {
 function buildMorphIndex(data, abbr) {
   var segs = [];
 
-  // Caso A: JSON como arreglo plano (tu caso actual)
-  if (Array.isArray(data)) {
-    // 10 capítulos * 100 versos “slots” = 1000 posiciones por segmento
-    var CHUNK = 1000;
-    for (var i = 0; i < data.length; i += CHUNK) {
-      segs.push(data.slice(i, i + CHUNK));
+  function chunkSlotsToSegs(slots) {
+    var CHUNK = 1000; // 10 capítulos * 100 versos “slots”
+    for (var i = 0; i < slots.length; i += CHUNK) {
+      segs.push(slots.slice(i, i + CHUNK));
     }
   }
-  // Caso B: JSON como {chapters:[seg0,seg1,...]}
+
+  function countArrayItems(a, maxCheck) {
+    var c = 0;
+    for (var i = 0; i < a.length && i < maxCheck; i++) if (Array.isArray(a[i])) c++;
+    return c;
+  }
+
+  // Caso A: JSON como arreglo plano
+  if (Array.isArray(data)) {
+    chunkSlotsToSegs(data);
+  }
+  // Caso B: JSON como {chapters:[...]}
   else if (data && Array.isArray(data.chapters)) {
-    for (var j = 0; j < data.chapters.length; j++) {
-      if (Array.isArray(data.chapters[j])) segs.push(data.chapters[j]);
+    var ch = data.chapters;
+
+    // B1) "Slots directos": chapters es enorme y contiene MUCHOS versos sueltos (Mateo, etc.)
+    //     Ej: chapters.length > 1000 y hay bastantes entries que ya son arrays (versos).
+    if (ch.length > 1000 && countArrayItems(ch, Math.min(ch.length, 5000)) > 20) {
+      chunkSlotsToSegs(ch);
+    } else {
+      // B2) "Segmento anidado": chapters es pequeño/mediano pero trae 1 array grande dentro (1Pe, etc.)
+      //     Ej: la mayoría son null y solo 1 posición es un array grande con slots.
+      var inner = null;
+      for (var j = 0; j < ch.length; j++) {
+        if (Array.isArray(ch[j])) {
+          // si ese array interno parece "slots" (muchos null y algunos arrays dentro),
+          // lo tomamos como el verdadero contenedor
+          if (ch[j].length > 200 && countArrayItems(ch[j], Math.min(ch[j].length, 2000)) > 10) {
+            inner = ch[j];
+            break;
+          }
+          // si en vez de slots fueran “segmentos ya listos”, se agregan abajo
+        }
+      }
+
+      if (inner) {
+        chunkSlotsToSegs(inner);
+      } else {
+        // B3) "Segmentos ya listos": chapters ya viene como [seg0, seg1, ...] (cada seg ~1000)
+        for (var k = 0; k < ch.length; k++) {
+          if (Array.isArray(ch[k])) segs.push(ch[k]);
+        }
+      }
     }
   }
 
@@ -221,6 +258,7 @@ function buildMorphIndex(data, abbr) {
     segs: segs
   };
 }
+
 
 function getTokens(ch, v) {
   if (!morphMap || !morphMap.segs || !morphMap.segs.length) return null;
