@@ -17,27 +17,19 @@ var ABBR_CHAPTERS = {
   '1co': 16,
   '2co': 13,
   ga: 6,
-
-  eph: 6,
+    eph: 6,   // Efesios
+  col: 4,   // Colosenses
+  php: 4,   // Filipenses
+  '1th': 5,  // 1 Tesalonicenses
+     eph: 6,
   php: 4,
   col: 4,
   '1th': 5,
   '2th': 3,
   '1ti': 6,
   '2ti': 4,
-  tit: 3,
-   phm: 1,
-  heb: 13,
-  jas: 5,
-  '1pe': 5,
-  '2pe': 3,
-  '1jn': 5,
-  '2jn': 1,
-  '3jn': 1,
-  jud: 1,
-  re: 22
+  tit: 3
 };
-
 
   // ?book=...  -> abbr de archivo (abbr-morphgnt.translit.json)
   // Agrega aquí más slugs si los usas en tu proyecto.
@@ -63,43 +55,21 @@ var ABBR_CHAPTERS = {
   'colosenses': 'col', 'col': 'col', 'colossians': 'col',
 
   // 1 Tesalonicenses
- '1tesalonicenses': '1th',
-  '2tesalonicenses': '2th',
-  '1timoteo': '1ti',
-  '2timoteo': '2ti',
+  '1tesalonicenses': '1th', '1th': '1th', '1thessalonians': '1th',
+  '1tes': '1th', '1ts': '1th',
 
-  // abreviaturas opcionales
-  '1th': '1th', '2th': '2th',
-  '1ti': '1ti', '2ti': '2ti',
+  // 2 Tesalonicenses
+  '2tesalonicenses': '2th', '2th': '2th', '2thessalonians': '2th',
+  '2tes': '2th', '2ts': '2th',
+
+  // 1 Timoteo
+  '1timoteo': '1ti', '1ti': '1ti', '1timothy': '1ti',
+
+  // 2 Timoteo
+  '2timoteo': '2ti', '2ti': '2ti', '2timothy': '2ti',
 
   // Tito
-  'tito': 'tit', 'tit': 'tit', 'titus': 'tit',
-      // ✅ Filemón
-  'filemon': 'phm', 'filemón': 'phm', 'phm': 'phm', 'philemon': 'phm',
-
-  // ✅ Hebreos
-  'hebreos': 'heb', 'heb': 'heb', 'hebrews': 'heb',
-
-  // ✅ Santiago
-  'santiago': 'jas', 'jas': 'jas', 'james': 'jas',
-
-  // ✅ 1–2 Pedro
-  '1pedro': '1pe', '2pedro': '2pe',
-  '1pe': '1pe', '2pe': '2pe',
-  '1peter': '1pe', '2peter': '2pe',
-
-  // ✅ 1–3 Juan
-  '1juan': '1jn', '2juan': '2jn', '3juan': '3jn',
-  '1jn': '1jn', '2jn': '2jn', '3jn': '3jn',
-  '1john': '1jn', '2john': '2jn', '3john': '3jn',
-
-  // ✅ Judas
-  'judas': 'jud', 'jud': 'jud', 'jude': 'jud',
-
-  // ✅ Apocalipsis
-  'apocalipsis': 're', 'apocalípsis': 're',
-  'revelacion': 're', 'revelación': 're',
-  're': 're', 'rev': 're', 'revelation': 're'
+  'tito': 'tit', 'tit': 'tit', 'titus': 'tit'
   };
 
   var morphKey = null;  // abbr cargada (mt/mk/...)
@@ -109,19 +79,6 @@ var ABBR_CHAPTERS = {
   var scheduled = false;
   var scheduleTimer = null;
 
-   function setLexDebug(msg) {
-  var el = document.getElementById('gk-lex-debug');
-  if (!el) {
-    el = document.createElement('div');
-    el.id = 'gk-lex-debug';
-    el.style.cssText =
-      'position:fixed;left:10px;bottom:10px;z-index:99999;' +
-      'background:rgba(0,0,0,.75);color:#fff;padding:6px 10px;' +
-      'border-radius:10px;font:12px/1.2 system-ui;max-width:60vw';
-    document.body.appendChild(el);
-  }
-  el.textContent = msg;
-}
 function normalizeTranslit(tr) {
   if (tr == null) return '';
 
@@ -196,64 +153,54 @@ function getBookSlug() {
   //
   // Construimos: map["ch:v"] = tokens[]
 function buildMorphIndex(data, abbr) {
+  if (!data || !data.chapters || !Array.isArray(data.chapters)) return null;
+
   var segs = [];
-
-  // Caso A: JSON como arreglo plano (tu caso actual)
-  if (Array.isArray(data)) {
-    // 10 capítulos * 100 versos “slots” = 1000 posiciones por segmento
-    var CHUNK = 1000;
-    for (var i = 0; i < data.length; i += CHUNK) {
-      segs.push(data.slice(i, i + CHUNK));
-    }
+  for (var i = 0; i < data.chapters.length; i++) {
+    if (Array.isArray(data.chapters[i])) segs.push(data.chapters[i]);
   }
-  // Caso B: JSON como {chapters:[seg0,seg1,...]}
-  else if (data && Array.isArray(data.chapters)) {
-    for (var j = 0; j < data.chapters.length; j++) {
-      if (Array.isArray(data.chapters[j])) segs.push(data.chapters[j]);
-    }
-  }
-
   if (!segs.length) return null;
+
+  var totalCh = ABBR_CHAPTERS[abbr] || 0;
 
   return {
     abbr: abbr,
-    totalCh: (ABBR_CHAPTERS && ABBR_CHAPTERS[abbr]) ? ABBR_CHAPTERS[abbr] : 0,
+    totalCh: totalCh,
     segs: segs
   };
 }
 
+
 function getTokens(ch, v) {
-  if (!morphMap || !morphMap.segs || !morphMap.segs.length) return null;
-  if (ch < 1 || v < 1) return null;
+  if (!morphMap) return null;
 
   var segs = morphMap.segs;
+  var totalCh = morphMap.totalCh || 0;
+  if (!segs || !segs.length) return null;
 
-  // segmento por bloque de 10 capítulos (1–10 => seg 0, 11–20 => seg 1, etc.)
-  var segIndex = Math.floor((ch - 1) / 10);
+  if (ch < 1 || v < 1) return null;
+  if (totalCh && ch > totalCh) return null;
+
+  var segIndex = 0;
+  if (ch >= 10) segIndex = 1 + Math.floor((ch - 10) / 10);
   if (segIndex < 0 || segIndex >= segs.length) return null;
 
   var base = segIndex * 10;
-  var idx = ((ch - 1 - base) * 100) + (v - 1);
+  var idx;
+
+  if (segIndex === 0) idx = (ch * 100) + (v - 1);
+  else idx = ((ch - base) * 100) + (v - 1);
 
   var tokens = segs[segIndex][idx];
+
+  // (opcional) fallback, si lo quieres conservar:
+  if (!Array.isArray(tokens) && segIndex === 0) {
+    idx = ((ch - 0) * 100) + (v - 1);
+    tokens = segs[segIndex][idx];
+  }
+
   return Array.isArray(tokens) ? tokens : null;
-}
-
-
-
-
-function getTokens(ch, v) {
-  if (!morphMap || !morphMap.map) return null;
-  if (ch < 1 || v < 1) return null;
-
-  var totalCh = morphMap.totalCh || 0;
-  if (totalCh && ch > totalCh) return null;
-
-  var key = ch + ':' + v;
-  var tokens = morphMap.map[key];
-  return Array.isArray(tokens) ? tokens : null;
-}
-  // ✅ ESTE CIERRE ES OBLIGATORIO
+}  // ✅ ESTE CIERRE ES OBLIGATORIO
 
   // -------------------- popup --------------------
   function ensurePopup() {
@@ -467,53 +414,43 @@ rootEl.addEventListener('click', function (ev) {
     hidePopup();
   }
 
-function loadMorphForCurrentBook() {
-  var slug = getBookSlug();
-  var abbr = slugToAbbr(slug);
+  function loadMorphForCurrentBook() {
+    var slug = getBookSlug();
+    var abbr = slugToAbbr(slug);
 
-  setLexDebug('GreekLexicon: slug=' + slug + ' | abbr=' + (abbr || 'NULL'));
+    // si no sabemos el libro => sin diccionario
+    if (!abbr) {
+      clearMorph();
+      return Promise.resolve(false);
+    }
 
-  if (!abbr) {
-    clearMorph();
-    return Promise.resolve(false);
-  }
+    // si ya está cargado => ok
+    if (morphKey === abbr && morphMap) return Promise.resolve(true);
 
-  if (morphKey === abbr && morphMap) {
-    setLexDebug('GreekLexicon: OK (cached) ' + abbr);
-    return Promise.resolve(true);
-  }
+    var url = getMorphUrl(abbr);
 
-  var url = getMorphUrl(abbr);
-  setLexDebug('GreekLexicon: fetching ' + url);
-
-  return fetch(url, { cache: 'no-store' })
-    .then(function (res) {
-      if (!res.ok) {
-        setLexDebug('GreekLexicon: FETCH FAIL ' + res.status + ' ' + url);
-        clearMorph();
-        return false;
-      }
-      return res.json().then(function (data) {
-        morphKey = abbr;
-        morphMap = buildMorphIndex(data, abbr);
-
-        if (!morphMap) {
-          setLexDebug('GreekLexicon: morphMap NULL (JSON cargó pero no indexó) ' + abbr);
+    return fetch(url, { cache: 'no-store' })
+      .then(function (res) {
+        if (!res.ok) {
           clearMorph();
           return false;
         }
+        return res.json().then(function (data) {
+          morphKey = abbr;
+          morphMap = buildMorphIndex(data, abbr);
 
-        setLexDebug('GreekLexicon: OK ' + abbr + ' (segments=' + morphMap.segs.length + ')');
-        return true;
+          if (!morphMap) {
+            clearMorph();
+            return false;
+          }
+          return true;
+        });
+      })
+      .catch(function () {
+        clearMorph();
+        return false;
       });
-    })
-    .catch(function (e) {
-      setLexDebug('GreekLexicon: FETCH ERROR ' + (e && e.message ? e.message : e));
-      clearMorph();
-      return false;
-    });
-}
-
+  }
 
   // -------------------- scheduler (debounce) --------------------
   function scheduleWork(rootEl) {
@@ -588,7 +525,3 @@ function loadMorphForCurrentBook() {
 
   window.GreekLexicon = { init: init };
 })();
-
-
-// Si tu script expone morphMap en global no, pero al menos revisa Network.
-// Si Network NO muestra 404 y AÚN así no decora, entonces el problema es tokens/ch-v.
