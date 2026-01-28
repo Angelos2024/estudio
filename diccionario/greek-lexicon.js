@@ -192,7 +192,8 @@ function normalizeTranslit(tr) {
 
     document.getElementById('gk-lex-g').textContent = g || '';
     document.getElementById('gk-lex-lemma').textContent = lemma || '—';
-    document.getElementById('gk-lex-tr').textContent = tr || '—';
+document.getElementById('gk-lex-tr').textContent = normalizeTranslit(tr) || '—';
+
 
     box.style.display = 'block';
 
@@ -336,7 +337,8 @@ var tr = normalizeTranslit((t.tr != null) ? String(t.tr) : '');
       if (sel && String(sel).trim().length > 0) return;
 
       var lemma = t.getAttribute('data-lemma') || '';
-      var tr = t.getAttribute('data-tr') || '';
+     var tr = normalizeTranslit(t.getAttribute('data-tr') || '');
+
       var g = t.textContent || '';
 
       // Importante: NO preventDefault en general (no tocamos contextmenu).
