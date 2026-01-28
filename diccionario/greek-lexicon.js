@@ -32,6 +32,18 @@
   var scheduled = false;
   var scheduleTimer = null;
 
+   function normalizeTranslit(tr) {
+  tr = (tr == null) ? '' : String(tr);
+
+  // dataset usa y para upsilon en diptongos: ay/ey/oy -> au/eu/ou
+  tr = tr
+    .replace(/ay/g, 'au').replace(/Ay/g, 'Au')
+    .replace(/ey/g, 'eu').replace(/Ey/g, 'Eu')
+    .replace(/oy/g, 'ou').replace(/Oy/g, 'Ou');
+
+  return tr;
+}
+
   // -------------------- utils --------------------
   function normalizeSlug(s) {
     s = (s || '').toLowerCase().trim();
@@ -244,7 +256,8 @@
       if (!g) continue;
 
       var lemma = (t.lemma != null) ? String(t.lemma) : '';
-      var tr = (t.tr != null) ? String(t.tr) : '';
+var tr = normalizeTranslit((t.tr != null) ? String(t.tr) : '');
+
 
       var sp = document.createElement('span');
       sp.className = 'gk-w';
