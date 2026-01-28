@@ -7,6 +7,17 @@
 */
 (function () {
   var DICT_DIR = './diccionario/';
+var ABBR_CHAPTERS = {
+  mt: 28,
+  mk: 16,
+  lk: 24,
+  jn: 21,
+  ac: 28,
+  ro: 16,
+  '1co': 16,
+  '2co': 13,
+  ga: 6
+};
 
   // ?book=...  -> abbr de archivo (abbr-morphgnt.translit.json)
   // Agrega aquí más slugs si los usas en tu proyecto.
@@ -99,42 +110,55 @@ function normalizeTranslit(tr) {
   //   verse   = (idx % 100) + 1
   //
   // Construimos: map["ch:v"] = tokens[]
-  function buildMorphIndex(data) {
-    if (!data || !data.chapters || !Array.isArray(data.chapters)) return null;
+function buildMorphIndex(data, abbr) {
+  if (!data || !data.chapters || !Array.isArray(data.chapters)) return null;
 
-    var out = Object.create(null);
+  var segs = [];
+  for (var i = 0; i < data.chapters.length; i++) {
+    if (Array.isArray(data.chapters[i])) segs.push(data.chapters[i]);
+  }
+  if (!segs.length) return null;
 
-    for (var s = 0; s < data.chapters.length; s++) {
-      var seg = data.chapters[s];
-      if (!Array.isArray(seg)) continue;
+  var totalCh = ABBR_CHAPTERS[abbr] || 0;
 
-      for (var idx = 0; idx < seg.length; idx++) {
-        var tokens = seg[idx];
-        if (!Array.isArray(tokens) || tokens.length === 0) continue;
+  return {
+    abbr: abbr,
+    totalCh: totalCh,
+    segs: segs
+  };
+}
 
-        var ch = Math.floor(idx / 100);
-        var v = (idx % 100) + 1;
 
-        // Algunos idx pueden ser 0..99 (ch=0) por padding; los ignoramos.
-        if (ch <= 0 || v <= 0) continue;
+function getTokens(ch, v) {
+  if (!morphMap) return null;
 
-        out[ch + ':' + v] = tokens;
-      }
-    }
+  var segs = morphMap.segs;
+  var totalCh = morphMap.totalCh || 0;
+  if (!segs || !segs.length) return null;
 
-    // Si no hay nada, devuelve null
-    for (var k in out) {
-      if (Object.prototype.hasOwnProperty.call(out, k)) return out;
-    }
-    return null;
+  if (ch < 1 || v < 1) return null;
+  if (totalCh && ch > totalCh) return null;
+
+  var segIndex = 0;
+  if (ch >= 10) segIndex = 1 + Math.floor((ch - 10) / 10);
+  if (segIndex < 0 || segIndex >= segs.length) return null;
+
+  var base = segIndex * 10;
+  var idx;
+
+  if (segIndex === 0) idx = (ch * 100) + (v - 1);
+  else idx = ((ch - base) * 100) + (v - 1);
+
+  var tokens = segs[segIndex][idx];
+
+  // (opcional) fallback, si lo quieres conservar:
+  if (!Array.isArray(tokens) && segIndex === 0) {
+    idx = ((ch - 0) * 100) + (v - 1);
+    tokens = segs[segIndex][idx];
   }
 
-  function getTokens(ch, v) {
-    if (!morphMap) return null;
-    var key = ch + ':' + v;
-    var t = morphMap[key];
-    return Array.isArray(t) ? t : null;
-  }
+  return Array.isArray(tokens) ? tokens : null;
+}  // ✅ ESTE CIERRE ES OBLIGATORIO
 
   // -------------------- popup --------------------
   function ensurePopup() {
@@ -318,35 +342,27 @@ var tr = normalizeTranslit((t.tr != null) ? String(t.tr) : '');
     if (rootEl.getAttribute('data-gk-leftclick') === '1') return;
     rootEl.setAttribute('data-gk-leftclick', '1');
 
-    rootEl.addEventListener('click', function (ev) {
-      // SOLO botón izquierdo
-      if (ev.button !== 0) return;
-      if (!morphMap) return;
+rootEl.addEventListener('click', function (ev) {
+  if (ev.button !== 0) return;
+  if (!morphMap) return;
 
-      var t = ev.target;
-      if (!t) return;
+  var t = ev.target;
+  if (!t) return;
 
-      // Si tu UI de notas usa .note-mark, evitamos choque
-      if (t.closest && t.closest('.note-mark')) return;
+  // Debe ser palabra griega
+  if (!t.classList || !t.classList.contains('gk-w')) return;
 
-      // Debe ser palabra griega
-      if (!t.classList || !t.classList.contains('gk-w')) return;
+  var sel = window.getSelection ? window.getSelection() : null;
+  if (sel && String(sel).trim().length > 0) return;
 
-      // Si hay selección activa (para subrayar), no abrimos popup
-      var sel = window.getSelection ? window.getSelection() : null;
-      if (sel && String(sel).trim().length > 0) return;
+  var lemma = t.getAttribute('data-lemma') || '';
+  var tr = normalizeTranslit(t.getAttribute('data-tr') || '');
+  var g = t.textContent || '';
 
-      var lemma = t.getAttribute('data-lemma') || '';
-     var tr = normalizeTranslit(t.getAttribute('data-tr') || '');
+  ev.stopPropagation();
+  showPopupNear(t, g, lemma, tr);
+}, false);
 
-      var g = t.textContent || '';
-
-      // Importante: NO preventDefault en general (no tocamos contextmenu).
-      // Solo evitamos burbujeo para no disparar handlers de click globales raros.
-      ev.stopPropagation();
-
-      showPopupNear(t, g, lemma, tr);
-    }, false);
   }
 
   // -------------------- load per book (NO por mutación) --------------------
@@ -379,7 +395,7 @@ var tr = normalizeTranslit((t.tr != null) ? String(t.tr) : '');
         }
         return res.json().then(function (data) {
           morphKey = abbr;
-          morphMap = buildMorphIndex(data);
+          morphMap = buildMorphIndex(data, abbr);
 
           if (!morphMap) {
             clearMorph();
