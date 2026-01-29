@@ -1,3 +1,53 @@
+/* Panel Notas: lista compacta */
+.notas-panel { padding: .4rem; }
+.notas-toolbar { margin-bottom: .35rem; }
+
+.notas-list{
+  max-height: 320px;     /* ajusta a gusto */
+  overflow: auto;
+}
+
+/* Hace cada item más “chico” */
+.notas-item{
+  padding: .35rem .5rem !important;
+  line-height: 1.15;
+}
+
+.notas-item > div{
+  display: flex;
+  gap: .35rem;
+  align-items: baseline;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Ref y “primera palabra” */
+.notas-item strong{
+  font-size: .85rem;
+  font-weight: 600;
+  flex: 0 0 auto;
+}
+
+.notas-item .note-firstword{
+  font-size: .82rem;
+  opacity: .75;
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Oculta el preview largo: lista ultra compacta */
+.notas-item small{
+  display: none !important;
+}
+
+/* scrollbar más discreto (opcional) */
+.notas-list::-webkit-scrollbar{ width: 10px; }
+.notas-list::-webkit-scrollbar-thumb{ border-radius: 10px; }
+
+
 // listanotas.js (COMPLETO) — IndexedDB
 // Panel "Notas" (global) — NO confundir con comentarios de Eric
 (function () {
@@ -11,9 +61,36 @@
       .replaceAll("'","&#039;");
   }
 
-  function prettyBookName(slug){
-    return String(slug || '').replace(/_/g,' ').replace(/\b\w/g, c => c.toUpperCase());
-  }
+function abbrevBook(slug){
+  // slug = "1co", "juan", etc. Si ya tienes mapping real, mejor.
+  // Esto deja algo corto y legible.
+  const s = String(slug || "").toLowerCase();
+
+  const map = {
+    genesis:"Gn", exodo:"Ex", levitico:"Lv", numeros:"Nm", deuteronomio:"Dt",
+    josue:"Jos", jueces:"Jue", rut:"Rt", "1samuel":"1S", "2samuel":"2S",
+    "1reyes":"1R", "2reyes":"2R", "1cronicas":"1Cr", "2cronicas":"2Cr",
+    esdras:"Esd", nehemias:"Neh", ester:"Est", job:"Job", salmos:"Sal",
+    proverbios:"Pr", eclesiastes:"Ecl", cantares:"Cnt", isaias:"Is",
+    jeremias:"Jer", lamentaciones:"Lam", ezequiel:"Ez", daniel:"Dn",
+    oseas:"Os", joel:"Jl", amos:"Am", abdias:"Abd", jonas:"Jon", miqueas:"Mi",
+    nahum:"Nah", habacuc:"Hab", sofonias:"Sof", ageo:"Ag", zacarias:"Zac",
+    malaquias:"Mal",
+    mateo:"Mt", marcos:"Mr", lucas:"Lc", juan:"Jn", hechos:"Hch",
+    romanos:"Ro", "1corintios":"1Co", "2corintios":"2Co", galatas:"Ga",
+    efesios:"Ef", filipenses:"Fil", colosenses:"Col", "1tesalonicenses":"1Ts",
+    "2tesalonicenses":"2Ts", "1timoteo":"1Ti", "2timoteo":"2Ti", tito:"Tit",
+    filemon:"Flm", hebreos:"Heb", santiago:"Stg", "1pedro":"1P", "2pedro":"2P",
+    "1juan":"1Jn", "2juan":"2Jn", "3juan":"3Jn", judas:"Jud", apocalipsis:"Ap"
+  };
+
+  // si el slug coincide directo
+  if(map[s]) return map[s];
+
+  // fallback: toma 3 letras
+  return s ? (s.slice(0,3).replace(/^\w/, c => c.toUpperCase())) : "—";
+}
+
 
   async function getAllNotes(){
     // Fuente: IndexedDB (alias creado en annotations-db.js)
@@ -24,18 +101,25 @@
     return [];
   }
 
-  function buildLabel(note){
-    // Tus notas usan book/ch/v (no chapter/verse)
-    const book = note.book ? prettyBookName(note.book) : "—";
-    const ch = Number(note.ch || 0);
-    const v  = Number(note.v  || 0);
-    const ref = (ch && v) ? `${book} ${ch}:${v}` : book;
+function firstWordFrom(note){
+  const anchor = (note.quote || "").trim();
+  const base = anchor || (note.text || "").trim();
+  if(!base) return "";
+  // primera “palabra” sin signos
+  const w = base.split(/\s+/)[0] || "";
+  return w.replace(/[.,;:!?¿¡()[\]{}"“”'’]/g, "");
+}
 
-    // No tienes lemma/word en NotesUI; usa quote como “ancla”
-    const anchor = (note.quote || "").trim();
+function buildLabel(note){
+  const book = abbrevBook(note.book);
+  const ch = Number(note.ch || 0);
+  const v  = Number(note.v  || 0);
+  const ref = (ch && v) ? `${book} ${ch}:${v}` : book;
 
-    return { ref, anchor };
-  }
+  const fw = firstWordFrom(note);
+  return { ref, fw };
+}
+
 
   function renderNotasList(notes){
     const list = document.getElementById("notasList");
@@ -43,7 +127,18 @@
 
     if(!notes.length){
       list.innerHTML = `<div class="text-muted small p-2">No hay notas guardadas.</div>`;
-      return;
+     return `
+  <button type="button"
+    class="list-group-item list-group-item-action notas-item"
+    data-note-id="${escapeHtml(id)}">
+    <div>
+      <strong>${escapeHtml(ref)}</strong>
+      ${fw ? `<span class="note-firstword">${escapeHtml(fw)}</span>` : ""}
+    </div>
+    <small></small>
+  </button>
+`;
+
     }
 
     // Tus notas usan updated_at (snake_case)
