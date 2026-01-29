@@ -496,21 +496,30 @@ const NotesUI = (() => {
         text: txt, created_at: Date.now(), updated_at: Date.now(),
       };
 
-      const id = await window.AnnotationsDB.addNote(note);
+const id = await window.AnnotationsDB.addNote(note);
 
-      // wrapNoteMark existe más abajo (se usa cuando guardas)
-      wrapNoteMark(state.verseTextEl, a.offset, a.length, id);
-      close();
-      clearSelection();
-      return;
+// marcar el texto
+wrapNoteMark(state.verseTextEl, a.offset, a.length, id);
+
+// ✅ avisar al panel "Notas" que cambió el dataset
+if (window.dispatchNotasChanged) window.dispatchNotasChanged();
+
+close();
+clearSelection();
+return;
     }
 
     // edit
     if (!state.note) return;
     state.note.text = txt;
     state.note.updated_at = Date.now();
-    await window.AnnotationsDB.updateNote(state.note);
-    close();
+ await window.AnnotationsDB.updateNote(state.note);
+
+// ✅ refrescar lista si está abierta
+if (window.dispatchNotasChanged) window.dispatchNotasChanged();
+
+close();
+
   });
 
   btnDelete.addEventListener('click', async () => {
@@ -518,16 +527,30 @@ const NotesUI = (() => {
     if (!confirm('¿Borrar esta nota?')) return;
 
     const id = state.note.id;
-    await window.AnnotationsDB.deleteNote(id);
+await window.AnnotationsDB.deleteNote(id);
 
-    const el = state.anchorEl || document.querySelector(`.note-mark[data-note-id="${id}"]`);
-    if (el) unwrapNoteMark(el);
+const el = state.anchorEl || document.querySelector(`.note-mark[data-note-id="${id}"]`);
+if (el) unwrapNoteMark(el);
 
-    close();
+// ✅ refrescar lista si está abierta
+if (window.dispatchNotasChanged) window.dispatchNotasChanged();
+
+close();
+
   });
 
   return { openNew, openEdit, close };
 })();
+
+    // ✅ puente para abrir una nota desde el panel "Notas"
+window.openNoteById = async function(id){
+  const note = await window.AnnotationsDB?.getNote?.(Number(id));
+  if(!note) return;
+
+  const mark = document.querySelector(`.note-mark[data-note-id="${note.id}"]`);
+  NotesUI.openEdit({ note, anchorEl: mark || null });
+};
+
 
 // ✅ Delegación global: abrir nota aunque haya highlight encima o re-render
 document.addEventListener('click', async (ev) => {
