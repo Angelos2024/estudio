@@ -162,6 +162,32 @@
 .ctx-btn:hover{ background:#eef2f7; }
 .ctx-btn svg{ width: 16px; height: 16px; opacity:.85; }
 
+    .notas-panel{
+  border: 1px solid rgba(0,0,0,.15);
+  border-radius: .5rem;
+  padding: .5rem;
+  background: #fff;
+}
+
+.notas-toolbar{
+  margin-bottom: .5rem;
+}
+
+.notas-list{
+  max-height: 260px;      /* ajusta a tu diseño */
+  overflow: auto;
+}
+
+.notas-item{
+  display: flex;
+  flex-direction: column;
+  gap: .15rem;
+}
+
+.notas-item small{
+  opacity: .75;
+}
+
   </style>
 
 
@@ -229,7 +255,17 @@
             <div class="panel-header">Herramientas</div>
             <div class="panel-body d-grid gap-2">
               <button class="btn btn-soft w-100" type="button" disabled>Comparar</button>
-              <button class="btn btn-soft w-100" type="button" disabled>Notas</button>
+            <button id="btnNotas" type="button" class="btn btn-outline-primary">
+    Notas
+  </button>
+              <!-- Panel desplegable (queda exactamente debajo del botón) -->
+  <div id="notasPanel" class="notas-panel d-none">
+    <div class="notas-toolbar">
+      <input id="notasSearch" class="form-control form-control-sm" placeholder="Buscar cita o palabra...">
+    </div>
+    <div id="notasList" class="list-group notas-list"></div>
+  </div>
+
               <button class="btn btn-soft w-100" type="button" disabled>Interlineal</button>
             </div>
           </section>
