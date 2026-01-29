@@ -125,6 +125,53 @@
       });
     }
   }
+  function refreshNotasListIfOpen(){
+    const panel = document.getElementById("notasPanel");
+    if(!panel) return;
+
+    const isOpen = !panel.classList.contains("d-none");
+    if(!isOpen) return;
+
+    const search = document.getElementById("notasSearch");
+    const q = (search ? search.value.trim().toLowerCase() : "");
+
+    const all = getAllNotes();
+    if(!q){
+      renderNotasList(all);
+      return;
+    }
+
+    // respeta el filtro activo
+    renderNotasList(
+      all.filter(n=>{
+        const { ref, w } = buildNoteLabel(n);
+        const text = (n.text || n.preview || "").toLowerCase();
+        return (
+          (ref || "").toLowerCase().includes(q) ||
+          (w || "").toLowerCase().includes(q) ||
+          text.includes(q)
+        );
+      })
+    );
+  }
+
+  // Exponer refresh para que otros módulos lo llamen
+  window.refreshNotasList = refreshNotasListIfOpen;
+
+  // Evento interno que otros módulos pueden disparar
+  window.dispatchNotasChanged = function(){
+    window.dispatchEvent(new CustomEvent("notas:changed"));
+  };
+
+  // 1) Escuchar evento personalizado
+  window.addEventListener("notas:changed", refreshNotasListIfOpen);
+
+  // 2) Escuchar cambios en localStorage (otra pestaña / otro contexto)
+  window.addEventListener("storage", (e)=>{
+    if(e && e.key === NOTES_LS_KEY){
+      refreshNotasListIfOpen();
+    }
+  });
 
   document.addEventListener("DOMContentLoaded", initNotasUI);
 
