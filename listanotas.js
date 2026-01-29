@@ -1,51 +1,3 @@
-/* Panel Notas: lista compacta */
-.notas-panel { padding: .4rem; }
-.notas-toolbar { margin-bottom: .35rem; }
-
-.notas-list{
-  max-height: 320px;     /* ajusta a gusto */
-  overflow: auto;
-}
-
-/* Hace cada item más “chico” */
-.notas-item{
-  padding: .35rem .5rem !important;
-  line-height: 1.15;
-}
-
-.notas-item > div{
-  display: flex;
-  gap: .35rem;
-  align-items: baseline;
-  flex-wrap: nowrap;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Ref y “primera palabra” */
-.notas-item strong{
-  font-size: .85rem;
-  font-weight: 600;
-  flex: 0 0 auto;
-}
-
-.notas-item .note-firstword{
-  font-size: .82rem;
-  opacity: .75;
-  flex: 1 1 auto;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Oculta el preview largo: lista ultra compacta */
-.notas-item small{
-  display: none !important;
-}
-
-/* scrollbar más discreto (opcional) */
-.notas-list::-webkit-scrollbar{ width: 10px; }
-.notas-list::-webkit-scrollbar-thumb{ border-radius: 10px; }
 
 
 // listanotas.js (COMPLETO) — IndexedDB
@@ -126,18 +78,10 @@ function buildLabel(note){
     if(!list) return;
 
     if(!notes.length){
-      list.innerHTML = `<div class="text-muted small p-2">No hay notas guardadas.</div>`;
-     return `
-  <button type="button"
-    class="list-group-item list-group-item-action notas-item"
-    data-note-id="${escapeHtml(id)}">
-    <div>
-      <strong>${escapeHtml(ref)}</strong>
-      ${fw ? `<span class="note-firstword">${escapeHtml(fw)}</span>` : ""}
-    </div>
-    <small></small>
-  </button>
-`;
+  list.innerHTML = `<div class="text-muted small p-2">No hay notas guardadas.</div>`;
+  return;
+}
+
 
     }
 
