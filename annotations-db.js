@@ -1,11 +1,10 @@
-// annotations-db.js (COMPLETO corregido)
-// Cambios clave:
-// - DB_VERSION sube a 2 (para ejecutar upgrade)
-// - Notes: índice único by_anchor (side,book,ch,v,offset,length)
-// - Notes: CRUD completo + getNoteByAnchor
+// annotations-db.js (COMPLETO)
+// Cambios clave (respecto a tu archivo):
+// - Añadido: listAllNotes() para traer TODAS las notas del objectStore "notes"
+// - Añadido: alias window.NotesDB.listAllNotes para compatibilidad con listanotas.js
 (() => {
   const DB_NAME = 'biblia_annotations_db';
-  const DB_VERSION = 2; // <-- IMPORTANTE: subir versión para que corra onupgradeneeded
+  const DB_VERSION = 2; // IMPORTANTE: versión para upgrades
 
   const STORE_HL = 'highlights';
   const STORE_NOTES = 'notes';
@@ -22,20 +21,15 @@
         const db = e.target.result;
 
         // -----------------------------
-        // Highlights: subrayados parciales
+        // Highlights
         // -----------------------------
         let stHL;
         if (!db.objectStoreNames.contains(STORE_HL)) {
           stHL = db.createObjectStore(STORE_HL, { keyPath: 'id', autoIncrement: true });
-
-          // Para buscar por verso
           stHL.createIndex('by_ref', ['side', 'book', 'ch', 'v'], { unique: false });
-
-          // Para buscar por rango (pasaje)
           stHL.createIndex('by_book_ch_v', ['side', 'book', 'ch', 'v'], { unique: false });
         } else {
           stHL = e.target.transaction.objectStore(STORE_HL);
-          // En caso de upgrades futuros, aquí podrías crear índices faltantes
           if (!stHL.indexNames.contains('by_ref')) {
             stHL.createIndex('by_ref', ['side', 'book', 'ch', 'v'], { unique: false });
           }
@@ -45,14 +39,14 @@
         }
 
         // -----------------------------
-        // Notes: anotaciones de texto
+        // Notes
         // -----------------------------
         let stN;
         if (!db.objectStoreNames.contains(STORE_NOTES)) {
           stN = db.createObjectStore(STORE_NOTES, { keyPath: 'id', autoIncrement: true });
           stN.createIndex('by_ref', ['side', 'book', 'ch', 'v'], { unique: false });
 
-          // ✅ Índice único por ancla exacta (para evitar duplicados y reabrir por selección)
+          // Índice único por ancla exacta
           stN.createIndex(
             'by_anchor',
             ['side', 'book', 'ch', 'v', 'offset', 'length'],
@@ -64,8 +58,6 @@
           if (!stN.indexNames.contains('by_ref')) {
             stN.createIndex('by_ref', ['side', 'book', 'ch', 'v'], { unique: false });
           }
-
-          // ✅ Si vienes de DB_VERSION 1, este índice no existe: crearlo en upgrade
           if (!stN.indexNames.contains('by_anchor')) {
             stN.createIndex(
               'by_anchor',
@@ -142,9 +134,7 @@
   }
 
   // -----------------------------
-  // NOTES (CRUD completo)
-  // Estructura esperada de nota:
-  // { side, book, ch, v, offset, length, quote, text, created_at, updated_at }
+  // NOTES
   // -----------------------------
   async function addNote(n) {
     const db = await openDB();
@@ -190,6 +180,14 @@
     return note || null;
   }
 
+  // ✅ NUEVO: listar todas las notas (para el panel "Notas")
+  async function listAllNotes() {
+    const db = await openDB();
+    const store = tx(db, STORE_NOTES, 'readonly');
+    const rows = await reqToPromise(store.getAll());
+    return rows || [];
+  }
+
   // Exponer API global
   window.AnnotationsDB = {
     openDB,
@@ -206,6 +204,12 @@
     deleteNote,
     getNote,
     getNoteByAnchor,
-    getNotesForVerse
+    getNotesForVerse,
+    listAllNotes, // ✅ nuevo
   };
+
+  // ✅ Alias para listanotas.js (sin tocar listanotas.js)
+  window.NotesDB = window.NotesDB || {};
+  window.NotesDB.listAllNotes = listAllNotes;
+
 })();
