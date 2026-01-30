@@ -107,8 +107,25 @@
         viewer.innerHTML = `<div class="text-danger">Error cargando ${book} ${ch}:${v} (HTTP ${res.status})</div>`;
         return;
       }
-      const html = await res.text();
-      viewer.innerHTML = html;
+const html = await res.text();
+
+// 🔒 Encapsular para que el CSS NA28-Es aplique solo aquí
+viewer.innerHTML = `<div class="na28es-container">${html}</div>`;
+
+// 🧹 Si por error llega un HTML completo, eliminar head/body/doctype visibles
+// (no es obligatorio, pero evita basura incrustada)
+const wrap = viewer.querySelector(".na28es-container");
+if (wrap) {
+  // quitar doctype si llega como texto
+  wrap.innerHTML = wrap.innerHTML.replace(/<!doctype[^>]*>/ig, "");
+
+  // si vienen <html>, <head>, <body>, dejarlos fuera (mantener solo lo útil)
+  const bodyMatch = wrap.querySelector("body");
+  if (bodyMatch) {
+    wrap.innerHTML = bodyMatch.innerHTML;
+  }
+}
+
     }
 
     async function enable(){
