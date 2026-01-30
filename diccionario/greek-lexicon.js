@@ -1,5 +1,5 @@
 /* diccionario/greek-lexicon.js
-   - Palabras griegas clickeables (popup lemma/translit)
+   - Palabras griegas clickeables (popup lemma/translit + masterdiccionario)
    - NO interfiere con click derecho (subrayar/comentar)
    - Evita loop/freeze del MutationObserver (debounce + flags)
    - Carga el JSON correcto según ?book=
@@ -7,116 +7,76 @@
 */
 (function () {
   var DICT_DIR = './diccionario/';
-var ABBR_CHAPTERS = {
-  mt: 28, mk: 16, lk: 24, jn: 21,
-  ac: 28, ro: 16,
-  '1co': 16, '2co': 13,
-  ga: 6,
-  eph: 6,
-  php: 4,
-  col: 4,
-  '1th': 5, '2th': 3,
-  '1ti': 6, '2ti': 4,
-  tit: 3,
-  phm: 1,
-  heb: 13,
-  jas: 5,
-  '1pe': 5, '2pe': 3,
-  '1jn': 5, '2jn': 1, '3jn': 1,
-  jud: 1,
-  re: 22
-};
+  var MASTER_DICT_URL = DICT_DIR + 'masterdiccionario.json';
+  var masterDictIndex = null;   // Map<lemma, item>
+  var masterDictLoaded = false;
 
+  var ABBR_CHAPTERS = {
+    mt: 28, mr: 16, lu: 24, joh: 21,
+    ac: 28, ro: 16, '1co': 16, '2co': 13,
+    ga: 6, eph: 6, php: 4, col: 4,
+    '1th': 5, '2th': 3, '1ti': 6, '2ti': 4,
+    tit: 3, phm: 1, heb: 13, jas: 5,
+    '1pe': 5, '2pe': 3, '1jo': 5, '2jo': 1,
+    '3jo': 1, jud: 1, re: 22
+  };
 
-  // ?book=...  -> abbr de archivo (abbr-morphgnt.translit.json)
-  // Agrega aquí más slugs si los usas en tu proyecto.
-var BOOK_SLUG_TO_ABBR = {
-  // Evangelios
-  'mateo':'mt','mt':'mt','matt':'mt','matthew':'mt',
-  'marcos':'mk','mk':'mk','mark':'mk',
-  'lucas':'lk','lk':'lk','luke':'lk',
-  'juan':'jn','jn':'jn','john':'jn',
+  // Mapeo slug (query ?book=) -> abbr MorphGNT
+  // Ajusta si tus slugs difieren.
+  var BOOK_SLUG_TO_ABBR = {
+    mateo: 'mt', mat: 'mt', mt: 'mt',
+    marcos: 'mr', mc: 'mr', mr: 'mr',
+    lucas: 'lu', lc: 'lu', lu: 'lu',
+    juan: 'joh', jn: 'joh', joh: 'joh',
 
-  // Hechos / Romanos
-  'hechos':'ac','actos':'ac','ac':'ac','acts':'ac',
-  'romanos':'ro','ro':'ro','rom':'ro','romans':'ro',
+    hechos: 'ac', ac: 'ac',
 
-  // Corintios
-  '1corintios':'1co','1co':'1co','1cor':'1co','1corinthians':'1co',
-  '2corintios':'2co','2co':'2co','2cor':'2co','2corinthians':'2co',
+    romanos: 'ro', ro: 'ro',
+    '1corintios': '1co', '1co': '1co',
+    '2corintios': '2co', '2co': '2co',
+    galatas: 'ga', ga: 'ga',
+    efesios: 'eph', eph: 'eph',
+    filipenses: 'php', php: 'php',
+    colosenses: 'col', col: 'col',
+    '1tesalonicenses': '1th', '1th': '1th',
+    '2tesalonicenses': '2th', '2th': '2th',
+    '1timoteo': '1ti', '1ti': '1ti',
+    '2timoteo': '2ti', '2ti': '2ti',
+    tito: 'tit', tit: 'tit',
+    filemon: 'phm', phm: 'phm',
+    hebreos: 'heb', heb: 'heb',
+    santiago: 'jas', jas: 'jas',
+    '1pedro': '1pe', '1pe': '1pe',
+    '2pedro': '2pe', '2pe': '2pe',
+    '1juan': '1jo', '1jo': '1jo',
+    '2juan': '2jo', '2jo': '2jo',
+    '3juan': '3jo', '3jo': '3jo',
+    judas: 'jud', jud: 'jud',
+    apocalipsis: 're', re: 're'
+  };
 
-  // Gálatas / Efesios / Filipenses / Colosenses
-  'galatas':'ga','gálatas':'ga','ga':'ga','gal':'ga','galatians':'ga',
-  'efesios':'eph','eph':'eph','ephesians':'eph',
-  'filipenses':'php','php':'php','philippians':'php',
-  'colosenses':'col','col':'col','colossians':'col',
+  // estado morph
+  var morphKey = null;
+  var morphMap = null;
 
-  // Tesalonicenses
-  '1tesalonicenses':'1th','1th':'1th',
-  '2tesalonicenses':'2th','2th':'2th',
-
-  // Pastorales
-  '1timoteo':'1ti','1ti':'1ti',
-  '2timoteo':'2ti','2ti':'2ti',
-  'tito':'tit','tit':'tit','titus':'tit',
-  'filemon':'phm','filemón':'phm','phm':'phm','philemon':'phm',
-
-  // Hebreos / Santiago
-  'hebreos':'heb','heb':'heb','hebrews':'heb',
-  'santiago':'jas','jas':'jas','james':'jas',
-
-  // Pedro
-  '1pedro':'1pe','1pe':'1pe','1peter':'1pe',
-  '2pedro':'2pe','2pe':'2pe','2peter':'2pe',
-
-  // Juan (epístolas)
-  '1juan':'1jn','1jn':'1jn','1john':'1jn',
-  '2juan':'2jn','2jn':'2jn','2john':'2jn',
-  '3juan':'3jn','3jn':'3jn','3john':'3jn',
-
-  // Judas / Apocalipsis
-  'judas':'jud','jud':'jud','jude':'jud',
-  'apocalipsis':'re','re':'re','rev':'re','revelation':'re'
-};
-
-
-  var morphKey = null;  // abbr cargada (mt/mk/...)
-  var morphMap = null;  // map: "ch:v" => tokens[]
+  // observer flags
   var observing = false;
   var decorating = false;
   var scheduled = false;
   var scheduleTimer = null;
 
-function normalizeTranslit(tr) {
-  if (tr == null) return '';
-
-  tr = String(tr);
-
-  // 1) eliminar puntuación adyacente (coma, punto, etc.)
-  tr = tr.replace(/[.,;:·]/g, '');
-
-  // 2) normalizar upsilon en diptongos
-  tr = tr
-    .replace(/ay/g, 'au').replace(/Ay/g, 'Au')
-    .replace(/ey/g, 'eu').replace(/Ey/g, 'Eu')
-    .replace(/oy/g, 'ou').replace(/Oy/g, 'Ou');
-
-  return tr;
-}
-
-  // -------------------- utils --------------------
-  function normalizeSlug(s) {
-    s = (s || '').toLowerCase().trim();
-    s = s.replace(/\s+/g, ' ');
-    return s;
+  // -------------------- util --------------------
+  function normalizeTranslit(s) {
+    if (!s) return '';
+    // normalización mínima (puedes expandir si necesitas)
+    return String(s)
+      .replace(/\s+/g, ' ')
+      .trim();
   }
 
   function slugToAbbr(slug) {
-    slug = normalizeSlug(slug);
+    slug = (slug || '').toLowerCase().trim();
     if (!slug) return null;
-
-    // "1 juan" -> "1juan" (por si luego lo usas)
-    slug = slug.replace(/^([123])\s+/, '$1');
     slug = slug.replace(/\s+/g, '');
 
     if (Object.prototype.hasOwnProperty.call(BOOK_SLUG_TO_ABBR, slug)) {
@@ -154,55 +114,100 @@ function normalizeTranslit(tr) {
   //   verse   = (idx % 100) + 1
   //
   // Construimos: map["ch:v"] = tokens[]
-function buildMorphIndex(data, abbr) {
-  if (!data || !data.chapters || !Array.isArray(data.chapters)) return null;
+  function buildMorphIndex(data, abbr) {
+    if (!data || !data.chapters || !Array.isArray(data.chapters)) return null;
 
-  var segs = [];
-  for (var i = 0; i < data.chapters.length; i++) {
-    if (Array.isArray(data.chapters[i])) segs.push(data.chapters[i]);
-  }
-  if (!segs.length) return null;
+    var segs = [];
+    for (var i = 0; i < data.chapters.length; i++) {
+      if (Array.isArray(data.chapters[i])) segs.push(data.chapters[i]);
+    }
+    if (!segs.length) return null;
 
-  var totalCh = ABBR_CHAPTERS[abbr] || 0;
+    var totalCh = ABBR_CHAPTERS[abbr] || 0;
 
-  return {
-    abbr: abbr,
-    totalCh: totalCh,
-    segs: segs
-  };
-}
-
-
-function getTokens(ch, v) {
-  if (!morphMap) return null;
-
-  var segs = morphMap.segs;
-  var totalCh = morphMap.totalCh || 0;
-  if (!segs || !segs.length) return null;
-
-  if (ch < 1 || v < 1) return null;
-  if (totalCh && ch > totalCh) return null;
-
-  var segIndex = 0;
-  if (ch >= 10) segIndex = 1 + Math.floor((ch - 10) / 10);
-  if (segIndex < 0 || segIndex >= segs.length) return null;
-
-  var base = segIndex * 10;
-  var idx;
-
-  if (segIndex === 0) idx = (ch * 100) + (v - 1);
-  else idx = ((ch - base) * 100) + (v - 1);
-
-  var tokens = segs[segIndex][idx];
-
-  // (opcional) fallback, si lo quieres conservar:
-  if (!Array.isArray(tokens) && segIndex === 0) {
-    idx = ((ch - 0) * 100) + (v - 1);
-    tokens = segs[segIndex][idx];
+    return {
+      abbr: abbr,
+      totalCh: totalCh,
+      segs: segs
+    };
   }
 
-  return Array.isArray(tokens) ? tokens : null;
-}  // ✅ ESTE CIERRE ES OBLIGATORIO
+  function getTokens(ch, v) {
+    if (!morphMap) return null;
+
+    var segs = morphMap.segs;
+    var totalCh = morphMap.totalCh || 0;
+    if (!segs || !segs.length) return null;
+
+    if (ch < 1 || v < 1) return null;
+    if (totalCh && ch > totalCh) return null;
+
+    var segIndex = 0;
+    if (ch >= 10) segIndex = 1 + Math.floor((ch - 10) / 10);
+    if (segIndex < 0 || segIndex >= segs.length) return null;
+
+    var base = segIndex * 10;
+    var idx;
+
+    if (segIndex === 0) idx = (ch * 100) + (v - 1);
+    else idx = ((ch - base) * 100) + (v - 1);
+
+    var tokens = segs[segIndex][idx];
+
+    // (opcional) fallback, si lo quieres conservar:
+    if (!Array.isArray(tokens) && segIndex === 0) {
+      idx = ((ch - 0) * 100) + (v - 1);
+      tokens = segs[segIndex][idx];
+    }
+
+    return Array.isArray(tokens) ? tokens : null;
+  } // ✅ ESTE CIERRE ES OBLIGATORIO
+
+  // -------------------- masterdiccionario (index por lemma) --------------------
+  function sanitizeLooseJson(text) {
+    // Quita comas finales antes de } o ] (tu masterdiccionario no es JSON estricto)
+    return String(text || '')
+      .replace(/,\s*([}\]])/g, '$1')
+      .replace(/^\uFEFF/, '');
+  }
+
+  function buildMasterIndex(masterObj) {
+    if (!masterObj || !Array.isArray(masterObj.items)) return null;
+    var m = new Map();
+    for (var i = 0; i < masterObj.items.length; i++) {
+      var it = masterObj.items[i];
+      if (!it || !it.lemma) continue;
+      m.set(it.lemma, it);
+    }
+    return m;
+  }
+
+  function loadMasterDictionaryOnce() {
+    if (masterDictLoaded) return Promise.resolve(masterDictIndex);
+    masterDictLoaded = true;
+
+    return fetch(MASTER_DICT_URL, { cache: 'no-store' })
+      .then(function (r) {
+        if (!r.ok) throw new Error('No se pudo cargar masterdiccionario.json (' + r.status + ')');
+        return r.text();
+      })
+      .then(function (txt) {
+        var clean = sanitizeLooseJson(txt);
+        var obj = JSON.parse(clean);
+        masterDictIndex = buildMasterIndex(obj);
+        return masterDictIndex;
+      })
+      .catch(function (e) {
+        console.warn('[masterdiccionario] fallo:', e);
+        masterDictIndex = null;
+        return null;
+      });
+  }
+
+  function getMasterEntryByLemma(lemma) {
+    if (!lemma || !masterDictIndex) return null;
+    return masterDictIndex.get(lemma) || null;
+  }
 
   // -------------------- popup --------------------
   function ensurePopup() {
@@ -220,6 +225,8 @@ function getTokens(ch, v) {
       '.gk-lex-popup .t2{ font-size:13px; opacity:.92; line-height:1.35; }' +
       '.gk-lex-popup .row{ margin-top:6px; }' +
       '.gk-lex-popup .lab{ opacity:.7; margin-right:6px; }' +
+      '.gk-lex-popup .sep{ border:0; border-top:1px solid rgba(255,255,255,.12); margin:10px 0; }' +
+      '.gk-lex-popup .def{ margin-top:6px; line-height:1.35; max-height:180px; overflow:auto; }' +
       '.gk-lex-popup .close{ position:absolute; right:10px; top:8px; background:transparent; border:0; color:#cbd6ff; cursor:pointer; font-size:16px; }';
 
     document.head.appendChild(st);
@@ -231,7 +238,11 @@ function getTokens(ch, v) {
       '<button class="close" aria-label="Cerrar">×</button>' +
       '<div class="t1" id="gk-lex-g"></div>' +
       '<div class="t2"><span class="lab">Lemma:</span><span id="gk-lex-lemma"></span></div>' +
-      '<div class="t2 row"><span class="lab">Translit:</span><span id="gk-lex-tr"></span></div>';
+      '<div class="t2 row"><span class="lab">Translit:</span><span id="gk-lex-tr"></span></div>' +
+      '<hr class="sep"/>' +
+      '<div class="t2 row"><span class="lab">Forma léxica:</span><span id="gk-lex-forma-lex"></span></div>' +
+      '<div class="t2 row"><span class="lab">Entrada impresa:</span><span id="gk-lex-entrada"></span></div>' +
+      '<div class="t2"><span class="lab">Definición:</span><div id="gk-lex-def" class="def"></div></div>';
 
     document.body.appendChild(box);
 
@@ -260,8 +271,38 @@ function getTokens(ch, v) {
 
     document.getElementById('gk-lex-g').textContent = g || '';
     document.getElementById('gk-lex-lemma').textContent = lemma || '—';
-document.getElementById('gk-lex-tr').textContent = normalizeTranslit(tr) || '—';
+    document.getElementById('gk-lex-tr').textContent = normalizeTranslit(tr) || '—';
 
+    var formaLexEl = document.getElementById('gk-lex-forma-lex');
+    var entradaEl = document.getElementById('gk-lex-entrada');
+    var defEl = document.getElementById('gk-lex-def');
+
+    // Si aún no cargó masterdiccionario, dispara carga y muestra estado
+    if (!masterDictIndex) {
+      loadMasterDictionaryOnce().then(function () {
+        var p = document.getElementById('gk-lex-popup');
+        if (p && p.style.display === 'block') {
+          showPopupNear(anchorEl, g, lemma, tr);
+        }
+      });
+
+      if (formaLexEl) formaLexEl.textContent = '…';
+      if (entradaEl) entradaEl.textContent = '…';
+      if (defEl) defEl.textContent = 'Cargando diccionario…';
+    } else {
+      var ent = getMasterEntryByLemma(lemma);
+
+      if (!ent) {
+        if (formaLexEl) formaLexEl.textContent = '—';
+        if (entradaEl) entradaEl.textContent = '—';
+        if (defEl) defEl.textContent = 'No hay entrada para este lemma en masterdiccionario.';
+      } else {
+        // Solo lo que pediste:
+        if (formaLexEl) formaLexEl.textContent = ent['Forma lexica'] || '—';
+        if (entradaEl) entradaEl.textContent = ent['entrada_impresa'] || '—';
+        if (defEl) defEl.textContent = ent['definicion'] || '—';
+      }
+    }
 
     box.style.display = 'block';
 
@@ -299,114 +340,113 @@ document.getElementById('gk-lex-tr').textContent = normalizeTranslit(tr) || '—
     var vts = rootEl.querySelectorAll('.verse-line[data-side="orig"] .verse-text');
     for (var i = 0; i < vts.length; i++) {
       var vt = vts[i];
-      var raw = vt.getAttribute('data-raw');
-      if (raw != null && raw !== '') {
-        vt.textContent = raw;
-        vt.removeAttribute('data-raw');
-        vt.removeAttribute('data-gk-done');
-      } else {
-        // Si quedó decorado pero no hay raw, lo dejamos plano
-        if (vt.querySelector && vt.querySelector('.gk-w')) {
-          vt.textContent = vt.textContent || '';
-          vt.removeAttribute('data-gk-done');
-        }
+      // si ya hay spans, restaurar a texto puro
+      var spans = vt.querySelectorAll('span.gk-w');
+      if (spans && spans.length) {
+        // reconstruye el texto original desde spans + nodos
+        // (para evitar pérdida, usa textContent)
+        vt.textContent = vt.textContent;
       }
     }
-    hidePopup();
   }
 
-  function decorateVerseText(vt, tokens) {
-    // Guarda raw una vez
-    if (!vt.getAttribute('data-raw')) {
-      vt.setAttribute('data-raw', vt.textContent || '');
-    }
+  function decorateVerseText(vt, ch, v) {
+    if (!vt) return;
 
-    // Reescribe con tokens creando spans
-    while (vt.firstChild) vt.removeChild(vt.firstChild);
+    // evita redecorar
+    if (vt.getAttribute('data-gk-decorated') === '1') return;
 
+    var tokens = getTokens(ch, v);
+    if (!tokens || !tokens.length) return;
+
+    // token shape esperado:
+    // { g: '...', lemma: '...', tr: '...' }
+    // Nota: tu JSON puede variar levemente; aquí usamos los nombres vistos.
+    var html = '';
     for (var i = 0; i < tokens.length; i++) {
-      var t = tokens[i] || {};
+      var t = tokens[i];
+      if (!t) continue;
+
       var g = (t.g != null) ? String(t.g) : '';
+      var lemma = (t.lemma != null) ? String(t.lemma) : '';
+      var tr = (t.tr != null) ? String(t.tr) : '';
+
+      // preserva separadores/espacios si vienen en el token
+      // si el token viene vacío, lo deja tal cual
       if (!g) continue;
 
-      var lemma = (t.lemma != null) ? String(t.lemma) : '';
-var tr = normalizeTranslit((t.tr != null) ? String(t.tr) : '');
-
-
-      var sp = document.createElement('span');
-      sp.className = 'gk-w';
-      sp.setAttribute('data-lemma', lemma);
-      sp.setAttribute('data-tr', tr);
-      sp.textContent = g;
-
-      vt.appendChild(sp);
-      vt.appendChild(document.createTextNode(' '));
+      html += '<span class="gk-w" data-lemma="' + escAttr(lemma) + '" data-tr="' + escAttr(tr) + '">' +
+        escHtml(g) + '</span>';
     }
 
-    // quita el último espacio
-    if (vt.lastChild && vt.lastChild.nodeType === 3) {
-      vt.lastChild.nodeValue = vt.lastChild.nodeValue.replace(/\s+$/, '');
+    if (html) {
+      vt.innerHTML = html;
+      vt.setAttribute('data-gk-decorated', '1');
     }
   }
 
   function decorateVisibleOrigPanel(rootEl) {
     if (!rootEl) return;
 
-    // Si no hay diccionario para el libro actual, restaura
-    if (!morphMap) {
-      restoreRawGreek(rootEl);
-      return;
-    }
+    // ubica líneas del panel original (griego)
+    var lines = rootEl.querySelectorAll('.verse-line[data-side="orig"]');
+    if (!lines || !lines.length) return;
 
-    var lines = rootEl.querySelectorAll('.verse-line[data-side="orig"][data-ch][data-v]');
     for (var i = 0; i < lines.length; i++) {
       var line = lines[i];
-      var ch = parseInt(line.getAttribute('data-ch') || '0', 10);
-      var v = parseInt(line.getAttribute('data-v') || '0', 10);
+      var ch = parseInt(line.getAttribute('data-chapter') || '0', 10);
+      var v = parseInt(line.getAttribute('data-verse') || '0', 10);
       if (!ch || !v) continue;
 
       var vt = line.querySelector('.verse-text');
       if (!vt) continue;
 
-      // Marca por libro+verso para no redecorar infinito
-      var doneKey = morphKey + ':' + ch + ':' + v;
-      if (vt.getAttribute('data-gk-done') === doneKey) continue;
-
-      var tokens = getTokens(ch, v);
-      if (!tokens) continue;
-
-      decorateVerseText(vt, tokens);
-      vt.setAttribute('data-gk-done', doneKey);
+      decorateVerseText(vt, ch, v);
     }
   }
 
-  // -------------------- click handler (SOLO click izquierdo) --------------------
+  function escHtml(s) {
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  function escAttr(s) {
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/"/g, '&quot;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  // -------------------- handlers --------------------
   function attachLeftClickHandler(rootEl) {
     if (!rootEl) return;
+
     if (rootEl.getAttribute('data-gk-leftclick') === '1') return;
     rootEl.setAttribute('data-gk-leftclick', '1');
 
-rootEl.addEventListener('click', function (ev) {
-  if (ev.button !== 0) return;
-  if (!morphMap) return;
+    rootEl.addEventListener('click', function (ev) {
+      if (ev.button !== 0) return;
+      if (!morphMap) return;
 
-  var t = ev.target;
-  if (!t) return;
+      var t = ev.target;
+      if (!t) return;
 
-  // Debe ser palabra griega
-  if (!t.classList || !t.classList.contains('gk-w')) return;
+      // Debe ser palabra griega
+      if (!t.classList || !t.classList.contains('gk-w')) return;
 
-  var sel = window.getSelection ? window.getSelection() : null;
-  if (sel && String(sel).trim().length > 0) return;
+      var sel = window.getSelection ? window.getSelection() : null;
+      if (sel && String(sel).trim().length > 0) return;
 
-  var lemma = t.getAttribute('data-lemma') || '';
-  var tr = normalizeTranslit(t.getAttribute('data-tr') || '');
-  var g = t.textContent || '';
+      var lemma = t.getAttribute('data-lemma') || '';
+      var tr = normalizeTranslit(t.getAttribute('data-tr') || '');
+      var g = t.textContent || '';
 
-  ev.stopPropagation();
-  showPopupNear(t, g, lemma, tr);
-}, false);
-
+      ev.stopPropagation();
+      showPopupNear(t, g, lemma, tr);
+    }, false);
   }
 
   // -------------------- load per book (NO por mutación) --------------------
@@ -516,6 +556,8 @@ rootEl.addEventListener('click', function (ev) {
   }
 
   function init() {
+    // Carga masterdiccionario una sola vez (no depende del libro)
+    loadMasterDictionaryOnce();
     observeOrigPanel();
   }
 
