@@ -1,0 +1,23 @@
+/* NA28-Es: estilos centralizados */
+.na28es-container{
+  background:#fff;
+  padding:10px;
+  border-radius:6px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.12);
+}
+.na28es-container .greek{
+  font-family: "Times New Roman", serif;
+  font-size: 1.4em;
+  color:#444;
+}
+.na28es-container table{
+  width:100%;
+  border-collapse: collapse;
+  margin-top:10px;
+}
+.na28es-container th, .na28es-container td{
+  border:1px solid #ddd;
+  padding:8px;
+}
+.na28es-container th{ background:#f4f4f4; }
+.na28es-container .crossrefs{ color:#06c; }
