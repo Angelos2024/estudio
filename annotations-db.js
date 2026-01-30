@@ -1,170 +1,215 @@
-// listanotas.js — IndexedDB
-// Panel "Notas" (global) — NO confundir con comentarios de Eric
-(function () {
+// annotations-db.js (COMPLETO)
+// Cambios clave (respecto a tu archivo):
+// - Añadido: listAllNotes() para traer TODAS las notas del objectStore "notes"
+// - Añadido: alias window.NotesDB.listAllNotes para compatibilidad con listanotas.js
+(() => {
+  const DB_NAME = 'biblia_annotations_db';
+  const DB_VERSION = 2; // IMPORTANTE: versión para upgrades
 
-  function escapeHtml(str){
-    return String(str ?? "")
-      .replaceAll("&","&amp;")
-      .replaceAll("<","&lt;")
-      .replaceAll(">","&gt;")
-      .replaceAll('"',"&quot;")
-      .replaceAll("'","&#039;");
+  const STORE_HL = 'highlights';
+  const STORE_NOTES = 'notes';
+
+  let _dbPromise = null;
+
+  function openDB() {
+    if (_dbPromise) return _dbPromise;
+
+    _dbPromise = new Promise((resolve, reject) => {
+      const req = indexedDB.open(DB_NAME, DB_VERSION);
+
+      req.onupgradeneeded = (e) => {
+        const db = e.target.result;
+
+        // -----------------------------
+        // Highlights
+        // -----------------------------
+        let stHL;
+        if (!db.objectStoreNames.contains(STORE_HL)) {
+          stHL = db.createObjectStore(STORE_HL, { keyPath: 'id', autoIncrement: true });
+          stHL.createIndex('by_ref', ['side', 'book', 'ch', 'v'], { unique: false });
+          stHL.createIndex('by_book_ch_v', ['side', 'book', 'ch', 'v'], { unique: false });
+        } else {
+          stHL = e.target.transaction.objectStore(STORE_HL);
+          if (!stHL.indexNames.contains('by_ref')) {
+            stHL.createIndex('by_ref', ['side', 'book', 'ch', 'v'], { unique: false });
+          }
+          if (!stHL.indexNames.contains('by_book_ch_v')) {
+            stHL.createIndex('by_book_ch_v', ['side', 'book', 'ch', 'v'], { unique: false });
+          }
+        }
+
+        // -----------------------------
+        // Notes
+        // -----------------------------
+        let stN;
+        if (!db.objectStoreNames.contains(STORE_NOTES)) {
+          stN = db.createObjectStore(STORE_NOTES, { keyPath: 'id', autoIncrement: true });
+          stN.createIndex('by_ref', ['side', 'book', 'ch', 'v'], { unique: false });
+
+          // Índice único por ancla exacta
+          stN.createIndex(
+            'by_anchor',
+            ['side', 'book', 'ch', 'v', 'offset', 'length'],
+            { unique: true }
+          );
+        } else {
+          stN = e.target.transaction.objectStore(STORE_NOTES);
+
+          if (!stN.indexNames.contains('by_ref')) {
+            stN.createIndex('by_ref', ['side', 'book', 'ch', 'v'], { unique: false });
+          }
+          if (!stN.indexNames.contains('by_anchor')) {
+            stN.createIndex(
+              'by_anchor',
+              ['side', 'book', 'ch', 'v', 'offset', 'length'],
+              { unique: true }
+            );
+          }
+        }
+      };
+
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+
+    return _dbPromise;
   }
 
-  function abbrevBook(slug){
-    const s = String(slug || "").toLowerCase();
-    const map = {
-      genesis:"Gn", exodo:"Ex", levitico:"Lv", numeros:"Nm", deuteronomio:"Dt",
-      josue:"Jos", jueces:"Jue", rut:"Rt",
-      mateo:"Mt", marcos:"Mr", lucas:"Lc", juan:"Jn", hechos:"Hch",
-      romanos:"Ro", galatas:"Ga", efesios:"Ef", filipenses:"Fil", colosenses:"Col",
-      "1corintios":"1Co", "2corintios":"2Co",
-      "1tesalonicenses":"1Ts", "2tesalonicenses":"2Ts",
-      "1timoteo":"1Ti", "2timoteo":"2Ti",
-      tito:"Tit", filemon:"Flm", hebreos:"Heb",
-      santiago:"Stg", "1pedro":"1P", "2pedro":"2P",
-      "1juan":"1Jn", "2juan":"2Jn", "3juan":"3Jn",
-      judas:"Jud", apocalipsis:"Ap"
-    };
-    if(map[s]) return map[s];
-    return s ? (s.slice(0,3).replace(/^\w/, c => c.toUpperCase())) : "—";
+  function tx(db, storeName, mode = 'readonly') {
+    return db.transaction(storeName, mode).objectStore(storeName);
   }
 
-  async function getAllNotes(){
-    if (window.NotesDB && typeof window.NotesDB.listAllNotes === "function"){
-      const arr = await window.NotesDB.listAllNotes();
-      return Array.isArray(arr) ? arr : [];
-    }
-    return [];
-  }
-
-  function firstWordFrom(note){
-    const anchor = (note.quote || "").trim();
-    const base = anchor || (note.text || "").trim();
-    if(!base) return "";
-    const w = base.split(/\s+/)[0] || "";
-    return w.replace(/[.,;:!?¿¡()[\]{}"“”'’]/g, "");
-  }
-
-  function buildLabel(note){
-    const book = abbrevBook(note.book);
-    const ch = Number(note.ch || 0);
-    const v  = Number(note.v  || 0);
-    const ref = (ch && v) ? `${book} ${ch}:${v}` : book;
-    const fw = firstWordFrom(note);
-    return { ref, fw };
-  }
-
-  function renderNotasList(notes){
-    const list = document.getElementById("notasList");
-    if(!list) return;
-
-    if(!notes.length){
-      list.innerHTML = `<div class="text-muted small p-2">No hay notas guardadas.</div>`;
-      return;
-    }
-
-    notes.sort((a,b)=> (b.updated_at || b.created_at || 0) - (a.updated_at || a.created_at || 0));
-
-    list.innerHTML = notes.map(n=>{
-      const { ref, fw } = buildLabel(n);
-      const id = String(n.id ?? "");
-
-      return `
-        <button type="button"
-          class="list-group-item list-group-item-action notas-item"
-          data-note-id="${escapeHtml(id)}">
-          <div>
-            <strong>${escapeHtml(ref)}</strong>
-            ${fw ? `<span class="note-firstword">${escapeHtml(fw)}</span>` : ""}
-          </div>
-          <small></small>
-        </button>
-      `;
-    }).join("");
-
-    list.querySelectorAll("[data-note-id]").forEach(btn=>{
-      btn.addEventListener("click", (ev)=>{
-        ev.preventDefault();
-        ev.stopPropagation();
-        const id = btn.dataset.noteId;
-        if(window.openNoteById && id) window.openNoteById(id);
-      });
+  function reqToPromise(req) {
+    return new Promise((resolve, reject) => {
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
     });
   }
 
-  async function refreshNotasListIfOpen(){
-    const panel = document.getElementById("notasPanel");
-    if(!panel) return;
-
-    const isOpen = !panel.classList.contains("d-none");
-    if(!isOpen) return;
-
-    const search = document.getElementById("notasSearch");
-    const q = (search ? search.value.trim().toLowerCase() : "");
-
-    const all = await getAllNotes();
-
-    if(!q){
-      renderNotasList(all);
-      return;
-    }
-
-    renderNotasList(
-      all.filter(n=>{
-        const { ref, fw } = buildLabel(n);
-        const text = String(n.text || "").toLowerCase();
-        return (
-          ref.toLowerCase().includes(q) ||
-          fw.toLowerCase().includes(q) ||
-          text.includes(q)
-        );
-      })
-    );
+  // -----------------------------
+  // HIGHLIGHTS
+  // -----------------------------
+  async function addHighlight(h) {
+    const db = await openDB();
+    const store = tx(db, STORE_HL, 'readwrite');
+    const id = await reqToPromise(store.add(h));
+    return id;
   }
 
-  async function toggleNotasPanel(force){
-    const panel = document.getElementById("notasPanel");
-    if(!panel) return;
-
-    const open = !panel.classList.contains("d-none");
-    const next = (typeof force === "boolean") ? force : !open;
-
-    panel.classList.toggle("d-none", !next);
-
-    if(next){
-      await refreshNotasListIfOpen();
-      const s = document.getElementById("notasSearch");
-      if(s) s.focus();
-    }
+  async function deleteHighlight(id) {
+    const db = await openDB();
+    const store = tx(db, STORE_HL, 'readwrite');
+    await reqToPromise(store.delete(id));
+    return true;
   }
 
-  function initNotasUI(){
-    const btn = document.getElementById("btnNotas");
-    const search = document.getElementById("notasSearch");
-
-    if(btn){
-      btn.disabled = false;
-      btn.addEventListener("click", (ev)=>{
-        ev.preventDefault();
-        toggleNotasPanel();
-      });
-    }
-
-    if(search){
-      search.addEventListener("input", ()=>{
-        refreshNotasListIfOpen();
-      });
-    }
+  async function getHighlightsForVerse(side, book, ch, v) {
+    const db = await openDB();
+    const store = tx(db, STORE_HL, 'readonly');
+    const idx = store.index('by_ref');
+    const rows = await reqToPromise(idx.getAll([side, book, ch, v]));
+    return rows || [];
   }
 
-  // API pública
-  window.refreshNotasList = function(){ refreshNotasListIfOpen(); };
-  window.dispatchNotasChanged = function(){
-    window.dispatchEvent(new CustomEvent("notas:changed"));
+  async function getHighlightsForPassage(side, book, ch, vStart, vEnd) {
+    const out = [];
+    const db = await openDB();
+    const store = tx(db, STORE_HL, 'readonly');
+    const idx = store.index('by_book_ch_v');
+
+    const lower = [side, book, ch, vStart];
+    const upper = [side, book, ch, vEnd];
+
+    const range = IDBKeyRange.bound(lower, upper);
+    return new Promise((resolve, reject) => {
+      const cursorReq = idx.openCursor(range);
+      cursorReq.onsuccess = () => {
+        const cur = cursorReq.result;
+        if (!cur) return resolve(out);
+        out.push(cur.value);
+        cur.continue();
+      };
+      cursorReq.onerror = () => reject(cursorReq.error);
+    });
+  }
+
+  // -----------------------------
+  // NOTES
+  // -----------------------------
+  async function addNote(n) {
+    const db = await openDB();
+    const store = tx(db, STORE_NOTES, 'readwrite');
+    const id = await reqToPromise(store.add(n));
+    return id;
+  }
+
+  async function updateNote(n) {
+    const db = await openDB();
+    const store = tx(db, STORE_NOTES, 'readwrite');
+    await reqToPromise(store.put(n));
+    return true;
+  }
+
+  async function deleteNote(id) {
+    const db = await openDB();
+    const store = tx(db, STORE_NOTES, 'readwrite');
+    await reqToPromise(store.delete(id));
+    return true;
+  }
+
+  async function getNote(id) {
+    const db = await openDB();
+    const store = tx(db, STORE_NOTES, 'readonly');
+    const note = await reqToPromise(store.get(id));
+    return note || null;
+  }
+
+  async function getNotesForVerse(side, book, ch, v) {
+    const db = await openDB();
+    const store = tx(db, STORE_NOTES, 'readonly');
+    const idx = store.index('by_ref');
+    const rows = await reqToPromise(idx.getAll([side, book, ch, v]));
+    return rows || [];
+  }
+
+  async function getNoteByAnchor(side, book, ch, v, offset, length) {
+    const db = await openDB();
+    const store = tx(db, STORE_NOTES, 'readonly');
+    const idx = store.index('by_anchor');
+    const note = await reqToPromise(idx.get([side, book, ch, v, offset, length]));
+    return note || null;
+  }
+
+  // ✅ NUEVO: listar todas las notas (para el panel "Notas")
+  async function listAllNotes() {
+    const db = await openDB();
+    const store = tx(db, STORE_NOTES, 'readonly');
+    const rows = await reqToPromise(store.getAll());
+    return rows || [];
+  }
+
+  // Exponer API global
+  window.AnnotationsDB = {
+    openDB,
+
+    // highlights
+    addHighlight,
+    deleteHighlight,
+    getHighlightsForVerse,
+    getHighlightsForPassage,
+
+    // notes
+    addNote,
+    updateNote,
+    deleteNote,
+    getNote,
+    getNoteByAnchor,
+    getNotesForVerse,
+    listAllNotes, // ✅ nuevo
   };
-  window.addEventListener("notas:changed", () => { refreshNotasListIfOpen(); });
 
-  document.addEventListener("DOMContentLoaded", initNotasUI);
+  // ✅ Alias para listanotas.js (sin tocar listanotas.js)
+  window.NotesDB = window.NotesDB || {};
+  window.NotesDB.listAllNotes = listAllNotes;
 
 })();
