@@ -256,14 +256,13 @@
     }, false);
   }
 
-  function showPopupNear(anchorEl, g, lemma, tr) {
+  function showPopupNear(anchorEl, g, lemma) {
     ensurePopup();
     var box = document.getElementById('gk-lex-popup');
     if (!box) return;
 
     document.getElementById('gk-lex-g').textContent = g || '';
     document.getElementById('gk-lex-lemma').textContent = lemma || '—';
-    document.getElementById('gk-lex-tr').textContent = normalizeTranslit(tr) || '—';
 
     var formaLexEl = document.getElementById('gk-lex-forma-lex');
     var entradaEl = document.getElementById('gk-lex-entrada');
@@ -496,7 +495,7 @@
       var g = t.textContent || '';
 
       ev.stopPropagation();
-      showPopupNear(t, g, lemma, tr);
+showPopupNear(t, g, lemma);
     }, false);
   }
 
