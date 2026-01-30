@@ -233,8 +233,6 @@
       '<button class="close" aria-label="Cerrar">×</button>' +
       '<div class="t1" id="gk-lex-g"></div>' +
       '<div class="t2"><span class="lab">Lemma:</span><span id="gk-lex-lemma"></span></div>' +
-      '<div class="t2 row"><span class="lab">Translit:</span><span id="gk-lex-tr"></span></div>' +
-      '<hr class="sep"/>' +
       '<div class="t2 row"><span class="lab">Forma léxica:</span><span id="gk-lex-forma-lex"></span></div>' +
       '<div class="t2 row"><span class="lab">Entrada impresa:</span><span id="gk-lex-entrada"></span></div>' +
       '<div class="t2"><span class="lab">Definición:</span><div id="gk-lex-def" class="def"></div></div>';
