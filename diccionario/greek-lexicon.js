@@ -1,9 +1,10 @@
 /* diccionario/greek-lexicon.js
    - Palabras griegas clickeables (popup lemma/translit + masterdiccionario)
-   - NO interfiere con click derecho (subrayar/comentar)
+   - Robusto: soporta distintos DOM/atributos para capítulo/verso
+   - No interfiere con click derecho (subrayar/comentar)
    - Evita loop/freeze del MutationObserver (debounce + flags)
    - Carga el JSON correcto según ?book=
-   - Si no hay JSON del libro: restaura texto plano (sin spans)
+   - masterdiccionario.json en ./diccionario/
 */
 (function () {
   var DICT_DIR = './diccionario/';
@@ -11,6 +12,7 @@
   var masterDictIndex = null;   // Map<lemma, item>
   var masterDictLoaded = false;
 
+  // Cantidad de capítulos por libro MorphGNT abbr
   var ABBR_CHAPTERS = {
     mt: 28, mr: 16, lu: 24, joh: 21,
     ac: 28, ro: 16, '1co': 16, '2co': 13,
@@ -21,8 +23,7 @@
     '3jo': 1, jud: 1, re: 22
   };
 
-  // Mapeo slug (query ?book=) -> abbr MorphGNT
-  // Ajusta si tus slugs difieren.
+  // Mapeo slug (?book=) -> abbr MorphGNT
   var BOOK_SLUG_TO_ABBR = {
     mateo: 'mt', mat: 'mt', mt: 'mt',
     marcos: 'mr', mc: 'mr', mr: 'mr',
@@ -56,8 +57,8 @@
   };
 
   // estado morph
-  var morphKey = null;
-  var morphMap = null;
+  var morphKey = null; // abbr
+  var morphMap = null; // {abbr,totalCh,segs}
 
   // observer flags
   var observing = false;
@@ -68,20 +69,13 @@
   // -------------------- util --------------------
   function normalizeTranslit(s) {
     if (!s) return '';
-    // normalización mínima (puedes expandir si necesitas)
-    return String(s)
-      .replace(/\s+/g, ' ')
-      .trim();
+    return String(s).replace(/\s+/g, ' ').trim();
   }
 
   function slugToAbbr(slug) {
-    slug = (slug || '').toLowerCase().trim();
+    slug = (slug || '').toLowerCase().trim().replace(/\s+/g, '');
     if (!slug) return null;
-    slug = slug.replace(/\s+/g, '');
-
-    if (Object.prototype.hasOwnProperty.call(BOOK_SLUG_TO_ABBR, slug)) {
-      return BOOK_SLUG_TO_ABBR[slug];
-    }
+    if (Object.prototype.hasOwnProperty.call(BOOK_SLUG_TO_ABBR, slug)) return BOOK_SLUG_TO_ABBR[slug];
     return null;
   }
 
@@ -104,16 +98,27 @@
     return '';
   }
 
-  // -------------------- build index (robusto, sin rangos hardcodeados) --------------------
-  // Lee MorphGNT translit JSON:
-  //   { book: 'Mt', chapters: [ null|array, null|array, ... ] }
-  //
-  // En tu formato, cada "segmento" real es un array grande donde:
-  //   idx = chapter*100 + (verse-1)
-  //   chapter = floor(idx/100)
-  //   verse   = (idx % 100) + 1
-  //
-  // Construimos: map["ch:v"] = tokens[]
+  function escHtml(s) {
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  function escAttr(s) {
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/"/g, '&quot;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  // -------------------- build morph index --------------------
+  // JSON: { book, chapters:[ ... ] }
+  // En tu formato:
+  //  - Solo algunos índices de "chapters" son arrays (segmentos)
+  //  - tokens en seg[idx] donde idx = chapter*100 + (verse-1) (para seg0)
+  //  - seg1 arranca en 0 para cap 10, etc.
   function buildMorphIndex(data, abbr) {
     if (!data || !data.chapters || !Array.isArray(data.chapters)) return null;
 
@@ -123,11 +128,9 @@
     }
     if (!segs.length) return null;
 
-    var totalCh = ABBR_CHAPTERS[abbr] || 0;
-
     return {
       abbr: abbr,
-      totalCh: totalCh,
+      totalCh: ABBR_CHAPTERS[abbr] || 0,
       segs: segs
     };
   }
@@ -142,30 +145,22 @@
     if (ch < 1 || v < 1) return null;
     if (totalCh && ch > totalCh) return null;
 
+    // segIndex: 0 -> caps 1-9, 1 -> 10-19, etc.
     var segIndex = 0;
     if (ch >= 10) segIndex = 1 + Math.floor((ch - 10) / 10);
     if (segIndex < 0 || segIndex >= segs.length) return null;
 
     var base = segIndex * 10;
-    var idx;
-
-    if (segIndex === 0) idx = (ch * 100) + (v - 1);
-    else idx = ((ch - base) * 100) + (v - 1);
+    var idx = (segIndex === 0)
+      ? (ch * 100) + (v - 1)
+      : ((ch - base) * 100) + (v - 1);
 
     var tokens = segs[segIndex][idx];
-
-    // (opcional) fallback, si lo quieres conservar:
-    if (!Array.isArray(tokens) && segIndex === 0) {
-      idx = ((ch - 0) * 100) + (v - 1);
-      tokens = segs[segIndex][idx];
-    }
-
     return Array.isArray(tokens) ? tokens : null;
-  } // ✅ ESTE CIERRE ES OBLIGATORIO
+  }
 
   // -------------------- masterdiccionario (index por lemma) --------------------
   function sanitizeLooseJson(text) {
-    // Quita comas finales antes de } o ] (tu masterdiccionario no es JSON estricto)
     return String(text || '')
       .replace(/,\s*([}\]])/g, '$1')
       .replace(/^\uFEFF/, '');
@@ -254,7 +249,6 @@
       if (ev.key === 'Escape') hidePopup();
     }, false);
 
-    // click fuera cierra (pero no rompe el click derecho)
     document.addEventListener('click', function (ev) {
       var p = document.getElementById('gk-lex-popup');
       if (!p || p.style.display !== 'block') return;
@@ -277,13 +271,10 @@
     var entradaEl = document.getElementById('gk-lex-entrada');
     var defEl = document.getElementById('gk-lex-def');
 
-    // Si aún no cargó masterdiccionario, dispara carga y muestra estado
     if (!masterDictIndex) {
       loadMasterDictionaryOnce().then(function () {
         var p = document.getElementById('gk-lex-popup');
-        if (p && p.style.display === 'block') {
-          showPopupNear(anchorEl, g, lemma, tr);
-        }
+        if (p && p.style.display === 'block') showPopupNear(anchorEl, g, lemma, tr);
       });
 
       if (formaLexEl) formaLexEl.textContent = '…';
@@ -297,10 +288,14 @@
         if (entradaEl) entradaEl.textContent = '—';
         if (defEl) defEl.textContent = 'No hay entrada para este lemma en masterdiccionario.';
       } else {
-        // Solo lo que pediste:
-        if (formaLexEl) formaLexEl.textContent = ent['Forma lexica'] || '—';
-        if (entradaEl) entradaEl.textContent = ent['entrada_impresa'] || '—';
-        if (defEl) defEl.textContent = ent['definicion'] || '—';
+        // Solo lo pedido, pero tolerante a variaciones de clave
+        var formaLex = ent['Forma lexica'] || ent['forma_lexica'] || ent['formaLexica'] || '—';
+        var entrada = ent['entrada_impresa'] || ent['entrada impresa'] || ent['entrada'] || '—';
+        var definicion = ent['definicion'] || ent['definición'] || ent['def'] || '—';
+
+        if (formaLexEl) formaLexEl.textContent = formaLex;
+        if (entradaEl) entradaEl.textContent = entrada;
+        if (defEl) defEl.textContent = definicion;
       }
     }
 
@@ -333,23 +328,89 @@
     box.style.display = 'none';
   }
 
-  // -------------------- restore/decorate --------------------
-  function restoreRawGreek(rootEl) {
-    if (!rootEl) return;
+  // -------------------- DOM robust: localizar versos + extraer capítulo/verso --------------------
+  function parseRefString(s) {
+    // soporta "1:1", "juan 1:1", "Jn 1:1", "1.1", etc.
+    if (!s) return null;
+    s = String(s).trim();
 
-    var vts = rootEl.querySelectorAll('.verse-line[data-side="orig"] .verse-text');
-    for (var i = 0; i < vts.length; i++) {
-      var vt = vts[i];
-      // si ya hay spans, restaurar a texto puro
-      var spans = vt.querySelectorAll('span.gk-w');
-      if (spans && spans.length) {
-        // reconstruye el texto original desde spans + nodos
-        // (para evitar pérdida, usa textContent)
-        vt.textContent = vt.textContent;
-      }
-    }
+    // busca patrón capítulo:verso
+    var m = s.match(/(\d{1,3})\s*[:.]\s*(\d{1,3})/);
+    if (!m) return null;
+
+    var ch = parseInt(m[1], 10);
+    var v = parseInt(m[2], 10);
+    if (!ch || !v) return null;
+
+    return { ch: ch, v: v };
   }
 
+  function getChVFromElement(lineEl) {
+    if (!lineEl) return null;
+
+    // intenta varias claves
+    var ds = lineEl.dataset || {};
+
+    var ch =
+      parseInt(ds.chapter || ds.ch || ds.c || lineEl.getAttribute('data-chapter') || lineEl.getAttribute('data-ch') || lineEl.getAttribute('data-c') || '0', 10);
+
+    var v =
+      parseInt(ds.verse || ds.v || lineEl.getAttribute('data-verse') || lineEl.getAttribute('data-v') || '0', 10);
+
+    if (ch && v) return { ch: ch, v: v };
+
+    // intenta data-ref / data-vref / id / aria-label
+    var ref =
+      ds.ref || ds.vref || lineEl.getAttribute('data-ref') || lineEl.getAttribute('data-vref') ||
+      lineEl.id || lineEl.getAttribute('aria-label') || '';
+
+    var parsed = parseRefString(ref);
+    if (parsed) return parsed;
+
+    // si el elemento .verse-text trae el ref en parent/ancestro
+    var p = lineEl.parentElement;
+    while (p && p !== document.body) {
+      var pds = p.dataset || {};
+      var pref = pds.ref || pds.vref || p.getAttribute('data-ref') || p.getAttribute('data-vref') || p.id || '';
+      parsed = parseRefString(pref);
+      if (parsed) return parsed;
+      p = p.parentElement;
+    }
+
+    return null;
+  }
+
+  function findGreekLines(rootEl) {
+    // intenta varios selectores comunes
+    var selectors = [
+      '.verse-line[data-side="orig"]',
+      '.verse-line[data-side="gr"]',
+      '.verse-line.orig',
+      '.verse-line.greek',
+      '.verse[data-side="orig"]',
+      '.verse.orig',
+      '.verse.greek',
+      '.verse-line',
+      '.verse'
+    ];
+
+    for (var i = 0; i < selectors.length; i++) {
+      var list = rootEl.querySelectorAll(selectors[i]);
+      if (list && list.length) return list;
+    }
+    return [];
+  }
+
+  function findVerseTextNode(lineEl) {
+    if (!lineEl) return null;
+    // intenta varios contenedores típicos del texto
+    return lineEl.querySelector('.verse-text') ||
+           lineEl.querySelector('.text') ||
+           lineEl.querySelector('[data-role="verse-text"]') ||
+           lineEl;
+  }
+
+  // -------------------- decorate --------------------
   function decorateVerseText(vt, ch, v) {
     if (!vt) return;
 
@@ -359,10 +420,12 @@
     var tokens = getTokens(ch, v);
     if (!tokens || !tokens.length) return;
 
-    // token shape esperado:
-    // { g: '...', lemma: '...', tr: '...' }
-    // Nota: tu JSON puede variar levemente; aquí usamos los nombres vistos.
+    // Construye HTML preservando espacios básicos:
+    // - Separa por espacio entre tokens de letras
+    // - No agrega espacio antes de signos comunes
     var html = '';
+    var prevWasWord = false;
+
     for (var i = 0; i < tokens.length; i++) {
       var t = tokens[i];
       if (!t) continue;
@@ -371,12 +434,20 @@
       var lemma = (t.lemma != null) ? String(t.lemma) : '';
       var tr = (t.tr != null) ? String(t.tr) : '';
 
-      // preserva separadores/espacios si vienen en el token
-      // si el token viene vacío, lo deja tal cual
       if (!g) continue;
+
+      var isPunct = /^[··.,;:!?·…—–“”"'\)\]\}]+$/.test(g);
+      var isOpenPunct = /^[\(\[\{“"']+$/.test(g);
+
+      if (html) {
+        if (!isPunct && !isOpenPunct && prevWasWord) html += ' ';
+        if (isOpenPunct && prevWasWord) html += ' ';
+      }
 
       html += '<span class="gk-w" data-lemma="' + escAttr(lemma) + '" data-tr="' + escAttr(tr) + '">' +
         escHtml(g) + '</span>';
+
+      prevWasWord = !isPunct;
     }
 
     if (html) {
@@ -388,39 +459,22 @@
   function decorateVisibleOrigPanel(rootEl) {
     if (!rootEl) return;
 
-    // ubica líneas del panel original (griego)
-    var lines = rootEl.querySelectorAll('.verse-line[data-side="orig"]');
+    var lines = findGreekLines(rootEl);
     if (!lines || !lines.length) return;
 
     for (var i = 0; i < lines.length; i++) {
       var line = lines[i];
-      var ch = parseInt(line.getAttribute('data-chapter') || '0', 10);
-      var v = parseInt(line.getAttribute('data-verse') || '0', 10);
-      if (!ch || !v) continue;
+      var ref = getChVFromElement(line);
+      if (!ref) continue;
 
-      var vt = line.querySelector('.verse-text');
+      var vt = findVerseTextNode(line);
       if (!vt) continue;
 
-      decorateVerseText(vt, ch, v);
+      decorateVerseText(vt, ref.ch, ref.v);
     }
   }
 
-  function escHtml(s) {
-    return String(s)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
-  }
-
-  function escAttr(s) {
-    return String(s)
-      .replace(/&/g, '&amp;')
-      .replace(/"/g, '&quot;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
-  }
-
-  // -------------------- handlers --------------------
+  // -------------------- click handler --------------------
   function attachLeftClickHandler(rootEl) {
     if (!rootEl) return;
 
@@ -434,7 +488,6 @@
       var t = ev.target;
       if (!t) return;
 
-      // Debe ser palabra griega
       if (!t.classList || !t.classList.contains('gk-w')) return;
 
       var sel = window.getSelection ? window.getSelection() : null;
@@ -449,7 +502,7 @@
     }, false);
   }
 
-  // -------------------- load per book (NO por mutación) --------------------
+  // -------------------- load per book --------------------
   function clearMorph() {
     morphKey = null;
     morphMap = null;
@@ -460,13 +513,11 @@
     var slug = getBookSlug();
     var abbr = slugToAbbr(slug);
 
-    // si no sabemos el libro => sin diccionario
     if (!abbr) {
       clearMorph();
       return Promise.resolve(false);
     }
 
-    // si ya está cargado => ok
     if (morphKey === abbr && morphMap) return Promise.resolve(true);
 
     var url = getMorphUrl(abbr);
@@ -480,7 +531,6 @@
         return res.json().then(function (data) {
           morphKey = abbr;
           morphMap = buildMorphIndex(data, abbr);
-
           if (!morphMap) {
             clearMorph();
             return false;
@@ -516,7 +566,7 @@
         attachLeftClickHandler(rootEl);
       })
       .catch(function () {
-        restoreRawGreek(rootEl);
+        // si algo falla, al menos no rompe la UI
       })
       .finally(function () {
         decorating = false;
@@ -544,7 +594,6 @@
     observing = true;
 
     var obs = new MutationObserver(function () {
-      // Si nosotros mismos estamos decorando, ignorar
       if (decorating) return;
       scheduleWork(rootEl);
     });
@@ -556,7 +605,7 @@
   }
 
   function init() {
-    // Carga masterdiccionario una sola vez (no depende del libro)
+    // Carga masterdiccionario 1 vez
     loadMasterDictionaryOnce();
     observeOrigPanel();
   }
