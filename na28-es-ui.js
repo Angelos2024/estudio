@@ -88,45 +88,39 @@
       }
     }
 
-    async function renderCurrent(){
-      const book = selBook.value;
-      const ch = selCh.value;
-      const v = selV.value;
+async function renderCurrent(){
+  const book = selBook.value;
+  const ch = selCh.value;
+  const v = selV.value;
 
-      lastSel = { book, ch, v };
+  lastSel = { book, ch, v };
 
-      const rel = index?.[book]?.[ch]?.[v];
-      if(!rel){
-        viewer.innerHTML = `<div class="text-muted">No hay archivo para ${book} ${ch}:${v}</div>`;
-        return;
-      }
+  const rel = index?.[book]?.[ch]?.[v];
+  if(!rel){
+    viewer.innerHTML = `<div class="text-muted">No hay archivo para ${book} ${ch}:${v}</div>`;
+    return;
+  }
 
-      viewer.innerHTML = `<div class="text-muted">Cargando...</div>`;
-      const res = await fetch(`./NA28/out/${rel}?v=1`, { cache: "no-store" });
-      if(!res.ok){
-        viewer.innerHTML = `<div class="text-danger">Error cargando ${book} ${ch}:${v} (HTTP ${res.status})</div>`;
-        return;
-      }
-const html = await res.text();
+  viewer.innerHTML = `<div class="text-muted">Cargando...</div>`;
+  const res = await fetch(`./NA28/out/${rel}?v=1`, { cache: "no-store" });
 
-// 🔒 Encapsular para que el CSS NA28-Es aplique solo aquí
-viewer.innerHTML = `<div class="na28es-container">${html}</div>`;
+  if(!res.ok){
+    viewer.innerHTML = `<div class="text-danger">Error cargando ${book} ${ch}:${v} (HTTP ${res.status})</div>`;
+    return;
+  }
 
-// 🧹 Si por error llega un HTML completo, eliminar head/body/doctype visibles
-// (no es obligatorio, pero evita basura incrustada)
-const wrap = viewer.querySelector(".na28es-container");
-if (wrap) {
-  // quitar doctype si llega como texto
-  wrap.innerHTML = wrap.innerHTML.replace(/<!doctype[^>]*>/ig, "");
+  const htmlText = await res.text();
 
-  // si vienen <html>, <head>, <body>, dejarlos fuera (mantener solo lo útil)
-  const bodyMatch = wrap.querySelector("body");
-  if (bodyMatch) {
-    wrap.innerHTML = bodyMatch.innerHTML;
+  // 🔒 Encapsular para que el CSS NA28-Es aplique solo aquí
+  viewer.innerHTML = `<div class="na28es-container">${htmlText}</div>`;
+
+  // 🧹 Quitar doctype si llega como texto (algunos HTML lo traen)
+  const wrap = viewer.querySelector(".na28es-container");
+  if (wrap) {
+    wrap.innerHTML = wrap.innerHTML.replace(/<!doctype[^>]*>/ig, "");
   }
 }
 
-    }
 
     async function enable(){
       await loadIndex();
