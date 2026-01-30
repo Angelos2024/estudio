@@ -1,23 +1,53 @@
-/* NA28-Es: estilos centralizados */
+/* NA28-Es: estilos centralizados (equivalentes a 1.html, pero encapsulados) */
+
 .na28es-container{
-  background:#fff;
-  padding:10px;
-  border-radius:6px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.12);
+  /* equivalente a .container de 1.html */
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  margin-bottom: 50px;
+
+  /* equivalente a body de 1.html, pero SOLO dentro del contenedor */
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  color: #333;
 }
+
+/* títulos como 1.html */
+.na28es-container h2,
+.na28es-container h3{
+  color: #333;
+  margin-top: .75rem;
+  margin-bottom: .5rem;
+}
+
+/* texto griego como 1.html */
 .na28es-container .greek{
   font-family: "Times New Roman", serif;
   font-size: 1.4em;
-  color:#444;
+  color: #444;
 }
+
+/* tabla como 1.html */
 .na28es-container table{
-  width:100%;
+  width: 100%;
   border-collapse: collapse;
-  margin-top:10px;
+  margin-top: 10px;
 }
-.na28es-container th, .na28es-container td{
-  border:1px solid #ddd;
-  padding:8px;
+
+.na28es-container th,
+.na28es-container td{
+  border: 1px solid #ddd;
+  padding: 8px;
+  vertical-align: top;
 }
-.na28es-container th{ background:#f4f4f4; }
-.na28es-container .crossrefs{ color:#06c; }
+
+.na28es-container th{
+  background-color: #f4f4f4;
+}
+
+/* crossrefs como 1.html */
+.na28es-container .crossrefs{
+  color: #0066cc;
+}
