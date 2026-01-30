@@ -72,12 +72,41 @@
     return String(s).replace(/\s+/g, ' ').trim();
   }
 
-  function slugToAbbr(slug) {
-    slug = (slug || '').toLowerCase().trim().replace(/\s+/g, '');
-    if (!slug) return null;
-    if (Object.prototype.hasOwnProperty.call(BOOK_SLUG_TO_ABBR, slug)) return BOOK_SLUG_TO_ABBR[slug];
-    return null;
+function normalizeBookKey(slug) {
+  slug = (slug || '').toLowerCase().trim();
+
+  // quita acentos
+  try {
+    slug = slug.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  } catch (e) {}
+
+  // quita TODO lo que no sea letra o número (espacios, guiones, puntos, etc.)
+  slug = slug.replace(/[^a-z0-9]/g, '');
+
+  return slug;
+}
+
+function slugToAbbr(slug) {
+  var key = normalizeBookKey(slug);
+  if (!key) return null;
+
+  // match directo
+  if (Object.prototype.hasOwnProperty.call(BOOK_SLUG_TO_ABBR, key)) {
+    return BOOK_SLUG_TO_ABBR[key];
   }
+
+  // fallback útil: si viene como 1pe / 2ti etc ya está, pero por si acaso:
+  // ejemplo: "1cor" -> "1co"
+  if (key === '1cor') return '1co';
+  if (key === '2cor') return '2co';
+  if (key === '1tim') return '1ti';
+  if (key === '2tim') return '2ti';
+  if (key === '1pet') return '1pe';
+  if (key === '2pet') return '2pe';
+
+  return null;
+}
+
 
   function getMorphUrl(abbr) {
     return DICT_DIR + abbr + '-morphgnt.translit.json';
@@ -271,7 +300,7 @@
     if (!masterDictIndex) {
       loadMasterDictionaryOnce().then(function () {
         var p = document.getElementById('gk-lex-popup');
-        if (p && p.style.display === 'block') showPopupNear(anchorEl, g, lemma, tr);
+if (p && p.style.display === 'block') showPopupNear(anchorEl, g, lemma);
       });
 
       if (formaLexEl) formaLexEl.textContent = '…';
