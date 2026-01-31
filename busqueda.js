@@ -88,24 +88,31 @@ function prettyBookName(slug){
 function normalizeLatin(s){
   return (s || '')
     .toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'') // acentos
+    .replace(/[^\p{L}\p{N}\s]/gu, ' ')               // quita puntuación/símbolos
     .replace(/\s+/g,' ')
     .trim();
 }
+
 function normalizeGreek(s){
   return (s || '')
     .toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'') // diacríticos
+    .replace(/ς/g, 'σ')                              // sigma final -> sigma
+    .replace(/[^\p{L}\p{N}\s]/gu, ' ')               // quita puntuación
     .replace(/\s+/g,' ')
     .trim();
 }
+
 function normalizeHebrew(s){
   return (s || '')
     .normalize('NFD')
-    .replace(/[\u0591-\u05C7]/g,'') // nikkud + cantillation
+    .replace(/[\u0591-\u05C7]/g,'')                 // nikkud + cantillation
+    .replace(/[^\p{L}\p{N}\s]/gu, ' ')              // quita puntuación
     .replace(/\s+/g,' ')
     .trim();
 }
+
 
 async function safeFetchJson(path){
   const r = await fetch(path, { cache: 'no-store' });
