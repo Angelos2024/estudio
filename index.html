@@ -887,14 +887,28 @@ async function runSearch(){
   }
 
   const ref = parseSearch(raw);
+
+  // ✅ Si NO es una referencia, se interpreta como búsqueda por palabra/frase
   if(!ref){
-    const msg = `<div class="text-muted">
-Debes incluir el <strong>libro</strong>. Ej: <span class="mono">Gn 1:1</span>, <span class="mono">Amos 3</span>, <span class="mono">1Co 13:1-7</span>
-</div>`;
+    const q = raw.trim();
+    if(q){
+      const p = new URLSearchParams();
+      p.set('q', q);
+      p.set('mode', 'all');     // all | es | gr | he (tu busqueda.html)
+      p.set('exact', '0');      // 1 si quieres exacta por defecto
+      // Puedes pasar también la versión si luego la usas en busqueda.html
+      p.set('version', versionSelect.value || 'RVR1960');
+      window.location.href = `./busqueda.html?${p.toString()}`;
+      return;
+    }
+
+    // Si está vacío, muestra mensaje
+    const msg = `<div class="text-muted">Escribe una referencia o una palabra.</div>`;
     passageTextRV.innerHTML = msg;
     passageTextOrig.innerHTML = msg;
     return;
   }
+
 
   try{
     await ensureBookLoaded(ref.slug, ref.bookDisplay);
