@@ -392,3 +392,14 @@ form.addEventListener('submit', async (e) => {
   }
 })();
 
+
+document.getElementById('backToReader')?.addEventListener('click', () => {
+  // Si venimos del lector, back conserva estado (scroll + cache) en la mayoría de navegadores
+  if (document.referrer && document.referrer.includes('index.html')) {
+    history.back();
+  } else {
+    location.href = './index.html';
+  }
+});
+
+
