@@ -48,17 +48,75 @@ function esc(s){
     .replaceAll('"','&quot;').replaceAll("'","&#39;");
 }
 
-function highlight(text, q){
-  if(!q) return esc(text);
+function normalizeLatin(s){
+  return (s || "")
+    .toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .replace(/[^\p{L}\p{N}\s]/gu, " ")
+    .replace(/\s+/g," ")
+    .trim();
+}
+
+function normalizeGreek(s){
+  return (s || "")
+    .toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .replace(/ς/g,"σ")
+    .replace(/[^\p{L}\p{N}\s]/gu, " ")
+    .replace(/\s+/g," ")
+    .trim();
+}
+
+function normalizeHebrew(s){
+  return (s || "")
+    .normalize("NFD")
+    .replace(/[\u0591-\u05C7]/g,"")
+    .replace(/[^\p{L}\p{N}\s]/gu, " ")
+    .replace(/\s+/g," ")
+    .trim();
+}
+
+function getNormalizedQuery(lang, q){
+  if(lang === 'gr') return normalizeGreek(q);
+  if(lang === 'he') return normalizeHebrew(q);
+  return normalizeLatin(q);
+}
+
+function buildTokenRegex(token, lang){
+  const escaped = token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  if(lang === 'es'){
+    return new RegExp(escaped, 'gi');
+  }
+
+  const letters = [];
+  for(const ch of escaped){
+    if(ch === '\\') continue;
+    if(lang === 'gr' && ch === 'σ'){
+      letters.push('[σς]');
+    }else{
+      letters.push(ch);
+    }
+  }
+  const pattern = letters.map(letter => `${letter}\\p{M}*`).join('');
+  return new RegExp(pattern, 'giu');
+}
+
+function highlight(text, q, lang){
   const raw = String(text ?? '');
   const query = String(q ?? '').trim();
   if(!raw || !query) return esc(raw);
 
   const safe = esc(raw);
-  const qEsc = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const re = new RegExp(qEsc, 'gi');
-  if(!re.test(raw)) return safe;
-  return safe.replace(re, (m) => `<mark>${m}</mark>`);
+const normalized = getNormalizedQuery(lang, query);
+  const tokens = normalized.split(' ').map(t => t.trim()).filter(t => t.length >= 2);
+  if(!tokens.length) return safe;
+
+  let output = safe;
+  for(const token of tokens){
+    const re = buildTokenRegex(token, lang);
+    output = output.replace(re, (m) => `<mark>${m}</mark>`);
+  }
+  return output;
 }
 
 function prettyBookName(slug){
@@ -215,7 +273,7 @@ function renderPage(q){
       const text = String(verses[v-1] ?? '');
       const box = card.querySelector('[data-text="1"]');
       if(box){
-        box.innerHTML = highlight(text, qEl.value);
+        box.innerHTML = highlight(text, qEl.value, lang);
       }
     })().catch(() => {
       const box = card.querySelector('[data-text="1"]');
