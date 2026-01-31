@@ -906,8 +906,9 @@ try{
     scrollY: window.scrollY || 0,
     origHidden: document.body.classList.contains('orig-hidden') ? 1 : 0,
     // opcional: lo que el usuario estaba viendo
-    currentBookSlug: window.currentBookSlug || null,
-    currentBookName: window.currentBookName || null,
+currentBookSlug: currentBookSlug || null,
+currentBookName: currentBookName || null,
+
     lastSearch: (document.getElementById('searchInput')?.value || '').trim()
   };
   sessionStorage.setItem('lectorState', JSON.stringify(state));
@@ -1004,6 +1005,7 @@ btnToggleOrig.addEventListener('click', () => {
     await runSearch();
 
     // ✅ Restaurar scroll/estado si venimos de busqueda.html
+// ✅ Restaurar scroll/estado si venimos de busqueda.html
 try{
   const raw = sessionStorage.getItem('lectorState');
   if(raw){
@@ -1014,15 +1016,20 @@ try{
       setOriginalVisible(st.origHidden ? false : true);
     }
 
+    // (opcional recomendado) Restaura el texto del buscador
+    if (st.lastSearch && searchInput) {
+      searchInput.value = st.lastSearch;
+    }
+
     // Restaura scroll
     if(typeof st.scrollY === 'number'){
       requestAnimationFrame(() => window.scrollTo(0, st.scrollY));
     }
 
-    // Limpia para que no se re-aplique siempre
     sessionStorage.removeItem('lectorState');
   }
 }catch{}
+
 
   }catch(err){
     const msg = `<div class="text-danger fw-semibold">Error:</div><div class="text-muted">${esc(err.message || String(err))}</div>`;
