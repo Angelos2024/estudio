@@ -119,8 +119,7 @@ async function ensureIndexLoadedForMode(mode){
           reject(new Error(m.message || 'Error en worker'));
         }
       };
-        worker.addEventListener('message', onMsg);
-      worker.postMessage({ type:'load', lang, url: INDEX_URLS[lang] });
+      worker.addEventListener('message', onMsg);
       const absUrl = new URL(INDEX_URLS[lang], window.location.href).toString();
       worker.postMessage({ type:'load', lang, url: absUrl });
     }));
