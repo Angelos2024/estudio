@@ -195,7 +195,7 @@ function renderPage(q){
     const bookName = prettyBookName(slug);
 
     const card = document.createElement('div');
-    card.className = 'hit';
+    card.className = `hit lang-${lang}`;
 
     card.innerHTML = `
       <div class="d-flex justify-content-between align-items-start gap-2">
