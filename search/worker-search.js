@@ -80,7 +80,7 @@ self.onmessage = async (ev) => {
       self.postMessage({ type:"loaded", lang: msg.lang });
       return;
     }
-  if(msg.type === "search"){
+ if(msg.type === "search"){
       const langs = msg.mode === "all" ? ["es", "gr", "he"] : [msg.mode];
       var items = [];
       for(const lang of langs){
