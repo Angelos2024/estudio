@@ -898,6 +898,21 @@ async function runSearch(){
       p.set('exact', '0');      // 1 si quieres exacta por defecto
       // Puedes pasar también la versión si luego la usas en busqueda.html
       p.set('version', versionSelect.value || 'RVR1960');
+
+    // ✅ Guardar estado del lector (para restaurar si el navegador recarga)
+try{
+  const state = {
+    url: location.href,
+    scrollY: window.scrollY || 0,
+    origHidden: document.body.classList.contains('orig-hidden') ? 1 : 0,
+    // opcional: lo que el usuario estaba viendo
+    currentBookSlug: window.currentBookSlug || null,
+    currentBookName: window.currentBookName || null,
+    lastSearch: (document.getElementById('searchInput')?.value || '').trim()
+  };
+  sessionStorage.setItem('lectorState', JSON.stringify(state));
+}catch{}
+
       window.location.href = `./busqueda.html?${p.toString()}`;
       return;
     }
@@ -987,6 +1002,28 @@ btnToggleOrig.addEventListener('click', () => {
     passageTextOrig.innerHTML = `<div class="text-muted">Cargando Original…</div>`;
     await ensureBookLoaded(currentBookSlug, currentBookName);
     await runSearch();
+
+    // ✅ Restaurar scroll/estado si venimos de busqueda.html
+try{
+  const raw = sessionStorage.getItem('lectorState');
+  if(raw){
+    const st = JSON.parse(raw);
+
+    // Restaura visibilidad original
+    if(typeof st.origHidden === 'number'){
+      setOriginalVisible(st.origHidden ? false : true);
+    }
+
+    // Restaura scroll
+    if(typeof st.scrollY === 'number'){
+      requestAnimationFrame(() => window.scrollTo(0, st.scrollY));
+    }
+
+    // Limpia para que no se re-aplique siempre
+    sessionStorage.removeItem('lectorState');
+  }
+}catch{}
+
   }catch(err){
     const msg = `<div class="text-danger fw-semibold">Error:</div><div class="text-muted">${esc(err.message || String(err))}</div>`;
     passageTextRV.innerHTML = msg;
