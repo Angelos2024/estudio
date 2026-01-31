@@ -359,9 +359,36 @@ form.addEventListener('submit', async (e) => {
 /***********************
  * Boot
  ***********************/
+/***********************
+ * Boot
+ ***********************/
 (async function boot(){
   // render vacío inicial
   ALL_RESULTS = [];
   PAGE = 1;
   renderPage();
+
+  // ✅ AUTOCARGA DESDE index.html (?q=...)
+  const p = new URLSearchParams(location.search);
+  const q = p.get('q');
+  const mode = p.get('mode');
+  const exact = p.get('exact');
+
+  if(mode && document.getElementById('mode')){
+    document.getElementById('mode').value = mode;
+  }
+  if(exact && document.getElementById('exact')){
+    document.getElementById('exact').checked = (exact === '1');
+  }
+
+  if(q && document.getElementById('q')){
+    document.getElementById('q').value = q;
+
+    // dispara búsqueda automáticamente
+    const f = document.getElementById('searchForm');
+    if(f){
+      f.dispatchEvent(new Event('submit', { cancelable: true }));
+    }
+  }
 })();
+
