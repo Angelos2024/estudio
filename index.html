@@ -737,7 +737,7 @@ function parseSearch(raw){
   if(!q) return null;
 
   // ✅ Solo acepta búsquedas que incluyan libro
-  const m = q.match(/^(.+?)\s+(\d+)(?::(\d+)(?:\s*-\s*(\d+))?)?\s*$/);
+   const m = q.match(/^(.+?)(?:\s+)?(\d+)(?::(\d+)(?:\s*-\s*(\d+))?)?\s*$/);
   if(!m) return null;
 
   const bookRaw = m[1];
