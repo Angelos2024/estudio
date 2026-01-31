@@ -393,11 +393,24 @@ form.addEventListener('submit', async (e) => {
   renderPage();
 
   // Autocarga desde index.html (?q=...&mode=...)
-  const p = new URLSearchParams(location.search);
-  const q = p.get('q');
-  const mode = p.get('mode');
+ const p = new URLSearchParams(location.search);
+const q = p.get('q');
+let mode = p.get('mode');
 
-  if(mode && modeEl) modeEl.value = mode;
+// 🔒 Si viene desde index.html y no se forzó explícitamente,
+// usamos SOLO ESPAÑOL por defecto (rápido)
+if (!mode) {
+  mode = 'es';
+}
+
+// Blindaje adicional: si alguien manda mode=all desde index
+// lo degradamos a español
+if (mode === 'all') {
+  mode = 'es';
+}
+
+if (modeEl) modeEl.value = mode;
+
 
   if(q){
     qEl.value = q;
