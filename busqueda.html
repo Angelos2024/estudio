@@ -25,8 +25,10 @@
 <body>
   <header class="topbar">
     <div class="container sitewrap py-2 d-flex flex-wrap gap-2 align-items-center">
-      <span class="badge text-bg-dark rounded-pill">Búsqueda</span>
-
+   
+ <button id="backToReader" class="btn btn-outline-primary" type="button">
+      ← Volver al lector
+    </button>
       <form id="searchForm" class="d-flex flex-wrap gap-2 flex-grow-1">
         <input id="q" class="form-control" placeholder="Escribe palabra o frase (ej: amor / ἀγάπη / אהבה)" />
         <select id="mode" class="form-select" style="max-width:220px">
@@ -39,9 +41,7 @@
         <button class="btn btn-primary" type="submit">Buscar</button>
       </form>
 
-   <button id="backToReader" class="btn btn-outline-secondary btn-sm" type="button">
-  Volver al lector
-</button>
+
 
     </div>
   </header>
