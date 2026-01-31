@@ -112,6 +112,11 @@ function normalizeHebrew(s){
     .replace(/\s+/g,' ')
     .trim();
 }
+function heSlugToFilename(slug){
+  // Convierte: 1_samuel → 1 samuel.json
+  return slug.replace(/_/g, ' ') + '.json';
+}
+
 
 
 async function safeFetchJson(path){
@@ -156,7 +161,9 @@ async function getPresentBooks(){
   // Hebreo (solo AT)
   for(const slug of ALL_SLUGS){
     if(NT_SLUGS.has(slug)) continue;
-    const he = await safeFetchJson(`${HEBREO_BOOK_BASE}${slug}.json`);
+    const filename = heSlugToFilename(slug);
+const he = await safeFetchJson(`${HEBREO_BOOK_BASE}${filename}`);
+
     if(he && Array.isArray(he.text)) {
       cacheHE[slug] = he.text.map(ch => Array.isArray(ch) ? ch.map(v => (v ?? '')) : []);
     }
