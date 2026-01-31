@@ -6,7 +6,7 @@ const GRIEGO_PATH = './IdiomaORIGEN/Bgriega.json';
 const HEBREO_BOOK_BASE = './IdiomaORIGEN/';
 
 /***********************
- * Canon (para “escritos presentes”)
+ * Canon
  ***********************/
 const ALL_SLUGS = [
   // AT
@@ -30,6 +30,7 @@ const NT_SLUGS = new Set([
   'hebreos','santiago','1_pedro','2_pedro','1_juan','2_juan','3_juan','judas','apocalipsis'
 ]);
 
+// Mapeo book_name (Bgriega.json) -> slug
 const NT_TR_BOOKNAME = {
   mateo: 'Matthew', marcos: 'Mark', lucas: 'Luke', juan: 'John', hechos: 'Acts',
   romanos: 'Romans', '1_corintios': '1 Corinthians', '2_corintios': '2 Corinthians',
@@ -47,7 +48,6 @@ const EN_TO_SLUG = Object.fromEntries(Object.entries(NT_TR_BOOKNAME).map(([slug,
 const form = document.getElementById('searchForm');
 const qEl = document.getElementById('q');
 const modeEl = document.getElementById('mode');
-const exactEl = document.getElementById('exact');
 const statusEl = document.getElementById('status');
 const resultsEl = document.getElementById('results');
 
@@ -60,7 +60,7 @@ const showingCountEl = document.getElementById('showingCount');
 const totalCountEl = document.getElementById('totalCount');
 
 /***********************
- * Estado global de resultados/paginación
+ * Estado global
  ***********************/
 const PAGE_SIZE = 10;
 let ALL_RESULTS = [];
@@ -82,42 +82,46 @@ function esc(s){
     .replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')
     .replaceAll('"','&quot;').replaceAll("'","&#39;");
 }
+
 function prettyBookName(slug){
   return (slug || '').replace(/_/g,' ').replace(/\b\w/g, c => c.toUpperCase());
 }
+
+// Español: sin mayús/minús, sin acentos, sin puntuación
 function normalizeLatin(s){
   return (s || '')
     .toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g,'') // acentos
-    .replace(/[^\p{L}\p{N}\s]/gu, ' ')               // quita puntuación/símbolos
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^\p{L}\p{N}\s]/gu, ' ')
     .replace(/\s+/g,' ')
     .trim();
 }
 
+// Griego: sin mayús/minús, sin diacríticos, sigma final normalizada
 function normalizeGreek(s){
   return (s || '')
     .toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g,'') // diacríticos
-    .replace(/ς/g, 'σ')                              // sigma final -> sigma
-    .replace(/[^\p{L}\p{N}\s]/gu, ' ')               // quita puntuación
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/ς/g, 'σ')
+    .replace(/[^\p{L}\p{N}\s]/gu, ' ')
     .replace(/\s+/g,' ')
     .trim();
 }
 
+// Hebreo: sin nikkud/cantillation, sin puntuación
 function normalizeHebrew(s){
   return (s || '')
     .normalize('NFD')
-    .replace(/[\u0591-\u05C7]/g,'')                 // nikkud + cantillation
-    .replace(/[^\p{L}\p{N}\s]/gu, ' ')              // quita puntuación
+    .replace(/[\u0591-\u05C7]/g,'')
+    .replace(/[^\p{L}\p{N}\s]/gu, ' ')
     .replace(/\s+/g,' ')
     .trim();
 }
+
+// Hebreo: tus archivos usan espacios, no guion bajo
 function heSlugToFilename(slug){
-  // Convierte: 1_samuel → 1 samuel.json
   return slug.replace(/_/g, ' ') + '.json';
 }
-
-
 
 async function safeFetchJson(path){
   const r = await fetch(path, { cache: 'no-store' });
@@ -136,18 +140,8 @@ function buildReaderLink(slug, bookName, chapter, v1, v2){
   return `./index.html?${p.toString()}`;
 }
 
-// resaltado simple (exacto)
-function highlightExact(text, needle){
-  const t = String(text ?? '');
-  const n = String(needle ?? '');
-  if(!n) return esc(t);
-  const i = t.indexOf(n);
-  if(i < 0) return esc(t);
-  return esc(t.slice(0,i)) + '<mark>' + esc(t.slice(i,i+n.length)) + '</mark>' + esc(t.slice(i+n.length));
-}
-
 /***********************
- * “Escritos presentes”: indexa solo lo que existe
+ * Cargar datos presentes
  ***********************/
 async function getPresentBooks(){
   statusEl.textContent = 'Detectando escritos presentes...';
@@ -161,14 +155,16 @@ async function getPresentBooks(){
   // Hebreo (solo AT)
   for(const slug of ALL_SLUGS){
     if(NT_SLUGS.has(slug)) continue;
-    const filename = heSlugToFilename(slug);
-const he = await safeFetchJson(`${HEBREO_BOOK_BASE}${filename}`);
 
-    if(he && Array.isArray(he.text)) {
+    const filename = heSlugToFilename(slug);
+    const he = await safeFetchJson(`${HEBREO_BOOK_BASE}${filename}`);
+
+    if(he && Array.isArray(he.text)){
       cacheHE[slug] = he.text.map(ch => Array.isArray(ch) ? ch.map(v => (v ?? '')) : []);
     }
   }
 
+  // Griego
   greekData = await safeFetchJson(GRIEGO_PATH);
 
   const esN = Object.keys(cacheES).length;
@@ -181,11 +177,11 @@ const he = await safeFetchJson(`${HEBREO_BOOK_BASE}${filename}`);
 }
 
 /***********************
- * Motores de búsqueda
+ * Motores de búsqueda (SIEMPRE normalizados)
  ***********************/
-function searchSpanish(q, exact){
+function searchSpanish(q){
   const out = [];
-  const needle = exact ? q : normalizeLatin(q);
+  const needle = normalizeLatin(q);
 
   for(const slug of Object.keys(cacheES)){
     const chapters = cacheES[slug];
@@ -197,8 +193,7 @@ function searchSpanish(q, exact){
         const t = String(verses[v-1] ?? '');
         if(!t) continue;
 
-        const hay = exact ? t.includes(q) : normalizeLatin(t).includes(needle);
-        if(hay){
+        if(normalizeLatin(t).includes(needle)){
           out.push({ lang:'ES', slug, book: prettyBookName(slug), ch, v, text: t });
         }
       }
@@ -207,9 +202,9 @@ function searchSpanish(q, exact){
   return out;
 }
 
-function searchHebrew(q, exact){
+function searchHebrew(q){
   const out = [];
-  const needle = exact ? q : normalizeHebrew(q);
+  const needle = normalizeHebrew(q);
 
   for(const slug of Object.keys(cacheHE)){
     const chapters = cacheHE[slug];
@@ -221,8 +216,7 @@ function searchHebrew(q, exact){
         const t = String(verses[v-1] ?? '');
         if(!t) continue;
 
-        const hay = exact ? t.includes(q) : normalizeHebrew(t).includes(needle);
-        if(hay){
+        if(normalizeHebrew(t).includes(needle)){
           out.push({ lang:'HE', slug, book: prettyBookName(slug), ch, v, text: t });
         }
       }
@@ -231,11 +225,11 @@ function searchHebrew(q, exact){
   return out;
 }
 
-function searchGreek(q, exact){
+function searchGreek(q){
   const out = [];
   if(!greekData || !Array.isArray(greekData.verses)) return out;
 
-  const needle = exact ? q : normalizeGreek(q);
+  const needle = normalizeGreek(q);
 
   for(const row of greekData.verses){
     if(!row || !row.book_name) continue;
@@ -245,8 +239,7 @@ function searchGreek(q, exact){
     const t = String(row.text ?? '');
     if(!t) continue;
 
-    const hay = exact ? t.includes(q) : normalizeGreek(t).includes(needle);
-    if(hay){
+    if(normalizeGreek(t).includes(needle)){
       out.push({
         lang:'GR',
         slug,
@@ -291,12 +284,10 @@ function renderPage(){
   for(const r of slice){
     const link = buildReaderLink(r.slug, r.book, r.ch, r.v, r.v);
 
-    // snippet corto
     let snippet = r.text;
     if(snippet.length > 220) snippet = snippet.slice(0, 220) + '…';
 
     const badge = r.lang === 'ES' ? 'Español' : (r.lang === 'GR' ? 'Griego' : 'Hebreo');
-    const hitHtml = exactEl.checked ? highlightExact(snippet, qEl.value.trim()) : esc(snippet);
 
     const el = document.createElement('div');
     el.className = 'hit';
@@ -309,7 +300,7 @@ function renderPage(){
         </div>
         <a class="btn btn-sm btn-outline-primary" href="${link}">Abrir en lector</a>
       </div>
-      <div class="mt-2 smallish">${hitHtml}</div>
+      <div class="mt-2 smallish">${esc(snippet)}</div>
     `;
     resultsEl.appendChild(el);
   }
@@ -344,15 +335,14 @@ form.addEventListener('submit', async (e) => {
   if(!present) present = await getPresentBooks();
 
   statusEl.textContent = 'Buscando...';
-  const exact = !!exactEl.checked;
   const mode = modeEl.value;
 
   let res = [];
-  if(mode === 'all' || mode === 'es') res = res.concat(searchSpanish(q, exact));
-  if(mode === 'all' || mode === 'gr') res = res.concat(searchGreek(q, exact));
-  if(mode === 'all' || mode === 'he') res = res.concat(searchHebrew(q, exact));
+  if(mode === 'all' || mode === 'es') res = res.concat(searchSpanish(q));
+  if(mode === 'all' || mode === 'gr') res = res.concat(searchGreek(q));
+  if(mode === 'all' || mode === 'he') res = res.concat(searchHebrew(q));
 
-  // orden simple: ES, GR, HE y luego por libro/cap/verso
+  // orden: ES, GR, HE y luego por libro/cap/verso
   const langOrder = { ES: 0, GR: 1, HE: 2 };
   res.sort((a,b) => {
     const la = langOrder[a.lang] ?? 9;
@@ -373,47 +363,30 @@ form.addEventListener('submit', async (e) => {
 /***********************
  * Boot
  ***********************/
-/***********************
- * Boot
- ***********************/
 (async function boot(){
   // render vacío inicial
   ALL_RESULTS = [];
   PAGE = 1;
   renderPage();
 
-  // ✅ AUTOCARGA DESDE index.html (?q=...)
+  // Autocarga desde index.html (?q=...&mode=...)
   const p = new URLSearchParams(location.search);
   const q = p.get('q');
   const mode = p.get('mode');
-  const exact = p.get('exact');
 
-  if(mode && document.getElementById('mode')){
-    document.getElementById('mode').value = mode;
-  }
-  if(exact && document.getElementById('exact')){
-    document.getElementById('exact').checked = (exact === '1');
-  }
+  if(mode && modeEl) modeEl.value = mode;
 
-  if(q && document.getElementById('q')){
-    document.getElementById('q').value = q;
-
-    // dispara búsqueda automáticamente
-    const f = document.getElementById('searchForm');
-    if(f){
-      f.dispatchEvent(new Event('submit', { cancelable: true }));
-    }
+  if(q){
+    qEl.value = q;
+    form.dispatchEvent(new Event('submit', { cancelable: true }));
   }
 })();
 
-
+// Volver al lector conservando estado si venimos de index.html
 document.getElementById('backToReader')?.addEventListener('click', () => {
-  // Si venimos del lector, back conserva estado (scroll + cache) en la mayoría de navegadores
   if (document.referrer && document.referrer.includes('index.html')) {
     history.back();
   } else {
     location.href = './index.html';
   }
 });
-
-
