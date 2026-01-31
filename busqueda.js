@@ -83,6 +83,28 @@ function esc(s){
     .replaceAll('"','&quot;').replaceAll("'","&#39;");
 }
 
+
+function highlight(text, q, lang){
+  if(!q) return esc(text);
+
+  const raw = String(text ?? '');
+  const query = String(q ?? '').trim();
+  if(!raw || !query) return esc(raw);
+
+  // Escapamos el texto primero y luego metemos <mark> sobre coincidencias del texto original.
+  // (Resaltado simple: coincide parcial o completo según aparezca en el texto).
+  const safe = esc(raw);
+
+  // Regex seguro: escapamos caracteres especiales del query
+  const qEsc = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const re = new RegExp(qEsc, 'gi');
+
+  // Si no hay match directo en el texto original, no marcamos (evita falsos).
+  if(!re.test(raw)) return safe;
+
+  return safe.replace(re, (m) => `<mark>${m}</mark>`);
+}
+
 function prettyBookName(slug){
   return (slug || '').replace(/_/g,' ').replace(/\b\w/g, c => c.toUpperCase());
 }
@@ -300,7 +322,8 @@ function renderPage(){
         </div>
         <a class="btn btn-sm btn-outline-primary" href="${link}">Abrir en lector</a>
       </div>
-      <div class="mt-2 smallish">${esc(snippet)}</div>
+     <div class="mt-2 smallish">${highlight(snippet, qEl.value, r.lang)}</div>
+
     `;
     resultsEl.appendChild(el);
   }
