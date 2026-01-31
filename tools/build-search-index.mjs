@@ -115,14 +115,21 @@ function refKey(slug, ch, v){
 
 // ==== Construcción del índice y packs ====
 function addToIndex(tokensMap, token, ref){
+  // tokensMap es Object.create(null), pero igual blindamos:
   let arr = tokensMap[token];
-  if(!arr){
+
+  // Si por cualquier razón no es array (claves raras / datos corruptos), lo reiniciamos
+  if(!Array.isArray(arr)){
     arr = [];
     tokensMap[token] = arr;
   }
-  // evitamos duplicados consecutivos (muy comunes si el verso repite token)
-  if(arr.length === 0 || arr[arr.length-1] !== ref) arr.push(ref);
+
+  // Evita duplicado consecutivo
+  if(arr.length === 0 || arr[arr.length - 1] !== ref){
+    arr.push(ref);
+  }
 }
+
 
 function buildFromChapters(lang, slug, chapters, normFn, indexTokens){
   // chapters: Array<Array<string>> 1-based implied
@@ -168,7 +175,7 @@ function main(){
   // ======================
   // ESPAÑOL (RVR)
   // ======================
-  const indexES = { v:1, lang:"es", tokens: {} };
+const indexES = { v:1, lang:"es", tokens: Object.create(null) };
 
   for(const slug of ALL_SLUGS){
     const file = path.join(RV_DIR, `${slug}.json`);
@@ -185,7 +192,7 @@ function main(){
   // ======================
   // HEBREO (solo AT)
   // ======================
-  const indexHE = { v:1, lang:"he", tokens: {} };
+  const indexHE = { v:1, lang:"he", tokens: Object.create(null) };
 
   for(const slug of ALL_SLUGS){
     if(NT_SLUGS.has(slug)) continue;
@@ -205,7 +212,7 @@ function main(){
   // ======================
   // GRIEGO (Bgriega.json)
   // ======================
-  const indexGR = { v:1, lang:"gr", tokens: {} };
+  const indexGR = { v:1, lang:"gr", tokens: Object.create(null) };
 
   if(fs.existsSync(GRIEGO_PATH)){
     const gr = readJson(GRIEGO_PATH);
