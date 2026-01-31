@@ -285,9 +285,7 @@ function renderPage(q){
 /***********************
  * Eventos
  ***********************/
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-
+async function runSearch(){
   const q = String(qEl.value || '').trim();
   const mode = modeEl.value;
 
@@ -315,6 +313,11 @@ form.addEventListener('submit', async (e) => {
   }catch(err){
     statusEl.textContent = `Error: ${String(err?.message || err)}`;
   }
+  }
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  await runSearch();
 });
 
 prevBtn.addEventListener('click', () => {
@@ -333,5 +336,18 @@ nextBtn.addEventListener('click', () => {
     statusEl.textContent = 'Listo para buscar.';
   }catch{
     statusEl.textContent = 'Falta generar search/manifest.json (ejecuta el builder).';
+  }
+})();
+// Auto-búsqueda desde parámetros
+(() => {
+  const p = new URLSearchParams(window.location.search);
+  const qParam = (p.get('q') || '').trim();
+  const modeParam = (p.get('mode') || '').trim();
+  if(modeParam && ['es','gr','he','all'].includes(modeParam)){
+    modeEl.value = modeParam;
+  }
+  if(qParam){
+    qEl.value = qParam;
+    runSearch();
   }
 })();
