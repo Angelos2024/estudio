@@ -1,46 +1,14 @@
 /***********************
- * Rutas (iguales al lector)
+ * Rutas nuevas de búsqueda
  ***********************/
-const RV_BASE = './librosRV1960/';
-const GRIEGO_PATH = './IdiomaORIGEN/Bgriega.json';
-const HEBREO_BOOK_BASE = './IdiomaORIGEN/';
-
-/***********************
- * Canon
- ***********************/
-const ALL_SLUGS = [
-  // AT
-  'genesis','exodo','levitico','numeros','deuteronomio',
-  'josue','jueces','rut','1_samuel','2_samuel','1_reyes','2_reyes',
-  '1_cronicas','2_cronicas','esdras','nehemias','ester',
-  'job','salmos','proverbios','eclesiastes','cantares',
-  'isaias','jeremias','lamentaciones','ezequiel','daniel',
-  'oseas','joel','amos','abdias','jonas','miqueas','nahum','habacuc','sofonias','hageo','zacarias','malaquias',
-  // NT
-  'mateo','marcos','lucas','juan','hechos',
-  'romanos','1_corintios','2_corintios','galatas','efesios','filipenses','colosenses',
-  '1_tesalonicenses','2_tesalonicenses','1_timoteo','2_timoteo','tito','filemon',
-  'hebreos','santiago','1_pedro','2_pedro','1_juan','2_juan','3_juan','judas','apocalipsis'
-];
-
-const NT_SLUGS = new Set([
-  'mateo','marcos','lucas','juan','hechos',
-  'romanos','1_corintios','2_corintios','galatas','efesios','filipenses','colosenses',
-  '1_tesalonicenses','2_tesalonicenses','1_timoteo','2_timoteo','tito','filemon',
-  'hebreos','santiago','1_pedro','2_pedro','1_juan','2_juan','3_juan','judas','apocalipsis'
-]);
-
-// Mapeo book_name (Bgriega.json) -> slug
-const NT_TR_BOOKNAME = {
-  mateo: 'Matthew', marcos: 'Mark', lucas: 'Luke', juan: 'John', hechos: 'Acts',
-  romanos: 'Romans', '1_corintios': '1 Corinthians', '2_corintios': '2 Corinthians',
-  galatas: 'Galatians', efesios: 'Ephesians', filipenses: 'Philippians', colosenses: 'Colossians',
-  '1_tesalonicenses': '1 Thessalonians', '2_tesalonicenses': '2 Thessalonians',
-  '1_timoteo': '1 Timothy', '2_timoteo': '2 Timothy', tito: 'Titus', filemon: 'Philemon',
-  hebreos: 'Hebrews', santiago: 'James', '1_pedro': '1 Peter', '2_pedro': '2 Peter',
-  '1_juan': '1 John', '2_juan': '2 John', '3_juan': '3 John', judas: 'Jude', apocalipsis: 'Revelation'
+const SEARCH_BASE = './search/';
+const MANIFEST_URL = `${SEARCH_BASE}manifest.json`;
+const INDEX_URLS = {
+  es: `${SEARCH_BASE}index-es.json`,
+  gr: `${SEARCH_BASE}index-gr.json`,
+  he: `${SEARCH_BASE}index-he.json`
 };
-const EN_TO_SLUG = Object.fromEntries(Object.entries(NT_TR_BOOKNAME).map(([slug,en]) => [en, slug]));
+const TEXT_PACK_BASE = `${SEARCH_BASE}texts/`; // texts/<lang>/<slug>/<ch>.json
 
 /***********************
  * DOM
@@ -51,7 +19,6 @@ const modeEl = document.getElementById('mode');
 const statusEl = document.getElementById('status');
 const resultsEl = document.getElementById('results');
 
-// paginación
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
 const pageNowEl = document.getElementById('pageNow');
@@ -60,19 +27,17 @@ const showingCountEl = document.getElementById('showingCount');
 const totalCountEl = document.getElementById('totalCount');
 
 /***********************
- * Estado global
+ * Estado
  ***********************/
 const PAGE_SIZE = 10;
-let ALL_RESULTS = [];
 let PAGE = 1;
+let ALL_RESULTS = [];
+let manifest = null;
+let worker = null;
+const loadedIndex = { es:false, gr:false, he:false };
 
-/***********************
- * Caches
- ***********************/
-const cacheES = {};      // slug -> chapters[][]
-const cacheHE = {};      // slug -> chapters[][]
-let greekData = null;    // { verses: [...] }
-let present = null;
+// cache de packs: key = `${lang}|${slug}|${ch}` -> array de versos
+const packCache = new Map();
 
 /***********************
  * Helpers
@@ -83,25 +48,16 @@ function esc(s){
     .replaceAll('"','&quot;').replaceAll("'","&#39;");
 }
 
-
-function highlight(text, q, lang){
+function highlight(text, q){
   if(!q) return esc(text);
-
   const raw = String(text ?? '');
   const query = String(q ?? '').trim();
   if(!raw || !query) return esc(raw);
 
-  // Escapamos el texto primero y luego metemos <mark> sobre coincidencias del texto original.
-  // (Resaltado simple: coincide parcial o completo según aparezca en el texto).
   const safe = esc(raw);
-
-  // Regex seguro: escapamos caracteres especiales del query
   const qEsc = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const re = new RegExp(qEsc, 'gi');
-
-  // Si no hay match directo en el texto original, no marcamos (evita falsos).
   if(!re.test(raw)) return safe;
-
   return safe.replace(re, (m) => `<mark>${m}</mark>`);
 }
 
@@ -109,50 +65,8 @@ function prettyBookName(slug){
   return (slug || '').replace(/_/g,' ').replace(/\b\w/g, c => c.toUpperCase());
 }
 
-// Español: sin mayús/minús, sin acentos, sin puntuación
-function normalizeLatin(s){
-  return (s || '')
-    .toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
-    .replace(/[^\p{L}\p{N}\s]/gu, ' ')
-    .replace(/\s+/g,' ')
-    .trim();
-}
-
-// Griego: sin mayús/minús, sin diacríticos, sigma final normalizada
-function normalizeGreek(s){
-  return (s || '')
-    .toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
-    .replace(/ς/g, 'σ')
-    .replace(/[^\p{L}\p{N}\s]/gu, ' ')
-    .replace(/\s+/g,' ')
-    .trim();
-}
-
-// Hebreo: sin nikkud/cantillation, sin puntuación
-function normalizeHebrew(s){
-  return (s || '')
-    .normalize('NFD')
-    .replace(/[\u0591-\u05C7]/g,'')
-    .replace(/[^\p{L}\p{N}\s]/gu, ' ')
-    .replace(/\s+/g,' ')
-    .trim();
-}
-
-// Hebreo: tus archivos usan espacios, no guion bajo
-function heSlugToFilename(slug){
-  return slug.replace(/_/g, ' ') + '.json';
-}
-
-async function safeFetchJson(path){
-  const r = await fetch(path, { cache: 'no-store' });
-  if(!r.ok) return null;
-  try { return await r.json(); } catch { return null; }
-}
-
-function buildReaderLink(slug, bookName, chapter, v1, v2){
-  const search = `${bookName} ${chapter}:${v1}${(v2 && v2!==v1)?'-'+v2:''}`;
+function buildReaderLink(slug, bookName, chapter, v){
+  const search = `${bookName} ${chapter}:${v}`;
   const p = new URLSearchParams();
   p.set('book', slug);
   p.set('name', bookName);
@@ -162,267 +76,203 @@ function buildReaderLink(slug, bookName, chapter, v1, v2){
   return `./index.html?${p.toString()}`;
 }
 
-/***********************
- * Cargar datos presentes
- ***********************/
-async function getPresentBooks(){
-  statusEl.textContent = 'Detectando escritos presentes...';
-
-  // Español
-  for(const slug of ALL_SLUGS){
-    const ok = await safeFetchJson(`${RV_BASE}${slug}.json`);
-    if(ok) cacheES[slug] = ok;
-  }
-
-  // Hebreo (solo AT)
-  for(const slug of ALL_SLUGS){
-    if(NT_SLUGS.has(slug)) continue;
-
-    const filename = heSlugToFilename(slug);
-    const he = await safeFetchJson(`${HEBREO_BOOK_BASE}${filename}`);
-
-    if(he && Array.isArray(he.text)){
-      cacheHE[slug] = he.text.map(ch => Array.isArray(ch) ? ch.map(v => (v ?? '')) : []);
-    }
-  }
-
-  // Griego
-  greekData = await safeFetchJson(GRIEGO_PATH);
-
-  const esN = Object.keys(cacheES).length;
-  const heN = Object.keys(cacheHE).length;
-  const grOk = !!(greekData && Array.isArray(greekData.verses));
-
-  statusEl.textContent = `Listo. ES: ${esN} libros · HE: ${heN} libros · GR: ${grOk ? 'sí' : 'no'}`;
-
-  return { esN, heN, grOk };
+async function safeFetchJson(url){
+  const r = await fetch(url, { cache:'force-cache' });
+  if(!r.ok) return null;
+  try{ return await r.json(); }catch{ return null; }
 }
 
-/***********************
- * Motores de búsqueda (SIEMPRE normalizados)
- ***********************/
-function searchSpanish(q){
-  const out = [];
-  const needle = normalizeLatin(q);
+function ensureWorker(){
+  if(worker) return worker;
+  worker = new Worker(`${SEARCH_BASE}worker-search.js?v=1`);
+  return worker;
+}
 
-  for(const slug of Object.keys(cacheES)){
-    const chapters = cacheES[slug];
-    if(!Array.isArray(chapters)) continue;
+async function ensureManifest(){
+  if(manifest) return manifest;
+  statusEl.textContent = 'Cargando manifest...';
+  manifest = await safeFetchJson(MANIFEST_URL);
+  if(!manifest) throw new Error('No se pudo cargar manifest.json');
+  return manifest;
+}
 
-    for(let ch=1; ch<=chapters.length; ch++){
-      const verses = chapters[ch-1] || [];
-      for(let v=1; v<=verses.length; v++){
-        const t = String(verses[v-1] ?? '');
-        if(!t) continue;
+async function ensureIndexLoadedForMode(mode){
+  ensureWorker();
+  await ensureManifest();
 
-        if(normalizeLatin(t).includes(needle)){
-          out.push({ lang:'ES', slug, book: prettyBookName(slug), ch, v, text: t });
+  const langs = (mode === 'all') ? ['es','gr','he'] : [mode];
+  const jobs = [];
+
+  for(const lang of langs){
+    if(loadedIndex[lang]) continue;
+    statusEl.textContent = `Cargando índice ${lang.toUpperCase()}...`;
+
+    jobs.push(new Promise((resolve, reject) => {
+      const onMsg = (ev) => {
+        const m = ev.data || {};
+        if(m.type === 'loaded' && m.lang === lang){
+          worker.removeEventListener('message', onMsg);
+          loadedIndex[lang] = true;
+          resolve(true);
+        }else if(m.type === 'error'){
+          worker.removeEventListener('message', onMsg);
+          reject(new Error(m.message || 'Error en worker'));
         }
+      };
+      worker.addEventListener('message', onMsg);
+      worker.postMessage({ type:'load', lang, url: INDEX_URLS[lang] });
+    }));
+  }
+
+  await Promise.all(jobs);
+}
+
+async function searchWithWorker(mode, query){
+  ensureWorker();
+
+  return await new Promise((resolve, reject) => {
+    const onMsg = (ev) => {
+      const m = ev.data || {};
+      if(m.type === 'results'){
+        worker.removeEventListener('message', onMsg);
+        resolve(m.items || []);
+      }else if(m.type === 'error'){
+        worker.removeEventListener('message', onMsg);
+        reject(new Error(m.message || 'Error en worker'));
       }
-    }
-  }
-  return out;
+    };
+    worker.addEventListener('message', onMsg);
+    worker.postMessage({ type:'search', mode, query });
+  });
 }
 
-function searchHebrew(q){
-  const out = [];
-  const needle = normalizeHebrew(q);
-
-  for(const slug of Object.keys(cacheHE)){
-    const chapters = cacheHE[slug];
-    if(!Array.isArray(chapters)) continue;
-
-    for(let ch=1; ch<=chapters.length; ch++){
-      const verses = chapters[ch-1] || [];
-      for(let v=1; v<=verses.length; v++){
-        const t = String(verses[v-1] ?? '');
-        if(!t) continue;
-
-        if(normalizeHebrew(t).includes(needle)){
-          out.push({ lang:'HE', slug, book: prettyBookName(slug), ch, v, text: t });
-        }
-      }
-    }
-  }
-  return out;
+function parseRef(ref){
+  // "slug|ch|v"
+  const [slug, chS, vS] = String(ref).split('|');
+  return { slug, ch: Number(chS), v: Number(vS) };
 }
 
-function searchGreek(q){
-  const out = [];
-  if(!greekData || !Array.isArray(greekData.verses)) return out;
+async function getChapterPack(lang, slug, ch){
+  const key = `${lang}|${slug}|${ch}`;
+  if(packCache.has(key)) return packCache.get(key);
 
-  const needle = normalizeGreek(q);
-
-  for(const row of greekData.verses){
-    if(!row || !row.book_name) continue;
-    const slug = EN_TO_SLUG[row.book_name];
-    if(!slug) continue;
-
-    const t = String(row.text ?? '');
-    if(!t) continue;
-
-    if(normalizeGreek(t).includes(needle)){
-      out.push({
-        lang:'GR',
-        slug,
-        book: prettyBookName(slug),
-        ch: Number(row.chapter),
-        v: Number(row.verse),
-        text: t
-      });
-    }
-  }
-  return out;
+  const url = `${TEXT_PACK_BASE}${lang}/${slug}/${ch}.json`;
+  const data = await safeFetchJson(url);
+  const verses = Array.isArray(data) ? data : [];
+  packCache.set(key, verses);
+  return verses;
 }
 
-/***********************
- * Render paginado
- ***********************/
-function renderPage(){
+function renderPage(q){
   resultsEl.innerHTML = '';
 
   const total = ALL_RESULTS.length;
-  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
-  if(PAGE > totalPages) PAGE = totalPages;
-  if(PAGE < 1) PAGE = 1;
+  const pageTotal = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  PAGE = Math.min(Math.max(1, PAGE), pageTotal);
 
   const start = (PAGE - 1) * PAGE_SIZE;
-  const end = Math.min(start + PAGE_SIZE, total);
+  const end = Math.min(total, start + PAGE_SIZE);
   const slice = ALL_RESULTS.slice(start, end);
 
-  totalCountEl.textContent = String(total);
-  showingCountEl.textContent = String(slice.length);
   pageNowEl.textContent = String(PAGE);
-  pageTotalEl.textContent = String(totalPages);
+  pageTotalEl.textContent = String(pageTotal);
+  showingCountEl.textContent = String(slice.length);
+  totalCountEl.textContent = String(total);
 
-  prevBtn.disabled = PAGE <= 1;
-  nextBtn.disabled = PAGE >= totalPages;
+  prevBtn.disabled = (PAGE <= 1);
+  nextBtn.disabled = (PAGE >= pageTotal);
 
   if(total === 0){
-    resultsEl.innerHTML = `<div class="muted">Sin resultados.</div>`;
+    resultsEl.innerHTML = `<div class="text-muted">Sin resultados.</div>`;
     return;
   }
 
-  for(const r of slice){
-    const link = buildReaderLink(r.slug, r.book, r.ch, r.v, r.v);
+  // Render “skeleton” primero (rápido) y luego llenamos textos async
+  for(const item of slice){
+    const { lang, ref } = item;
+    const { slug, ch, v } = parseRef(ref);
+    const bookName = prettyBookName(slug);
 
-    let snippet = r.text;
-    if(snippet.length > 220) snippet = snippet.slice(0, 220) + '…';
+    const card = document.createElement('div');
+    card.className = 'hit';
 
-    const badge = r.lang === 'ES' ? 'Español' : (r.lang === 'GR' ? 'Griego' : 'Hebreo');
-
-    const el = document.createElement('div');
-    el.className = 'hit';
-    el.innerHTML = `
-      <div class="d-flex flex-wrap justify-content-between gap-2 align-items-center">
+    card.innerHTML = `
+      <div class="d-flex justify-content-between align-items-start gap-2">
         <div>
-          <span class="badge text-bg-secondary">${badge}</span>
-          <span class="ms-2 fw-semibold">${esc(r.book)} ${r.ch}:${r.v}</span>
-          <span class="muted smallish ms-2">${esc(r.slug)}</span>
+          <div class="fw-semibold">${esc(bookName)} <span class="text-muted">${esc(lang.toUpperCase())}</span></div>
+          <div class="small text-muted">${esc(slug)} · cap ${ch} · v ${v}</div>
         </div>
-        <a class="btn btn-sm btn-outline-primary" href="${link}">Abrir en lector</a>
+        <a class="btn btn-sm btn-outline-primary" href="${esc(buildReaderLink(slug, bookName, ch, v))}">Abrir</a>
       </div>
-     <div class="mt-2 smallish">${highlight(snippet, qEl.value, r.lang)}</div>
-
+      <div class="mt-2 smallish mono" data-text="1">Cargando...</div>
     `;
-    resultsEl.appendChild(el);
+    resultsEl.appendChild(card);
+
+    // cargar texto del verso desde pack
+    (async () => {
+      const verses = await getChapterPack(lang, slug, ch);
+      const text = String(verses[v-1] ?? '');
+      const box = card.querySelector('[data-text="1"]');
+      if(box){
+        box.innerHTML = highlight(text, qEl.value);
+      }
+    })().catch(() => {
+      const box = card.querySelector('[data-text="1"]');
+      if(box) box.textContent = 'No se pudo cargar el texto del verso.';
+    });
   }
 }
 
 /***********************
  * Eventos
  ***********************/
-prevBtn.addEventListener('click', () => {
-  PAGE = Math.max(1, PAGE - 1);
-  renderPage();
-});
-
-nextBtn.addEventListener('click', () => {
-  const totalPages = Math.max(1, Math.ceil(ALL_RESULTS.length / PAGE_SIZE));
-  PAGE = Math.min(totalPages, PAGE + 1);
-  renderPage();
-});
-
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  const q = (qEl.value || '').trim();
+  const q = String(qEl.value || '').trim();
+  const mode = modeEl.value;
+
   if(!q){
+    statusEl.textContent = 'Escribe una palabra o frase.';
+    resultsEl.innerHTML = '';
     ALL_RESULTS = [];
     PAGE = 1;
-    renderPage();
-    statusEl.textContent = 'Escribe una palabra o frase.';
+    renderPage('');
     return;
   }
 
-  if(!present) present = await getPresentBooks();
+  try{
+    statusEl.textContent = 'Preparando búsqueda...';
+    await ensureIndexLoadedForMode(mode);
 
-  statusEl.textContent = 'Buscando...';
-  const mode = modeEl.value;
+    statusEl.textContent = 'Buscando...';
+    const items = await searchWithWorker(mode, q);
 
-  let res = [];
-  if(mode === 'all' || mode === 'es') res = res.concat(searchSpanish(q));
-  if(mode === 'all' || mode === 'gr') res = res.concat(searchGreek(q));
-  if(mode === 'all' || mode === 'he') res = res.concat(searchHebrew(q));
-
-  // orden: ES, GR, HE y luego por libro/cap/verso
-  const langOrder = { ES: 0, GR: 1, HE: 2 };
-  res.sort((a,b) => {
-    const la = langOrder[a.lang] ?? 9;
-    const lb = langOrder[b.lang] ?? 9;
-    if(la !== lb) return la - lb;
-    if(a.slug !== b.slug) return a.slug.localeCompare(b.slug);
-    if(a.ch !== b.ch) return a.ch - b.ch;
-    return a.v - b.v;
-  });
-
-  ALL_RESULTS = res;
-  PAGE = 1;
-
-  statusEl.textContent = `Resultados: ${ALL_RESULTS.length}`;
-  renderPage();
+    // items: [{lang, ref}]
+    ALL_RESULTS = items;
+    PAGE = 1;
+    statusEl.textContent = `Listo. ${ALL_RESULTS.length} resultado(s).`;
+    renderPage(q);
+  }catch(err){
+    statusEl.textContent = `Error: ${String(err?.message || err)}`;
+  }
 });
 
-/***********************
- * Boot
- ***********************/
-(async function boot(){
-  // render vacío inicial
-  ALL_RESULTS = [];
-  PAGE = 1;
-  renderPage();
+prevBtn.addEventListener('click', () => {
+  PAGE--;
+  renderPage(qEl.value);
+});
+nextBtn.addEventListener('click', () => {
+  PAGE++;
+  renderPage(qEl.value);
+});
 
-  // Autocarga desde index.html (?q=...&mode=...)
- const p = new URLSearchParams(location.search);
-const q = p.get('q');
-let mode = p.get('mode');
-
-// 🔒 Si viene desde index.html y no se forzó explícitamente,
-// usamos SOLO ESPAÑOL por defecto (rápido)
-if (!mode) {
-  mode = 'es';
-}
-
-// Blindaje adicional: si alguien manda mode=all desde index
-// lo degradamos a español
-if (mode === 'all') {
-  mode = 'es';
-}
-
-if (modeEl) modeEl.value = mode;
-
-
-  if(q){
-    qEl.value = q;
-    form.dispatchEvent(new Event('submit', { cancelable: true }));
+// Inicial
+(async () => {
+  try{
+    await ensureManifest();
+    statusEl.textContent = 'Listo para buscar.';
+  }catch{
+    statusEl.textContent = 'Falta generar search/manifest.json (ejecuta el builder).';
   }
 })();
-
-// Volver al lector conservando estado si venimos de index.html
-document.getElementById('backToReader')?.addEventListener('click', () => {
-  if (document.referrer && document.referrer.includes('index.html')) {
-    history.back();
-  } else {
-    location.href = './index.html';
-  }
-});
