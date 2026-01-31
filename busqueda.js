@@ -120,7 +120,8 @@ async function ensureIndexLoadedForMode(mode){
         }
       };
       worker.addEventListener('message', onMsg);
-      worker.postMessage({ type:'load', lang, url: INDEX_URLS[lang] });
+      const absUrl = new URL(INDEX_URLS[lang], window.location.href).toString();
+      worker.postMessage({ type:'load', lang, url: absUrl });
     }));
   }
 

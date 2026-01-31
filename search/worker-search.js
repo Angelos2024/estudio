@@ -81,7 +81,8 @@ self.onmessage = async (ev) => {
       return;
     }
     if(msg.type === "search"){
-      const res = searchOne(msg.mode, msg.query);
+      const langs = msg.mode === "all" ? ["es", "gr", "he"] : [msg.mode];
+      const res = langs.flatMap((lang) => searchOne(lang, msg.query));
       self.postMessage({ type:"results", items: res });
       return;
     }
