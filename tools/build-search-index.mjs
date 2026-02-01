@@ -1,6 +1,6 @@
 /**
  * Build definitivo de búsqueda:
- * - Genera search/manifest.json
+ * - Genera search/manifestv1.json
  * - Genera search/index-es.json, search/index-gr.json, search/index-he.json (índice invertido)
  * - Genera "text packs" por capítulo:
  *      search/texts/es/<slug>/<cap>.json
@@ -272,12 +272,12 @@ const indexES = { v:1, lang:"es", tokens: Object.create(null) };
   // ======================
   // Guardar salidas
   // ======================
-  writeJson(path.join(OUT_DIR, "manifest.json"), manifest);
+  writeJson(path.join(OUT_DIR, "manifestv1.json"), manifest);
   writeJson(path.join(OUT_DIR, "index-es.json"), indexES);
   writeJson(path.join(OUT_DIR, "index-he.json"), indexHE);
   writeJson(path.join(OUT_DIR, "index-gr.json"), indexGR);
 
-  console.log("OK: generado search/manifest.json + índices + text packs");
+  console.log("OK: generado search/manifestv1.json + índices + text packs");
   console.log("ES tokens:", Object.keys(indexES.tokens).length);
   console.log("HE tokens:", Object.keys(indexHE.tokens).length);
   console.log("GR tokens:", Object.keys(indexGR.tokens).length);
