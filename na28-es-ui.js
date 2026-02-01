@@ -90,29 +90,27 @@ if(!el) return;
       }).join("");
      }
  
-    async function syncSelection(){
-      if(lastSel.book && NA28_BOOKS.includes(lastSel.book)){
-         selBook.value = lastSel.book;
-       }
+ async function syncSelection(useLastSelection = false){
+      if(useLastSelection && lastSel.book && NA28_BOOKS.includes(lastSel.book)){
+        selBook.value = lastSel.book;
+      }
 
       const bookData = await loadBookData(selBook.value);
       fillChapters(bookData);
 
-      if(lastSel.ch && Number(lastSel.ch) <= (bookData?.length || 0)){
-         selCh.value = lastSel.ch;
-       }
- 
+     if(useLastSelection && lastSel.ch && Number(lastSel.ch) <= (bookData?.length || 0)){
+        selCh.value = lastSel.ch;
+      }
 
       fillVerses(bookData, selCh.value);
 
-     const verseCount = Array.isArray(bookData?.[Number(selCh.value) - 1])
-       ? bookData[Number(selCh.value) - 1].length
-       : 0;
-      if(lastSel.v && Number(lastSel.v) <= verseCount){
-         selV.value = lastSel.v;
-       }
-     }
- 
+      const verseCount = Array.isArray(bookData?.[Number(selCh.value) - 1])
+        ? bookData[Number(selCh.value) - 1].length
+        : 0;
+      if(useLastSelection && lastSel.v && Number(lastSel.v) <= verseCount){
+        selV.value = lastSel.v;
+      }
+    }
    function buildNA28Paths(book, ch, v){
       return [
         `./NA28/out/libros/${book}/${ch}/${ch}_${v}.html`,
@@ -172,7 +170,7 @@ if(!el) return;
       fillBooks();
 
      if(!selBook.value) selBook.value = NA28_BOOKS[0] || "";
-     await syncSelection();
+    await syncSelection(true);
  
        // mostrar NA28 y ocultar Biblia normal
        hide(biblePanel);
@@ -204,7 +202,7 @@ if(!el) return;
      });
  
      selBook.addEventListener("change", async () => {
-      await syncSelection();
+      await syncSelection(false);
        await renderCurrent();
      });
  
