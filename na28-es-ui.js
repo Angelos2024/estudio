@@ -39,6 +39,8 @@ if(!el) return;
 
     const bookCache = new Map();
      let enabled = false;
+         const FALLBACK_CHAPTER_COUNT = 50;
+    const FALLBACK_VERSE_COUNT = 200;
  
      // Cache del último estado seleccionado
      let lastSel = { book: null, ch: null, v: null };
@@ -70,10 +72,22 @@ if(!el) return;
        return null;
       }
      }
- 
+ function getChapterCount(bookData){
+      return Array.isArray(bookData) && bookData.length > 0
+        ? bookData.length
+        : FALLBACK_CHAPTER_COUNT;
+    }
+
+    function getVerseCount(bookData, ch){
+      const chapterIndex = Number(ch) - 1;
+      const verses = Array.isArray(bookData?.[chapterIndex]) ? bookData[chapterIndex] : null;
+      return Array.isArray(verses) && verses.length > 0
+        ? verses.length
+        : FALLBACK_VERSE_COUNT;
+    }
 
     function fillChapters(bookData){
-      const count = Array.isArray(bookData) ? bookData.length : 0;
+     const count = getChapterCount(bookData);
       selCh.innerHTML = Array.from({ length: count }, (_, i) => {
         const value = String(i + 1);
         return `<option value="${value}">${value}</option>`;
@@ -82,9 +96,8 @@ if(!el) return;
  
 
     function fillVerses(bookData, ch){
-      const chapterIndex = Number(ch) - 1;
-      const verses = Array.isArray(bookData?.[chapterIndex]) ? bookData[chapterIndex] : [];
-      selV.innerHTML = verses.map((_, i) => {
+     const count = getVerseCount(bookData, ch);
+      selV.innerHTML = Array.from({ length: count }, (_, i) => {
         const value = String(i + 1);
         return `<option value="${value}">${value}</option>`;
       }).join("");
@@ -98,15 +111,14 @@ if(!el) return;
       const bookData = await loadBookData(selBook.value);
       fillChapters(bookData);
 
-     if(useLastSelection && lastSel.ch && Number(lastSel.ch) <= (bookData?.length || 0)){
+     const chapterCount = getChapterCount(bookData);
+     if(useLastSelection && lastSel.ch && Number(lastSel.ch) <= chapterCount){
         selCh.value = lastSel.ch;
       }
 
       fillVerses(bookData, selCh.value);
 
-      const verseCount = Array.isArray(bookData?.[Number(selCh.value) - 1])
-        ? bookData[Number(selCh.value) - 1].length
-        : 0;
+const verseCount = getVerseCount(bookData, selCh.value);
       if(useLastSelection && lastSel.v && Number(lastSel.v) <= verseCount){
         selV.value = lastSel.v;
       }
