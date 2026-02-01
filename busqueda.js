@@ -2,7 +2,7 @@
  * Rutas nuevas de búsqueda
  ***********************/
 const SEARCH_BASE = './search/';
-const MANIFEST_URL = `${SEARCH_BASE}manifest.json`;
+const MANIFEST_URL = `${SEARCH_BASE}manifestv1.json`;
 const INDEX_URLS = {
   es: `${SEARCH_BASE}index-es.json`,
   gr: `${SEARCH_BASE}index-gr.json`,
@@ -150,7 +150,7 @@ async function ensureManifest(){
   if(manifest) return manifest;
   statusEl.textContent = 'Cargando manifest...';
   manifest = await safeFetchJson(MANIFEST_URL);
-  if(!manifest) throw new Error('No se pudo cargar manifest.json');
+  if(!manifest) throw new Error('No se pudo cargar manifestv1.json');
   return manifest;
 }
 
@@ -335,7 +335,7 @@ nextBtn.addEventListener('click', () => {
     await ensureManifest();
     statusEl.textContent = 'Listo para buscar.';
   }catch{
-    statusEl.textContent = 'Falta generar search/manifest.json (ejecuta el builder).';
+    statusEl.textContent = 'Falta generar search/manifestv1.json (ejecuta el builder).';
   }
 })();
 // Auto-búsqueda desde parámetros
