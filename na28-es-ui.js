@@ -7,15 +7,15 @@ index 5b58ed1742468c2ee5842468f3f5e86a34f903a2..88616d23e4a6f05a9b92652a9a115c20
 --- a/na28-es-ui.js
 +++ b/na28-es-ui.js
 @@ -5,191 +5,222 @@
-     if(!el) return;
-     el.classList.remove('d-none');
-     el.style.display = '';
-   }
-   function hide(el){
-     if(!el) return;
-     el.classList.add('d-none');
-     el.style.display = 'none';
-   }
+  if(!el) return;
+    el.classList.remove('d-none');
+    el.style.display = '';
+  }
+  function hide(el){
+    if(!el) return;
+    el.classList.add('d-none');
+    el.style.display = 'none';
+  }
  
    async function initNA28(){
      const btn = $("btnNA28Es");
