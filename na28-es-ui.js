@@ -140,7 +140,12 @@ function getAvailableBooks(index){
     return;
   }
 
-  const candidates = buildNA28Paths(book, ch, v);
+   const candidates = [];
+  const indexedPath = na28Index?.[book]?.[ch]?.[v];
+  if(indexedPath){
+    candidates.push(`./NA28/out/${indexedPath}`);
+  }
+  candidates.push(...buildNA28Paths(book, ch, v));
   let htmlText = null;
   let lastError = null;
 
