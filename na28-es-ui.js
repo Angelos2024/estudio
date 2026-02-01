@@ -27,8 +27,7 @@ if(!el) return;
        return;
      }
 
-    const params = new URLSearchParams(window.location.search);
-    const RV_BASE = params.get('rvBase') || './librosRV1960/';
+   
 
     const NA28_BOOKS = [
      'mateo','marcos','lucas','juan','hechos',
@@ -37,10 +36,10 @@ if(!el) return;
       'hebreos','santiago','1_pedro','2_pedro','1_juan','2_juan','3_juan','judas','apocalipsis'
   ];
 
-    const bookCache = new Map();
+
      let enabled = false;
-         const FALLBACK_CHAPTER_COUNT = 50;
-    const FALLBACK_VERSE_COUNT = 200;
+      const INDEX_PATH = './NA28/out/index.json';
+    let na28Index = null;
  
      // Cache del último estado seleccionado
      let lastSel = { book: null, ch: null, v: null };
@@ -51,75 +50,73 @@ if(!el) return;
        btn.classList.toggle('btn-soft', !enabled);
      }
  
-    function fillBooks(){
-      selBook.innerHTML = NA28_BOOKS.map(b => `<option value="${b}">${b}</option>`).join("");
-     }
+   
 
-    async function loadBookData(book){
-      if(bookCache.has(book)) return bookCache.get(book);
- 
-
-     try{
-        const res = await fetch(`${RV_BASE}${book}.json`, { cache: "no-store" });
-        if(!res.ok) throw new Error(`No se pudo cargar ${book}.json (HTTP ${res.status})`);
+   async function loadIndex(){
+      try{
+        const res = await fetch(`${INDEX_PATH}?v=${Date.now()}`, { cache: "no-store" });
+        if(!res.ok) throw new Error(`No se pudo cargar index.json (HTTP ${res.status})`);
         const data = await res.json();
-        if(!Array.isArray(data)) throw new Error(`Formato inválido en ${book}.json`);
-        bookCache.set(book, data);
+        if(!data || typeof data !== "object") throw new Error("Formato inválido en index.json");
         return data;
       }catch(err){
         console.warn("[NA28-Es]", err);
-       bookCache.set(book, null);
-       return null;
+     return null;
       }
-     }
- function getChapterCount(bookData){
-      return Array.isArray(bookData) && bookData.length > 0
-        ? bookData.length
-        : FALLBACK_CHAPTER_COUNT;
+   
+function getAvailableBooks(index){
+      const available = index ? Object.keys(index) : [];
+      return NA28_BOOKS.filter(book => available.includes(book));
     }
-
-    function getVerseCount(bookData, ch){
-      const chapterIndex = Number(ch) - 1;
-      const verses = Array.isArray(bookData?.[chapterIndex]) ? bookData[chapterIndex] : null;
-      return Array.isArray(verses) && verses.length > 0
-        ? verses.length
-        : FALLBACK_VERSE_COUNT;
-    }
-
-    function fillChapters(bookData){
-     const count = getChapterCount(bookData);
-      selCh.innerHTML = Array.from({ length: count }, (_, i) => {
-        const value = String(i + 1);
-        return `<option value="${value}">${value}</option>`;
-     }).join("");
+       function numericKeys(obj){
+      return Object.keys(obj || {}).sort((a, b) => Number(a) - Number(b));
     }
  
+ function fillBooks(){
+      const books = getAvailableBooks(na28Index);
+      if(books.length === 0){
+        selBook.innerHTML = `<option value="">No hay libros disponibles</option>`;
+        return;
+      }
+      selBook.innerHTML = books.map(b => `<option value="${b}">${b}</option>`).join("");
+    }
 
-    function fillVerses(bookData, ch){
-     const count = getVerseCount(bookData, ch);
-      selV.innerHTML = Array.from({ length: count }, (_, i) => {
-        const value = String(i + 1);
-        return `<option value="${value}">${value}</option>`;
-      }).join("");
-     }
- 
- async function syncSelection(useLastSelection = false){
-      if(useLastSelection && lastSel.book && NA28_BOOKS.includes(lastSel.book)){
+    function fillChapters(book){
+      const chapters = numericKeys(na28Index?.[book]);
+      if(chapters.length === 0){
+        selCh.innerHTML = `<option value="">No hay capítulos</option>`;
+        return;
+      }
+      selCh.innerHTML = chapters.map(value => `<option value="${value}">${value}</option>`).join("");
+    }
+
+    function fillVerses(book, ch){
+      const verses = numericKeys(na28Index?.[book]?.[ch]);
+      if(verses.length === 0){
+        selV.innerHTML = `<option value="">No hay versos</option>`;
+        return;
+      }
+      selV.innerHTML = verses.map(value => `<option value="${value}">${value}</option>`).join("");
+    }
+
+    async function syncSelection(useLastSelection = false){
+      if(useLastSelection && lastSel.book && na28Index?.[lastSel.book]){
         selBook.value = lastSel.book;
       }
 
-      const bookData = await loadBookData(selBook.value);
-      fillChapters(bookData);
+       if(!selBook.value){
+        selCh.innerHTML = "";
+        selV.innerHTML = "";
+        return;
+      }
 
-     const chapterCount = getChapterCount(bookData);
-     if(useLastSelection && lastSel.ch && Number(lastSel.ch) <= chapterCount){
+     fillChapters(selBook.value);
+      if(useLastSelection && lastSel.ch && na28Index?.[selBook.value]?.[lastSel.ch]){
         selCh.value = lastSel.ch;
       }
 
-      fillVerses(bookData, selCh.value);
-
-const verseCount = getVerseCount(bookData, selCh.value);
-      if(useLastSelection && lastSel.v && Number(lastSel.v) <= verseCount){
+      fillVerses(selBook.value, selCh.value);
+      if(useLastSelection && lastSel.v && na28Index?.[selBook.value]?.[selCh.value]?.[lastSel.v]){
         selV.value = lastSel.v;
       }
     }
@@ -136,8 +133,10 @@ const verseCount = getVerseCount(bookData, selCh.value);
    const v = selV.value;
  
    lastSel = { book, ch, v };
-
- 
+    if(!book || !ch || !v){
+    viewer.innerHTML = `<div class="text-muted">No hay selección disponible.</div>`;
+    return;
+  }
 
   const candidates = buildNA28Paths(book, ch, v);
   let htmlText = null;
@@ -179,9 +178,10 @@ const verseCount = getVerseCount(bookData, selCh.value);
  
  
      async function enable(){
+        na28Index = await loadIndex();
       fillBooks();
-
-     if(!selBook.value) selBook.value = NA28_BOOKS[0] || "";
+ const availableBooks = getAvailableBooks(na28Index);
+     if(!selBook.value) selBook.value = availableBooks[0] || "";
     await syncSelection(true);
  
        // mostrar NA28 y ocultar Biblia normal
@@ -219,9 +219,7 @@ const verseCount = getVerseCount(bookData, selCh.value);
      });
  
      selCh.addEventListener("change", async () => {
-
-      const bookData = await loadBookData(selBook.value);
-      fillVerses(bookData, selCh.value);
+      fillVerses(selBook.value, selCh.value);
        await renderCurrent();
      });
  
