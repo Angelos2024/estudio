@@ -63,6 +63,8 @@ if(!el) return;
         console.warn("[NA28-Es]", err);
      return null;
       }
+
+      }
    
 function getAvailableBooks(index){
       const available = index ? Object.keys(index) : [];
