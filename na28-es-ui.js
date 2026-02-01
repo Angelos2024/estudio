@@ -2,12 +2,7 @@
   function $(id){ return document.getElementById(id); }
 
   function show(el){
-diff --git a/na28-es-ui.js b/na28-es-ui.js
-index 5b58ed1742468c2ee5842468f3f5e86a34f903a2..88616d23e4a6f05a9b92652a9a115c20337e7eb9 100644
---- a/na28-es-ui.js
-+++ b/na28-es-ui.js
-@@ -5,191 +5,222 @@
-  if(!el) return;
+if(!el) return;
     el.classList.remove('d-none');
     el.style.display = '';
   }
