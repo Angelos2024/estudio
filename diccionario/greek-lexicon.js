@@ -14,7 +14,7 @@
 
   // Cantidad de capítulos por libro MorphGNT abbr
   var ABBR_CHAPTERS = {
-    mt: 28, mr: 16, lu: 24, joh: 21,
+    mt: 28, mk: 16, lu: 24, joh: 21,
     ac: 28, ro: 16, '1co': 16, '2co': 13,
     ga: 6, eph: 6, php: 4, col: 4,
     '1th': 5, '2th': 3, '1ti': 6, '2ti': 4,
@@ -26,7 +26,7 @@
   // Mapeo slug (?book=) -> abbr MorphGNT
   var BOOK_SLUG_TO_ABBR = {
     mateo: 'mt', mat: 'mt', mt: 'mt',
-    marcos: 'mr', mc: 'mr', mr: 'mr',
+    marcos: 'mk', mc: 'mk', mr: 'mr',
     lucas: 'lu', lc: 'lu', lu: 'lu',
     juan: 'joh', jn: 'joh', joh: 'joh',
 
