@@ -2,194 +2,235 @@
   function $(id){ return document.getElementById(id); }
 
   function show(el){
-    if(!el) return;
-    el.classList.remove('d-none');
-    el.style.display = '';
-  }
-  function hide(el){
-    if(!el) return;
-    el.classList.add('d-none');
-    el.style.display = 'none';
-  }
+diff --git a/na28-es-ui.js b/na28-es-ui.js
+index 5b58ed1742468c2ee5842468f3f5e86a34f903a2..88616d23e4a6f05a9b92652a9a115c20337e7eb9 100644
+--- a/na28-es-ui.js
++++ b/na28-es-ui.js
+@@ -5,191 +5,222 @@
+     if(!el) return;
+     el.classList.remove('d-none');
+     el.style.display = '';
+   }
+   function hide(el){
+     if(!el) return;
+     el.classList.add('d-none');
+     el.style.display = 'none';
+   }
+ 
+   async function initNA28(){
+     const btn = $("btnNA28Es");
+     const na28Panel = $("na28Panel");
+     const biblePanel = $("biblePanel"); // ✅ lo agregaste en tu panel-body
+     const selBook = $("na28Book");
+     const selCh = $("na28Chapter");
+     const selV = $("na28Verse");
+     const viewer = $("na28Viewer");
+ 
+     // Si aún no están en el DOM, no hacemos nada (evita errores silenciosos)
+     if(!btn || !na28Panel || !biblePanel || !selBook || !selCh || !selV || !viewer){
+       console.warn("[NA28-Es] Faltan elementos en el DOM. Revisa ids: btnNA28Es, biblePanel, na28Panel, na28Book, na28Chapter, na28Verse, na28Viewer");
+       return;
+     }
 
-  async function initNA28(){
-    const btn = $("btnNA28Es");
-    const na28Panel = $("na28Panel");
-    const biblePanel = $("biblePanel"); // ✅ lo agregaste en tu panel-body
-    const selBook = $("na28Book");
-    const selCh = $("na28Chapter");
-    const selV = $("na28Verse");
-    const viewer = $("na28Viewer");
+    const params = new URLSearchParams(window.location.search);
+    const RV_BASE = params.get('rvBase') || './librosRV1960/';
 
-    // Si aún no están en el DOM, no hacemos nada (evita errores silenciosos)
-    if(!btn || !na28Panel || !biblePanel || !selBook || !selCh || !selV || !viewer){
-      console.warn("[NA28-Es] Faltan elementos en el DOM. Revisa ids: btnNA28Es, biblePanel, na28Panel, na28Book, na28Chapter, na28Verse, na28Viewer");
-      return;
-    }
+    const NA28_BOOKS = [
+     'mateo','marcos','lucas','juan','hechos',
+      'romanos','1_corintios','2_corintios','galatas','efesios','filipenses','colosenses',
+      '1_tesalonicenses','2_tesalonicenses','1_timoteo','2_timoteo','tito','filemon',
+      'hebreos','santiago','1_pedro','2_pedro','1_juan','2_juan','3_juan','judas','apocalipsis'
+  ];
 
-    let index = null;
-    let enabled = false;
+    const bookCache = new Map();
+     let enabled = false;
+ 
+     // Cache del último estado seleccionado
+     let lastSel = { book: null, ch: null, v: null };
+ 
+     function setButtonState(){
+       // opcional: cambia apariencia cuando está activo
+       btn.classList.toggle('btn-primary', enabled);
+       btn.classList.toggle('btn-soft', !enabled);
+     }
+ 
+    function fillBooks(){
+      selBook.innerHTML = NA28_BOOKS.map(b => `<option value="${b}">${b}</option>`).join("");
+     }
 
-    // Cache del último estado seleccionado
-    let lastSel = { book: null, ch: null, v: null };
+    async function loadBookData(book){
+      if(bookCache.has(book)) return bookCache.get(book);
+ 
 
-    function setButtonState(){
-      // opcional: cambia apariencia cuando está activo
-      btn.classList.toggle('btn-primary', enabled);
-      btn.classList.toggle('btn-soft', !enabled);
-    }
-
-    async function loadIndex(){
-      if(index) return index;
-      const res = await fetch("./NA28/out/index.json?v=1", { cache: "no-store" });
-      if(!res.ok) throw new Error(`No se pudo cargar ./NA28/out/index.json (HTTP ${res.status})`);
-      index = await res.json();
-      return index;
-    }
-
-    function fillBooks(idx){
-      const books = Object.keys(idx || {}).sort();
-      selBook.innerHTML = books.map(b => `<option value="${b}">${b}</option>`).join("");
-    }
-
-    function fillChapters(book){
-      const chs = Object.keys(index?.[book] || {})
-        .map(n => Number(n))
-        .filter(n => Number.isFinite(n))
-        .sort((a,b)=>a-b)
-        .map(String);
-
-      selCh.innerHTML = chs.map(c => `<option value="${c}">${c}</option>`).join("");
-    }
-
-    function fillVerses(book, ch){
-      const vs = Object.keys(index?.[book]?.[ch] || {})
-        .map(n => Number(n))
-        .filter(n => Number.isFinite(n))
-        .sort((a,b)=>a-b)
-        .map(String);
-
-      selV.innerHTML = vs.map(v => `<option value="${v}">${v}</option>`).join("");
-    }
-
-    function tryRestoreSelection(){
-      if(lastSel.book && index?.[lastSel.book]){
-        selBook.value = lastSel.book;
+     try{
+        const res = await fetch(`${RV_BASE}${book}.json`, { cache: "no-store" });
+        if(!res.ok) throw new Error(`No se pudo cargar ${book}.json (HTTP ${res.status})`);
+        const data = await res.json();
+        if(!Array.isArray(data)) throw new Error(`Formato inválido en ${book}.json`);
+        bookCache.set(book, data);
+        return data;
+      }catch(err){
+        console.warn("[NA28-Es]", err);
+       bookCache.set(book, null);
+       return null;
       }
-      fillChapters(selBook.value);
+     }
+ 
 
-      if(lastSel.ch && index?.[selBook.value]?.[lastSel.ch]){
-        selCh.value = lastSel.ch;
-      }
-      fillVerses(selBook.value, selCh.value);
+    function fillChapters(bookData){
+      const count = Array.isArray(bookData) ? bookData.length : 0;
+      selCh.innerHTML = Array.from({ length: count }, (_, i) => {
+        const value = String(i + 1);
+        return `<option value="${value}">${value}</option>`;
+     }).join("");
+    }
+ 
 
-      if(lastSel.v && index?.[selBook.value]?.[selCh.value]?.[lastSel.v]){
-        selV.value = lastSel.v;
-      }
+    function fillVerses(bookData, ch){
+      const chapterIndex = Number(ch) - 1;
+      const verses = Array.isArray(bookData?.[chapterIndex]) ? bookData[chapterIndex] : [];
+      selV.innerHTML = verses.map((_, i) => {
+        const value = String(i + 1);
+        return `<option value="${value}">${value}</option>`;
+      }).join("");
+     }
+ 
+    async function syncSelection(){
+      if(lastSel.book && NA28_BOOKS.includes(lastSel.book)){
+         selBook.value = lastSel.book;
+       }
+
+      const bookData = await loadBookData(selBook.value);
+      fillChapters(bookData);
+
+      if(lastSel.ch && Number(lastSel.ch) <= (bookData?.length || 0)){
+         selCh.value = lastSel.ch;
+       }
+ 
+
+      fillVerses(bookData, selCh.value);
+
+     const verseCount = Array.isArray(bookData?.[Number(selCh.value) - 1])
+       ? bookData[Number(selCh.value) - 1].length
+       : 0;
+      if(lastSel.v && Number(lastSel.v) <= verseCount){
+         selV.value = lastSel.v;
+       }
+     }
+ 
+   function buildNA28Paths(book, ch, v){
+      return [
+        `./NA28/out/libros/${book}/${ch}/${ch}_${v}.html`,
+        `./NA28/out/libros/${book}/${ch}/${v}.html`
+      ];
     }
 
-async function renderCurrent(){
-  const book = selBook.value;
-  const ch = selCh.value;
-  const v = selV.value;
+ async function renderCurrent(){
+   const book = selBook.value;
+   const ch = selCh.value;
+   const v = selV.value;
+ 
+   lastSel = { book, ch, v };
 
-  lastSel = { book, ch, v };
+ 
 
-  const rel = index?.[book]?.[ch]?.[v];
-  if(!rel){
-    viewer.innerHTML = `<div class="text-muted">No hay archivo para ${book} ${ch}:${v}</div>`;
+  const candidates = buildNA28Paths(book, ch, v);
+  let htmlText = null;
+  let lastError = null;
+
+  for(const path of candidates){
+    try{
+      const res = await fetch(`${path}?v=1`, { cache: "no-store" });
+      if(res.ok){
+       htmlText = await res.text();
+       break;
+      }
+      if(res.status !== 404){
+        lastError = `HTTP ${res.status}`;
+        break;
+      }
+    }catch(err){
+      lastError = err?.message || String(err);
+      break;
+   }
+   }
+ 
+
+  if(!htmlText){
+    const detail = lastError ? ` (${lastError})` : "";
+    viewer.innerHTML = `<div class="text-muted">No hay archivo para ${book} ${ch}:${v}${detail}</div>`;
     return;
   }
+ 
+   // 🔒 Encapsular para que el CSS NA28-Es aplique solo aquí
+   viewer.innerHTML = `<div class="na28es-container">${htmlText}</div>`;
+ 
+   // 🧹 Quitar doctype si llega como texto (algunos HTML lo traen)
+   const wrap = viewer.querySelector(".na28es-container");
+   if (wrap) {
+     wrap.innerHTML = wrap.innerHTML.replace(/<!doctype[^>]*>/ig, "");
+   }
+ }
+ 
+ 
+     async function enable(){
+      fillBooks();
 
-  viewer.innerHTML = `<div class="text-muted">Cargando...</div>`;
-  const res = await fetch(`./NA28/out/${rel}?v=1`, { cache: "no-store" });
+     if(!selBook.value) selBook.value = NA28_BOOKS[0] || "";
+     await syncSelection();
+ 
+       // mostrar NA28 y ocultar Biblia normal
+       hide(biblePanel);
+       show(na28Panel);
+ 
+       enabled = true;
+       setButtonState();
+ 
+       await renderCurrent();
+     }
+ 
+     function disable(){
+       hide(na28Panel);
+       show(biblePanel);
+ 
+       enabled = false;
+       setButtonState();
+     }
+ 
+     // Eventos UI
+     btn.addEventListener("click", async () => {
+       try{
+         if(!enabled) await enable();
+         else disable();
+       }catch(e){
+         console.error(e);
+         viewer.innerHTML = `<div class="text-danger">No se pudo activar NA28-Es. Revisa consola.</div>`;
+       }
+     });
+ 
+     selBook.addEventListener("change", async () => {
+      await syncSelection();
+       await renderCurrent();
+     });
+ 
+     selCh.addEventListener("change", async () => {
 
-  if(!res.ok){
-    viewer.innerHTML = `<div class="text-danger">Error cargando ${book} ${ch}:${v} (HTTP ${res.status})</div>`;
-    return;
-  }
-
-  const htmlText = await res.text();
-
-  // 🔒 Encapsular para que el CSS NA28-Es aplique solo aquí
-  viewer.innerHTML = `<div class="na28es-container">${htmlText}</div>`;
-
-  // 🧹 Quitar doctype si llega como texto (algunos HTML lo traen)
-  const wrap = viewer.querySelector(".na28es-container");
-  if (wrap) {
-    wrap.innerHTML = wrap.innerHTML.replace(/<!doctype[^>]*>/ig, "");
-  }
-}
-
-
-    async function enable(){
-      await loadIndex();
-
-      // preparar selects
-      fillBooks(index);
-      tryRestoreSelection();
-
-      // si no había selección previa, forzar primera opción válida
-      if(!selBook.value) selBook.value = Object.keys(index)[0] || "";
-      if(selBook.value){
-        fillChapters(selBook.value);
-        if(!selCh.value) selCh.value = Object.keys(index[selBook.value] || {})[0] || "";
-        if(selCh.value){
-          fillVerses(selBook.value, selCh.value);
-          if(!selV.value) selV.value = Object.keys(index[selBook.value]?.[selCh.value] || {})[0] || "";
-        }
-      }
-
-      // mostrar NA28 y ocultar Biblia normal
-      hide(biblePanel);
-      show(na28Panel);
-
-      enabled = true;
-      setButtonState();
-
-      await renderCurrent();
-    }
-
-    function disable(){
-      hide(na28Panel);
-      show(biblePanel);
-
-      enabled = false;
-      setButtonState();
-    }
-
-    // Eventos UI
-    btn.addEventListener("click", async () => {
-      try{
-        if(!enabled) await enable();
-        else disable();
-      }catch(e){
-        console.error(e);
-        viewer.innerHTML = `<div class="text-danger">No se pudo activar NA28-Es. Revisa consola.</div>`;
-      }
-    });
-
-    selBook.addEventListener("change", async () => {
-      fillChapters(selBook.value);
-      fillVerses(selBook.value, selCh.value);
-      await renderCurrent();
-    });
-
-    selCh.addEventListener("change", async () => {
-      fillVerses(selBook.value, selCh.value);
-      await renderCurrent();
-    });
-
-    selV.addEventListener("change", renderCurrent);
-
-    // Estado inicial del botón
-    setButtonState();
-  }
-
-  // ✅ Garantiza que los elementos existan aunque el script esté en <head>
-  if(document.readyState === "loading"){
-    document.addEventListener("DOMContentLoaded", initNA28);
-  } else {
-    initNA28();
-  }
-})();
+      const bookData = await loadBookData(selBook.value);
+      fillVerses(bookData, selCh.value);
+       await renderCurrent();
+     });
+ 
+     selV.addEventListener("change", renderCurrent);
+ 
+     // Estado inicial del botón
+     setButtonState();
+   }
+ 
+   // ✅ Garantiza que los elementos existan aunque el script esté en <head>
+   if(document.readyState === "loading"){
+     document.addEventListener("DOMContentLoaded", initNA28);
+   } else {
+     initNA28();
+   }
+ })();
+;
