@@ -20,10 +20,11 @@ if(!el) return;
      const selCh = $("na28Chapter");
      const selV = $("na28Verse");
      const viewer = $("na28Viewer");
+        const panelHeaderTitle = $("panelHeaderTitle");
  
      // Si aún no están en el DOM, no hacemos nada (evita errores silenciosos)
-     if(!btn || !na28Panel || !biblePanel || !selBook || !selCh || !selV || !viewer){
-       console.warn("[NA28-Es] Faltan elementos en el DOM. Revisa ids: btnNA28Es, biblePanel, na28Panel, na28Book, na28Chapter, na28Verse, na28Viewer");
+    if(!btn || !na28Panel || !biblePanel || !selBook || !selCh || !selV || !viewer || !panelHeaderTitle){
+       console.warn("[NA28-Es] Faltan elementos en el DOM. Revisa ids: btnNA28Es, biblePanel, na28Panel, na28Book, na28Chapter, na28Verse, na28Viewer, panelHeaderTitle");
        return;
      }
 
@@ -194,7 +195,7 @@ function getAvailableBooks(index){
        // mostrar NA28 y ocultar Biblia normal
        hide(biblePanel);
        show(na28Panel);
- 
+ panelHeaderTitle.textContent = "Roans Kritischer Apparat Neuen Testament";
        enabled = true;
        setButtonState();
  
@@ -204,7 +205,8 @@ function getAvailableBooks(index){
      function disable(){
        hide(na28Panel);
        show(biblePanel);
- 
+ panelHeaderTitle.textContent = "Texto del pasaje";
+       
        enabled = false;
        setButtonState();
      }
