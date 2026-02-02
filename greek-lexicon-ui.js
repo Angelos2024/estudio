@@ -16,6 +16,7 @@
   const state = {
     ready: false,
     bySurface: new Map(), // normalizedSurface -> { lemma, tr, surface }
+      lxxCache: new Map(), // normalizedLemma -> [{ ref, word, lemma, morph }]
     tipEl: null,
     hideTimer: null,
   };
@@ -113,7 +114,132 @@
       .replace(/[\u2019\u02BC']/g, '’') // unifica apóstrofos si los hubiera
       .trim();
   }
+ function normalizeGreekLemmaKey(s) {
+    return normalizeGreekToken(s)
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase();
+  }
 
+  const LXX_FILES = [
+    'lxx_rahlfs_1935_1Chr',
+    'lxx_rahlfs_1935_1Esdr.json',
+    'lxx_rahlfs_1935_1Kgs.json',
+    'lxx_rahlfs_1935_1Macc.json',
+    'lxx_rahlfs_1935_1Sam.json',
+    'lxx_rahlfs_1935_2Chr.json',
+    'lxx_rahlfs_1935_2Esdr.json',
+    'lxx_rahlfs_1935_2Kgs.json',
+    'lxx_rahlfs_1935_2Macc.json',
+    'lxx_rahlfs_1935_2Sam.json',
+    'lxx_rahlfs_1935_3Macc.json',
+    'lxx_rahlfs_1935_4Macc.json',
+    'lxx_rahlfs_1935_Amos.json',
+    'lxx_rahlfs_1935_Bar.json',
+    'lxx_rahlfs_1935_BelOG.json',
+    'lxx_rahlfs_1935_BelTh.json',
+    'lxx_rahlfs_1935_DanOG.json',
+    'lxx_rahlfs_1935_DanTh.json',
+    'lxx_rahlfs_1935_Deut.json',
+    'lxx_rahlfs_1935_Eccl.json',
+    'lxx_rahlfs_1935_EpJer.json',
+    'lxx_rahlfs_1935_Esth.json',
+    'lxx_rahlfs_1935_Exod.json',
+    'lxx_rahlfs_1935_Ezek.json',
+    'lxx_rahlfs_1935_Gen.json',
+    'lxx_rahlfs_1935_Hab.json',
+    'lxx_rahlfs_1935_Hag.json',
+    'lxx_rahlfs_1935_Hos.json',
+    'lxx_rahlfs_1935_Isa.json',
+    'lxx_rahlfs_1935_Jdt.json',
+    'lxx_rahlfs_1935_Jer.json',
+    'lxx_rahlfs_1935_Job.json',
+    'lxx_rahlfs_1935_Joel.json',
+    'lxx_rahlfs_1935_Jonah.json',
+    'lxx_rahlfs_1935_JoshA.json',
+    'lxx_rahlfs_1935_JoshB.json',
+    'lxx_rahlfs_1935_JudgA.json',
+    'lxx_rahlfs_1935_JudgB.json',
+    'lxx_rahlfs_1935_Lam.json',
+    'lxx_rahlfs_1935_Lev.json',
+    'lxx_rahlfs_1935_Mal.json',
+    'lxx_rahlfs_1935_Mic.json',
+    'lxx_rahlfs_1935_Nah.json',
+    'lxx_rahlfs_1935_Num.json',
+    'lxx_rahlfs_1935_Obad.json',
+    'lxx_rahlfs_1935_Odes.json',
+    'lxx_rahlfs_1935_Prov.json',
+    'lxx_rahlfs_1935_Ps.json',
+    'lxx_rahlfs_1935_PsSol.json',
+    'lxx_rahlfs_1935_Ruth.json',
+    'lxx_rahlfs_1935_Sir.json',
+    'lxx_rahlfs_1935_Song.json',
+    'lxx_rahlfs_1935_SusOG.json',
+    'lxx_rahlfs_1935_SusTh.json',
+    'lxx_rahlfs_1935_TobBA.json',
+    'lxx_rahlfs_1935_TobS.json',
+    'lxx_rahlfs_1935_Wis.json',
+    'lxx_rahlfs_1935_Zech.json',
+    'lxx_rahlfs_1935_Zeph.json',
+  ];
+
+  async function findLxxSamples(lemma, max = 4) {
+    const normalized = normalizeGreekLemmaKey(lemma);
+    if (!normalized) return [];
+    if (state.lxxCache.has(normalized)) return state.lxxCache.get(normalized);
+
+    const results = [];
+    for (const file of LXX_FILES) {
+      if (results.length >= max) break;
+      try {
+        const r = await fetch(`./LXX/${file}`, { cache: 'no-store' });
+        if (!r.ok) continue;
+        const data = await r.json();
+        const text = data?.text || {};
+        for (const [book, chapters] of Object.entries(text)) {
+          for (const [chapter, verses] of Object.entries(chapters || {})) {
+            for (const [verse, tokens] of Object.entries(verses || {})) {
+              for (const t of tokens || []) {
+                if (!t) continue;
+                const lemmaKey = normalizeGreekLemmaKey(t.lemma || '');
+                const wordKey = normalizeGreekLemmaKey(t.w || '');
+                if (lemmaKey !== normalized && wordKey !== normalized) continue;
+                results.push({
+                  ref: `${book} ${chapter}:${verse}`,
+                  word: String(t.w || ''),
+                  lemma: String(t.lemma || ''),
+                  morph: String(t.morph || ''),
+                });
+                if (results.length >= max) break;
+              }
+              if (results.length >= max) break;
+            }
+            if (results.length >= max) break;
+          }
+          if (results.length >= max) break;
+        }
+      } catch (e) {
+        continue;
+      }
+    }
+
+    state.lxxCache.set(normalized, results);
+    return results;
+  }
+
+  function renderLxxSection(samples, loading = false) {
+    if (loading) {
+      return `<div class="t3 muted">LXX: buscando coincidencias...</div>`;
+    }
+    if (!samples || samples.length === 0) {
+      return `<div class="t3 muted">LXX: sin resultados en la carpeta LXX</div>`;
+    }
+    const items = samples.map((s) => {
+      const morph = s.morph ? ` <span class="muted">(${escapeHtml(s.morph)})</span>` : '';
+      return `<div class="t3">• <b>${escapeHtml(s.ref)}</b> — ${escapeHtml(s.word || '—')} <span class="muted">|</span> ${escapeHtml(s.lemma || '—')}${morph}</div>`;
+    }).join('');
+    return `<div class="t3"><b>LXX:</b></div>${items}`;
+  }
   async function loadMorphIndexOnce() {
     if (state.ready) return;
     const r = await fetch(MORPH_PATH, { cache: 'no-store' });
@@ -257,9 +383,19 @@
         <div class="t1">${escapeHtml(norm)}</div>
         <div class="t2"><b>Lema:</b> ${escapeHtml(hit.lemma || '—')} &nbsp; <span class="muted">|</span> &nbsp; <b>Translit.:</b> ${escapeHtml(hit.tr || '—')}</div>
         ${glossHtml}
+         ${renderLxxSection([], true)}
       `,
       ev.clientX, ev.clientY
     );
+      const lxxSamples = await findLxxSamples(hit.lemma || norm, 4);
+    if (state.tipEl && state.tipEl.style.display !== 'none') {
+      state.tipEl.innerHTML = `
+        <div class="t1">${escapeHtml(norm)}</div>
+        <div class="t2"><b>Lema:</b> ${escapeHtml(hit.lemma || '—')} &nbsp; <span class="muted">|</span> &nbsp; <b>Translit.:</b> ${escapeHtml(hit.tr || '—')}</div>
+        ${glossHtml}
+        ${renderLxxSection(lxxSamples, false)}
+      `;
+    }
   }, false);
 
   function escapeHtml(s) {
