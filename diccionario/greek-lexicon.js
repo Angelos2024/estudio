@@ -9,8 +9,10 @@
 (function () {
   var DICT_DIR = './diccionario/';
   var MASTER_DICT_URL = DICT_DIR + 'masterdiccionario.json';
+   var LXX_DIR = './LXX/';
   var masterDictIndex = null;   // Map<lemma, item>
   var masterDictLoaded = false;
+   var lxxCache = new Map(); // Map<lemma_normalizado, samples[]>
 
   // Cantidad de capítulos por libro MorphGNT abbr
   var ABBR_CHAPTERS = {
@@ -55,7 +57,67 @@
     judas: 'jud', jud: 'jud',
     apocalipsis: 're', re: 're'
   };
-
+var LXX_FILES = [
+    'lxx_rahlfs_1935_1Chr',
+    'lxx_rahlfs_1935_1Esdr.json',
+    'lxx_rahlfs_1935_1Kgs.json',
+    'lxx_rahlfs_1935_1Macc.json',
+    'lxx_rahlfs_1935_1Sam.json',
+    'lxx_rahlfs_1935_2Chr.json',
+    'lxx_rahlfs_1935_2Esdr.json',
+    'lxx_rahlfs_1935_2Kgs.json',
+    'lxx_rahlfs_1935_2Macc.json',
+    'lxx_rahlfs_1935_2Sam.json',
+    'lxx_rahlfs_1935_3Macc.json',
+    'lxx_rahlfs_1935_4Macc.json',
+    'lxx_rahlfs_1935_Amos.json',
+    'lxx_rahlfs_1935_Bar.json',
+    'lxx_rahlfs_1935_BelOG.json',
+    'lxx_rahlfs_1935_BelTh.json',
+    'lxx_rahlfs_1935_DanOG.json',
+    'lxx_rahlfs_1935_DanTh.json',
+    'lxx_rahlfs_1935_Deut.json',
+    'lxx_rahlfs_1935_Eccl.json',
+    'lxx_rahlfs_1935_EpJer.json',
+    'lxx_rahlfs_1935_Esth.json',
+    'lxx_rahlfs_1935_Exod.json',
+    'lxx_rahlfs_1935_Ezek.json',
+    'lxx_rahlfs_1935_Gen.json',
+    'lxx_rahlfs_1935_Hab.json',
+    'lxx_rahlfs_1935_Hag.json',
+    'lxx_rahlfs_1935_Hos.json',
+    'lxx_rahlfs_1935_Isa.json',
+    'lxx_rahlfs_1935_Jdt.json',
+    'lxx_rahlfs_1935_Jer.json',
+    'lxx_rahlfs_1935_Job.json',
+    'lxx_rahlfs_1935_Joel.json',
+    'lxx_rahlfs_1935_Jonah.json',
+    'lxx_rahlfs_1935_JoshA.json',
+    'lxx_rahlfs_1935_JoshB.json',
+    'lxx_rahlfs_1935_JudgA.json',
+    'lxx_rahlfs_1935_JudgB.json',
+    'lxx_rahlfs_1935_Lam.json',
+    'lxx_rahlfs_1935_Lev.json',
+    'lxx_rahlfs_1935_Mal.json',
+    'lxx_rahlfs_1935_Mic.json',
+    'lxx_rahlfs_1935_Nah.json',
+    'lxx_rahlfs_1935_Num.json',
+    'lxx_rahlfs_1935_Obad.json',
+    'lxx_rahlfs_1935_Odes.json',
+    'lxx_rahlfs_1935_Prov.json',
+    'lxx_rahlfs_1935_Ps.json',
+    'lxx_rahlfs_1935_PsSol.json',
+    'lxx_rahlfs_1935_Ruth.json',
+    'lxx_rahlfs_1935_Sir.json',
+    'lxx_rahlfs_1935_Song.json',
+    'lxx_rahlfs_1935_SusOG.json',
+    'lxx_rahlfs_1935_SusTh.json',
+    'lxx_rahlfs_1935_TobBA.json',
+    'lxx_rahlfs_1935_TobS.json',
+    'lxx_rahlfs_1935_Wis.json',
+    'lxx_rahlfs_1935_Zech.json',
+    'lxx_rahlfs_1935_Zeph.json'
+  ];
   // estado morph
   var morphKey = null; // abbr
   var morphMap = null; // {abbr,totalCh,segs}
@@ -72,6 +134,20 @@
     return String(s).replace(/\s+/g, ' ').trim();
   }
 
+   function normalizeGreekToken(s) {
+    return String(s || '')
+      .replace(/[⸀⸂⸃]/g, '')
+      .replace(/[··.,;:!?“”"(){}\[\]<>«»]/g, '')
+      .replace(/[\u2019\u02BC']/g, '’')
+      .trim();
+  }
+
+  function normalizeGreekLemmaKey(s) {
+    return normalizeGreekToken(s)
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase();
+  }
 function normalizeBookKey(slug) {
   slug = (slug || '').toLowerCase().trim();
 
@@ -134,6 +210,7 @@ function slugToAbbr(slug) {
       .replace(/>/g, '&gt;');
   }
 
+   
   function escAttr(s) {
     return String(s)
       .replace(/&/g, '&amp;')
@@ -142,6 +219,75 @@ function slugToAbbr(slug) {
       .replace(/>/g, '&gt;');
   }
 
+   // -------------------- LXX lookup --------------------
+  function findLxxSamples(lemma, max) {
+    max = max || 4;
+    var normalized = normalizeGreekLemmaKey(lemma);
+    if (!normalized) return Promise.resolve([]);
+    if (lxxCache.has(normalized)) return Promise.resolve(lxxCache.get(normalized));
+
+    var results = [];
+    var chain = Promise.resolve();
+
+    LXX_FILES.forEach(function (file) {
+      chain = chain.then(function () {
+        if (results.length >= max) return;
+        return fetch(LXX_DIR + file, { cache: 'no-store' })
+          .then(function (r) {
+            if (!r.ok) return null;
+            return r.json();
+          })
+          .then(function (data) {
+            if (!data || !data.text || results.length >= max) return;
+            var text = data.text;
+            Object.keys(text).some(function (book) {
+              var chapters = text[book] || {};
+              return Object.keys(chapters).some(function (chapter) {
+                var verses = chapters[chapter] || {};
+                return Object.keys(verses).some(function (verse) {
+                  var tokens = verses[verse] || [];
+                  for (var i = 0; i < tokens.length; i++) {
+                    var t = tokens[i];
+                    if (!t) continue;
+                    var lemmaKey = normalizeGreekLemmaKey(t.lemma || '');
+                    var wordKey = normalizeGreekLemmaKey(t.w || '');
+                    if (lemmaKey !== normalized && wordKey !== normalized) continue;
+                    results.push({
+                      ref: book + ' ' + chapter + ':' + verse,
+                      word: String(t.w || ''),
+                      lemma: String(t.lemma || ''),
+                      morph: String(t.morph || '')
+                    });
+                    if (results.length >= max) return true;
+                  }
+                  return false;
+                });
+              });
+            });
+          })
+          .catch(function () {
+            // ignora archivos con error sin romper la UI
+          });
+      });
+    });
+
+    return chain.then(function () {
+      lxxCache.set(normalized, results);
+      return results;
+    });
+  }
+
+  function renderLxxItems(samples) {
+    if (!samples || !samples.length) {
+      return '<div class="lxx-row muted">Sin resultados en la LXX.</div>';
+    }
+    return samples.map(function (s) {
+      var morph = s.morph ? ' <span class="muted">(' + escHtml(s.morph) + ')</span>' : '';
+      return '<div class="lxx-row">• <b>' + escHtml(s.ref) + '</b> — ' +
+        escHtml(s.word || '—') + ' <span class="muted">|</span> ' +
+        escHtml(s.lemma || '—') + morph + '</div>';
+    }).join('');
+  }
   // -------------------- build morph index --------------------
   // JSON: { book, chapters:[ ... ] }
   // En tu formato:
@@ -251,6 +397,9 @@ function slugToAbbr(slug) {
       '.gk-lex-popup .lab{ opacity:.7; margin-right:6px; }' +
       '.gk-lex-popup .sep{ border:0; border-top:1px solid rgba(255,255,255,.12); margin:10px 0; }' +
       '.gk-lex-popup .def{ margin-top:6px; line-height:1.35; max-height:180px; overflow:auto; }' +
+       '.gk-lex-popup .lxx{ margin-top:6px; max-height:160px; overflow:auto; }' +
+      '.gk-lex-popup .lxx-row{ margin-top:4px; }' +
+      '.gk-lex-popup .muted{ opacity:.7; }' +
       '.gk-lex-popup .close{ position:absolute; right:10px; top:8px; background:transparent; border:0; color:#cbd6ff; cursor:pointer; font-size:16px; }';
 
     document.head.appendChild(st);
@@ -264,7 +413,10 @@ function slugToAbbr(slug) {
       '<div class="t2"><span class="lab">Lemma:</span><span id="gk-lex-lemma"></span></div>' +
       '<div class="t2 row"><span class="lab">Forma léxica:</span><span id="gk-lex-forma-lex"></span></div>' +
       '<div class="t2 row"><span class="lab">Entrada impresa:</span><span id="gk-lex-entrada"></span></div>' +
-      '<div class="t2"><span class="lab">Definición:</span><div id="gk-lex-def" class="def"></div></div>';
+   '<div class="t2"><span class="lab">Definición:</span><div id="gk-lex-def" class="def"></div></div>' +
+      '<hr class="sep" />' +
+      '<div class="t2"><span class="lab">LXX:</span></div>' +
+      '<div id="gk-lex-lxx" class="lxx"></div>';
 
     document.body.appendChild(box);
 
@@ -296,6 +448,7 @@ function slugToAbbr(slug) {
     var formaLexEl = document.getElementById('gk-lex-forma-lex');
     var entradaEl = document.getElementById('gk-lex-entrada');
     var defEl = document.getElementById('gk-lex-def');
+      var lxxEl = document.getElementById('gk-lex-lxx');
 
     if (!masterDictIndex) {
       loadMasterDictionaryOnce().then(function () {
@@ -324,6 +477,9 @@ if (p && p.style.display === 'block') showPopupNear(anchorEl, g, lemma);
         if (defEl) defEl.textContent = definicion;
       }
     }
+if (lxxEl) {
+      lxxEl.innerHTML = '<div class="lxx-row muted">Buscando coincidencias en LXX…</div>';
+    }
 
     box.style.display = 'block';
 
@@ -346,6 +502,17 @@ if (p && p.style.display === 'block') showPopupNear(anchorEl, g, lemma);
 
     box.style.left = Math.round(left) + 'px';
     box.style.top = Math.round(top) + 'px';
+     var lxxKey = normalizeGreekLemmaKey(lemma || g);
+    box.setAttribute('data-lxx-key', lxxKey);
+
+    findLxxSamples(lemma || g, 4).then(function (samples) {
+      var p = document.getElementById('gk-lex-popup');
+      if (!p || p.style.display !== 'block') return;
+      if (p.getAttribute('data-lxx-key') !== lxxKey) return;
+      var lxxTarget = document.getElementById('gk-lex-lxx');
+      if (!lxxTarget) return;
+      lxxTarget.innerHTML = renderLxxItems(samples);
+    });
   }
 
   function hidePopup() {
