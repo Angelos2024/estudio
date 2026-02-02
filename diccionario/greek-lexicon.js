@@ -14,21 +14,21 @@
 
   // Cantidad de capítulos por libro MorphGNT abbr
   var ABBR_CHAPTERS = {
-    mt: 28, mk: 16, lu: 24, joh: 21,
+        mt: 28, mk: 16, lk: 24, jn: 21,
     ac: 28, ro: 16, '1co': 16, '2co': 13,
     ga: 6, eph: 6, php: 4, col: 4,
     '1th': 5, '2th': 3, '1ti': 6, '2ti': 4,
     tit: 3, phm: 1, heb: 13, jas: 5,
-    '1pe': 5, '2pe': 3, '1jo': 5, '2jo': 1,
-    '3jo': 1, jud: 1, re: 22
+    '1pe': 5, '2pe': 3, '1jn': 5, '2jn': 1,
+    '3jn': 1, jud: 1, re: 22
   };
 
   // Mapeo slug (?book=) -> abbr MorphGNT
   var BOOK_SLUG_TO_ABBR = {
     mateo: 'mt', mat: 'mt', mt: 'mt',
     marcos: 'mk', mc: 'mk', mr: 'mr',
-    lucas: 'lu', lc: 'lu', lu: 'lu',
-    juan: 'joh', jn: 'joh', joh: 'joh',
+      lucas: 'lk', lc: 'lk', lk: 'lk',
+    juan: 'jn', jn: 'jn', joh: 'jn',
 
     hechos: 'ac', ac: 'ac',
 
@@ -49,9 +49,9 @@
     santiago: 'jas', jas: 'jas',
     '1pedro': '1pe', '1pe': '1pe',
     '2pedro': '2pe', '2pe': '2pe',
-    '1juan': '1jo', '1jo': '1jo',
-    '2juan': '2jo', '2jo': '2jo',
-    '3juan': '3jo', '3jo': '3jo',
+    '1juan': '1jn', '1jn': '1jn',
+    '2juan': '2jn', '2jn': '2jn',
+    '3juan': '3jn', '3jn': '3jn',
     judas: 'jud', jud: 'jud',
     apocalipsis: 're', re: 're'
   };
