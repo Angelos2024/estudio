@@ -9,7 +9,7 @@ const INDEX_URLS = {
   he: `${SEARCH_BASE}index-he.json`
 };
 const TEXT_PACK_BASE = `${SEARCH_BASE}texts/`; // texts/<lang>/<slug>/<ch>.json
-
+const MASTER_DICT_URL = './diccionario/masterdiccionario.json';
 /***********************
  * DOM
  ***********************/
@@ -35,6 +35,8 @@ let ALL_RESULTS = [];
 let manifest = null;
 let worker = null;
 const loadedIndex = { es:false, gr:false, he:false };
+let masterDictIndex = null;
+let HIGHLIGHT_QUERY = '';
 
 // cache de packs: key = `${lang}|${slug}|${ch}` -> array de versos
 const packCache = new Map();
@@ -82,6 +84,10 @@ function getNormalizedQuery(lang, q){
   return normalizeLatin(q);
 }
 
+function hasGreekChars(s){
+  return /[\u0370-\u03FF\u1F00-\u1FFF]/.test(s || '');
+}
+
 function buildTokenRegex(token, lang){
   const escaped = token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   if(lang === 'es'){
@@ -107,7 +113,7 @@ function highlight(text, q, lang){
   if(!raw || !query) return esc(raw);
 
   const safe = esc(raw);
-const normalized = getNormalizedQuery(lang, query);
+ const normalized = getNormalizedQuery(lang, query);
   const tokens = normalized.split(' ').map(t => t.trim()).filter(t => t.length >= 2);
   if(!tokens.length) return safe;
 
@@ -132,6 +138,54 @@ function buildReaderLink(slug, bookName, chapter, v){
   p.set('version', 'RVR1960');
   p.set('orig', '1');
   return `./index.html?${p.toString()}`;
+}
+async function ensureMasterDictIndex(){
+  if(masterDictIndex) return masterDictIndex;
+  const data = await safeFetchJson(MASTER_DICT_URL);
+  const items = Array.isArray(data?.items) ? data.items : [];
+  const map = new Map();
+  for(const item of items){
+    const candidates = [item?.lemma, item?.['Forma flexionada del texto'], item?.['Forma lexica']];
+    for(const raw of candidates){
+      const key = normalizeGreek(raw);
+      if(!key) continue;
+      if(!map.has(key)) map.set(key, []);
+      map.get(key).push(item);
+    }
+  }
+  masterDictIndex = map;
+  return masterDictIndex;
+}
+
+function extractSpanishTokens(entry){
+  const def = String(entry?.definicion || '');
+  const norm = normalizeLatin(def);
+  const tokens = norm.split(' ').filter(t => /^[a-zñ]+$/i.test(t) && t.length >= 3);
+  const stopwords = new Set([
+    'lit','nt','lxx','pl','sg','adj','adv','pron','conj','prep','part','indecl',
+    'num','m','f','n','prop','pers','rel','dem','interj','fig','met','art'
+  ]);
+  return tokens.filter(t => !stopwords.has(t));
+}
+
+async function getSpanishTokensFromGreekQuery(query){
+  const index = await ensureMasterDictIndex();
+  if(!index || !index.size) return [];
+  const key = normalizeGreek(query);
+  if(!key) return [];
+  const entries = index.get(key) || [];
+  const tokens = [];
+  const seen = new Set();
+  for(const entry of entries){
+    for(const token of extractSpanishTokens(entry)){
+      if(seen.has(token)) continue;
+      seen.add(token);
+      tokens.push(token);
+      if(tokens.length >= 5) break;
+    }
+    if(tokens.length >= 5) break;
+  }
+  return tokens;
 }
 
 async function safeFetchJson(url){
@@ -273,7 +327,7 @@ function renderPage(q){
       const text = String(verses[v-1] ?? '');
       const box = card.querySelector('[data-text="1"]');
       if(box){
-        box.innerHTML = highlight(text, qEl.value, lang);
+       box.innerHTML = highlight(text, HIGHLIGHT_QUERY || qEl.value, lang);
       }
     })().catch(() => {
       const box = card.querySelector('[data-text="1"]');
@@ -300,6 +354,37 @@ async function runSearch(){
 
   try{
     statusEl.textContent = 'Preparando búsqueda...';
+    HIGHLIGHT_QUERY = q;
+
+    if(mode === 'es' && hasGreekChars(q)){
+      const spanishTokens = await getSpanishTokensFromGreekQuery(q);
+      if(spanishTokens.length){
+        statusEl.textContent = 'Preparando búsqueda inversa...';
+        await ensureIndexLoadedForMode('es');
+        statusEl.textContent = `Buscando en RVR1960: ${spanishTokens.join(', ')}...`;
+
+        const resultsByToken = await Promise.all(
+          spanishTokens.map(token => searchWithWorker('es', token))
+        );
+        const merged = [];
+        const seen = new Set();
+        for(const group of resultsByToken){
+          for(const item of group){
+            const key = `${item.lang}|${item.ref}`;
+            if(seen.has(key)) continue;
+            seen.add(key);
+            merged.push(item);
+          }
+        }
+        ALL_RESULTS = merged;
+        PAGE = 1;
+        HIGHLIGHT_QUERY = spanishTokens.join(' ');
+        statusEl.textContent = `Listo. ${ALL_RESULTS.length} resultado(s).`;
+        renderPage(HIGHLIGHT_QUERY);
+        return;
+      }
+    }
+
     await ensureIndexLoadedForMode(mode);
 
     statusEl.textContent = 'Buscando...';
