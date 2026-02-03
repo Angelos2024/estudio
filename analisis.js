@@ -165,7 +165,8 @@
     lxxVerseCache: new Map(),
     lxxSearchCache: new Map(),
      filter: 'todo',
-     last: null
+    last: null,
+     isLoading: false
    };
  
    const queryInput = document.getElementById('queryInput');
@@ -175,8 +176,15 @@
   const lemmaCorrespondence = document.getElementById('lemmaCorrespondence');
    const lemmaExamples = document.getElementById('lemmaExamples');
    const resultsByCorpus = document.getElementById('resultsByCorpus');
-   const saveSessionBtn = document.getElementById('saveSessionBtn');
-   const saveStatus = document.getElementById('saveStatus');
+  const loadingIndicator = document.getElementById('loadingIndicator');
+
+  const nextFrame = () => new Promise((resolve) => requestAnimationFrame(resolve));
+
+  function setLoading(isLoading) {
+    state.isLoading = isLoading;
+    if (loadingIndicator) loadingIndicator.hidden = !isLoading;
+    if (analyzeBtn) analyzeBtn.disabled = isLoading;
+  }
  
    function normalizeGreek(text) {
      return String(text || '')
@@ -849,36 +857,47 @@ async function loadLxxBookData(bookCode) {
    }
  
    async function analyze() {
-     const term = queryInput.value.trim();
-     if (!term) return;
+    if (state.isLoading) return;
+    setLoading(true);
+    await nextFrame();
+    const term = queryInput.value.trim();
+    if (!term) {
+      setLoading(false);
+      return;
+    }
  
-     const lang = detectLang(term);
-     const normalized = normalizeByLang(term, lang);
+      try {
+    const lang = detectLang(term);
+    const normalized = normalizeByLang(term, lang);
  
      let entry = null;
-     if (lang === 'gr') {
-       await loadDictionary();
-       entry = state.dictMap.get(normalized) || null;
-     }
+    if (lang === 'gr') {
+      await loadDictionary();
+      entry = state.dictMap.get(normalized) || null;
+    }
  
-     const index = await loadIndex(lang);
-     const refs = index.tokens?.[normalized] || [];
+     const indexPromise = loadIndex(lang);
+    const index = await indexPromise;
+    const refs = index.tokens?.[normalized] || [];
  
-     if (!refs.length) {
-       renderTags([
-         `Lema: <span class="fw-semibold">${term}</span>`,
-         'Transliteración: —',
+    if (!refs.length) {
+      renderTags([
+        `Lema: <span class="fw-semibold">${term}</span>`,
+        'Transliteración: —',
          'POS: —'
        ]);
-       lemmaSummary.textContent = 'No se encontraron ocurrencias en los índices disponibles.';
+      lemmaSummary.textContent = 'No se encontraron ocurrencias en los índices disponibles.';
       renderCorrespondence([]);
        lemmaExamples.innerHTML = '';
       state.last = { term, lang, refs: [], groupsByCorpus: [] };
-       return;
+      return;
      }
  
      await buildSummary(term, lang, entry, refs);
-    const esIndex = await loadIndex('es');
+    const esIndexPromise = loadIndex('es');
+    const grIndexPromise = loadIndex('gr');
+    const heIndexPromise = loadIndex('he');
+    const esIndex = await esIndexPromise;
    let esSearchTokens = [];
     if (lang === 'es') {
       esSearchTokens = [normalized].filter(Boolean);
@@ -919,9 +938,12 @@ async function loadLxxBookData(bookCode) {
     const greekTranslit = greekEntry?.['Forma lexica'] || '—';
     const greekLemma = greekEntry?.lemma || greekCandidate?.lemma || (lang === 'gr' ? term : '—');
 
-    const grIndex = await loadIndex('gr');
+     const grIndex = await grIndexPromise;
     const grRefs = greekTerm ? (grIndex.tokens?.[greekTerm] || []) : [];
-    const lxxMatches = greekTerm ? await buildLxxMatches(greekTerm, 70) : { refs: [], texts: new Map() };
+   const lxxMatchesPromise = greekTerm
+      ? buildLxxMatches(greekTerm, 70)
+      : Promise.resolve({ refs: [], texts: new Map() });
+    const lxxMatches = await lxxMatchesPromise;
 
     let hebrewCandidate = null;
     if (lang === 'he') {
@@ -933,75 +955,100 @@ async function loadLxxBookData(bookCode) {
     } else if (lxxMatches.refs.length) {
       hebrewCandidate = await buildHebrewCandidateFromLxxRefs(lxxMatches.refs);
     }
-    const heIndex = await loadIndex('he');
+    const heIndex = await heIndexPromise;
     const heRefs = hebrewCandidate ? (heIndex.tokens?.[hebrewCandidate.normalized] || []) : [];
 
     const cards = [];
+        const samplesTasks = [];
     if (greekTerm) {
-      const grSamples = await buildSamplesForRefs(grRefs, 'gr', 7);
-      cards.push(buildCorrespondenceCard({
-        title: 'NA28 (NT)',
-        word: greekLemma,
-        transliteration: greekTranslit,
-        samples: grSamples,
-        lang: 'gr'
-      }));
-    }
-    if (greekTerm) {
-      const lxxSamples = await buildSamplesForRefs(lxxMatches.refs, 'lxx', 7, lxxMatches.texts);
-      cards.push(buildCorrespondenceCard({
-        title: 'LXX (AT)',
-        word: greekLemma,
-        transliteration: greekTranslit,
-        samples: lxxSamples,
-        lang: 'lxx'
-      }));
+samplesTasks.push(
+        buildSamplesForRefs(grRefs, 'gr', 7).then((grSamples) => {
+          cards.push(buildCorrespondenceCard({
+            title: 'NA28 (NT)',
+            word: greekLemma,
+            transliteration: greekTranslit,
+            samples: grSamples,
+            lang: 'gr'
+          }));
+        })
+      );
+      samplesTasks.push(
+        buildSamplesForRefs(lxxMatches.refs, 'lxx', 7, lxxMatches.texts).then((lxxSamples) => {
+          cards.push(buildCorrespondenceCard({
+            title: 'LXX (AT)',
+            word: greekLemma,
+            transliteration: greekTranslit,
+            samples: lxxSamples,
+            lang: 'lxx'
+          }));
+        })
+      );
     }
     if (hebrewCandidate) {
-      const heSamples = await buildSamplesForRefs(heRefs, 'he', 7);
-      cards.push(buildCorrespondenceCard({
-        title: 'Hebreo (AT)',
-        word: hebrewCandidate.word,
-        transliteration: hebrewCandidate.transliteration,
-        samples: heSamples,
-        lang: 'he'
-      }));
+    samplesTasks.push(
+        buildSamplesForRefs(heRefs, 'he', 7).then((heSamples) => {
+          cards.push(buildCorrespondenceCard({
+            title: 'Hebreo (AT)',
+            word: hebrewCandidate.word,
+            transliteration: hebrewCandidate.transliteration,
+            samples: heSamples,
+            lang: 'he'
+          }));
+        })
+      );
     }
     const esDisplayWord = lang === 'es'
       ? term
       : (esSearchTokens[0] || term);
     if (esOtRefs.length) {
-      const esOtSamples = await buildSamplesForRefs(esOtRefs, 'es', 7);
-      cards.push(buildCorrespondenceCard({
-        title: 'RVR1960 (AT)',
-        word: esDisplayWord,
-        transliteration: '',
-        samples: esOtSamples,
-        lang: 'es'
-      }));
+      samplesTasks.push(
+        buildSamplesForRefs(esOtRefs, 'es', 7).then((esOtSamples) => {
+          cards.push(buildCorrespondenceCard({
+            title: 'RVR1960 (AT)',
+            word: esDisplayWord,
+            transliteration: '',
+            samples: esOtSamples,
+            lang: 'es'
+          }));
+        })
+      );
     }
     if (esNtRefs.length) {
-      const esNtSamples = await buildSamplesForRefs(esNtRefs, 'es', 7);
-      cards.push(buildCorrespondenceCard({
-        title: 'RVR1960 (NT)',
-        word: esDisplayWord,
-        transliteration: '',
-        samples: esNtSamples,
-        lang: 'es'
-      }));
+     samplesTasks.push(
+        buildSamplesForRefs(esNtRefs, 'es', 7).then((esNtSamples) => {
+          cards.push(buildCorrespondenceCard({
+            title: 'RVR1960 (NT)',
+            word: esDisplayWord,
+            transliteration: '',
+            samples: esNtSamples,
+            lang: 'es'
+          }));
+        })
+      );
     }
+       await Promise.all(samplesTasks);
     renderCorrespondence(cards);
-
+ const [grGroups, lxxGroups, heGroups, esGroups] = await Promise.all([
+      buildBookGroups(grRefs, 'gr'),
+      buildBookGroups(lxxMatches.refs, 'lxx', lxxMatches.texts),
+      buildBookGroups(heRefs, 'he'),
+      buildBookGroups(esRefs, 'es')
+    ]);
     const groupsByCorpus = [
-        { lang: 'gr', groups: await buildBookGroups(grRefs, 'gr'), expanded: false },
-      { lang: 'lxx', groups: await buildBookGroups(lxxMatches.refs, 'lxx', lxxMatches.texts), expanded: false },
-      { lang: 'he', groups: await buildBookGroups(heRefs, 'he'), expanded: false },
-      { lang: 'es', groups: await buildBookGroups(esRefs, 'es'), expanded: false }
+       { lang: 'gr', groups: grGroups, expanded: false },
+      { lang: 'lxx', groups: lxxGroups, expanded: false },
+      { lang: 'he', groups: heGroups, expanded: false },
+      { lang: 'es', groups: esGroups, expanded: false }
     ];
     renderResults(groupsByCorpus);
  
 
     state.last = { term, lang, refs, groupsByCorpus };
+        } catch (error) {
+      console.error('Error en el análisis:', error);
+    } finally {
+      setLoading(false);
+    }
    }
  
    function handleFilterClick(event) {
@@ -1023,17 +1070,7 @@ async function loadLxxBookData(bookCode) {
      }
    }
  
-   function saveSession() {
-     const payload = {
-       query: queryInput.value.trim(),
-       savedAt: new Date().toISOString()
-     };
-     localStorage.setItem('analisisSession', JSON.stringify(payload));
-     saveStatus.textContent = 'Sesión guardada.';
-     setTimeout(() => {
-       saveStatus.textContent = '';
-     }, 2000);
-   }
+
  
    analyzeBtn?.addEventListener('click', analyze);
    queryInput?.addEventListener('keydown', (event) => {
@@ -1044,5 +1081,4 @@ async function loadLxxBookData(bookCode) {
    });
  
    document.body.addEventListener('click', handleFilterClick);
-  saveSessionBtn?.addEventListener('click', saveSession);
 })();
