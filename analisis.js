@@ -156,9 +156,9 @@
     lxx: 'LXX'
    };
  
-   const state = {
-     dict: null,
-     dictMap: new Map(),
+ const state = {
+    dict: null,
+    dictMap: new Map(),
     hebrewDict: null,
     hebrewDictMap: new Map(),
      indexes: {},
@@ -170,7 +170,8 @@
      filter: 'todo',
     last: null,
      isLoading: false
-   };
+    };
+  const jsonCache = new Map();
  
    const queryInput = document.getElementById('queryInput');
    const analyzeBtn = document.getElementById('analyzeBtn');
@@ -227,9 +228,18 @@ function detectLang(text) {
   }
 
   async function loadJson(url) {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`No se pudo cargar ${url}`);
-    return res.json();
+   if (jsonCache.has(url)) return jsonCache.get(url);
+    const promise = fetch(url, { cache: 'force-cache' }).then((res) => {
+      if (!res.ok) throw new Error(`No se pudo cargar ${url}`);
+      return res.json();
+    });
+    jsonCache.set(url, promise);
+    try {
+      return await promise;
+    } catch (error) {
+      jsonCache.delete(url);
+      throw error;
+    }
   }
 
   async function loadDictionary() {
