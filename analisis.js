@@ -177,12 +177,14 @@
    const lemmaExamples = document.getElementById('lemmaExamples');
    const resultsByCorpus = document.getElementById('resultsByCorpus');
   const loadingIndicator = document.getElementById('loadingIndicator');
+   const resultsLoadingIndicator = document.getElementById('resultsLoadingIndicator');
 
   const nextFrame = () => new Promise((resolve) => requestAnimationFrame(resolve));
 
   function setLoading(isLoading) {
     state.isLoading = isLoading;
     if (loadingIndicator) loadingIndicator.hidden = !isLoading;
+   if (resultsLoadingIndicator) resultsLoadingIndicator.hidden = !isLoading;
     if (analyzeBtn) analyzeBtn.disabled = isLoading;
   }
  
@@ -677,6 +679,14 @@ async function loadLxxBookData(bookCode) {
       header.textContent = langLabels[lang] || lang;
       wrapper.appendChild(header);
 
+    if (corpus.loading) {
+        const loading = document.createElement('div');
+        loading.className = 'muted small';
+        loading.textContent = 'Cargando resultados...';
+        wrapper.appendChild(loading);
+        resultsByCorpus.appendChild(wrapper);
+        return;
+      }
       const filteredGroups = groups.filter((group) => {
         if (state.filter === 'todo') return true;
         return group.category === state.filter;
@@ -719,7 +729,11 @@ async function loadLxxBookData(bookCode) {
           bookHeader.textContent = group.label;
           const bookMeta = document.createElement('div');
           bookMeta.className = 'small muted';
-          bookMeta.textContent = `${group.count} ocurrencia(s).`;
+         if (lang === 'es' && group.limit) {
+            bookMeta.textContent = `${group.loadedCount} de ${group.count} ocurrencia(s).`;
+          } else {
+            bookMeta.textContent = `${group.count} ocurrencia(s).`;
+          }
           bookBlock.appendChild(bookHeader);
           bookBlock.appendChild(bookMeta);
           const bookList = document.createElement('div');
@@ -731,6 +745,27 @@ async function loadLxxBookData(bookCode) {
             bookList.appendChild(row);
           });
           bookBlock.appendChild(bookList);
+         if (lang === 'es' && group.hasMore) {
+            const loadMoreWrapper = document.createElement('div');
+            loadMoreWrapper.className = 'mt-2';
+            const loadMoreButton = document.createElement('button');
+            loadMoreButton.className = 'btn btn-soft btn-sm';
+            loadMoreButton.type = 'button';
+            loadMoreButton.disabled = group.loadingMore;
+            loadMoreButton.textContent = group.loadingMore
+              ? 'Cargando...'
+              : 'Cargar más en RVR1960';
+            loadMoreButton.addEventListener('click', async () => {
+              if (group.loadingMore) return;
+              group.loadingMore = true;
+              renderResults(groupsByCorpus);
+              await loadMoreRvr1960(group);
+              group.loadingMore = false;
+              renderResults(groupsByCorpus);
+            });
+            loadMoreWrapper.appendChild(loadMoreButton);
+            bookBlock.appendChild(loadMoreWrapper);
+          }
           list.appendChild(bookBlock);
         });
        }
@@ -749,55 +784,87 @@ async function loadLxxBookData(bookCode) {
 
   async function buildBookGroups(refs, lang, preloadedTexts = null) {
      const grouped = new Map();
-     for (const ref of refs) {
-       const [book, chapterRaw, verseRaw] = ref.split('|');
-       const chapter = Number(chapterRaw);
-       const verse = Number(verseRaw);
+     refs.forEach((ref) => {
+       const [book] = ref.split('|');
+       if (!grouped.has(book)) grouped.set(book, []);
+       grouped.get(book).push(ref);
+     });
+     
+        const limit = lang === 'es' ? 20 : 12;
+     const groups = [];
+     for (const [book, bookRefs] of grouped.entries()) {
        const { key, label } = groupForBook(book);
-
-      if (!grouped.has(book)) {
-        grouped.set(book, {
-          label: book.replace(/_/g, ' ').replace(/\b\w/g, (m) => m.toUpperCase()),
-          items: [],
-          count: 0,
-          expanded: false,
-          category: key,
-          categoryLabel: label
-        });
-       }
-
-      const group = grouped.get(book);
-       group.count += 1;
-
-      if (group.items.length < 12) {
+       const group = {
+         label: book.replace(/_/g, ' ').replace(/\b\w/g, (m) => m.toUpperCase()),
+         items: [],
+         count: bookRefs.length,
+         expanded: false,
+         category: key,
+         categoryLabel: label,
+         refs: bookRefs,
+         limit,
+         loadedCount: 0,
+         hasMore: false,
+         loadingMore: false
+       };
+       const refsToLoad = bookRefs.slice(0, limit);
+       for (const ref of refsToLoad) {
+         const [bookName, chapterRaw, verseRaw] = ref.split('|');
+         const chapter = Number(chapterRaw);
+         const verse = Number(verseRaw);
          try {
 
           const verseText = preloadedTexts?.get?.(ref);
-          if (!verseText) throw new Error('no preloaded');
+           if (!verseText) throw new Error('no preloaded');
            group.items.push({
-             ref: formatRef(book, chapter, verse),
+             ref: formatRef(bookName, chapter, verse),
              text: verseText
            });
          } catch (error) {
           try {
-            const verses = await loadChapterText(lang, book, chapter);
-            const verseText = verses?.[verse - 1] || '';
-            group.items.push({
-              ref: formatRef(book, chapter, verse),
-              text: verseText
-            });
-          } catch (innerError) {
-            group.items.push({
-              ref: formatRef(book, chapter, verse),
-              text: 'Texto no disponible.'
-            });
-          }
+             const verses = await loadChapterText(lang, bookName, chapter);
+             const verseText = verses?.[verse - 1] || '';
+             group.items.push({
+               ref: formatRef(bookName, chapter, verse),
+               text: verseText
+             });
+           } catch (innerError) {
+             group.items.push({
+               ref: formatRef(bookName, chapter, verse),
+               text: 'Texto no disponible.'
+             });
+           }
          }
        }
-     }
-     return Array.from(grouped.values()).sort((a, b) => b.count - a.count);
+      group.loadedCount = group.items.length;
+       group.hasMore = lang === 'es' && group.loadedCount < group.count;
+       groups.push(group);
+       }
+    return groups.sort((a, b) => b.count - a.count);
    }
- 
+ async function loadMoreRvr1960(group) {
+    const refsToLoad = group.refs.slice(group.loadedCount);
+    for (const ref of refsToLoad) {
+      const [book, chapterRaw, verseRaw] = ref.split('|');
+      const chapter = Number(chapterRaw);
+      const verse = Number(verseRaw);
+      try {
+        const verses = await loadChapterText('es', book, chapter);
+        const verseText = verses?.[verse - 1] || '';
+        group.items.push({
+          ref: formatRef(book, chapter, verse),
+          text: verseText
+        });
+      } catch (error) {
+        group.items.push({
+          ref: formatRef(book, chapter, verse),
+          text: 'Texto no disponible.'
+        });
+      }
+    }
+    group.loadedCount = group.items.length;
+    group.hasMore = false;
+  }
    async function buildSummary(term, lang, entry, refs) {
      const lemma = entry?.lemma || term;
      const transliteration = entry?.['Forma lexica'] || '—';
@@ -1028,22 +1095,26 @@ samplesTasks.push(
     }
        await Promise.all(samplesTasks);
     renderCorrespondence(cards);
- const [grGroups, lxxGroups, heGroups, esGroups] = await Promise.all([
-      buildBookGroups(grRefs, 'gr'),
-      buildBookGroups(lxxMatches.refs, 'lxx', lxxMatches.texts),
-      buildBookGroups(heRefs, 'he'),
-      buildBookGroups(esRefs, 'es')
-    ]);
-    const groupsByCorpus = [
-       { lang: 'gr', groups: grGroups, expanded: false },
-      { lang: 'lxx', groups: lxxGroups, expanded: false },
-      { lang: 'he', groups: heGroups, expanded: false },
-      { lang: 'es', groups: esGroups, expanded: false }
+const corpusConfigs = [
+      { lang: 'gr', refs: grRefs, preloaded: null },
+      { lang: 'lxx', refs: lxxMatches.refs, preloaded: lxxMatches.texts },
+      { lang: 'he', refs: heRefs, preloaded: null },
+      { lang: 'es', refs: esRefs, preloaded: null }
     ];
+       const groupsByCorpus = corpusConfigs.map((config) => ({
+      lang: config.lang,
+      groups: [],
+      expanded: false,
+      loading: true
+    }));
     renderResults(groupsByCorpus);
- 
-
     state.last = { term, lang, refs, groupsByCorpus };
+       await Promise.all(corpusConfigs.map(async (config, index) => {
+      const groups = await buildBookGroups(config.refs, config.lang, config.preloaded);
+      groupsByCorpus[index].groups = groups;
+      groupsByCorpus[index].loading = false;
+      renderResults(groupsByCorpus);
+    }));
         } catch (error) {
       console.error('Error en el análisis:', error);
     } finally {
