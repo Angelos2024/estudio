@@ -100,6 +100,10 @@
     <section class="panel mb-3">
       <div class="panel-header">Buscador y criterio</div>
       <div class="panel-body">
+        <div id="resultsLoadingIndicator" class="loading-indicator mb-2" role="status" aria-live="polite" hidden>
+              <span class="spinner" aria-hidden="true"></span>
+              <span>Procesando resultados por corpus...</span>
+            </div>
         <div class="row search-row g-2">
           <div class="col-12 col-lg-6">
             <label for="queryInput" class="form-label fw-semibold">Buscar palabra, lema o frase compuesta</label>
