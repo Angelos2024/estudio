@@ -127,9 +127,10 @@
     lxxFileCache: new Map(),
     lxxBookCache: new Map(),
     lxxVerseCache: new Map(),
-    popupEl: null
+    popupEl: null,
+     popupRequestId: 0
   };
-
+ const jsonCache = new Map();
   function normalizeHebrew(text) {
     return String(text || '')
       .replace(/[\u0591-\u05BD\u05BF\u05C1-\u05C2\u05C4-\u05C7]/g, '')
@@ -147,9 +148,18 @@
   }
 
   async function loadJson(url) {
-    const res = await fetch(url, { cache: 'no-store' });
-    if (!res.ok) throw new Error(`No se pudo cargar ${url}`);
-    return res.json();
+    if (jsonCache.has(url)) return jsonCache.get(url);
+    const promise = fetch(url, { cache: 'force-cache' }).then((res) => {
+      if (!res.ok) throw new Error(`No se pudo cargar ${url}`);
+      return res.json();
+        });
+    jsonCache.set(url, promise);
+    try {
+      return await promise;
+    } catch (error) {
+      jsonCache.delete(url);
+      throw error;
+    }
   }
 
   async function loadHebrewDict() {
@@ -433,8 +443,8 @@
     const normalized = normalizeHebrew(word);
     if (!normalized) return;
 
-    await loadHebrewDict();
-    const entry = state.dictMap.get(normalized) || null;
+     const requestId = ++state.popupRequestId;
+    ensurePopup();
 
     const wordEl = document.getElementById('he-lex-word');
     const entryEl = document.getElementById('he-lex-entry');
@@ -445,35 +455,57 @@
     const na28El = document.getElementById('he-lex-na28');
 
     if (wordEl) wordEl.textContent = word || normalized;
-    if (!entry) {
-      if (entryEl) entryEl.textContent = '—';
-      if (descEl) descEl.textContent = 'Sin entrada en el diccionario hebreo.';
-      if (morphEl) morphEl.textContent = '—';
-      if (variantsEl) variantsEl.textContent = '—';
-      if (refsEl) refsEl.textContent = '—';
-    } else {
-      if (entryEl) entryEl.textContent = entry.palabra || '—';
-      if (descEl) descEl.textContent = entry.descripcion || '—';
-      if (morphEl) morphEl.textContent = (entry.morfologia || []).join(', ') || '—';
-      if (variantsEl) variantsEl.textContent = (entry.variantes || []).join(', ') || '—';
-      if (refsEl) refsEl.textContent = (entry.referencias || []).join(', ') || '—';
-    }
+    if (entryEl) entryEl.textContent = 'Cargando…';
+    if (descEl) descEl.textContent = 'Buscando entrada en el diccionario hebreo…';
+    if (morphEl) morphEl.textContent = '—';
+    if (variantsEl) variantsEl.textContent = '—';
+    if (refsEl) refsEl.textContent = '—';
     if (na28El) na28El.innerHTML = '<div class="na28-row muted">Buscando correspondencias NA28…</div>';
     showPopupNear(ev.target);
 
+    let entry = null;
     try {
+      await loadHebrewDict();
+      if (requestId !== state.popupRequestId) return;
+      entry = state.dictMap.get(normalized) || null;
+      if (!entry) {
+        if (entryEl) entryEl.textContent = '—';
+        if (descEl) descEl.textContent = 'No se pudo cargar el diccionario hebreo.';
+        if (morphEl) morphEl.textContent = '—';
+        if (variantsEl) variantsEl.textContent = '—';
+        if (refsEl) refsEl.textContent = '—';
+      } else {
+        if (entryEl) entryEl.textContent = entry.palabra || '—';
+        if (descEl) descEl.textContent = entry.descripcion || '—';
+        if (morphEl) morphEl.textContent = (entry.morfologia || []).join(', ') || '—';
+        if (variantsEl) variantsEl.textContent = (entry.variantes || []).join(', ') || '—';
+        if (refsEl) refsEl.textContent = (entry.referencias || []).join(', ') || '—';
+      }
+    } catch (error) {
+      if (requestId !== state.popupRequestId) return;
+      if (entryEl) entryEl.textContent = '—';
+       if (descEl) descEl.textContent = 'No se pudo cargar el diccionario hebreo.';
+      if (morphEl) morphEl.textContent = '—';
+      if (variantsEl) variantsEl.textContent = '—';
+      if (refsEl) refsEl.textContent = '—';
+    
+    }
+       try {
       const heIndex = await loadIndex('he');
+         if (requestId !== state.popupRequestId) return;
       const refs = heIndex.tokens?.[normalized] || [];
       if (!refs.length) {
         if (na28El) na28El.innerHTML = '<div class="na28-row muted">Sin referencias hebreas en el índice.</div>';
         return;
       }
       const greekCandidate = await buildGreekCandidateFromHebrewRefs(refs);
+           if (requestId !== state.popupRequestId) return;
       if (!greekCandidate) {
         if (na28El) na28El.innerHTML = '<div class="na28-row muted">No se pudo determinar correspondencia griega.</div>';
         return;
       }
       const na28Samples = await buildNa28Samples(greekCandidate.normalized, 4);
+          if (requestId !== state.popupRequestId) return;
       if (!na28Samples.length) {
         if (na28El) na28El.innerHTML = `<div class="na28-row muted">Lema griego: ${escapeHtml(greekCandidate.lemma)} · Sin ocurrencias en NA28.</div>`;
         return;
