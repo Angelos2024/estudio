@@ -63,6 +63,24 @@
     }
     .search-row{ gap:.75rem; }
     .helper-list li{ margin-bottom:.35rem; }
+    .loading-indicator{
+      display:inline-flex;
+      align-items:center;
+      gap:.5rem;
+      font-size:.85rem;
+      color:var(--muted);
+    }
+    .loading-indicator .spinner{
+      width:1rem;
+      height:1rem;
+      border:2px solid #cbd5f5;
+      border-top-color:var(--primary);
+      border-radius:50%;
+      animation:spin .8s linear infinite;
+    }
+    @keyframes spin{
+      to{ transform:rotate(360deg); }
+    }
   </style>
 </head>
 <body>
@@ -73,9 +91,7 @@
         <div class="small muted">LXX · Hebreo · NA28 · RVR1960</div>
       </div>
       <div class="d-flex gap-2">
-        <a class="btn btn-soft btn-sm" href="index.html">Volver al lector</a>
-        <button id="saveSessionBtn" class="btn btn-primary btn-sm" type="button">Guardar sesión</button>
-        <span id="saveStatus" class="small muted align-self-center"></span>                                                                                      
+        <a class="btn btn-soft btn-sm" href="index.html">Volver al lector</a>                                                                                
       </div>
     </div>
   </header>
@@ -90,6 +106,10 @@
             <div class="input-group">
               <input id="queryInput" class="form-control" placeholder="Ej: אָב, πατήρ, origen, fuente" value="πατήρ"/>
              <button id="analyzeBtn" class="btn btn-primary" type="button">Analizar</button>
+            </div>
+             <div id="loadingIndicator" class="loading-indicator mt-2" role="status" aria-live="polite" hidden>
+              <span class="spinner" aria-hidden="true"></span>
+              <span>Procesando información...</span>
             </div>
             <div class="form-text">Se aceptan términos en hebreo, griego o español. El sistema prioriza el lema y las variantes morfológicas.</div>
           </div>
