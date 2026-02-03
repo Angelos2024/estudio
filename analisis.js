@@ -68,7 +68,55 @@
     'lxx_rahlfs_1935_Zech.json',
     'lxx_rahlfs_1935_Zeph.json',
   ];
- 
+ const LXX_TO_HEBREW_SLUG = {
+    Gen: 'genesis',
+    Exod: 'exodo',
+    Lev: 'levitico',
+    Num: 'numeros',
+    Deut: 'deuteronomio',
+    JoshA: 'josue',
+    JoshB: 'josue',
+    JudgA: 'jueces',
+    JudgB: 'jueces',
+    Ruth: 'rut',
+    '1Sam': '1_samuel',
+    '2Sam': '2_samuel',
+    '1Kgs': '1_reyes',
+    '2Kgs': '2_reyes',
+    '1Chr': '1_cronicas',
+    '2Chr': '2_cronicas',
+    '1Esdr': 'esdras',
+    '2Esdr': 'nehemias',
+    Esth: 'ester',
+    Job: 'job',
+    Ps: 'salmos',
+    Prov: 'proverbios',
+    Eccl: 'eclesiastes',
+    Song: 'cantares',
+    Isa: 'isaias',
+    Jer: 'jeremias',
+    Lam: 'lamentaciones',
+    Ezek: 'ezequiel',
+    DanOG: 'daniel',
+    DanTh: 'daniel',
+    Hos: 'oseas',
+    Joel: 'joel',
+    Amos: 'amos',
+    Obad: 'abdias',
+    Jonah: 'jonas',
+    Mic: 'miqueas',
+    Nah: 'nahum',
+    Hab: 'habacuc',
+    Zeph: 'sofonias',
+    Hag: 'hageo',
+    Zech: 'zacarias',
+    Mal: 'malaquias'
+  };
+  const HEBREW_SLUG_TO_LXX = Object.entries(LXX_TO_HEBREW_SLUG).reduce((acc, [lxx, slug]) => {
+    if (!acc[slug]) acc[slug] = [];
+    acc[slug].push(lxx);
+    return acc;
+  }, {});
    const stopwords = new Set([
      'de', 'la', 'el', 'los', 'las', 'y', 'o', 'a', 'en', 'por', 'para',
      'un', 'una', 'unos', 'unas', 'del', 'al', 'que', 'se', 'con', 'como',
@@ -113,6 +161,8 @@
      indexes: {},
      textCache: new Map(),
     lxxFileCache: new Map(),
+    lxxBookCache: new Map(),
+    lxxVerseCache: new Map(),
     lxxSearchCache: new Map(),
      filter: 'todo',
      last: null
@@ -209,7 +259,31 @@ function detectLang(text) {
     state.lxxFileCache.set(file, data);
     return data;
   }
+async function loadLxxBookData(bookCode) {
+    if (state.lxxBookCache.has(bookCode)) return state.lxxBookCache.get(bookCode);
+    for (const file of LXX_FILES) {
+      try {
+        const data = await loadLxxFile(file);
+        if (data?.text?.[bookCode]) {
+          state.lxxBookCache.set(bookCode, data);
+          return data;
+        }
+      } catch (error) {
+        continue;
+      }
+    }
+    state.lxxBookCache.set(bookCode, null);
+    return null;
+  }
 
+  async function loadLxxVerseTokens(bookCode, chapter, verse) {
+    const key = `${bookCode}|${chapter}|${verse}`;
+    if (state.lxxVerseCache.has(key)) return state.lxxVerseCache.get(key);
+    const data = await loadLxxBookData(bookCode);
+    const tokens = data?.text?.[bookCode]?.[chapter]?.[verse] || null;
+    state.lxxVerseCache.set(key, tokens);
+    return tokens;
+  }
   function transliterateHebrew(word) {
     if (!word) return '—';
     const consonants = {
@@ -326,7 +400,36 @@ function detectLang(text) {
     return payload;
   }
 
-   function extractPos(entry) {
+    async function buildGreekCandidateFromHebrewRefs(refs) {
+    if (!refs.length) return null;
+    const counts = new Map();
+    const samples = new Map();
+    for (const ref of refs.slice(0, 40)) {
+      const [slug, chapterRaw, verseRaw] = ref.split('|');
+      const chapter = Number(chapterRaw);
+      const verse = Number(verseRaw);
+      const lxxCodes = HEBREW_SLUG_TO_LXX[slug] || [];
+      for (const lxxCode of lxxCodes) {
+        const tokens = await loadLxxVerseTokens(lxxCode, chapter, verse);
+        if (!tokens) continue;
+        tokens.forEach((token) => {
+          const lemma = token?.lemma || token?.w || '';
+          const normalized = normalizeGreek(lemma);
+          if (!normalized) return;
+          counts.set(normalized, (counts.get(normalized) || 0) + 1);
+          if (!samples.has(normalized) && token?.lemma) samples.set(normalized, token.lemma);
+        });
+      }
+    }
+    if (!counts.size) return null;
+    const [best] = [...counts.entries()].sort((a, b) => b[1] - a[1])[0];
+    return {
+      normalized: best,
+      lemma: samples.get(best) || best
+    };
+  }
+
+  function extractPos(entry) {
      if (!entry) return '—';
      const raw = entry.entrada_impresa || '';
      if (!raw) return '—';
@@ -419,14 +522,27 @@ function detectLang(text) {
     };
   }
 
-   function groupForBook(book) {
-     if (TORAH.includes(book)) return { key: 'torah', label: 'Torah' };
-     if (PROPHETS.includes(book)) return { key: 'profetas', label: 'Profetas' };
-     if (WRITINGS.includes(book)) return { key: 'escritos', label: 'Escritos' };
-     if (GOSPELS.includes(book)) return { key: 'evangelios', label: 'Evangelios' };
-     if (ACTS.includes(book)) return { key: 'hechos', label: 'Hechos' };
-     if (LETTERS.includes(book)) return { key: 'cartas', label: 'Cartas' };
-     if (APOCALYPSE.includes(book)) return { key: 'apocalipsis', label: 'Apocalipsis' };
+   async function buildHebrewCandidateFromLxxRefs(refs) {
+    const mappedRefs = refs
+      .map((ref) => {
+        const [book, chapter, verse] = ref.split('|');
+        const slug = LXX_TO_HEBREW_SLUG[book];
+        if (!slug) return null;
+        return `${slug}|${chapter}|${verse}`;
+      })
+      .filter(Boolean);
+    return buildHebrewCandidateFromRefs(mappedRefs);
+  }
+
+  function groupForBook(book) {
+     const slug = LXX_TO_HEBREW_SLUG[book] || book;
+     if (TORAH.includes(slug)) return { key: 'torah', label: 'Torah' };
+     if (PROPHETS.includes(slug)) return { key: 'profetas', label: 'Profetas' };
+     if (WRITINGS.includes(slug)) return { key: 'escritos', label: 'Escritos' };
+     if (GOSPELS.includes(slug)) return { key: 'evangelios', label: 'Evangelios' };
+     if (ACTS.includes(slug)) return { key: 'hechos', label: 'Hechos' };
+     if (LETTERS.includes(slug)) return { key: 'cartas', label: 'Cartas' };
+     if (APOCALYPSE.includes(slug)) return { key: 'apocalipsis', label: 'Apocalipsis' };
      return { key: 'otros', label: 'Otros' };
    }
  
@@ -523,7 +639,8 @@ function detectLang(text) {
        return;
      }
 
-    groupsByCorpus.forEach(({ lang, groups }) => {
+   groupsByCorpus.forEach((corpus) => {
+      const { lang, groups } = corpus;
       const wrapper = document.createElement('div');
       wrapper.className = 'col-12';
        const header = document.createElement('div');
@@ -546,42 +663,54 @@ function detectLang(text) {
         return;
       }
 
-      filteredGroups.forEach((group) => {
-        const col = document.createElement('div');
-        col.className = 'mb-3';
-        const info = document.createElement('div');
-        info.className = 'd-flex align-items-center justify-content-between';
-        const meta = document.createElement('div');
-        meta.innerHTML = `
-          <div class="fw-semibold">${group.label}</div>
-          <div class="small muted">${group.count} ocurrencia(s).</div>
-        `;
-        const button = document.createElement('button');
-        button.className = 'btn btn-soft btn-sm';
-        button.type = 'button';
-        button.textContent = group.expanded ? 'Ocultar' : `Ver ${group.count} resultados`;
-        info.appendChild(meta);
-        info.appendChild(button);
+            const totalCount = filteredGroups.reduce((sum, group) => sum + group.count, 0);
+      const info = document.createElement('div');
+      info.className = 'd-flex align-items-center justify-content-between mb-2';
+      const meta = document.createElement('div');
+      meta.innerHTML = `
+        <div class="fw-semibold">Resultados en ${filteredGroups.length} libro(s)</div>
+        <div class="small muted">${totalCount} ocurrencia(s) en total.</div>
+      `;
+      const button = document.createElement('button');
+      button.className = 'btn btn-soft btn-sm';
+      button.type = 'button';
+      button.textContent = corpus.expanded ? 'Ocultar resultados' : 'Ver resultados';
+      info.appendChild(meta);
+      info.appendChild(button);
+      wrapper.appendChild(info);
 
-        const list = document.createElement('div');
-        list.className = 'mt-2 d-grid gap-1';
-        const displayItems = group.expanded ? group.items : group.items.slice(0, 3);
-        displayItems.forEach((item) => {
-          const row = document.createElement('div');
-          row.className = classForLang(lang);
-          row.textContent = `${item.ref} · ${item.text}`;
-          list.appendChild(row);
+      const list = document.createElement('div');
+      list.className = 'd-grid gap-2';
+      if (corpus.expanded) {
+        filteredGroups.forEach((group) => {
+          const bookBlock = document.createElement('div');
+          bookBlock.className = 'mb-2';
+          const bookHeader = document.createElement('div');
+          bookHeader.className = 'fw-semibold';
+          bookHeader.textContent = group.label;
+          const bookMeta = document.createElement('div');
+          bookMeta.className = 'small muted';
+          bookMeta.textContent = `${group.count} ocurrencia(s).`;
+          bookBlock.appendChild(bookHeader);
+          bookBlock.appendChild(bookMeta);
+          const bookList = document.createElement('div');
+          bookList.className = 'mt-1 d-grid gap-1';
+          group.items.forEach((item) => {
+            const row = document.createElement('div');
+            row.className = classForLang(lang);
+            row.textContent = `${item.ref} · ${item.text}`;
+            bookList.appendChild(row);
+          });
+          bookBlock.appendChild(bookList);
+          list.appendChild(bookBlock);
         });
-
-        button.addEventListener('click', () => {
-          group.expanded = !group.expanded;
-          renderResults(groupsByCorpus);
-        });
-
-        col.appendChild(info);
-        col.appendChild(list);
-        wrapper.appendChild(col);
-       });
+       }
+      wrapper.appendChild(list);
+    
+       button.addEventListener('click', () => {
+        corpus.expanded = !corpus.expanded;
+        renderResults(groupsByCorpus);
+      });
  
 
       resultsByCorpus.appendChild(wrapper);
@@ -609,7 +738,7 @@ function detectLang(text) {
        }
 
       const group = grouped.get(book);
-       group.count = 1;
+       group.count += 1;
 
       if (group.items.length < 12) {
          try {
@@ -735,15 +864,23 @@ function detectLang(text) {
 
     let greekEntry = entry;
     let greekTerm = null;
+    let greekCandidate = null;
     if (lang === 'gr') {
       greekTerm = normalized;
     } else if (lang === 'es') {
       greekEntry = await findGreekEntryForSpanish(term);
       greekTerm = greekEntry ? normalizeGreek(greekEntry.lemma) : null;
+     } else if (lang === 'he') {
+      greekCandidate = await buildGreekCandidateFromHebrewRefs(refs);
+      if (greekCandidate) {
+        greekTerm = greekCandidate.normalized;
+        await loadDictionary();
+        greekEntry = state.dictMap.get(greekTerm) || greekEntry;
+      }
     }
 
     const greekTranslit = greekEntry?.['Forma lexica'] || '—';
-    const greekLemma = greekEntry?.lemma || (lang === 'gr' ? term : '—');
+    const greekLemma = greekEntry?.lemma || greekCandidate?.lemma || (lang === 'gr' ? term : '—');
 
     const grIndex = await loadIndex('gr');
     const grRefs = greekTerm ? (grIndex.tokens?.[greekTerm] || []) : [];
@@ -756,8 +893,8 @@ function detectLang(text) {
         word: term,
         transliteration: transliterateHebrew(term)
       };
-    } else if (esOtRefs.length) {
-      hebrewCandidate = await buildHebrewCandidateFromRefs(esOtRefs);
+    } else if (lxxMatches.refs.length) {
+      hebrewCandidate = await buildHebrewCandidateFromLxxRefs(lxxMatches.refs);
     }
     const heIndex = await loadIndex('he');
     const heRefs = hebrewCandidate ? (heIndex.tokens?.[hebrewCandidate.normalized] || []) : [];
@@ -816,10 +953,10 @@ function detectLang(text) {
     renderCorrespondence(cards);
 
     const groupsByCorpus = [
-      { lang: 'gr', groups: await buildBookGroups(grRefs, 'gr') },
-      { lang: 'lxx', groups: await buildBookGroups(lxxMatches.refs, 'lxx', lxxMatches.texts) },
-      { lang: 'he', groups: await buildBookGroups(heRefs, 'he') },
-      { lang: 'es', groups: await buildBookGroups(esRefs, 'es') }
+        { lang: 'gr', groups: await buildBookGroups(grRefs, 'gr'), expanded: false },
+      { lang: 'lxx', groups: await buildBookGroups(lxxMatches.refs, 'lxx', lxxMatches.texts), expanded: false },
+      { lang: 'he', groups: await buildBookGroups(heRefs, 'he'), expanded: false },
+      { lang: 'es', groups: await buildBookGroups(esRefs, 'es'), expanded: false }
     ];
     renderResults(groupsByCorpus);
  
