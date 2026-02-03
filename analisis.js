@@ -143,34 +143,34 @@
        .replace(/[\s\u05BE]/g, '');
    }
  
-normalizaciónEspañol (texto) {
-    devuelve String(texto || '')
-      .recortar ()
+function normalizeSpanish(text) {
+    return String(text || '')
+      .trim()
       .toLowerCase()
-      .normalizar('NFD')
-      .reemplazar (/[\u0300-\u036f]/g, '')
-      .replace (/[^a-z0-9ñ]/g, '');
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9ñ]/g, '');
   }
 
-  función asíncrona loadJson(url) {
+  async function loadJson(url) {
     const res = await fetch(url);
-    si (!res.ok) lanzar nuevo Error(`No se pudo cargar ${url}`);
-    devuelve res.json();
+    if (!res.ok) throw new Error(`No se pudo cargar ${url}`);
+    return res.json();
   }
 
-  función asíncrona loadDictionary () {
-    si (estado.dict) devuelve estado.dict;
+  async function loadDictionary() {
+    if (state.dict) return state.dict;
     const data = await loadJson(DICT_URL);
-    state.dict = datos;
-    const mapa = nuevo Mapa();
-    (data.items || []).forEach (elemento) => {
-      const lemaKey = normalizeGreek(item.lemma);
-      const formKey = normalizeGreek(item['Forma flexionada de texto']);
-      si (lemmaKey && !map.has(lemmaKey)) map.set(lemmaKey, elemento);
-      si (formKey &&& !map.has (formKey)) map.set (formKey, elemento);
+    state.dict = data;
+    const map = new Map();
+    (data.items || []).forEach((item) => {
+      const lemmaKey = normalizeGreek(item.lemma);
+      const formKey = normalizeGreek(item['Forma flexionada del texto']);
+      if (lemmaKey && !map.has(lemmaKey)) map.set(lemmaKey, item);
+      if (formKey && !map.has(formKey)) map.set(formKey, item);
     });
-    state.dictMap = mapa;
-    devolver datos;
+    state.dictMap = map;
+    return data;
   }
  
    async function loadIndex(lang) {
