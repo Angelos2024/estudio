@@ -1,6 +1,7 @@
 
  (() => {
    const DICT_URL = './diccionario/masterdiccionario.json';
+  const HEBREW_DICT_URL = './diccionario/lexico_hebreo.json';
    const SEARCH_INDEX = {
      es: './search/index-es.json',
      gr: './search/index-gr.json',
@@ -158,6 +159,8 @@
    const state = {
      dict: null,
      dictMap: new Map(),
+    hebrewDict: null,
+    hebrewDictMap: new Map(),
      indexes: {},
      textCache: new Map(),
     lxxFileCache: new Map(),
@@ -176,14 +179,13 @@
   const lemmaCorrespondence = document.getElementById('lemmaCorrespondence');
    const lemmaExamples = document.getElementById('lemmaExamples');
    const resultsByCorpus = document.getElementById('resultsByCorpus');
-  const loadingIndicator = document.getElementById('loadingIndicator');
    const resultsLoadingIndicator = document.getElementById('resultsLoadingIndicator');
 
   const nextFrame = () => new Promise((resolve) => requestAnimationFrame(resolve));
 
   function setLoading(isLoading) {
     state.isLoading = isLoading;
-    if (loadingIndicator) loadingIndicator.hidden = !isLoading;
+  
    if (resultsLoadingIndicator) resultsLoadingIndicator.hidden = !isLoading;
     if (analyzeBtn) analyzeBtn.disabled = isLoading;
   }
@@ -244,7 +246,18 @@ function detectLang(text) {
     state.dictMap = map;
     return data;
   }
- 
+ async function loadHebrewDictionary() {
+    if (state.hebrewDict) return state.hebrewDict;
+    const data = await loadJson(HEBREW_DICT_URL);
+    state.hebrewDict = data;
+    const map = new Map();
+    (data || []).forEach((item) => {
+      const key = normalizeHebrew(item?.palabra || '');
+      if (key && !map.has(key)) map.set(key, item);
+    });
+    state.hebrewDictMap = map;
+    return data;
+  }
    async function loadIndex(lang) {
      if (state.indexes[lang]) return state.indexes[lang];
      const data = await loadJson(SEARCH_INDEX[lang]);
@@ -865,11 +878,12 @@ async function loadLxxBookData(bookCode) {
     group.loadedCount = group.items.length;
     group.hasMore = false;
   }
-   async function buildSummary(term, lang, entry, refs) {
+  async function buildSummary(term, lang, entry, hebrewEntry, refs) {
      const lemma = entry?.lemma || term;
      const transliteration = entry?.['Forma lexica'] || '—';
      const pos = extractPos(entry);
-     const definition = entry?.definicion || '';
+     const hebrewDefinition = hebrewEntry?.descripcion || '';
+     const definition = lang === 'he' ? hebrewDefinition : (entry?.definicion || '');
      const defShort = definition ? shortDefinition(definition) : '';
      const keywords = keywordList(definition);
     const summaryParts = [];
@@ -938,9 +952,13 @@ async function loadLxxBookData(bookCode) {
     const normalized = normalizeByLang(term, lang);
  
      let entry = null;
+       let hebrewEntry = null;
     if (lang === 'gr') {
       await loadDictionary();
       entry = state.dictMap.get(normalized) || null;
+      } else if (lang === 'he') {
+      await loadHebrewDictionary();
+      hebrewEntry = state.hebrewDictMap.get(normalized) || null;
     }
  
      const indexPromise = loadIndex(lang);
@@ -960,7 +978,7 @@ async function loadLxxBookData(bookCode) {
       return;
      }
  
-     await buildSummary(term, lang, entry, refs);
+      await buildSummary(term, lang, entry, hebrewEntry, refs);
     const esIndexPromise = loadIndex('es');
     const grIndexPromise = loadIndex('gr');
     const heIndexPromise = loadIndex('he');
@@ -970,6 +988,8 @@ async function loadLxxBookData(bookCode) {
       esSearchTokens = [normalized].filter(Boolean);
     } else if (entry?.definicion) {
       esSearchTokens = extractSpanishTokensFromDefinition(entry.definicion);
+       } else if (lang === 'he' && hebrewEntry?.descripcion) {
+      esSearchTokens = extractSpanishTokensFromDefinition(hebrewEntry.descripcion);
     } else {
       esSearchTokens = [normalizeSpanish(term)].filter(Boolean);
     }
@@ -1024,7 +1044,20 @@ async function loadLxxBookData(bookCode) {
     }
     const heIndex = await heIndexPromise;
     const heRefs = hebrewCandidate ? (heIndex.tokens?.[hebrewCandidate.normalized] || []) : [];
-
+const posTag = lang === 'gr' ? extractPos(entry) : '—';
+    const lemmaLabel = lang === 'gr' ? (entry?.lemma || term) : term;
+    const translitLabel = lang === 'he'
+      ? transliterateHebrew(term)
+      : (entry?.['Forma lexica'] || '—');
+    renderTags([
+      `Lema: <span class="fw-semibold">${lemmaLabel}</span>`,
+      `Transliteración: ${translitLabel}`,
+      `POS: ${posTag}`,
+      `NA28: ${grRefs.length}`,
+      `LXX: ${lxxMatches.refs.length}`,
+      `Hebreo: ${heRefs.length}`,
+      `RVR1960: ${esRefs.length}`
+    ]);
     const cards = [];
         const samplesTasks = [];
     if (greekTerm) {
