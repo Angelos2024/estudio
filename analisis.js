@@ -458,8 +458,29 @@ async function loadLxxBookData(bookCode) {
        if (!keywords.includes(word)) keywords.push(word);
        if (keywords.length >= 6) break;
      }
-     return keywords;
-   }
+    return keywords;
+  }
+
+  function extractSpanishTokensFromDefinition(definition) {
+    if (!definition) return [];
+    const cleaned = definition
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-zñ\s]/g, ' ');
+    const words = cleaned.split(/\s+/).filter((word) => word.length >= 3);
+    const extraStopwords = new Set([
+      'lit', 'nt', 'lxx', 'pl', 'sg', 'adj', 'adv', 'pron', 'conj', 'prep',
+      'part', 'indecl', 'num', 'prop', 'pers', 'rel', 'dem', 'interj', 'fig',
+      'met', 'art'
+    ]);
+    const tokens = [];
+    words.forEach((word) => {
+      if (stopwords.has(word) || extraStopwords.has(word)) return;
+      if (!tokens.includes(word)) tokens.push(word);
+    });
+    return tokens;
+  }
  
   function splitRefsByTestament(refs) {
     const ot = [];
@@ -858,8 +879,24 @@ async function loadLxxBookData(bookCode) {
  
      await buildSummary(term, lang, entry, refs);
     const esIndex = await loadIndex('es');
-    const esNormalized = lang === 'es' ? normalized : normalizeSpanish(term);
-    const esRefs = esIndex.tokens?.[esNormalized] || [];
+   let esSearchTokens = [];
+    if (lang === 'es') {
+      esSearchTokens = [normalized].filter(Boolean);
+    } else if (entry?.definicion) {
+      esSearchTokens = extractSpanishTokensFromDefinition(entry.definicion);
+    } else {
+      esSearchTokens = [normalizeSpanish(term)].filter(Boolean);
+    }
+    const esRefs = [];
+    const esSeen = new Set();
+    esSearchTokens.forEach((token) => {
+      const matches = esIndex.tokens?.[token] || [];
+      matches.forEach((ref) => {
+        if (esSeen.has(ref)) return;
+        esSeen.add(ref);
+        esRefs.push(ref);
+      });
+    });
     const { ot: esOtRefs, nt: esNtRefs } = splitRefsByTestament(esRefs);
 
     let greekEntry = entry;
@@ -930,11 +967,14 @@ async function loadLxxBookData(bookCode) {
         lang: 'he'
       }));
     }
+    const esDisplayWord = lang === 'es'
+      ? term
+      : (esSearchTokens[0] || term);
     if (esOtRefs.length) {
       const esOtSamples = await buildSamplesForRefs(esOtRefs, 'es', 7);
       cards.push(buildCorrespondenceCard({
         title: 'RVR1960 (AT)',
-        word: term,
+        word: esDisplayWord,
         transliteration: '',
         samples: esOtSamples,
         lang: 'es'
@@ -944,7 +984,7 @@ async function loadLxxBookData(bookCode) {
       const esNtSamples = await buildSamplesForRefs(esNtRefs, 'es', 7);
       cards.push(buildCorrespondenceCard({
         title: 'RVR1960 (NT)',
-        word: term,
+        word: esDisplayWord,
         transliteration: '',
         samples: esNtSamples,
         lang: 'es'
