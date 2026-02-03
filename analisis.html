@@ -74,7 +74,8 @@
       </div>
       <div class="d-flex gap-2">
         <a class="btn btn-soft btn-sm" href="index.html">Volver al lector</a>
-        <button class="btn btn-primary btn-sm" type="button">Guardar sesión</button>
+        <button id="saveSessionBtn" class="btn btn-primary btn-sm" type="button">Guardar sesión</button>
+        <span id="saveStatus" class="small muted align-self-center"></span>                                                                                      
       </div>
     </div>
   </header>
@@ -88,27 +89,19 @@
             <label for="queryInput" class="form-label fw-semibold">Buscar palabra, lema o frase compuesta</label>
             <div class="input-group">
               <input id="queryInput" class="form-control" placeholder="Ej: אָב, πατήρ, origen, fuente" value="πατήρ"/>
-              <button class="btn btn-primary" type="button">Analizar</button>
+             <button id="analyzeBtn" class="btn btn-primary" type="button">Analizar</button>
             </div>
             <div class="form-text">Se aceptan términos en hebreo, griego o español. El sistema prioriza el lema y las variantes morfológicas.</div>
           </div>
           <div class="col-12 col-lg-6">
-            <label class="form-label fw-semibold">Colecciones a consultar</label>
-            <div class="d-flex flex-wrap gap-2">
-              <span class="tag">LXX (Griego)</span>
-              <span class="tag">Hebreo (IdiomaORIGEN)</span>
-              <span class="tag">NA28 (Griego NT)</span>
-              <span class="tag">RVR1960 (Español)</span>
+         <label class="form-label fw-semibold">Filtros rápidos</label>
+ <button class="btn btn-soft btn-sm" type="button" data-filter="torah">Torah</button>
+              <button class="btn btn-soft btn-sm" type="button" data-filter="profetas">Profetas</button>
+              <button class="btn btn-soft btn-sm" type="button" data-filter="evangelios">Evangelios</button>
+              <button class="btn btn-soft btn-sm" type="button" data-filter="cartas">Cartas</button>
+              <button class="btn btn-soft btn-sm" type="button" data-filter="todo">Todo</button>
             </div>
-            <div class="mt-2">
-              <label class="form-label fw-semibold">Filtros rápidos</label>
-              <div class="d-flex flex-wrap gap-2">
-                <button class="btn btn-soft btn-sm" type="button">Torah</button>
-                <button class="btn btn-soft btn-sm" type="button">Profetas</button>
-                <button class="btn btn-soft btn-sm" type="button">Evangelios</button>
-                <button class="btn btn-soft btn-sm" type="button">Cartas</button>
-              </div>
-            </div>
+            <div class="form-text">Los filtros ajustan los resultados por corpus según el idioma detectado.</div>
           </div>
         </div>
       </div>
@@ -120,22 +113,10 @@
           <div class="panel-header">Resumen del lema</div>
           <div class="panel-body">
             <div class="d-flex flex-column gap-2">
-              <div class="d-flex flex-wrap gap-2">
-                <span class="tag">Lema: <span class="fw-semibold">πατήρ</span></span>
-                <span class="tag">Transliteración: patēr</span>
-                <span class="tag">POS: sustantivo</span>
-              </div>
-              <p class="mb-2">Usos principales: padre biológico, ancestro, fuente/origen, figura de autoridad. Incluye usos metafóricos para “origen” o “fundamento”.</p>
-              <div class="example-card">
-                <div class="fw-semibold">Comparativo rápido</div>
-                <div class="small muted">Hebreo equivalente</div>
-                <div class="hebrew">אָב</div>
-              </div>
-              <div class="example-card">
-                <div class="fw-semibold">Traducción RVR1960</div>
-                <div class="small muted">Ejemplo contextual</div>
-                <div>“Padre… fuente de vida”</div>
-              </div>
+              
+        <div id="lemmaTags" class="d-flex flex-wrap gap-2"></div>
+              <p id="lemmaSummary" class="mb-2 small muted">Escribe un término para generar el resumen del lema.</p>
+              <div id="lemmaExamples" class="d-grid gap-2"></div>
             </div>
           </div>
         </section>
@@ -145,96 +126,30 @@
         <section class="panel">
           <div class="panel-header">Resultados por corpus</div>
           <div class="panel-body">
-            <div class="row g-3">
-              <div class="col-12">
-                <div class="d-flex align-items-center justify-content-between">
-                  <div>
-                    <div class="fw-semibold">LXX · Torah</div>
-                    <div class="small muted">Usos relacionados con origen, autoridad y linaje.</div>
-                  </div>
-                  <button class="btn btn-soft btn-sm" type="button">Ver 42 resultados</button>
-                </div>
-                <div class="mt-2 greek">Gen 4:20 · ὁ πατὴρ πάντων τῶν κατοικούντων ἐν σκηναῖς…</div>
-                <div class="mt-1 greek">Ex 4:22 · υἱός μου πρωτότοκος Ἰσραήλ…</div>
-              </div>
-              <div class="col-12">
-                <div class="d-flex align-items-center justify-content-between">
-                  <div>
-                    <div class="fw-semibold">NA28 · Evangelios</div>
-                    <div class="small muted">Contrastes entre paternidad y fuente de vida.</div>
-                  </div>
-                  <button class="btn btn-soft btn-sm" type="button">Ver 75 resultados</button>
-                </div>
-                <div class="mt-2 greek">Jn 1:14 · δόξαν ὡς μονογενοῦς παρὰ πατρός…</div>
-                <div class="mt-1 greek">Mt 5:45 · ὅπως γένησθε υἱοὶ τοῦ πατρὸς ὑμῶν…</div>
-              </div>
-              <div class="col-12">
-                <div class="d-flex align-items-center justify-content-between">
-                  <div>
-                    <div class="fw-semibold">Hebreo · Torah</div>
-                    <div class="small muted">Sentido de origen y cabeza de familia.</div>
-                  </div>
-                  <button class="btn btn-soft btn-sm" type="button">Ver 60 resultados</button>
-                </div>
-                <div class="mt-2 hebrew">בראשית ד:כ · אָב כָּל־תֹּפֵשׂ כִּנּוֹר וְעוּגָב</div>
-                <div class="mt-1 hebrew">שמות כ:יב · כַּבֵּד אֶת־אָבִיךָ וְאֶת־אִמֶּךָ</div>
-              </div>
-            </div>
+            <div id="resultsByCorpus" class="row g-3"></div>
           </div>
         </section>
       </div>
     </div>
 
     <div class="row g-3 mt-1">
-      <div class="col-12 col-lg-7">
+       <div class="col-12">
         <section class="panel h-100">
           <div class="panel-header">Desglose morfológico y semántico</div>
           <div class="panel-body">
             <div class="mb-3">
               <div class="fw-semibold">Desglose</div>
-              <ul class="helper-list small">
-                <li>Forma analizada: <span class="greek">πατήρ</span> · nominativo singular masculino.</li>
-                <li>Campos semánticos: origen, autoridad, ancestro, cuidador.</li>
-                <li>Equivalente hebreo común: <span class="hebrew">אָב</span> (av).</li>
-              </ul>
+              <ul id="breakdownList" class="helper-list small"></ul>
             </div>
             <div>
               <div class="fw-semibold">Notas para crítica textual</div>
-              <p class="small mb-0">Comparar variantes: presencia/ausencia de artículo, uso de genitivo (“del padre”) y equivalencias en traducciones españolas para detectar cambios de énfasis en “origen” vs “paternidad”.</p>
-            </div>
-          </div>
-        </section>
-      </div>
-      <div class="col-12 col-lg-5">
-        <section class="panel h-100">
-          <div class="panel-header">Léxicos y diccionarios disponibles</div>
-          <div class="panel-body">
-            <div class="lexicon-grid">
-              <div class="example-card">
-                <div class="fw-semibold">Diccionario griego</div>
-                <div class="small muted">LXX · NA28</div>
-                <div class="small">BDAG, Liddell-Scott, Strong G3962</div>
-              </div>
-              <div class="example-card">
-                <div class="fw-semibold">Diccionario hebreo</div>
-                <div class="small muted">IdiomaORIGEN</div>
-                <div class="small">BDB, Strong H1, HALOT</div>
-              </div>
-              <div class="example-card">
-                <div class="fw-semibold">Diccionario español</div>
-                <div class="small muted">RVR1960</div>
-                <div class="small">Notas de traducción, sinónimos, uso histórico</div>
-              </div>
-              <div class="example-card">
-                <div class="fw-semibold">Concordancia</div>
-                <div class="small muted">Corpora cruzados</div>
-                <div class="small">Comparativa de frecuencia y contexto</div>
-              </div>
+            <p id="textualNotes" class="small mb-0">Las notas se generan con base en el diccionario y las ocurrencias del corpus.</p>
             </div>
           </div>
         </section>
       </div>
     </div>
   </main>
+  <script src="./analisis.js"></script>
 </body>
 </html>
