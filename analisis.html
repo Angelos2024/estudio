@@ -100,20 +100,12 @@
     <section class="panel mb-3">
       <div class="panel-header">Buscador y criterio</div>
       <div class="panel-body">
-        <div id="resultsLoadingIndicator" class="loading-indicator mb-2" role="status" aria-live="polite" hidden>
-              <span class="spinner" aria-hidden="true"></span>
-              <span>Procesando resultados por corpus...</span>
-            </div>
         <div class="row search-row g-2">
           <div class="col-12 col-lg-6">
             <label for="queryInput" class="form-label fw-semibold">Buscar palabra, lema o frase compuesta</label>
             <div class="input-group">
               <input id="queryInput" class="form-control" placeholder="Ej: אָב, πατήρ, origen, fuente" value="πατήρ"/>
              <button id="analyzeBtn" class="btn btn-primary" type="button">Analizar</button>
-            </div>
-             <div id="loadingIndicator" class="loading-indicator mt-2" role="status" aria-live="polite" hidden>
-              <span class="spinner" aria-hidden="true"></span>
-              <span>Procesando información...</span>
             </div>
             <div class="form-text">Se aceptan términos en hebreo, griego o español. El sistema prioriza el lema y las variantes morfológicas.</div>
           </div>
@@ -152,7 +144,13 @@
 
       <div class="col-12 col-lg-8">
         <section class="panel">
-          <div class="panel-header">Resultados por corpus</div>
+         <div class="panel-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <span>Resultados por corpus</span>
+            <div id="resultsLoadingIndicator" class="loading-indicator" role="status" aria-live="polite" hidden>
+              <span class="spinner" aria-hidden="true"></span>
+              <span>Procesando resultados por corpus...</span>
+            </div>
+          </div>
           <div class="panel-body">
             <div id="resultsByCorpus" class="row g-3"></div>
           </div>
