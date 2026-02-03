@@ -143,22 +143,35 @@
        .replace(/[\s\u05BE]/g, '');
    }
  
-   function normalizeSpanish(text) {
-     return String(text || '')
-       .trim()
-       .toLowerCase()
-       .normalize('NFD')
-       .replace(/[\u0300-\u036f]/g, '')
-       .replace(/[^a-z0-9ñ]/g, '');
-@@ -111.209 +178.476 @@@@
-       const lemmaKey = normalizeGreek(item.lemma);
-       const formKey = normalizeGreek(item['Forma flexionada del texto']);
-       if (lemmaKey && !map.has(lemmaKey)) map.set(lemmaKey, item);
-       if (formKey && !map.has(formKey)) map.set(formKey, item);
-     });
-     state.dictMap = map;
-     return data;
-   }
+normalizaciónEspañol (texto) {
+    devuelve String(texto || '')
+      .recortar ()
+      .toLowerCase()
+      .normalizar('NFD')
+      .reemplazar (/[\u0300-\u036f]/g, '')
+      .replace (/[^a-z0-9ñ]/g, '');
+  }
+
+  función asíncrona loadJson(url) {
+    const res = await fetch(url);
+    si (!res.ok) lanzar nuevo Error(`No se pudo cargar ${url}`);
+    devuelve res.json();
+  }
+
+  función asíncrona loadDictionary () {
+    si (estado.dict) devuelve estado.dict;
+    const data = await loadJson(DICT_URL);
+    state.dict = datos;
+    const mapa = nuevo Mapa();
+    (data.items || []).forEach (elemento) => {
+      const lemaKey = normalizeGreek(item.lemma);
+      const formKey = normalizeGreek(item['Forma flexionada de texto']);
+      si (lemmaKey && !map.has(lemmaKey)) map.set(lemmaKey, elemento);
+      si (formKey &&& !map.has (formKey)) map.set (formKey, elemento);
+    });
+    state.dictMap = mapa;
+    devolver datos;
+  }
  
    async function loadIndex(lang) {
      if (state.indexes[lang]) return state.indexes[lang];
@@ -232,15 +245,15 @@
     };
     const decomposed = word.normalize('NFD');
     let output = '';
-    for (let i = 0; i < decomposed.length; i = 1) {
+     for (let i = 0; i < decomposed.length; i += 1) {
       const char = decomposed[i];
       if (!consonants.hasOwnProperty(char)) {
         const vowel = vowelMap[char];
-        if (vowel) output = vowel;
+        if (vowel) output += vowel;
         continue;
       }
       let consonant = consonants[char];
-      let j = i  1;
+      let j = i + 1;
       let vowel = '';
       let hasShinDot = false;
       let hasSinDot = false;
@@ -248,7 +261,7 @@
         if (decomposed[j] === '\u05C1') hasShinDot = true;
         if (decomposed[j] === '\u05C2') hasSinDot = true;
         vowel = vowelMap[decomposed[j]] || '';
-        j = 1;
+        j += 1;
       }
       if (char === 'ש') {
         consonant = hasSinDot ? 's' : 'sh';
@@ -377,7 +390,7 @@
           const cleaned = token.replace(/[׃,:;.!?()"“”]/g, '');
           const normalized = normalizeHebrew(cleaned);
           if (!normalized || hebrewStopwords.has(normalized)) return;
-          counts.set(normalized, (counts.get(normalized) || 0)  1);
+          counts.set(normalized, (counts.get(normalized) || 0) + 1);
           if (!samples.has(normalized)) samples.set(normalized, cleaned);
         });
       } catch (error) {
@@ -622,22 +635,32 @@
      const definition = entry?.definicion || '';
      const defShort = definition ? shortDefinition(definition) : '';
      const keywords = keywordList(definition);
- 
-     let sampleRef = null;
-     let sampleText = '';
-     let sampleEs = '';
-     if (refs.length) {
-       const [book, chapterRaw, verseRaw] = refs[0].split('|');
-       const chapter = Number(chapterRaw);
-       const verse = Number(verseRaw);
-       sampleRef = formatRef(book, chapter, verse);
-       try {
-         const verses = await loadChapterText(lang, book, chapter);
-         sampleText = verses?.[verse - 1] || '';
-@@ -344,126 678,196 @@
-     if (!summaryParts.length) summaryParts.push('No se encontró definición directa, se usa la concordancia del corpus para contexto.');
-     lemmaSummary.textContent = summaryParts.join(' ');
- 
+    const summaryParts = [];
+    if (defShort) summaryParts.push(defShort);
+    if (definition && definition !== defShort) summaryParts.push(definition);
+
+    let sampleRef = null;
+    let sampleText = '';
+    let sampleEs = '';
+    if (refs.length) {
+      const [book, chapterRaw, verseRaw] = refs[0].split('|');
+      const chapter = Number(chapterRaw);
+      const verse = Number(verseRaw);
+      sampleRef = formatRef(book, chapter, verse);
+      try {
+        const verses = await loadChapterText(lang, book, chapter);
+        sampleText = verses?.[verse - 1] || '';
+        if (lang !== 'es') {
+          const versesEs = await loadChapterText('es', book, chapter);
+          sampleEs = versesEs?.[verse - 1] || '';
+        }
+      } catch (error) {
+        sampleText = '';
+        sampleEs = '';
+      }
+    }
+    if (!summaryParts.length) summaryParts.push('No se encontró definición directa, se usa la concordancia del corpus para contexto.');
+    lemmaSummary.textContent = summaryParts.join(' ');
      const cards = [];
      if (sampleRef && sampleText) {
        cards.push(`
@@ -832,4 +855,5 @@
    });
  
    document.body.addEventListener('click', handleFilterClick);
-   saveSessionBtn?.addEventListener('click', saveSession);
+  saveSessionBtn?.addEventListener('click', saveSession);
+})();
