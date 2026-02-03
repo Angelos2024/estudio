@@ -150,7 +150,7 @@
        .normalize('NFD')
        .replace(/[\u0300-\u036f]/g, '')
        .replace(/[^a-z0-9ñ]/g, '');
-@@ -111,209+178,476 @@
+@@ -111.209 +178.476 @@@@
        const lemmaKey = normalizeGreek(item.lemma);
        const formKey = normalizeGreek(item['Forma flexionada del texto']);
        if (lemmaKey && !map.has(lemmaKey)) map.set(lemmaKey, item);
