@@ -226,6 +226,22 @@ function normalizeSpanish(text) {
       .replace(/[\u0300-\u036f]/g, '')
       .replace(/[^a-z0-9ñ]/g, '');
   }
+  function normalizeTransliteration(text) {
+    return normalizeSpanish(text).replace(/ñ/g, 'n');
+  }
+
+  function buildTranslitVariants(text) {
+    const base = normalizeTransliteration(text);
+    if (!base) return [];
+    const variants = new Set([base]);
+    variants.add(base.replace(/u/g, 'v'));
+    variants.add(base.replace(/v/g, 'u'));
+    variants.add(base.replace(/y/g, 'i'));
+    variants.add(base.replace(/i/g, 'y'));
+    variants.add(base.replace(/au/g, 'av'));
+    variants.add(base.replace(/ou/g, 'ov'));
+    return [...variants].filter(Boolean);
+  }
   function getNormalizedQuery(lang, query) {
     if (lang === 'gr' || lang === 'lxx') return normalizeGreek(query);
     if (lang === 'he') return normalizeHebrew(query);
@@ -300,15 +316,37 @@ function detectLang(text) {
     if (state.dict) return state.dict;
     const data = await loadJson(DICT_URL);
     state.dict = data;
-    const map = new Map();
+    const translitMap = new Map();
     (data.items || []).forEach((item) => {
       const lemmaKey = normalizeGreek(item.lemma);
       const formKey = normalizeGreek(item['Forma flexionada del texto']);
       if (lemmaKey && !map.has(lemmaKey)) map.set(lemmaKey, item);
       if (formKey && !map.has(formKey)) map.set(formKey, item);
+      const translitKeys = [
+        ...buildTranslitVariants(item['Forma lexica']),
+        ...buildTranslitVariants(item['Forma flexionada del texto'])
+      ];
+      translitKeys.forEach((key) => {
+        if (!key || translitMap.has(key)) return;
+        translitMap.set(key, item);
+      });
     });
     state.dictMap = map;
+    state.dictTranslitMap = translitMap;
     return data;
+  }
+  async function findGreekEntryFromSpanish(term) {
+    if (!term) return null;
+    await loadDictionary();
+    const tokens = String(term || '').split(/\s+/).filter(Boolean);
+    const candidates = [term, ...tokens];
+    for (const candidate of candidates) {
+      const key = normalizeTransliteration(candidate);
+      if (!key) continue;
+      const entry = state.dictTranslitMap.get(key);
+      if (entry) return entry;
+    }
+    return null;
   }
  async function loadHebrewDictionary() {
     if (state.hebrewDict) return state.hebrewDict;
@@ -753,7 +791,7 @@ function mapOtRefsToLxxRefs(refs) {
      });
    }
  
-  async function buildSamplesForRefs(refs, lang, max = 7, preloadedTexts = null) {
+  async function buildSamplesForRefs(refs, lang, max = 3, preloadedTexts = null) {
     const samples = [];
     for (const ref of refs.slice(0, max)) {
       const [book, chapterRaw, verseRaw] = ref.split('|');
@@ -1117,11 +1155,20 @@ function mapOtRefsToLxxRefs(refs) {
       esSearchTokens = [normalizeSpanish(term)].filter(Boolean);
     }
        const esDisplayWord = lang === 'es' ? term : (esSearchTokens[0] || '');
+    let greekEntry = entry;
+    let greekTerm = null;
+    let greekCandidate = null;
+    if (lang === 'es') {
+      greekEntry = await findGreekEntryFromSpanish(term);
+      if (greekEntry?.lemma) {
+        greekTerm = normalizeGreek(greekEntry.lemma);
+      }
+    }
     const summaryHighlightQueries = {
       es: esDisplayWord,
       [lang]: lang === 'gr' ? (entry?.lemma || term) : term
     };
-    await buildSummary(term, lang, entry, hebrewEntry, refs, summaryHighlightQueries);
+    await buildSummary(term, lang, entry || greekEntry, hebrewEntry, refs, summaryHighlightQueries);
     const esRefs = [];
     const esSeen = new Set();
     esSearchTokens.forEach((token) => {
@@ -1134,24 +1181,23 @@ function mapOtRefsToLxxRefs(refs) {
     });
     const { ot: esOtRefs, nt: esNtRefs } = splitRefsByTestament(esRefs);
 
-    let greekEntry = entry;
-    let greekTerm = null;
-    let greekCandidate = null;
     if (lang === 'gr') {
       greekTerm = normalized;
     } else if (lang === 'es') {
-      const ntCandidate = esNtRefs.length ? await buildGreekCandidateFromGreekRefs(esNtRefs) : null;
-      const otLxxRefs = esOtRefs.length ? mapOtRefsToLxxRefs(esOtRefs) : [];
-      const otCandidate = otLxxRefs.length ? await buildGreekCandidateFromLxxRefs(otLxxRefs) : null;
-      if (ntCandidate && otCandidate) {
-        greekCandidate = ntCandidate.count >= otCandidate.count ? ntCandidate : otCandidate;
-      } else {
-        greekCandidate = ntCandidate || otCandidate;
-      }
-      if (greekCandidate) {
-        greekTerm = greekCandidate.normalized;
-        await loadDictionary();
-        greekEntry = state.dictMap.get(greekTerm) || greekEntry;
+      if (!greekTerm) {
+        const ntCandidate = esNtRefs.length ? await buildGreekCandidateFromGreekRefs(esNtRefs) : null;
+        const otLxxRefs = esOtRefs.length ? mapOtRefsToLxxRefs(esOtRefs) : [];
+        const otCandidate = otLxxRefs.length ? await buildGreekCandidateFromLxxRefs(otLxxRefs) : null;
+        if (ntCandidate && otCandidate) {
+          greekCandidate = ntCandidate.count >= otCandidate.count ? ntCandidate : otCandidate;
+        } else {
+          greekCandidate = ntCandidate || otCandidate;
+        }
+        if (greekCandidate) {
+          greekTerm = greekCandidate.normalized;
+          await loadDictionary();
+          greekEntry = state.dictMap.get(greekTerm) || greekEntry;
+        }
       }
     } else if (lang === 'he') {
       greekCandidate = await buildGreekCandidateFromHebrewRefs(refs);
@@ -1180,7 +1226,12 @@ function mapOtRefsToLxxRefs(refs) {
         transliteration: transliterateHebrew(term)
       };
      } else if (lang === 'es') {
-      hebrewCandidate = esOtRefs.length ? await buildHebrewCandidateFromRefs(esOtRefs) : null;
+     if (greekTerm && lxxMatches.refs.length) {
+        hebrewCandidate = await buildHebrewCandidateFromLxxRefs(lxxMatches.refs);
+      }
+      if (!hebrewCandidate && esOtRefs.length) {
+        hebrewCandidate = await buildHebrewCandidateFromRefs(esOtRefs);
+      }
     } else if (lxxMatches.refs.length) {
       hebrewCandidate = await buildHebrewCandidateFromLxxRefs(lxxMatches.refs);
     }
@@ -1210,7 +1261,7 @@ const posTag = lang === 'gr' ? extractPos(entry) : '—';
         const samplesTasks = [];
    if (greekTerm && grRefs.length) {
 samplesTasks.push(
-        buildSamplesForRefs(grRefs, 'gr', 7).then((grSamples) => {
+        buildSamplesForRefs(grRefs, 'gr', 3).then((grSamples) => {
           cards.push(buildCorrespondenceCard({
             title: 'NA28 (NT)',
             word: greekLemma,
@@ -1224,7 +1275,7 @@ samplesTasks.push(
      }
     if (greekTerm && lxxMatches.refs.length) {
       samplesTasks.push(
-        buildSamplesForRefs(lxxMatches.refs, 'lxx', 7, lxxMatches.texts).then((lxxSamples) => {
+        buildSamplesForRefs(lxxMatches.refs, 'lxx', 3, lxxMatches.texts).then((lxxSamples) => {
           cards.push(buildCorrespondenceCard({
             title: 'LXX (AT)',
             word: greekLemma,
@@ -1238,7 +1289,7 @@ samplesTasks.push(
     }
    if (hebrewCandidate && heRefs.length) {
     samplesTasks.push(
-        buildSamplesForRefs(heRefs, 'he', 7).then((heSamples) => {
+        buildSamplesForRefs(heRefs, 'he', 3).then((heSamples) => {
           cards.push(buildCorrespondenceCard({
             title: 'Hebreo (AT)',
             word: hebrewCandidate.word,
@@ -1252,7 +1303,7 @@ samplesTasks.push(
     }
     if (esOtRefs.length) {
       samplesTasks.push(
-        buildSamplesForRefs(esOtRefs, 'es', 7).then((esOtSamples) => {
+        buildSamplesForRefs(esOtRefs, 'es', 3).then((esOtSamples) => {
           cards.push(buildCorrespondenceCard({
             title: 'RVR1960 (AT)',
             word: esDisplayWord,
@@ -1266,7 +1317,7 @@ samplesTasks.push(
     }
     if (esNtRefs.length) {
      samplesTasks.push(
-        buildSamplesForRefs(esNtRefs, 'es', 7).then((esNtSamples) => {
+        buildSamplesForRefs(esNtRefs, 'es', 3).then((esNtSamples) => {
           cards.push(buildCorrespondenceCard({
             title: 'RVR1960 (NT)',
             word: esDisplayWord,
