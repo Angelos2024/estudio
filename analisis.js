@@ -199,7 +199,14 @@
        .replace(/[\u0300-\u036f]/g, '')
        .toLowerCase();
    }
- 
+ function escapeHtml(text) {
+    return String(text ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
    function normalizeHebrew(text) {
      return String(text || '')
        .replace(/[\u0591-\u05BD\u05BF\u05C1-\u05C2\u05C4-\u05C7]/g, '')
@@ -213,6 +220,48 @@ function normalizeSpanish(text) {
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
       .replace(/[^a-z0-9ñ]/g, '');
+  }
+  function getNormalizedQuery(lang, query) {
+    if (lang === 'gr' || lang === 'lxx') return normalizeGreek(query);
+    if (lang === 'he') return normalizeHebrew(query);
+    return normalizeSpanish(query);
+  }
+
+  function buildTokenRegex(token, lang) {
+    const escaped = token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    if (lang === 'es') {
+      return new RegExp(escaped, 'gi');
+    }
+
+    const letters = [];
+    for (const ch of escaped) {
+      if (ch === '\\') continue;
+      if (lang === 'gr' && ch === 'σ') {
+        letters.push('[σς]');
+      } else {
+        letters.push(ch);
+      }
+    }
+    const pattern = letters.map((letter) => `${letter}\\p{M}*`).join('');
+    return new RegExp(pattern, 'giu');
+  }
+
+  function highlightText(text, query, lang) {
+    const raw = String(text ?? '');
+    const normalizedQuery = String(query ?? '').trim();
+    if (!raw || !normalizedQuery) return escapeHtml(raw);
+
+    const safe = escapeHtml(raw);
+    const normalized = getNormalizedQuery(lang, normalizedQuery);
+    const tokens = normalized.split(' ').map((token) => token.trim()).filter((token) => token.length >= 2);
+    if (!tokens.length) return safe;
+
+    let output = safe;
+    for (const token of tokens) {
+      const re = buildTokenRegex(token, lang);
+      output = output.replace(re, (match) => `<mark>${match}</mark>`);
+    }
+    return output;
   }
 function detectLang(text) {
     const sample = String(text || '');
@@ -670,13 +719,13 @@ async function loadLxxBookData(bookCode) {
     return samples;
   }
 
-  function buildCorrespondenceCard({ title, word, transliteration, samples, lang }) {
+  function buildCorrespondenceCard({ title, word, transliteration, samples, lang, highlightQuery }) {
     const wordLine = word
-      ? `<div class="${classForLang(lang)} fw-semibold">${word}</div>`
+      ? `<div class="${classForLang(lang)} fw-semibold">${highlightText(word, highlightQuery, lang)}</div>`
       : '<div class="muted">—</div>';
     const translitLine = transliteration ? `<div class="small muted">Translit.: ${transliteration}</div>` : '';
     const sampleLines = samples.length
-      ? samples.map((sample) => `<div class="small">${sample.ref} · ${sample.text}</div>`).join('')
+      ? samples.map((sample) => `<div class="small">${escapeHtml(sample.ref)} · ${highlightText(sample.text, highlightQuery, lang)}</div>`).join('')
       : '<div class="small muted">Sin ejemplos.</div>';
     return `
       <div class="fw-semibold">${title}</div>
@@ -686,7 +735,7 @@ async function loadLxxBookData(bookCode) {
     `;
   }
 
-  function renderResults(groupsByCorpus) {
+ function renderResults(groupsByCorpus, highlightQueries = state.last?.highlightQueries || {}) {
     resultsByCorpus.innerHTML = '';
     if (!groupsByCorpus.length) {
       resultsByCorpus.innerHTML = '<div class="col-12"><div class="muted small">Sin resultados en el corpus.</div></div>';
@@ -761,10 +810,11 @@ async function loadLxxBookData(bookCode) {
           bookBlock.appendChild(bookMeta);
           const bookList = document.createElement('div');
           bookList.className = 'mt-1 d-grid gap-1';
+         const highlightQuery = highlightQueries[lang] || '';
           group.items.forEach((item) => {
             const row = document.createElement('div');
             row.className = classForLang(lang);
-            row.textContent = `${item.ref} · ${item.text}`;
+            row.innerHTML = `${escapeHtml(item.ref)} · ${highlightText(item.text, highlightQuery, lang)}`;
             bookList.appendChild(row);
           });
           bookBlock.appendChild(bookList);
@@ -888,7 +938,7 @@ async function loadLxxBookData(bookCode) {
     group.loadedCount = group.items.length;
     group.hasMore = false;
   }
-  async function buildSummary(term, lang, entry, hebrewEntry, refs) {
+  async function buildSummary(term, lang, entry, hebrewEntry, refs, highlightQueries = {}) {
      const lemma = entry?.lemma || term;
      const transliteration = entry?.['Forma lexica'] || '—';
      const pos = extractPos(entry);
@@ -921,22 +971,26 @@ async function loadLxxBookData(bookCode) {
       }
     }
     if (!summaryParts.length) summaryParts.push('No se encontró definición directa, se usa la concordancia del corpus para contexto.');
-    lemmaSummary.textContent = summaryParts.join(' ');
+    const summaryQuery = highlightQueries.es || (lang === 'es' ? term : '');
+    lemmaSummary.innerHTML = highlightText(summaryParts.join(' '), summaryQuery, 'es');
      const cards = [];
-     if (sampleRef && sampleText) {
-       cards.push(`
-         <div class="fw-semibold">Ejemplo en ${langLabels[lang]}</div>
-         <div class="small muted">${sampleRef}</div>
-         <div class="${classForLang(lang)}">${sampleText}</div>
-       `);
-     }
-     if (sampleEs) {
-       cards.push(`
-         <div class="fw-semibold">Traducción RVR1960</div>
-         <div class="small muted">Ejemplo contextual</div>
-         <div>${sampleEs}</div>
-       `);
-     }
+     const primaryQuery = highlightQueries[lang] || term;
+    const spanishQuery = highlightQueries.es || '';
+    if (sampleRef && sampleText) {
+      cards.push(`
+        <div class="fw-semibold">Ejemplo en ${langLabels[lang]}</div>
+        <div class="small muted">${sampleRef}</div>
+        <div class="${classForLang(lang)}">${highlightText(sampleText, primaryQuery, lang)}</div>
+      `);
+    }
+    if (sampleEs) {
+      cards.push(`
+        <div class="fw-semibold">Traducción RVR1960</div>
+        <div class="small muted">Ejemplo contextual</div>
+        <div>${highlightText(sampleEs, spanishQuery, 'es')}</div>
+      `);
+    }
+     
      if (keywords.length) {
        cards.push(`
          <div class="fw-semibold">Campos semánticos</div>
@@ -988,7 +1042,7 @@ async function loadLxxBookData(bookCode) {
       return;
      }
  
-      await buildSummary(term, lang, entry, hebrewEntry, refs);
+   
     const esIndexPromise = loadIndex('es');
     const grIndexPromise = loadIndex('gr');
     const heIndexPromise = loadIndex('he');
@@ -1003,6 +1057,12 @@ async function loadLxxBookData(bookCode) {
     } else {
       esSearchTokens = [normalizeSpanish(term)].filter(Boolean);
     }
+       const esDisplayWord = lang === 'es' ? term : (esSearchTokens[0] || '');
+    const summaryHighlightQueries = {
+      es: esDisplayWord,
+      [lang]: lang === 'gr' ? (entry?.lemma || term) : term
+    };
+    await buildSummary(term, lang, entry, hebrewEntry, refs, summaryHighlightQueries);
     const esRefs = [];
     const esSeen = new Set();
     esSearchTokens.forEach((token) => {
@@ -1068,6 +1128,12 @@ const posTag = lang === 'gr' ? extractPos(entry) : '—';
       `Hebreo: ${heRefs.length}`,
       `RVR1960: ${esRefs.length}`
     ]);
+       const highlightQueries = {
+      gr: greekLemma !== '—' ? greekLemma : (lang === 'gr' ? term : ''),
+      lxx: greekLemma !== '—' ? greekLemma : (lang === 'gr' ? term : ''),
+      he: hebrewCandidate?.word || (lang === 'he' ? term : ''),
+      es: esDisplayWord
+    };
     const cards = [];
         const samplesTasks = [];
     if (greekTerm) {
@@ -1078,7 +1144,8 @@ samplesTasks.push(
             word: greekLemma,
             transliteration: greekTranslit,
             samples: grSamples,
-            lang: 'gr'
+            lang: 'gr',
+           highlightQuery: highlightQueries.gr
           }));
         })
       );
@@ -1089,7 +1156,8 @@ samplesTasks.push(
             word: greekLemma,
             transliteration: greekTranslit,
             samples: lxxSamples,
-            lang: 'lxx'
+            lang: 'lxx',
+           highlightQuery: highlightQueries.lxx
           }));
         })
       );
@@ -1102,14 +1170,12 @@ samplesTasks.push(
             word: hebrewCandidate.word,
             transliteration: hebrewCandidate.transliteration,
             samples: heSamples,
-            lang: 'he'
+            lang: 'he',
+           highlightQuery: highlightQueries.he
           }));
         })
       );
     }
-    const esDisplayWord = lang === 'es'
-      ? term
-      : (esSearchTokens[0] || term);
     if (esOtRefs.length) {
       samplesTasks.push(
         buildSamplesForRefs(esOtRefs, 'es', 7).then((esOtSamples) => {
@@ -1118,7 +1184,8 @@ samplesTasks.push(
             word: esDisplayWord,
             transliteration: '',
             samples: esOtSamples,
-            lang: 'es'
+            lang: 'es',
+           highlightQuery: highlightQueries.es
           }));
         })
       );
@@ -1131,7 +1198,8 @@ samplesTasks.push(
             word: esDisplayWord,
             transliteration: '',
             samples: esNtSamples,
-            lang: 'es'
+            lang: 'es',
+           highlightQuery: highlightQueries.es
           }));
         })
       );
@@ -1150,13 +1218,13 @@ const corpusConfigs = [
       expanded: false,
       loading: true
     }));
-    renderResults(groupsByCorpus);
-    state.last = { term, lang, refs, groupsByCorpus };
+       renderResults(groupsByCorpus, highlightQueries);
+    state.last = { term, lang, refs, groupsByCorpus, highlightQueries };
        await Promise.all(corpusConfigs.map(async (config, index) => {
       const groups = await buildBookGroups(config.refs, config.lang, config.preloaded);
       groupsByCorpus[index].groups = groups;
       groupsByCorpus[index].loading = false;
-      renderResults(groupsByCorpus);
+       renderResults(groupsByCorpus, highlightQueries);
     }));
         } catch (error) {
       console.error('Error en el análisis:', error);
