@@ -196,14 +196,37 @@
     if (analyzeBtn) analyzeBtn.disabled = isLoading;
   }
  
-   function normalizeGreek(text) {
-     return String(text || '')
-       .replace(/[··.,;:!?“”"(){}\[\]<>«»]/g, '')
-       .replace(/\s/g, '')
-       .normalize('NFD')
-       .replace(/[\u0300-\u036f]/g, '')
-       .toLowerCase();
-   }
+function normalizeGreek(text) {
+    return String(text || '')
+      .replace(/[··.,;:!?“”"(){}\[\]<>«»]/g, '')
+      .replace(/\s/g, '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase();
+  }
+  function buildGreekSearchKeys(normalized) {
+    if (!normalized) return [];
+    const variants = new Set();
+    const chars = normalized.split('');
+    const swapMap = {
+      β: 'υ',
+      υ: 'β'
+    };
+    const walk = (index, current) => {
+      if (index >= chars.length) {
+        variants.add(current);
+        return;
+      }
+      const ch = chars[index];
+      const swap = swapMap[ch];
+      walk(index + 1, `${current}${ch}`);
+      if (swap) {
+        walk(index + 1, `${current}${swap}`);
+      }
+    };
+    walk(0, '');
+    return [...variants];
+  }
  function escapeHtml(text) {
     return String(text ?? '')
       .replace(/&/g, '&amp;')
@@ -296,7 +319,21 @@ function detectLang(text) {
     if (lang === 'he') return normalizeHebrew(text);
     return normalizeSpanish(text);
   }
-
+function getGreekRefs(normalized, index) {
+    if (!normalized) return [];
+    const keys = buildGreekSearchKeys(normalized);
+    const refs = [];
+    const seen = new Set();
+    keys.forEach((key) => {
+      const matches = index.tokens?.[key] || [];
+      matches.forEach((ref) => {
+        if (seen.has(ref)) return;
+        seen.add(ref);
+        refs.push(ref);
+      });
+    });
+    return refs;
+  }
   async function loadJson(url) {
    if (jsonCache.has(url)) return jsonCache.get(url);
     const promise = fetch(url, { cache: 'force-cache' }).then((res) => {
@@ -1125,7 +1162,7 @@ function mapOtRefsToLxxRefs(refs) {
  
      const indexPromise = loadIndex(lang);
     const index = await indexPromise;
-    const refs = index.tokens?.[normalized] || [];
+   const refs = lang === 'gr' ? getGreekRefs(normalized, index) : (index.tokens?.[normalized] || []);
  
     if (!refs.length) {
       renderTags([
@@ -1213,7 +1250,7 @@ function mapOtRefsToLxxRefs(refs) {
     const greekLemma = greekEntry?.lemma || greekCandidate?.lemma || (lang === 'gr' ? term : '—');
 
      const grIndex = await grIndexPromise;
-    const grRefs = greekTerm ? (grIndex.tokens?.[greekTerm] || []) : [];
+   const grRefs = greekTerm ? getGreekRefs(greekTerm, grIndex) : [];
    const lxxMatchesPromise = greekTerm
       ? buildLxxMatches(greekTerm, 70)
       : Promise.resolve({ refs: [], texts: new Map() });
