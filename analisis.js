@@ -316,6 +316,7 @@ function detectLang(text) {
     if (state.dict) return state.dict;
     const data = await loadJson(DICT_URL);
     state.dict = data;
+    const map = new Map();
     const translitMap = new Map();
     (data.items || []).forEach((item) => {
       const lemmaKey = normalizeGreek(item.lemma);
