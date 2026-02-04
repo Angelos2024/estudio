@@ -119,10 +119,15 @@
     return acc;
   }, {});
    const stopwords = new Set([
-     'de', 'la', 'el', 'los', 'las', 'y', 'o', 'a', 'en', 'por', 'para',
-     'un', 'una', 'unos', 'unas', 'del', 'al', 'que', 'se', 'con', 'como',
-     'su', 'sus', 'es', 'son', 'lo', 'una', 'uno', 'tambien'
-   ]);
+    'de', 'la', 'el', 'los', 'las', 'y', 'o', 'a', 'en', 'por', 'para',
+    'un', 'una', 'unos', 'unas', 'del', 'al', 'que', 'se', 'con', 'como',
+    'su', 'sus', 'es', 'son', 'lo', 'una', 'uno', 'tambien'
+  ]);
+  const greekStopwords = new Set([
+    'και', 'δε', 'ο', 'η', 'το', 'του', 'της', 'των', 'τω', 'τον', 'την',
+    'εις', 'εν', 'αυτος', 'αυτη', 'αυτο', 'ου', 'μη', 'γαρ', 'δε',
+    'ως', 'επι', 'προς', 'δια', 'μετα', 'κατα', 'εκ', 'υπο'
+  ]);
   const hebrewStopwords = new Set([
     'ו', 'ה', 'את', 'יהוה', 'אלהים', 'אשר', 'כל', 'על', 'אל', 'ב', 'ל', 'מ', 'עם', 'כי'
   ]);
@@ -482,7 +487,21 @@ async function loadLxxBookData(bookCode) {
     return payload;
   }
 
-    async function buildGreekCandidateFromHebrewRefs(refs) {
+   function pickBestCandidate(counts, samples) {
+    if (!counts.size) return null;
+    const [best, count] = [...counts.entries()].sort((a, b) => b[1] - a[1])[0];
+    return {
+      normalized: best,
+      lemma: samples.get(best) || best,
+      count
+    };
+  }
+
+  function cleanGreekToken(token) {
+    return String(token || '').replace(/[··.,;:!?“”"(){}\[\]<>«»]/g, '');
+  }
+
+  async function buildGreekCandidateFromHebrewRefs(refs) {
     if (!refs.length) return null;
     const counts = new Map();
     const samples = new Map();
@@ -498,17 +517,60 @@ async function loadLxxBookData(bookCode) {
           const lemma = token?.lemma || token?.w || '';
           const normalized = normalizeGreek(lemma);
           if (!normalized) return;
+          if (greekStopwords.has(normalized)) return;
           counts.set(normalized, (counts.get(normalized) || 0) + 1);
           if (!samples.has(normalized) && token?.lemma) samples.set(normalized, token.lemma);
         });
       }
     }
-    if (!counts.size) return null;
-    const [best] = [...counts.entries()].sort((a, b) => b[1] - a[1])[0];
-    return {
-      normalized: best,
-      lemma: samples.get(best) || best
-    };
+    return pickBestCandidate(counts, samples);
+  }
+
+  async function buildGreekCandidateFromGreekRefs(refs) {
+    if (!refs.length) return null;
+    const counts = new Map();
+    const samples = new Map();
+    for (const ref of refs.slice(0, 40)) {
+      const [book, chapterRaw, verseRaw] = ref.split('|');
+      const chapter = Number(chapterRaw);
+      const verse = Number(verseRaw);
+      try {
+        const verses = await loadChapterText('gr', book, chapter);
+        const verseText = verses?.[verse - 1] || '';
+        const tokens = verseText.split(/\s+/).filter(Boolean);
+        tokens.forEach((token) => {
+          const cleaned = cleanGreekToken(token);
+          const normalized = normalizeGreek(cleaned);
+          if (!normalized || greekStopwords.has(normalized)) return;
+          counts.set(normalized, (counts.get(normalized) || 0) + 1);
+          if (!samples.has(normalized)) samples.set(normalized, cleaned);
+        });
+      } catch (error) {
+        continue;
+      }
+    }
+    return pickBestCandidate(counts, samples);
+  }
+
+  async function buildGreekCandidateFromLxxRefs(refs) {
+    if (!refs.length) return null;
+    const counts = new Map();
+    const samples = new Map();
+    for (const ref of refs.slice(0, 40)) {
+      const [book, chapterRaw, verseRaw] = ref.split('|');
+      const chapter = Number(chapterRaw);
+      const verse = Number(verseRaw);
+      const tokens = await loadLxxVerseTokens(book, chapter, verse);
+      if (!tokens) continue;
+      tokens.forEach((token) => {
+        const lemma = token?.lemma || token?.w || '';
+        const normalized = normalizeGreek(lemma);
+        if (!normalized || greekStopwords.has(normalized)) return;
+        counts.set(normalized, (counts.get(normalized) || 0) + 1);
+        if (!samples.has(normalized) && token?.lemma) samples.set(normalized, token.lemma);
+      });
+    }
+    return pickBestCandidate(counts, samples);
   }
 
   function extractPos(entry) {
@@ -578,18 +640,14 @@ async function loadLxxBookData(bookCode) {
     return { ot, nt };
   }
 
-  async function findGreekEntryForSpanish(term) {
-    const target = normalizeSpanish(term);
-    if (!target) return null;
-    const dict = await loadDictionary();
-    const items = dict.items || [];
-    for (const item of items) {
-      const def = normalizeSpanish(item.definicion || '');
-      if (def && def.includes(target)) return item;
-      const entry = normalizeSpanish(item.entrada_impresa || '');
-      if (entry && entry.includes(target)) return item;
-    }
-    return null;
+function mapOtRefsToLxxRefs(refs) {
+    return refs
+      .flatMap((ref) => {
+        const [book, chapter, verse] = ref.split('|');
+        const lxxCodes = HEBREW_SLUG_TO_LXX[book] || [];
+        return lxxCodes.map((code) => `${code}|${chapter}|${verse}`);
+      })
+      .filter(Boolean);
   }
 
   async function buildHebrewCandidateFromRefs(refs) {
@@ -615,13 +673,14 @@ async function loadLxxBookData(bookCode) {
         continue;
       }
     }
-    if (!counts.size) return null;
-    const [best] = [...counts.entries()].sort((a, b) => b[1] - a[1])[0];
-    const word = samples.get(best) || best;
+    const candidate = pickBestCandidate(counts, samples);
+    if (!candidate) return null;
+    const word = candidate.lemma || candidate.normalized;
     return {
-      normalized: best,
+      normalized: candidate.normalized,
       word,
-      transliteration: transliterateHebrew(word)
+      transliteration: transliterateHebrew(word),
+      count: candidate.count
     };
   }
 
@@ -1081,9 +1140,20 @@ async function loadLxxBookData(bookCode) {
     if (lang === 'gr') {
       greekTerm = normalized;
     } else if (lang === 'es') {
-      greekEntry = await findGreekEntryForSpanish(term);
-      greekTerm = greekEntry ? normalizeGreek(greekEntry.lemma) : null;
-     } else if (lang === 'he') {
+      const ntCandidate = esNtRefs.length ? await buildGreekCandidateFromGreekRefs(esNtRefs) : null;
+      const otLxxRefs = esOtRefs.length ? mapOtRefsToLxxRefs(esOtRefs) : [];
+      const otCandidate = otLxxRefs.length ? await buildGreekCandidateFromLxxRefs(otLxxRefs) : null;
+      if (ntCandidate && otCandidate) {
+        greekCandidate = ntCandidate.count >= otCandidate.count ? ntCandidate : otCandidate;
+      } else {
+        greekCandidate = ntCandidate || otCandidate;
+      }
+      if (greekCandidate) {
+        greekTerm = greekCandidate.normalized;
+        await loadDictionary();
+        greekEntry = state.dictMap.get(greekTerm) || greekEntry;
+      }
+    } else if (lang === 'he') {
       greekCandidate = await buildGreekCandidateFromHebrewRefs(refs);
       if (greekCandidate) {
         greekTerm = greekCandidate.normalized;
@@ -1109,6 +1179,8 @@ async function loadLxxBookData(bookCode) {
         word: term,
         transliteration: transliterateHebrew(term)
       };
+     } else if (lang === 'es') {
+      hebrewCandidate = esOtRefs.length ? await buildHebrewCandidateFromRefs(esOtRefs) : null;
     } else if (lxxMatches.refs.length) {
       hebrewCandidate = await buildHebrewCandidateFromLxxRefs(lxxMatches.refs);
     }
@@ -1136,7 +1208,7 @@ const posTag = lang === 'gr' ? extractPos(entry) : '—';
     };
     const cards = [];
         const samplesTasks = [];
-    if (greekTerm) {
+   if (greekTerm && grRefs.length) {
 samplesTasks.push(
         buildSamplesForRefs(grRefs, 'gr', 7).then((grSamples) => {
           cards.push(buildCorrespondenceCard({
@@ -1149,6 +1221,8 @@ samplesTasks.push(
           }));
         })
       );
+     }
+    if (greekTerm && lxxMatches.refs.length) {
       samplesTasks.push(
         buildSamplesForRefs(lxxMatches.refs, 'lxx', 7, lxxMatches.texts).then((lxxSamples) => {
           cards.push(buildCorrespondenceCard({
@@ -1162,7 +1236,7 @@ samplesTasks.push(
         })
       );
     }
-    if (hebrewCandidate) {
+   if (hebrewCandidate && heRefs.length) {
     samplesTasks.push(
         buildSamplesForRefs(heRefs, 'he', 7).then((heSamples) => {
           cards.push(buildCorrespondenceCard({
