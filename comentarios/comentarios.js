@@ -25,8 +25,23 @@
     return esc(normalized).replace(/\n/g, '<br>');
   }
 
-  async function loadChapterComments(bookSlug, chapter){
-    const url = `./comentarios/${encodeURIComponent(bookSlug)}/${encodeURIComponent(String(chapter))}.json`;
+function getCommentSlugCandidates(bookSlug){
+    const raw = String(bookSlug ?? '').trim();
+    if(!raw) return [];
+
+    const candidates = new Set([raw]);
+
+    // En comentarios usamos carpetas como "1tesalonicenses" y "2tesalonicenses",
+    // mientras que el resto del sistema usa "1_tesalonicenses".
+    if (/^[1-3]_[a-z]/i.test(raw)) {
+      candidates.add(raw.replace('_', ''));
+    }
+
+    return [...candidates];
+  }
+
+  async function fetchCommentsBySlug(slug, chapter){
+    const url = `./comentarios/${encodeURIComponent(slug)}/${encodeURIComponent(String(chapter))}.json`;
     const res = await fetch(url, { cache: 'no-store' });
     if(!res.ok) return null;
     try{
@@ -37,7 +52,16 @@
       return null;
     }
   }
+async function loadChapterComments(bookSlug, chapter){
+    const slugCandidates = getCommentSlugCandidates(bookSlug);
 
+    for (const slug of slugCandidates) {
+      const comments = await fetchCommentsBySlug(slug, chapter);
+      if (comments) return comments;
+    }
+
+    return null;
+  }
   async function attachCommentsToRV(containerEl, bookSlug, chapter){
     await ensureCommentsUI();
 
