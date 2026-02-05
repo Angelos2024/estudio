@@ -67,6 +67,14 @@
         <span id="status" class="muted smallish">—</span>
       </div>
       <div class="panel-body">
+        <div class="d-flex justify-content-end mb-3">
+        <label for="scopeFilter" class="me-2 small text-muted align-self-center">Ámbito:</label>
+        <select id="scopeFilter" class="form-select form-select-sm" style="max-width:220px">
+          <option value="all" selected>Torah + Evangelios</option>
+          <option value="torah">Solo Torah (Génesis–Malaquías)</option>
+          <option value="evangelios">Solo Evangelios (Mateo–Apocalipsis)</option>
+        </select>
+      </div>
       <div id="results" class="d-grid gap-2"></div>
 
 <div class="d-flex justify-content-between align-items-center mt-3">
