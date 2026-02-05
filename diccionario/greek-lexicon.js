@@ -9,9 +9,12 @@
 (function () {
   var DICT_DIR = './diccionario/';
   var MASTER_DICT_URL = DICT_DIR + 'masterdiccionario.json';
+    var EQUIV_DICT_URL = DICT_DIR + 'diccionario.equivalencias.json';
    var LXX_DIR = './LXX/';
   var masterDictIndex = null;   // Map<lemma, item>
   var masterDictLoaded = false;
+   var equivDictIndex = null; // objeto { lemma_normalizado: [equivalencias...] }
+  var equivDictLoaded = false;
    var lxxCache = new Map(); // Map<lemma_normalizado, samples[]>
 
   // Cantidad de capítulos por libro MorphGNT abbr
@@ -378,6 +381,45 @@ function slugToAbbr(slug) {
     if (!lemma || !masterDictIndex) return null;
     return masterDictIndex.get(lemma) || null;
   }
+     function loadEquivDictionaryOnce() {
+    if (equivDictLoaded) return Promise.resolve(equivDictIndex);
+    equivDictLoaded = true;
+
+    return fetch(EQUIV_DICT_URL, { cache: 'no-store' })
+      .then(function (r) {
+        if (!r.ok) throw new Error('No se pudo cargar diccionario.equivalencias.json (' + r.status + ')');
+        return r.json();
+      })
+      .then(function (obj) {
+        equivDictIndex = (obj && typeof obj === 'object') ? obj : null;
+        return equivDictIndex;
+      })
+      .catch(function (e) {
+        console.warn('[diccionario.equivalencias] fallo:', e);
+        equivDictIndex = null;
+        return null;
+      });
+  }
+
+  function getEquivDefByLemma(lemma) {
+    if (!lemma || !equivDictIndex) return '';
+    var key = normalizeGreekLemmaKey(lemma);
+    if (!key) return '';
+    var raw = equivDictIndex[key];
+    if (!Array.isArray(raw) || !raw.length) return '';
+
+    var cleaned = raw
+      .map(function (it) { return String(it || '').trim(); })
+      .filter(Boolean);
+
+    if (!cleaned.length) return '';
+    return cleaned.join('; ');
+  }
+
+  function isMissingValue(v) {
+    var s = String(v == null ? '' : v).trim();
+    return !s || s === '—' || s === '-';
+  }
 
   // -------------------- popup --------------------
   function ensurePopup() {
@@ -476,6 +518,28 @@ if (p && p.style.display === 'block') showPopupNear(anchorEl, g, lemma);
         if (formaLexEl) formaLexEl.textContent = formaLex;
         if (entradaEl) entradaEl.textContent = entrada;
         if (defEl) defEl.textContent = definicion;
+         // Solo cargar equivalencias si faltan campos clave.
+        if (isMissingValue(definicion) || isMissingValue(entrada)) {
+          loadEquivDictionaryOnce().then(function () {
+            var p = document.getElementById('gk-lex-popup');
+            if (!p || p.style.display !== 'block') return;
+            var currentLemma = document.getElementById('gk-lex-lemma');
+            if (!currentLemma || currentLemma.textContent !== (lemma || '—')) return;
+
+            var equivDef = getEquivDefByLemma(lemma);
+            if (!equivDef) return;
+
+            var entradaNow = entradaEl ? entradaEl.textContent : '';
+            var defNow = defEl ? defEl.textContent : '';
+
+            if (defEl && isMissingValue(defNow)) {
+              defEl.textContent = equivDef;
+            }
+            if (entradaEl && isMissingValue(entradaNow)) {
+              entradaEl.textContent = equivDef;
+            }
+          });
+        }
       }
     }
 if (lxxEl) {
