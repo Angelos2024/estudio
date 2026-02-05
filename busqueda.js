@@ -18,6 +18,7 @@ const qEl = document.getElementById('q');
 const modeEl = document.getElementById('mode');
 const statusEl = document.getElementById('status');
 const resultsEl = document.getElementById('results');
+const scopeFilterEl = document.getElementById('scopeFilter');
 
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
@@ -32,6 +33,7 @@ const totalCountEl = document.getElementById('totalCount');
 const PAGE_SIZE = 10;
 let PAGE = 1;
 let ALL_RESULTS = [];
+let RAW_RESULTS = [];
 let manifest = null;
 let worker = null;
 const loadedIndex = { es:false, gr:false, he:false };
@@ -40,6 +42,20 @@ let HIGHLIGHT_QUERY = '';
 
 // cache de packs: key = `${lang}|${slug}|${ch}` -> array de versos
 const packCache = new Map();
+const ES_TORAH_BOOKS = new Set([
+  'genesis','exodo','levitico','numeros','deuteronomio','josue','jueces','rut',
+  '1_samuel','2_samuel','1_reyes','2_reyes','1_cronicas','2_cronicas','esdras',
+  'nehemias','ester','job','salmos','proverbios','eclesiastes','cantares','isaias',
+  'jeremias','lamentaciones','ezequiel','daniel','oseas','joel','amos','abdias',
+  'jonas','miqueas','nahum','habacuc','sofonias','hageo','zacarias','malaquias'
+]);
+
+const ES_EVANGELIOS_BOOKS = new Set([
+  'mateo','marcos','lucas','juan','hechos','romanos','1_corintios','2_corintios',
+  'galatas','efesios','filipenses','colosenses','1_tesalonicenses','2_tesalonicenses',
+  '1_timoteo','2_timoteo','tito','filemon','hebreos','santiago','1_pedro','2_pedro',
+  '1_juan','2_juan','3_juan','judas','apocalipsis'
+]);
 
 /***********************
  * Helpers
@@ -264,7 +280,24 @@ function parseRef(ref){
   const [slug, chS, vS] = String(ref).split('|');
   return { slug, ch: Number(chS), v: Number(vS) };
 }
+function getScopeBySlug(slug){
+  if(ES_TORAH_BOOKS.has(slug)) return 'torah';
+  if(ES_EVANGELIOS_BOOKS.has(slug)) return 'evangelios';
+  return null;
+}
 
+function applyScopeFilter(){
+  const scope = scopeFilterEl?.value || 'all';
+  if(scope === 'all'){
+    ALL_RESULTS = [...RAW_RESULTS];
+    return;
+  }
+
+  ALL_RESULTS = RAW_RESULTS.filter(item => {
+    const { slug } = parseRef(item.ref);
+    return getScopeBySlug(slug) === scope;
+  });
+}
 async function getChapterPack(lang, slug, ch){
   const key = `${lang}|${slug}|${ch}`;
   if(packCache.has(key)) return packCache.get(key);
@@ -335,7 +368,12 @@ function renderPage(q){
     });
   }
 }
-
+function refreshResultsForCurrentScope(){
+  applyScopeFilter();
+  PAGE = 1;
+  statusEl.textContent = `Listo. ${ALL_RESULTS.length} resultado(s) en ${scopeFilterEl?.selectedOptions?.[0]?.textContent || 'ámbito actual'}.`;
+  renderPage(HIGHLIGHT_QUERY || qEl.value);
+}
 /***********************
  * Eventos
  ***********************/
@@ -347,6 +385,7 @@ async function runSearch(){
     statusEl.textContent = 'Escribe una palabra o frase.';
     resultsEl.innerHTML = '';
     ALL_RESULTS = [];
+    RAW_RESULTS = [];
     PAGE = 1;
     renderPage('');
     return;
@@ -376,7 +415,8 @@ async function runSearch(){
             merged.push(item);
           }
         }
-        ALL_RESULTS = merged;
+        RAW_RESULTS = merged;
+        applyScopeFilter();
         PAGE = 1;
         HIGHLIGHT_QUERY = spanishTokens.join(' ');
         statusEl.textContent = `Listo. ${ALL_RESULTS.length} resultado(s).`;
@@ -391,7 +431,8 @@ async function runSearch(){
     const items = await searchWithWorker(mode, q);
 
     // items: [{lang, ref}]
-    ALL_RESULTS = items;
+     RAW_RESULTS = items;
+    applyScopeFilter();
     PAGE = 1;
     statusEl.textContent = `Listo. ${ALL_RESULTS.length} resultado(s).`;
     renderPage(q);
@@ -413,7 +454,9 @@ nextBtn.addEventListener('click', () => {
   PAGE++;
   renderPage(qEl.value);
 });
-
+scopeFilterEl?.addEventListener('change', () => {
+  refreshResultsForCurrentScope();
+});
 // Inicial
 (async () => {
   try{
