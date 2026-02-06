@@ -328,7 +328,19 @@ function snippetText(text, maxLength = 180){
 
     const panel = ensurePanelAfterVerse(line);
 
-     btnAdd.addEventListener('click', () => {
+    btnAdd.addEventListener('click', async (event) => {
+      event.preventDefault();
+      const isHidden = panel.style.display === 'none';
+      if (isHidden) {
+        panel.style.display = 'block';
+        await renderPanel(line, panel);
+      } else {
+        panel.style.display = 'none';
+      }
+    });
+
+    btnAdd.addEventListener('contextmenu', (event) => {
+      event.preventDefault();
       createModalForVerse(line, async () => {
         panel.style.display = 'block';
         await renderPanel(line, panel);
