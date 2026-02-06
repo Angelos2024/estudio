@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es">
+<html lang="es" data-theme="cream">
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -11,18 +11,96 @@
 
   <style>
     
-    :root{ --bd:#e6e8eb; --muted:#6b7280; }
-    body{ background:#f8fafc; }
+   :root{
+      --bd:#e6e8eb;
+      --muted:#6b7280;
+      --bg:#f8fafc;
+      --surface:#ffffff;
+      --text:#0f172a;
+      --primary:#2563eb;
+      --primary-contrast:#ffffff;
+      --soft-bg:#f1f5f9;
+      --soft-hover:#e9eef5;
+      --outline:#cbd5f5;
+      --accent:#2563eb;
+      --panel-shadow: 0 10px 30px rgba(15,23,42,.08);
+    }
+
+    [data-theme="cream"]{
+      --bd:#d5c1b1;
+      --muted:#6d5d52;
+      --bg:#edddce;
+      --surface:#cdbaa9;
+      --text:#2c1d1f;
+      --primary:#4b2743;
+      --primary-contrast:#fdf6f2;
+      --soft-bg:#e0cdbd;
+      --soft-hover:#d6c2b2;
+      --outline:#4b2743;
+      --accent:#4b2743;
+      --panel-shadow: 0 12px 30px rgba(75,39,67,.2);
+    }
+
+    [data-theme="white"]{
+      --bd:#e6e8eb;
+      --muted:#6b7280;
+      --bg:#f8fafc;
+      --surface:#ffffff;
+      --text:#0f172a;
+      --primary:#2563eb;
+      --primary-contrast:#ffffff;
+      --soft-bg:#f1f5f9;
+      --soft-hover:#e9eef5;
+      --outline:#cbd5f5;
+      --accent:#2563eb;
+      --panel-shadow: 0 10px 30px rgba(15,23,42,.08);
+    }
+
+    [data-theme="blue"]{
+      --bd:#8a97c0;
+      --muted:#4a587c;
+      --bg:#a6b3da;
+      --surface:#dbe2f5;
+      --text:#1c2444;
+      --primary:#2f3b73;
+      --primary-contrast:#f8f9ff;
+      --soft-bg:#c9d2ee;
+      --soft-hover:#bcc7e8;
+      --outline:#2f3b73;
+      --accent:#2f3b73;
+      --panel-shadow: 0 12px 30px rgba(47,59,115,.2);
+    }
+
+    [data-theme="carbon"]{
+      --bd:#3f3f3f;
+      --muted:#b0b0b0;
+      --bg:#1c1c1c;
+      --surface:#2a2a2a;
+      --text:#f8fafc;
+      --primary:#f8fafc;
+      --primary-contrast:#1c1c1c;
+      --soft-bg:#333333;
+      --soft-hover:#3c3c3c;
+      --outline:#f8fafc;
+      --accent:#f8fafc;
+      --panel-shadow: 0 12px 30px rgba(0,0,0,.4);
+    }
+
+    body{
+      background:var(--bg);
+      color:var(--text);
+    }
     .topbar{
-      background:#ffffff;
+      background:var(--surface);
       border-bottom:1px solid var(--bd);
       position:sticky; top:0; z-index:1000;
     }
     .sitewrap{ max-width: 1200px; }
     .panel{
-      background:#fff;
+      background:var(--surface);
       border:1px solid var(--bd);
       border-radius:12px;
+      box-shadow: var(--panel-shadow);
     }
     .panel-header{
       border-bottom:1px solid var(--bd);
@@ -34,9 +112,56 @@
     .passage-title{ font-size:1.25rem; font-weight:700; }
     .passage-text{ font-size:1.05rem; line-height:1.85; }
     .orig-text{ font-size:1.05rem; line-height:1.85; }
-    .verse-num{ color:#2563eb; font-weight:700; margin-right:.25rem; font-size:.85em; }
-    .btn-soft{ background:#f1f5f9; border:1px solid var(--bd); }
-    .btn-soft:hover{ background:#e9eef5; }
+   .verse-num{ color:var(--accent); font-weight:700; margin-right:.25rem; font-size:.85em; }
+    .btn-soft{ background:var(--soft-bg); border:1px solid var(--bd); color:var(--text); }
+    .btn-soft:hover{ background:var(--soft-hover); }
+
+    .btn-primary{
+      background:var(--primary);
+      border-color:var(--primary);
+      color:var(--primary-contrast);
+    }
+    .btn-primary:hover{
+      background:color-mix(in srgb, var(--primary) 85%, #000);
+      border-color:color-mix(in srgb, var(--primary) 85%, #000);
+      color:var(--primary-contrast);
+    }
+
+    .btn-outline-primary{
+      color:var(--primary);
+      border-color:var(--primary);
+    }
+    .btn-outline-primary:hover{
+      background:var(--primary);
+      color:var(--primary-contrast);
+    }
+
+    .text-muted{
+      color:var(--muted) !important;
+    }
+
+    .form-control,
+    .form-select{
+      background:var(--surface);
+      border-color:var(--bd);
+      color:var(--text);
+    }
+    .form-control::placeholder{ color:color-mix(in srgb, var(--muted) 80%, transparent); }
+
+    .dropdown-menu{
+      background:var(--surface);
+      border-color:var(--bd);
+      box-shadow: var(--panel-shadow);
+    }
+    .dropdown-item{ color:var(--text); }
+    .dropdown-item:hover{ background:var(--soft-bg); color:var(--text); }
+
+    .theme-dot{
+      width: 14px; height: 14px; border-radius:50%;
+      border:1px solid color-mix(in srgb, var(--text) 20%, transparent);
+      display:inline-block;
+      margin-right:.5rem;
+    }
     .sticky-aside{ position: sticky; top: 86px; }
     .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace; }
 
@@ -79,7 +204,7 @@
       padding:.25rem .55rem;
       border-radius:999px;
       border:1px solid var(--bd);
-      background:#f8fafc;
+      background:var(--soft-bg);
       font-size:.85rem;
       user-select:none;
       white-space:nowrap;
@@ -137,8 +262,8 @@
     .ctx-menu{
   position: fixed;
   z-index: 99999;
-  background: #fff;
-  border: 1px solid #e6e8eb;
+ background: var(--surface);
+  border: 1px solid var(--bd);
   border-radius: 12px;
   box-shadow: 0 12px 30px rgba(0,0,0,.12);
   padding: 8px;
@@ -157,26 +282,26 @@
 
 .ctx-sep{
   width:1px; height: 22px;
-  background:#e6e8eb;
+  background:var(--bd);
   margin: 0 2px;
 }
 
 .ctx-btn{
   width: 30px; height: 30px;
   border-radius: 10px;
-  border: 1px solid #e6e8eb;
-  background: #f8fafc;
+ border: 1px solid var(--bd);
+  background: var(--soft-bg);
   display:flex; align-items:center; justify-content:center;
   cursor: pointer;
 }
-.ctx-btn:hover{ background:#eef2f7; }
-.ctx-btn svg{ width: 16px; height: 16px; opacity:.85; }
+.ctx-btn:hover{ background:var(--soft-hover); }
+    .ctx-btn svg{ width: 16px; height: 16px; opacity:.85; }
 
     .notas-panel{
   border: 1px solid rgba(0,0,0,.15);
   border-radius: .5rem;
   padding: .5rem;
-  background: #fff;
+  background: var(--surface);
 }
 
 .notas-toolbar{
@@ -273,7 +398,33 @@
         </div>
 
         <div class="d-flex gap-2">
-          <button id="btnCopyLink" class="btn btn-soft btn-sm" type="button">Compartir</button>
+          <div class="dropdown">
+            <button class="btn btn-soft btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="themeMenuBtn">
+              Tema
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="themeMenuBtn">
+              <li>
+                <button class="dropdown-item d-flex align-items-center" type="button" data-theme="cream">
+                  <span class="theme-dot" style="background:#edddce;"></span>Crema principal
+                </button>
+              </li>
+              <li>
+                <button class="dropdown-item d-flex align-items-center" type="button" data-theme="white">
+                  <span class="theme-dot" style="background:#ffffff;"></span>Blanco
+                </button>
+              </li>
+              <li>
+                <button class="dropdown-item d-flex align-items-center" type="button" data-theme="blue">
+                  <span class="theme-dot" style="background:#a6b3da;"></span>Azul
+                </button>
+              </li>
+              <li>
+                <button class="dropdown-item d-flex align-items-center" type="button" data-theme="carbon">
+                  <span class="theme-dot" style="background:#1c1c1c;"></span>Carbón
+                </button>
+              </li>
+            </ul>
+          </div>
           <button id="btnCopyText" class="btn btn-soft btn-sm" type="button">Copiar</button>
           <button id="btnPrint" class="btn btn-soft btn-sm" type="button">Imprimir</button>
         </div>
@@ -568,11 +719,13 @@ const passageTextOrig = document.getElementById('passageTextOrig');
 const leftLabel = document.getElementById('leftLabel');
 const rightLabel = document.getElementById('rightLabel');
 
-const btnCopyLink = document.getElementById('btnCopyLink');
+
 const btnCopyText = document.getElementById('btnCopyText');
 const btnPrint = document.getElementById('btnPrint');
 const btnToggleOrig = document.getElementById('btnToggleOrig');
-
+const themeMenuBtn = document.getElementById('themeMenuBtn');
+const themeMenu = themeMenuBtn?.nextElementSibling;
+const themeItems = document.querySelectorAll('.dropdown-item[data-theme]');
 /***********************
  * Data / caches
  ***********************/
@@ -639,19 +792,15 @@ async function loadJson(path){
     throw error;
   }
 }
-function buildPermalink(search, version){
-  const p = new URLSearchParams();
-  p.set('book', currentBookSlug);
-  p.set('name', currentBookName);
-  p.set('search', search);
-  p.set('version', version);
-  p.set('orig', ORIGINAL_ENABLED_DEFAULT ? '1' : '0');
-  return `${location.origin}${location.pathname}?${p.toString()}`;
-}
+
 async function copy(text){
   try{ await navigator.clipboard.writeText(text); }catch{}
 }
-
+function applyTheme(theme){
+  const safeTheme = theme || 'cream';
+  document.documentElement.dataset.theme = safeTheme;
+  localStorage.setItem('lectorTheme', safeTheme);
+}
 /***********************
  * Builder: verses[] -> chapters[][]
  ***********************/
@@ -997,9 +1146,25 @@ function setOriginalVisible(isVisible){
  ***********************/
 form.addEventListener('submit', (e) => { e.preventDefault(); runSearch(); });
 
-btnCopyLink.addEventListener('click', async () => {
-  const link = buildPermalink(searchInput.value || pageTitle.textContent, versionSelect.value);
-  await copy(link);
+
+  if(themeMenuBtn && themeMenu){
+  themeMenuBtn.addEventListener('click', (event) => {
+    event.stopPropagation();
+    themeMenu.classList.toggle('show');
+  });
+  document.addEventListener('click', (event) => {
+    if(!themeMenu.contains(event.target) && !themeMenuBtn.contains(event.target)){
+      themeMenu.classList.remove('show');
+    }
+  });
+}
+
+themeItems.forEach((item) => {
+  item.addEventListener('click', () => {
+    const theme = item.getAttribute('data-theme');
+    applyTheme(theme);
+    themeMenu?.classList.remove('show');
+  });
 });
 
 btnCopyText.addEventListener('click', async () => {
@@ -1026,6 +1191,7 @@ btnToggleOrig.addEventListener('click', () => {
 (async function boot(){
   setFromUrl();
   setOriginalVisible(ORIGINAL_ENABLED_DEFAULT);
+  applyTheme(localStorage.getItem('lectorTheme') || 'cream');
 
   leftLabel.textContent = versionSelect.value;
   metaVersion.textContent = versionSelect.value;
