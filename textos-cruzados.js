@@ -30,11 +30,7 @@
     'apocalipsis':'apocalipsis','apoc':'apocalipsis','rev':'apocalipsis'
   };
 
-  const BOOK_OPTIONS = Object.entries(BOOK_ALIASES)
-    .filter(([k, v]) => k === v || /^[123]/.test(v))
-    .map(([,slug]) => slug)
-    .filter((slug, i, arr) => arr.indexOf(slug) === i)
-    .sort((a, b) => a.localeCompare(b, 'es'));
+  const BOOK_OPTIONS = [...new Set(Object.values(BOOK_ALIASES))].sort((a, b) => a.localeCompare(b, 'es'));
 
   const chapterCache = new Map();
   let dbPromise = null;
@@ -43,7 +39,7 @@
     return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\./g,'').replace(/\s+/g,'').trim();
   }
   function prettyBookName(slug){
-    return String(slug || '').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    return String(slug || '').replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
   }
   function makeKey(book, ch, v){ return `${book}|${ch}|${v}`; }
 
@@ -52,20 +48,22 @@
     const style = document.createElement('style');
     style.id = 'xrefs-style';
     style.textContent = `
-      .xrefs-btn{ border:0; background:transparent; padding:0; cursor:pointer; opacity:.82; margin-top:-30px; margin-left:3px; }
+      .xrefs-inline-wrap{ display:inline-flex; align-items:center; gap:.25rem; margin-left:.45rem; vertical-align:middle; }
+      .xrefs-btn{ border:0; background:transparent; padding:0; cursor:pointer; opacity:.86; }
       .xrefs-btn:hover{ opacity:1; }
-      .xrefs-icon{ width:22px; height:22px; display:block; }
-      .xrefs-panel{ margin-top:-.35rem; margin-left:-2.0rem; margin-right:80px; padding:.45rem .6rem; border-radius:12px; border:1px solid rgba(0,0,0,.10); background:#eef6ff; }
+      .xrefs-icon{ width:18px; height:18px; display:block; }
+      .xrefs-add{ border:1px solid #cbd5e1; background:#f8fafc; border-radius:8px; font-size:.78rem; line-height:1; padding:.1rem .34rem; cursor:pointer; }
+      .xrefs-add:hover{ background:#eef2f7; }
+      .xrefs-panel{ margin:.3rem 0 0 1.55rem; padding:.45rem .65rem; border-radius:10px; border:1px solid rgba(0,0,0,.11); background:#eef6ff; }
       .xrefs-panel ul{ margin:0; padding-left:1rem; }
       .xrefs-panel li{ margin:.2rem 0; }
       .xrefs-ref{ color:#0b57d0; cursor:pointer; text-decoration:underline; }
-      .xrefs-remove{ margin-left:.35rem; border:0; background:#ffe4e6; border-radius:8px; font-size:.72rem; }
+      .xrefs-remove{ margin-left:.35rem; border:0; background:#ffe4e6; border-radius:8px; font-size:.72rem; padding:.06rem .35rem; }
       .xrefs-tip{ position:fixed; z-index:99999; max-width:380px; background:#111827; color:#fff; border-radius:10px; padding:.5rem .65rem; font-size:.82rem; line-height:1.35; box-shadow:0 8px 24px rgba(0,0,0,.25); pointer-events:none; }
       .xrefs-modal{ position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:99998; display:flex; align-items:center; justify-content:center; padding:1rem; }
       .xrefs-modal-card{ width:min(520px,95vw); background:white; border-radius:12px; border:1px solid #d1d5db; padding:1rem; }
       .xrefs-modal-grid{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:.5rem; margin:.75rem 0; }
       .xrefs-modal-actions{ display:flex; justify-content:flex-end; gap:.5rem; }
-      .xrefs-inline-actions{ display:inline-flex; align-items:center; gap:.2rem; }
       .xrefs-msg{ font-size:.84rem; margin:.25rem 0 .6rem; color:#374151; }
     `;
     document.head.appendChild(style);
@@ -137,6 +135,67 @@
 
   function refLabel(ref){ return `${prettyBookName(ref.slug)} ${ref.chapter}:${ref.verse}`; }
 
+  function setupTooltip(el, text){
+    let tip = null;
+    el.addEventListener('mouseenter', () => {
+      tip = document.createElement('div');
+      tip.className = 'xrefs-tip';
+      tip.textContent = text;
+      document.body.appendChild(tip);
+    });
+    el.addEventListener('mousemove', (e) => {
+      if (!tip) return;
+      tip.style.left = `${e.clientX + 14}px`;
+      tip.style.top = `${e.clientY + 14}px`;
+    });
+    el.addEventListener('mouseleave', () => {
+      if (tip) tip.remove();
+      tip = null;
+    });
+  }
+
+  async function renderPanel(line, panel){
+    const source = parseSource(line);
+    const sourceKey = makeKey(source.book, source.chapter, source.verse);
+    const refs = await getLinks(sourceKey);
+
+    if (!refs.length) {
+      panel.innerHTML = '<div class="text-muted small">No hay textos relacionados todavía.</div>';
+      return;
+    }
+
+    const ul = document.createElement('ul');
+    refs.forEach((ref, idx) => {
+      const li = document.createElement('li');
+
+      const refEl = document.createElement('span');
+      refEl.className = 'xrefs-ref';
+      refEl.textContent = refLabel(ref);
+      setupTooltip(refEl, ref.text || '(sin texto)');
+      refEl.addEventListener('click', () => {
+        const q = `${prettyBookName(ref.slug)} ${ref.chapter}:${ref.verse}`;
+        window.location.href = `./index.html?book=${encodeURIComponent(ref.slug)}&name=${encodeURIComponent(prettyBookName(ref.slug))}&search=${encodeURIComponent(q)}`;
+      });
+
+      const removeBtn = document.createElement('button');
+      removeBtn.type = 'button';
+      removeBtn.className = 'xrefs-remove';
+      removeBtn.textContent = 'Quitar';
+      removeBtn.addEventListener('click', async () => {
+        const next = refs.filter((_, i) => i !== idx);
+        await saveLinks(sourceKey, next);
+        await renderPanel(line, panel);
+      });
+
+      li.appendChild(refEl);
+      li.appendChild(removeBtn);
+      ul.appendChild(li);
+    });
+
+    panel.innerHTML = '';
+    panel.appendChild(ul);
+  }
+
   function createModalForVerse(line, onSaved){
     const source = parseSource(line);
     const host = document.createElement('div');
@@ -172,7 +231,7 @@
     const fillChapters = async () => {
       const chapters = await loadBook(bookSel.value);
       chSel.innerHTML = '';
-      for(let i=1;i<=chapters.length;i++){
+      for(let i = 1; i <= chapters.length; i++){
         const op = document.createElement('option');
         op.value = String(i);
         op.textContent = `Cap. ${i}`;
@@ -185,9 +244,9 @@
     const fillVerses = async () => {
       const chapters = await loadBook(bookSel.value);
       const ch = Number(chSel.value);
-      const verses = chapters[ch-1] || [];
+      const verses = chapters[ch - 1] || [];
       vSel.innerHTML = '';
-      for(let i=1;i<=verses.length;i++){
+      for(let i = 1; i <= verses.length; i++){
         const op = document.createElement('option');
         op.value = String(i);
         op.textContent = `Verso ${i}`;
@@ -196,8 +255,8 @@
       vSel.value = String(Math.min(source.verse, verses.length || 1));
     };
 
-    bookSel.addEventListener('change', () => { fillChapters().catch(console.error); });
-    chSel.addEventListener('change', () => { fillVerses().catch(console.error); });
+    bookSel.addEventListener('change', () => fillChapters().catch(console.error));
+    chSel.addEventListener('change', () => fillVerses().catch(console.error));
 
     host.addEventListener('click', async (ev) => {
       const action = ev.target?.getAttribute?.('data-act');
@@ -212,16 +271,24 @@
           alert(`Límite alcanzado (${MAX_LINKS_PER_VERSE}).`);
           return;
         }
-        const valid = await validateRef({ book: bookSel.value, chapter: chSel.value, verse: vSel.value });
+
+        const valid = await validateRef({
+          book: bookSel.value,
+          chapter: chSel.value,
+          verse: vSel.value
+        });
+
         if (!valid) {
           alert('Solo se permiten referencias que existan.');
           return;
         }
+
         const exists = current.some((x) => x.slug === valid.slug && x.chapter === valid.chapter && x.verse === valid.verse);
         if (!exists) {
           current.push(valid);
           await saveLinks(sourceKey, current);
         }
+
         host.remove();
         await onSaved();
       }
@@ -231,90 +298,37 @@
     fillChapters().catch(console.error);
   }
 
-  function setupTooltip(el, text){
-    let tip = null;
-    const move = (e) => {
-      if (!tip) return;
-      tip.style.left = `${e.clientX + 14}px`;
-      tip.style.top = `${e.clientY + 14}px`;
-    };
-    el.addEventListener('mouseenter', () => {
-      tip = document.createElement('div');
-      tip.className = 'xrefs-tip';
-      tip.textContent = text;
-      document.body.appendChild(tip);
-    });
-    el.addEventListener('mousemove', move);
-    el.addEventListener('mouseleave', () => {
-      if (tip) tip.remove();
-      tip = null;
-    });
-  }
-
-  async function renderPanel(line, panel){
-    const source = parseSource(line);
-    const sourceKey = makeKey(source.book, source.chapter, source.verse);
-    const refs = await getLinks(sourceKey);
-
-    if (!refs.length) {
-      panel.innerHTML = '<div class="text-muted small">No hay textos relacionados todavía.</div>';
-      return;
+  function ensurePanelAfterVerse(line){
+    let panel = line.nextElementSibling;
+    if (!(panel && panel.classList && panel.classList.contains('xrefs-panel'))) {
+      panel = document.createElement('div');
+      panel.className = 'xrefs-panel';
+      panel.style.display = 'none';
+      line.insertAdjacentElement('afterend', panel);
     }
-
-    const ul = document.createElement('ul');
-    refs.forEach((ref, idx) => {
-      const li = document.createElement('li');
-      const refEl = document.createElement('span');
-      refEl.className = 'xrefs-ref';
-      refEl.textContent = refLabel(ref);
-      setupTooltip(refEl, ref.text || '(sin texto)');
-      refEl.addEventListener('click', () => {
-        const q = `${prettyBookName(ref.slug)} ${ref.chapter}:${ref.verse}`;
-        window.location.href = `./index.html?book=${encodeURIComponent(ref.slug)}&name=${encodeURIComponent(prettyBookName(ref.slug))}&search=${encodeURIComponent(q)}`;
-      });
-
-      const removeBtn = document.createElement('button');
-      removeBtn.type = 'button';
-      removeBtn.className = 'xrefs-remove';
-      removeBtn.textContent = 'Quitar';
-      removeBtn.addEventListener('click', async () => {
-        const next = refs.filter((_, i) => i !== idx);
-        await saveLinks(sourceKey, next);
-        await renderPanel(line, panel);
-      });
-
-      li.appendChild(refEl);
-      li.appendChild(removeBtn);
-      ul.appendChild(li);
-    });
-    panel.innerHTML = '';
-    panel.appendChild(ul);
+    return panel;
   }
 
   function decorateVerse(line){
-    if (line.querySelector('.xrefs-inline-actions')) return;
+    if (line.querySelector('.xrefs-inline-wrap')) return;
 
-    const details = document.createElement('details');
-    details.className = 'cm-details xrefs-details';
-
-    const actions = document.createElement('div');
-    actions.className = 'xrefs-inline-actions';
+    const textNode = line.querySelector('.verse-text') || line;
+    const inlineWrap = document.createElement('span');
+    inlineWrap.className = 'xrefs-inline-wrap';
 
     const btnToggle = document.createElement('button');
     btnToggle.type = 'button';
     btnToggle.className = 'xrefs-btn';
-    btnToggle.setAttribute('aria-label', 'Textos relacionados');
+    btnToggle.setAttribute('aria-label', 'Textos cruzados');
     btnToggle.innerHTML = '<img src="./shuffle-arrows.png" class="xrefs-icon" alt="Textos cruzados">';
 
     const btnAdd = document.createElement('button');
     btnAdd.type = 'button';
-    btnAdd.className = 'xrefs-remove';
-    btnAdd.style.background = '#e0f2fe';
+    btnAdd.className = 'xrefs-add';
     btnAdd.textContent = '+';
+    btnAdd.setAttribute('aria-label', 'Agregar texto cruzado');
 
-    const panel = document.createElement('div');
-    panel.className = 'xrefs-panel';
-    panel.style.display = 'none';
+    const panel = ensurePanelAfterVerse(line);
 
     btnToggle.addEventListener('click', async () => {
       panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
@@ -327,27 +341,9 @@
       });
     });
 
-    actions.appendChild(btnToggle);
-    actions.appendChild(btnAdd);
-
-    const next = line.nextElementSibling;
-    if (next?.classList?.contains('cm-details')) {
-      const summary = next.querySelector('.cm-summary');
-      if (summary && !next.querySelector('.xrefs-btn')) {
-        summary.insertAdjacentElement('afterend', actions);
-      }
-      next.appendChild(panel);
-      return;
-    }
-
-    const fakeSummary = document.createElement('summary');
-    fakeSummary.className = 'cm-summary';
-    fakeSummary.style.display = 'none';
-
-    details.appendChild(fakeSummary);
-    details.appendChild(actions);
-    details.appendChild(panel);
-    line.after(details);
+    inlineWrap.appendChild(btnToggle);
+    inlineWrap.appendChild(btnAdd);
+    textNode.insertAdjacentElement('afterend', inlineWrap);
   }
 
   function decorateAllVerses(){
@@ -357,8 +353,10 @@
   function init(){
     ensureStyles();
     decorateAllVerses();
+
     const container = document.getElementById('passageTextRV');
     if (!container) return;
+
     const mo = new MutationObserver(() => decorateAllVerses());
     mo.observe(container, { childList: true, subtree: true });
   }
