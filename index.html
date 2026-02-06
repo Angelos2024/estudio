@@ -179,6 +179,8 @@
     .tools-panel .panel-body{ padding:.75rem; }
     .tools-panel .btn{ padding:.4rem .6rem; font-size:.9rem; }
 
+     .page-nav{ display:flex; flex-wrap:wrap; gap:.5rem; }
+    .page-nav .btn{ display:flex; align-items:center; gap:.35rem; }
     /* Greek font */
     .greek{
       font-family: 'Gentium Plus','SBL Greek','Times New Roman',serif;
@@ -435,6 +437,16 @@
           <div class="meta-row">
             Versión: <span class="fw-semibold" id="metaVersion">—</span>
           </div>
+          <div class="page-nav mt-2" aria-label="Navegación de pasaje">
+            <button id="btnPrevPage" class="btn btn-outline-primary btn-sm" type="button" disabled>
+              <span aria-hidden="true">←</span>
+              <span>Anterior</span>
+            </button>
+            <button id="btnNextPage" class="btn btn-outline-primary btn-sm" type="button" disabled>
+              <span>Siguiente</span>
+              <span aria-hidden="true">→</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -673,6 +685,17 @@ const BOOK_ALIASES = {
   'apocalipsis':'apocalipsis','apo':'apocalipsis','apoc':'apocalipsis','rev':'apocalipsis'
 };
 
+    const BOOK_ORDER = [
+  'genesis','exodo','levitico','numeros','deuteronomio',
+  'josue','jueces','rut','1_samuel','2_samuel','1_reyes','2_reyes','1_cronicas','2_cronicas',
+  'esdras','nehemias','ester','job','salmos','proverbios','eclesiastes','cantares',
+  'isaias','jeremias','lamentaciones','ezequiel','daniel','oseas','joel','amos','abdias',
+  'jonas','miqueas','nahum','habacuc','sofonias','hageo','zacarias','malaquias',
+  'mateo','marcos','lucas','juan','hechos','romanos','1_corintios','2_corintios',
+  'galatas','efesios','filipenses','colosenses','1_tesalonicenses','2_tesalonicenses',
+  '1_timoteo','2_timoteo','tito','filemon','hebreos','santiago','1_pedro','2_pedro',
+  '1_juan','2_juan','3_juan','judas','apocalipsis'
+];
 function resolveBookSlug(bookRaw){
   const key = normalizeKey(bookRaw);
   if(BOOK_ALIASES[key]) return BOOK_ALIASES[key];
@@ -717,6 +740,8 @@ const rightLabel = document.getElementById('rightLabel');
 const btnCopyText = document.getElementById('btnCopyText');
 const btnPrint = document.getElementById('btnPrint');
 const btnToggleOrig = document.getElementById('btnToggleOrig');
+    const btnPrevPage = document.getElementById('btnPrevPage');
+const btnNextPage = document.getElementById('btnNextPage');
 const themeMenuBtn = document.getElementById('themeMenuBtn');
 const themeMenu = themeMenuBtn?.nextElementSibling;
 const themeItems = document.querySelectorAll('.dropdown-item[data-theme]');
@@ -795,6 +820,69 @@ function applyTheme(theme){
   const safeTheme = allowedThemes.has(theme) ? theme : 'cream';
   document.documentElement.dataset.theme = safeTheme;
   localStorage.setItem('lectorTheme', safeTheme);
+}
+    async function getChapterCount(slug){
+  if(rvCache[slug]) return rvCache[slug].length;
+  const path = `${RV_BASE}${slug}.json`;
+  rvCache[slug] = await loadJson(path);
+  return rvCache[slug].length;
+}
+
+function buildSearchString(slug, chapter){
+  return `${prettyBookName(slug)} ${chapter}`;
+}
+
+function formatNavButtonLabel(direction, target){
+  const label = target ? `${prettyBookName(target.slug)} ${target.chapter}` : '';
+  const icon = direction === 'prev' ? '←' : '→';
+  const text = direction === 'prev' ? 'Anterior' : 'Siguiente';
+  const labelHtml = label ? ` <span class="d-none d-md-inline text-muted ms-1">${esc(label)}</span>` : '';
+  return direction === 'prev'
+    ? `<span aria-hidden="true">${icon}</span><span>${text}</span>${labelHtml}`
+    : `<span>${text}</span>${labelHtml}<span aria-hidden="true">${icon}</span>`;
+}
+
+function setNavButton(button, direction, target){
+  if(!button) return;
+  button.disabled = !target;
+  button.dataset.book = target?.slug || '';
+  button.dataset.chapter = target?.chapter || '';
+  button.innerHTML = formatNavButtonLabel(direction, target);
+  button.title = target ? `${prettyBookName(target.slug)} ${target.chapter}` : '';
+}
+
+async function updatePageNav(chapterCount){
+  if(!btnPrevPage || !btnNextPage || !lastRef) return;
+  const currentChapter = lastRef.chapter;
+  const idx = BOOK_ORDER.indexOf(currentBookSlug);
+  let prevTarget = null;
+  let nextTarget = null;
+
+  if(currentChapter > 1){
+    prevTarget = { slug: currentBookSlug, chapter: currentChapter - 1 };
+  }else if(idx > 0){
+    const prevSlug = BOOK_ORDER[idx - 1];
+    const prevChapterCount = await getChapterCount(prevSlug);
+    prevTarget = { slug: prevSlug, chapter: prevChapterCount };
+  }
+
+  if(currentChapter < chapterCount){
+    nextTarget = { slug: currentBookSlug, chapter: currentChapter + 1 };
+  }else if(idx >= 0 && idx < BOOK_ORDER.length - 1){
+    const nextSlug = BOOK_ORDER[idx + 1];
+    nextTarget = { slug: nextSlug, chapter: 1 };
+  }
+
+  setNavButton(btnPrevPage, 'prev', prevTarget);
+  setNavButton(btnNextPage, 'next', nextTarget);
+}
+
+async function navigateToPage(slug, chapter){
+  if(!slug || !chapter) return;
+  searchInput.value = buildSearchString(slug, chapter);
+  await ensureBookLoaded(slug, prettyBookName(slug));
+  leftLabel.textContent = versionSelect.value;
+  render({ chapter, verseStart: null, verseEnd: null });
 }
 /***********************
  * Builder: verses[] -> chapters[][]
@@ -1029,6 +1117,7 @@ if (window.GreekLexicon?.decoratePassage) {
 
   statusLine.textContent = `Capítulos: ${chapterCount} · Cap ${ch}: ${verseCount} vers.`;
   showFeedback('ok', 'Cita encontrada');
+  updatePageNav(chapterCount);
 
   const userSearch = normalizeSpaces(searchInput.value) || range;
   history.replaceState(
@@ -1179,7 +1268,19 @@ btnToggleOrig.addEventListener('click', () => {
   const isVisible = !document.body.classList.contains('orig-hidden');
   setOriginalVisible(!isVisible);
 });
+btnPrevPage?.addEventListener('click', () => {
+  const slug = btnPrevPage.dataset.book;
+  const chapter = Number(btnPrevPage.dataset.chapter);
+  if(!slug || !chapter) return;
+  navigateToPage(slug, chapter);
+});
 
+btnNextPage?.addEventListener('click', () => {
+  const slug = btnNextPage.dataset.book;
+  const chapter = Number(btnNextPage.dataset.chapter);
+  if(!slug || !chapter) return;
+  navigateToPage(slug, chapter);
+});
 /***********************
  * Boot
  ***********************/
