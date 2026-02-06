@@ -43,7 +43,21 @@ function intersectLists(a, b){
   const set = new Set(small);
   return big.filter(x => set.has(x));
 }
-
+function collectRefsForToken(tokenMap, tok){
+  if(!tokenMap) return [];
+  if(tokenMap[tok]) return tokenMap[tok].slice();
+  const refs = [];
+  const seen = new Set();
+  for(const [key, arr] of Object.entries(tokenMap)){
+    if(!key.includes(tok)) continue;
+    for(const ref of arr){
+      if(seen.has(ref)) continue;
+      seen.add(ref);
+      refs.push(ref);
+    }
+  }
+  return refs;
+}
 async function loadIndex(lang, url){
   const r = await fetch(url, { cache: "force-cache" });
   if(!r.ok) throw new Error(`No se pudo cargar índice ${lang}`);
@@ -65,7 +79,7 @@ function searchOne(lang, query){
 
   let hits = null;
   for(const tok of toks){
-    const arr = idx.tokens[tok] || [];
+    const arr = collectRefsForToken(idx.tokens, tok);
     hits = hits === null ? arr.slice() : intersectLists(hits, arr);
     if(!hits.length) break;
   }
