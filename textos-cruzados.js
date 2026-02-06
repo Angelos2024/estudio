@@ -105,9 +105,9 @@
     const res = await fetch(`${RV_BASE}${encodeURIComponent(slug)}.json`, { cache: 'no-store' });
     if (!res.ok) throw new Error('Libro no disponible');
     const data = await res.json();
-    if (!Array.isArray(data?.text)) throw new Error('Formato inválido de libro');
-    chapterCache.set(slug, data.text);
-    return data.text;
+   if (!Array.isArray(chapters)) throw new Error('Formato inválido de libro');
+    chapterCache.set(slug, chapters);
+    return chapters;
   }
 
   async function validateRef(ref){
