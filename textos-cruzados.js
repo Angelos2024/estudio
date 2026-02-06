@@ -131,13 +131,18 @@
   }
 
   function refLabel(ref){ return `${prettyBookName(ref.slug)} ${ref.chapter}:${ref.verse}`; }
-
+function snippetText(text, maxLength = 180){
+    const clean = String(text || '').trim().replace(/\s+/g, ' ');
+    if (!clean) return '(sin texto)';
+    if (clean.length <= maxLength) return clean;
+    return `${clean.slice(0, maxLength).trim()}…`;
+  }
   function setupTooltip(el, text){
     let tip = null;
     el.addEventListener('mouseenter', () => {
       tip = document.createElement('div');
       tip.className = 'xrefs-tip';
-      tip.textContent = text;
+      tip.textContent = snippetText(text);
       document.body.appendChild(tip);
     });
     el.addEventListener('mousemove', (e) => {
@@ -322,14 +327,24 @@
 
     const panel = ensurePanelAfterVerse(line);
 
-    btnAdd.addEventListener('click', async () => {
-      panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-      if (panel.style.display === 'block') await renderPanel(line, panel);
+     btnAdd.addEventListener('click', () => {
+      createModalForVerse(line, async () => {
+        panel.style.display = 'block';
+        await renderPanel(line, panel);
+      });
     });
 
     
     inlineWrap.appendChild(btnAdd);
     textNode.insertAdjacentElement('afterend', inlineWrap);
+    getLinks(makeKey(line.getAttribute('data-book'), line.getAttribute('data-ch'), line.getAttribute('data-v')))
+      .then((refs) => {
+        if (refs.length) {
+          panel.style.display = 'block';
+          renderPanel(line, panel).catch(console.error);
+        }
+      })
+      .catch(console.error);
   }
 
   function decorateAllVerses(){
