@@ -49,8 +49,6 @@
     style.id = 'xrefs-style';
     style.textContent = `
       .xrefs-inline-wrap{ display:inline-flex; align-items:center; gap:.25rem; margin-left:.45rem; vertical-align:middle; }
-      .xrefs-btn{ border:0; background:transparent; padding:0; cursor:pointer; opacity:.86; font-size:.95rem; line-height:1; }
-      .xrefs-btn:hover{ opacity:1; }
       .xrefs-add{ border:1px solid #cbd5e1; background:#f8fafc; border-radius:8px; font-size:.78rem; line-height:1; padding:.1rem .34rem; cursor:pointer; }
       .xrefs-add:hover{ background:#eef2f7; }
       .xrefs-panel{ margin:.3rem 0 0 1.55rem; padding:.45rem .65rem; border-radius:10px; border:1px solid rgba(0,0,0,.11); background:#eef6ff; }
@@ -315,32 +313,21 @@
     const inlineWrap = document.createElement('span');
     inlineWrap.className = 'xrefs-inline-wrap';
 
-    const btnToggle = document.createElement('button');
-    btnToggle.type = 'button';
-    btnToggle.className = 'xrefs-btn';
-    btnToggle.setAttribute('aria-label', 'Textos cruzados');
-    btnToggle.textContent = '↔';
-
+    
     const btnAdd = document.createElement('button');
     btnAdd.type = 'button';
     btnAdd.className = 'xrefs-add';
     btnAdd.textContent = '+';
-    btnAdd.setAttribute('aria-label', 'Agregar texto cruzado');
+    btnAdd.setAttribute('aria-label', 'Textos cruzados');
 
     const panel = ensurePanelAfterVerse(line);
 
-    btnToggle.addEventListener('click', async () => {
+    btnAdd.addEventListener('click', async () => {
       panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
       if (panel.style.display === 'block') await renderPanel(line, panel);
     });
 
-    btnAdd.addEventListener('click', () => {
-      createModalForVerse(line, async () => {
-        if (panel.style.display === 'block') await renderPanel(line, panel);
-      });
-    });
-
-    inlineWrap.appendChild(btnToggle);
+    
     inlineWrap.appendChild(btnAdd);
     textNode.insertAdjacentElement('afterend', inlineWrap);
   }
