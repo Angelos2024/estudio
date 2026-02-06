@@ -49,7 +49,7 @@
     style.id = 'xrefs-style';
     style.textContent = `
       .xrefs-inline-wrap{ display:inline-flex; align-items:center; gap:.25rem; margin-left:.45rem; vertical-align:middle; }
-      .xrefs-btn{ border:0; background:transparent; padding:0; cursor:pointer; opacity:.86; }
+      .xrefs-btn{ border:0; background:transparent; padding:0; cursor:pointer; opacity:.86; font-size:.95rem; line-height:1; }
       .xrefs-btn:hover{ opacity:1; }
       .xrefs-icon{ width:18px; height:18px; display:block; }
       .xrefs-add{ border:1px solid #cbd5e1; background:#f8fafc; border-radius:8px; font-size:.78rem; line-height:1; padding:.1rem .34rem; cursor:pointer; }
@@ -320,7 +320,7 @@
     btnToggle.type = 'button';
     btnToggle.className = 'xrefs-btn';
     btnToggle.setAttribute('aria-label', 'Textos cruzados');
-    btnToggle.innerHTML = '<img src="./shuffle-arrows.png" class="xrefs-icon" alt="Textos cruzados">';
+    btnToggle.textContent = '↔';
 
     const btnAdd = document.createElement('button');
     btnAdd.type = 'button';
