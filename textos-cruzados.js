@@ -1,0 +1,367 @@
+(function(){
+  const DB_NAME = 'textos_cruzados_db';
+  const STORE = 'links';
+  const MAX_LINKS_PER_VERSE = 7;
+  const RV_BASE = './librosRV1960/';
+
+  const BOOK_ALIASES = {
+    'genesis':'genesis','gen':'genesis','gn':'genesis','exodo':'exodo','exo':'exodo','ex':'exodo',
+    'levitico':'levitico','lev':'levitico','lv':'levitico','numeros':'numeros','num':'numeros','nm':'numeros',
+    'deuteronomio':'deuteronomio','deut':'deuteronomio','dt':'deuteronomio','josue':'josue','jos':'josue',
+    'jueces':'jueces','jue':'jueces','rut':'rut','rt':'rut','1samuel':'1_samuel','1sam':'1_samuel','1sa':'1_samuel',
+    '2samuel':'2_samuel','2sam':'2_samuel','2sa':'2_samuel','1reyes':'1_reyes','1rey':'1_reyes','2reyes':'2_reyes',
+    '2rey':'2_reyes','1cronicas':'1_cronicas','1cro':'1_cronicas','2cronicas':'2_cronicas','2cro':'2_cronicas',
+    'esdras':'esdras','esd':'esdras','nehemias':'nehemias','neh':'nehemias','ester':'ester','est':'ester',
+    'job':'job','jb':'job','salmos':'salmos','sal':'salmos','ps':'salmos','proverbios':'proverbios','prov':'proverbios',
+    'eclesiastes':'eclesiastes','ecl':'eclesiastes','cantares':'cantares','cant':'cantares','isaias':'isaias','isa':'isaias',
+    'jeremias':'jeremias','jer':'jeremias','lamentaciones':'lamentaciones','lam':'lamentaciones','ezequiel':'ezequiel','ez':'ezequiel',
+    'daniel':'daniel','dan':'daniel','oseas':'oseas','os':'oseas','joel':'joel','jl':'joel','amos':'amos','am':'amos',
+    'abdias':'abdias','abd':'abdias','obadias':'abdias','jonas':'jonas','jon':'jonas','miqueas':'miqueas','miq':'miqueas',
+    'nahum':'nahum','nah':'nahum','habacuc':'habacuc','hab':'habacuc','sofonias':'sofonias','sof':'sofonias','hageo':'hageo',
+    'hag':'hageo','zacarias':'zacarias','zac':'zacarias','malaquias':'malaquias','mal':'malaquias','mateo':'mateo','mt':'mateo',
+    'marcos':'marcos','mr':'marcos','mk':'marcos','lucas':'lucas','lc':'lucas','juan':'juan','jn':'juan','hechos':'hechos','hch':'hechos',
+    'romanos':'romanos','rom':'romanos','1corintios':'1_corintios','1cor':'1_corintios','1co':'1_corintios','2corintios':'2_corintios',
+    '2cor':'2_corintios','2co':'2_corintios','galatas':'galatas','gal':'galatas','efesios':'efesios','efe':'efesios','filipenses':'filipenses',
+    'fil':'filipenses','colosenses':'colosenses','col':'colosenses','1tesalonicenses':'1_tesalonicenses','1tes':'1_tesalonicenses',
+    '2tesalonicenses':'2_tesalonicenses','2tes':'2_tesalonicenses','1timoteo':'1_timoteo','1tim':'1_timoteo','2timoteo':'2_timoteo',
+    '2tim':'2_timoteo','tito':'tito','tit':'tito','filemon':'filemon','flm':'filemon','hebreos':'hebreos','heb':'hebreos',
+    'santiago':'santiago','stg':'santiago','1pedro':'1_pedro','1pe':'1_pedro','2pedro':'2_pedro','2pe':'2_pedro','1juan':'1_juan',
+    '1jn':'1_juan','2juan':'2_juan','2jn':'2_juan','3juan':'3_juan','3jn':'3_juan','judas':'judas','jud':'judas',
+    'apocalipsis':'apocalipsis','apoc':'apocalipsis','rev':'apocalipsis'
+  };
+
+  const BOOK_OPTIONS = Object.entries(BOOK_ALIASES)
+    .filter(([k, v]) => k === v || /^[123]/.test(v))
+    .map(([,slug]) => slug)
+    .filter((slug, i, arr) => arr.indexOf(slug) === i)
+    .sort((a, b) => a.localeCompare(b, 'es'));
+
+  const chapterCache = new Map();
+  let dbPromise = null;
+
+  function normalizeKey(s){
+    return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\./g,'').replace(/\s+/g,'').trim();
+  }
+  function prettyBookName(slug){
+    return String(slug || '').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  }
+  function makeKey(book, ch, v){ return `${book}|${ch}|${v}`; }
+
+  function ensureStyles(){
+    if (document.getElementById('xrefs-style')) return;
+    const style = document.createElement('style');
+    style.id = 'xrefs-style';
+    style.textContent = `
+      .xrefs-btn{ border:0; background:transparent; padding:0; cursor:pointer; opacity:.82; margin-top:-30px; margin-left:3px; }
+      .xrefs-btn:hover{ opacity:1; }
+      .xrefs-icon{ width:22px; height:22px; display:block; }
+      .xrefs-panel{ margin-top:-.35rem; margin-left:-2.0rem; margin-right:80px; padding:.45rem .6rem; border-radius:12px; border:1px solid rgba(0,0,0,.10); background:#eef6ff; }
+      .xrefs-panel ul{ margin:0; padding-left:1rem; }
+      .xrefs-panel li{ margin:.2rem 0; }
+      .xrefs-ref{ color:#0b57d0; cursor:pointer; text-decoration:underline; }
+      .xrefs-remove{ margin-left:.35rem; border:0; background:#ffe4e6; border-radius:8px; font-size:.72rem; }
+      .xrefs-tip{ position:fixed; z-index:99999; max-width:380px; background:#111827; color:#fff; border-radius:10px; padding:.5rem .65rem; font-size:.82rem; line-height:1.35; box-shadow:0 8px 24px rgba(0,0,0,.25); pointer-events:none; }
+      .xrefs-modal{ position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:99998; display:flex; align-items:center; justify-content:center; padding:1rem; }
+      .xrefs-modal-card{ width:min(520px,95vw); background:white; border-radius:12px; border:1px solid #d1d5db; padding:1rem; }
+      .xrefs-modal-grid{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:.5rem; margin:.75rem 0; }
+      .xrefs-modal-actions{ display:flex; justify-content:flex-end; gap:.5rem; }
+      .xrefs-inline-actions{ display:inline-flex; align-items:center; gap:.2rem; }
+      .xrefs-msg{ font-size:.84rem; margin:.25rem 0 .6rem; color:#374151; }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function openDB(){
+    if (dbPromise) return dbPromise;
+    dbPromise = new Promise((resolve, reject) => {
+      const req = indexedDB.open(DB_NAME, 1);
+      req.onupgradeneeded = () => {
+        const db = req.result;
+        if (!db.objectStoreNames.contains(STORE)) db.createObjectStore(STORE);
+      };
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+    return dbPromise;
+  }
+
+  async function getLinks(sourceKey){
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(STORE, 'readonly');
+      const req = tx.objectStore(STORE).get(sourceKey);
+      req.onsuccess = () => resolve(Array.isArray(req.result) ? req.result : []);
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  async function saveLinks(sourceKey, refs){
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(STORE, 'readwrite');
+      tx.objectStore(STORE).put(refs, sourceKey);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+  }
+
+  async function loadBook(slug){
+    if (chapterCache.has(slug)) return chapterCache.get(slug);
+    const res = await fetch(`${RV_BASE}${encodeURIComponent(slug)}.json`, { cache: 'no-store' });
+    if (!res.ok) throw new Error('Libro no disponible');
+    const data = await res.json();
+    if (!Array.isArray(data?.text)) throw new Error('Formato inválido de libro');
+    chapterCache.set(slug, data.text);
+    return data.text;
+  }
+
+  async function validateRef(ref){
+    const bookKey = normalizeKey(ref.book);
+    const slug = BOOK_ALIASES[bookKey] || ref.book;
+    const chapters = await loadBook(slug);
+    const ch = Number(ref.chapter);
+    const v = Number(ref.verse);
+    if (!Number.isInteger(ch) || ch < 1 || ch > chapters.length) return null;
+    const verses = Array.isArray(chapters[ch - 1]) ? chapters[ch - 1] : [];
+    if (!Number.isInteger(v) || v < 1 || v > verses.length) return null;
+    return { slug, chapter: ch, verse: v, text: String(verses[v - 1] || '') };
+  }
+
+  function parseSource(line){
+    return {
+      book: line.getAttribute('data-book'),
+      chapter: Number(line.getAttribute('data-ch')),
+      verse: Number(line.getAttribute('data-v'))
+    };
+  }
+
+  function refLabel(ref){ return `${prettyBookName(ref.slug)} ${ref.chapter}:${ref.verse}`; }
+
+  function createModalForVerse(line, onSaved){
+    const source = parseSource(line);
+    const host = document.createElement('div');
+    host.className = 'xrefs-modal';
+    host.innerHTML = `
+      <div class="xrefs-modal-card">
+        <h6 class="mb-2">Relacionar texto para ${prettyBookName(source.book)} ${source.chapter}:${source.verse}</h6>
+        <p class="xrefs-msg">Puedes agregar hasta ${MAX_LINKS_PER_VERSE} conexiones válidas.</p>
+        <div class="xrefs-modal-grid">
+          <select id="xBook" class="form-select form-select-sm"></select>
+          <select id="xChapter" class="form-select form-select-sm"></select>
+          <select id="xVerse" class="form-select form-select-sm"></select>
+        </div>
+        <div class="xrefs-modal-actions">
+          <button type="button" class="btn btn-sm btn-light" data-act="cancel">Cancelar</button>
+          <button type="button" class="btn btn-sm btn-primary" data-act="save">Agregar</button>
+        </div>
+      </div>
+    `;
+
+    const bookSel = host.querySelector('#xBook');
+    const chSel = host.querySelector('#xChapter');
+    const vSel = host.querySelector('#xVerse');
+
+    BOOK_OPTIONS.forEach((slug) => {
+      const op = document.createElement('option');
+      op.value = slug;
+      op.textContent = prettyBookName(slug);
+      bookSel.appendChild(op);
+    });
+    bookSel.value = source.book;
+
+    const fillChapters = async () => {
+      const chapters = await loadBook(bookSel.value);
+      chSel.innerHTML = '';
+      for(let i=1;i<=chapters.length;i++){
+        const op = document.createElement('option');
+        op.value = String(i);
+        op.textContent = `Cap. ${i}`;
+        chSel.appendChild(op);
+      }
+      chSel.value = String(Math.min(source.chapter, chapters.length));
+      await fillVerses();
+    };
+
+    const fillVerses = async () => {
+      const chapters = await loadBook(bookSel.value);
+      const ch = Number(chSel.value);
+      const verses = chapters[ch-1] || [];
+      vSel.innerHTML = '';
+      for(let i=1;i<=verses.length;i++){
+        const op = document.createElement('option');
+        op.value = String(i);
+        op.textContent = `Verso ${i}`;
+        vSel.appendChild(op);
+      }
+      vSel.value = String(Math.min(source.verse, verses.length || 1));
+    };
+
+    bookSel.addEventListener('change', () => { fillChapters().catch(console.error); });
+    chSel.addEventListener('change', () => { fillVerses().catch(console.error); });
+
+    host.addEventListener('click', async (ev) => {
+      const action = ev.target?.getAttribute?.('data-act');
+      if (ev.target === host || action === 'cancel') {
+        host.remove();
+        return;
+      }
+      if (action === 'save') {
+        const sourceKey = makeKey(source.book, source.chapter, source.verse);
+        const current = await getLinks(sourceKey);
+        if (current.length >= MAX_LINKS_PER_VERSE) {
+          alert(`Límite alcanzado (${MAX_LINKS_PER_VERSE}).`);
+          return;
+        }
+        const valid = await validateRef({ book: bookSel.value, chapter: chSel.value, verse: vSel.value });
+        if (!valid) {
+          alert('Solo se permiten referencias que existan.');
+          return;
+        }
+        const exists = current.some((x) => x.slug === valid.slug && x.chapter === valid.chapter && x.verse === valid.verse);
+        if (!exists) {
+          current.push(valid);
+          await saveLinks(sourceKey, current);
+        }
+        host.remove();
+        await onSaved();
+      }
+    });
+
+    document.body.appendChild(host);
+    fillChapters().catch(console.error);
+  }
+
+  function setupTooltip(el, text){
+    let tip = null;
+    const move = (e) => {
+      if (!tip) return;
+      tip.style.left = `${e.clientX + 14}px`;
+      tip.style.top = `${e.clientY + 14}px`;
+    };
+    el.addEventListener('mouseenter', () => {
+      tip = document.createElement('div');
+      tip.className = 'xrefs-tip';
+      tip.textContent = text;
+      document.body.appendChild(tip);
+    });
+    el.addEventListener('mousemove', move);
+    el.addEventListener('mouseleave', () => {
+      if (tip) tip.remove();
+      tip = null;
+    });
+  }
+
+  async function renderPanel(line, panel){
+    const source = parseSource(line);
+    const sourceKey = makeKey(source.book, source.chapter, source.verse);
+    const refs = await getLinks(sourceKey);
+
+    if (!refs.length) {
+      panel.innerHTML = '<div class="text-muted small">No hay textos relacionados todavía.</div>';
+      return;
+    }
+
+    const ul = document.createElement('ul');
+    refs.forEach((ref, idx) => {
+      const li = document.createElement('li');
+      const refEl = document.createElement('span');
+      refEl.className = 'xrefs-ref';
+      refEl.textContent = refLabel(ref);
+      setupTooltip(refEl, ref.text || '(sin texto)');
+      refEl.addEventListener('click', () => {
+        const q = `${prettyBookName(ref.slug)} ${ref.chapter}:${ref.verse}`;
+        window.location.href = `./index.html?book=${encodeURIComponent(ref.slug)}&name=${encodeURIComponent(prettyBookName(ref.slug))}&search=${encodeURIComponent(q)}`;
+      });
+
+      const removeBtn = document.createElement('button');
+      removeBtn.type = 'button';
+      removeBtn.className = 'xrefs-remove';
+      removeBtn.textContent = 'Quitar';
+      removeBtn.addEventListener('click', async () => {
+        const next = refs.filter((_, i) => i !== idx);
+        await saveLinks(sourceKey, next);
+        await renderPanel(line, panel);
+      });
+
+      li.appendChild(refEl);
+      li.appendChild(removeBtn);
+      ul.appendChild(li);
+    });
+    panel.innerHTML = '';
+    panel.appendChild(ul);
+  }
+
+  function decorateVerse(line){
+    if (line.querySelector('.xrefs-inline-actions')) return;
+
+    const details = document.createElement('details');
+    details.className = 'cm-details xrefs-details';
+
+    const actions = document.createElement('div');
+    actions.className = 'xrefs-inline-actions';
+
+    const btnToggle = document.createElement('button');
+    btnToggle.type = 'button';
+    btnToggle.className = 'xrefs-btn';
+    btnToggle.setAttribute('aria-label', 'Textos relacionados');
+    btnToggle.innerHTML = '<img src="./shuffle-arrows.png" class="xrefs-icon" alt="Textos cruzados">';
+
+    const btnAdd = document.createElement('button');
+    btnAdd.type = 'button';
+    btnAdd.className = 'xrefs-remove';
+    btnAdd.style.background = '#e0f2fe';
+    btnAdd.textContent = '+';
+
+    const panel = document.createElement('div');
+    panel.className = 'xrefs-panel';
+    panel.style.display = 'none';
+
+    btnToggle.addEventListener('click', async () => {
+      panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+      if (panel.style.display === 'block') await renderPanel(line, panel);
+    });
+
+    btnAdd.addEventListener('click', () => {
+      createModalForVerse(line, async () => {
+        if (panel.style.display === 'block') await renderPanel(line, panel);
+      });
+    });
+
+    actions.appendChild(btnToggle);
+    actions.appendChild(btnAdd);
+
+    const next = line.nextElementSibling;
+    if (next?.classList?.contains('cm-details')) {
+      const summary = next.querySelector('.cm-summary');
+      if (summary && !next.querySelector('.xrefs-btn')) {
+        summary.insertAdjacentElement('afterend', actions);
+      }
+      next.appendChild(panel);
+      return;
+    }
+
+    const fakeSummary = document.createElement('summary');
+    fakeSummary.className = 'cm-summary';
+    fakeSummary.style.display = 'none';
+
+    details.appendChild(fakeSummary);
+    details.appendChild(actions);
+    details.appendChild(panel);
+    line.after(details);
+  }
+
+  function decorateAllVerses(){
+    document.querySelectorAll('#passageTextRV .verse-line[data-side="rv"]').forEach(decorateVerse);
+  }
+
+  function init(){
+    ensureStyles();
+    decorateAllVerses();
+    const container = document.getElementById('passageTextRV');
+    if (!container) return;
+    const mo = new MutationObserver(() => decorateAllVerses());
+    mo.observe(container, { childList: true, subtree: true });
+  }
+
+  window.addEventListener('DOMContentLoaded', init);
+})();
