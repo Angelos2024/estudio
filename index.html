@@ -56,36 +56,6 @@
       --panel-shadow: 0 10px 30px rgba(15,23,42,.08);
     }
 
-    [data-theme="blue"]{
-      --bd:#8a97c0;
-      --muted:#4a587c;
-      --bg:#a6b3da;
-      --surface:#dbe2f5;
-      --text:#1c2444;
-      --primary:#2f3b73;
-      --primary-contrast:#f8f9ff;
-      --soft-bg:#c9d2ee;
-      --soft-hover:#bcc7e8;
-      --outline:#2f3b73;
-      --accent:#2f3b73;
-      --panel-shadow: 0 12px 30px rgba(47,59,115,.2);
-    }
-
-    [data-theme="carbon"]{
-      --bd:#3f3f3f;
-      --muted:#b0b0b0;
-      --bg:#1c1c1c;
-      --surface:#2a2a2a;
-      --text:#f8fafc;
-      --primary:#f8fafc;
-      --primary-contrast:#1c1c1c;
-      --soft-bg:#333333;
-      --soft-hover:#3c3c3c;
-      --outline:#f8fafc;
-      --accent:#f8fafc;
-      --panel-shadow: 0 12px 30px rgba(0,0,0,.4);
-    }
-
     body{
       background:var(--bg);
       color:var(--text);
@@ -147,6 +117,18 @@
       border-color:#4b2743;
       color:#000000;
     }
+[data-theme="white"] .btn-primary,
+    [data-theme="white"] .btn-outline-primary{
+      background:#ffffff;
+      border-color:#2563eb;
+      color:#2563eb;
+    }
+    [data-theme="white"] .btn-primary:hover,
+    [data-theme="white"] .btn-outline-primary:hover{
+      background:#eff6ff;
+      border-color:#2563eb;
+      color:#1d4ed8;
+    }
 
     .text-muted{
       color:var(--muted) !important;
@@ -154,8 +136,8 @@
 
     .form-control,
     .form-select{
-      background:var(--surface);
-      border-color:var(--bd);
+     background:#ffffff;
+      border-color:color-mix(in srgb, var(--text) 55%, #ffffff);
       color:var(--text);
     }
     .form-control::placeholder{ color:color-mix(in srgb, var(--muted) 80%, transparent); }
@@ -423,16 +405,6 @@
               <li>
                 <button class="dropdown-item d-flex align-items-center" type="button" data-theme="white">
                   <span class="theme-dot" style="background:#ffffff;"></span>Blanco
-                </button>
-              </li>
-              <li>
-                <button class="dropdown-item d-flex align-items-center" type="button" data-theme="blue">
-                  <span class="theme-dot" style="background:#a6b3da;"></span>Azul
-                </button>
-              </li>
-              <li>
-                <button class="dropdown-item d-flex align-items-center" type="button" data-theme="carbon">
-                  <span class="theme-dot" style="background:#1c1c1c;"></span>Carbón
                 </button>
               </li>
             </ul>
@@ -809,7 +781,8 @@ async function copy(text){
   try{ await navigator.clipboard.writeText(text); }catch{}
 }
 function applyTheme(theme){
-  const safeTheme = theme || 'cream';
+ const allowedThemes = new Set(['cream', 'white']);
+  const safeTheme = allowedThemes.has(theme) ? theme : 'cream';
   document.documentElement.dataset.theme = safeTheme;
   localStorage.setItem('lectorTheme', safeTheme);
 }
