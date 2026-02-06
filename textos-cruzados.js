@@ -352,14 +352,27 @@
 
   function init(){
     ensureStyles();
-    decorateAllVerses();
+  
 
     const container = document.getElementById('passageTextRV');
     if (!container) return;
 
-    const mo = new MutationObserver(() => decorateAllVerses());
-    mo.observe(container, { childList: true, subtree: true });
+let scheduled = false;
+    const scheduleDecorate = () => {
+      if (scheduled) return;
+      scheduled = true;
+      requestAnimationFrame(() => {
+        scheduled = false;
+        decorateAllVerses();
+      });
+    };
+
+    scheduleDecorate();
+
+    const mo = new MutationObserver(() => scheduleDecorate());
+    mo.observe(container, { childList: true });
   }
+  
 
   window.addEventListener('DOMContentLoaded', init);
 })();
