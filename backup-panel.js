@@ -29,7 +29,7 @@
   const statusEl = mount.querySelector('#backupStatus');
 
   const STORE_HL = 'highlights';
-  const STORE_NOTES = 'notes
+  const STORE_NOTES = 'notes';
     const XREF_DB = 'textos_cruzados_db';
   const XREF_STORE = 'links';
 
