@@ -345,6 +345,7 @@
       const p = state.popupEl;
       if (!p || p.style.display !== 'block') return;
       if (p.contains(ev.target)) return;
+       if (isHebrewPanel(ev.target) && !ev.target?.closest?.('.note-mark')) return;
       hidePopup();
     }, false);
 
