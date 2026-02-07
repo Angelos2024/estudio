@@ -389,6 +389,36 @@
     return null;
   }
 
+   function resolveTextNode(pos) {
+    if (!pos || !pos.node) return null;
+    if (pos.node.nodeType === Node.TEXT_NODE) {
+      return { node: pos.node, offset: pos.offset };
+    }
+    if (pos.node.nodeType !== Node.ELEMENT_NODE) return null;
+
+    const element = pos.node;
+    const children = element.childNodes || [];
+    if (!children.length) return null;
+
+    const idx = Math.max(0, Math.min(pos.offset, children.length - 1));
+    const candidates = [children[idx], children[idx - 1], children[idx + 1]].filter(Boolean);
+
+    for (const candidate of candidates) {
+      if (candidate.nodeType === Node.TEXT_NODE && candidate.nodeValue) {
+        return { node: candidate, offset: Math.min(pos.offset, candidate.nodeValue.length) };
+      }
+      if (candidate.nodeType === Node.ELEMENT_NODE) {
+        const walker = document.createTreeWalker(candidate, NodeFilter.SHOW_TEXT, null);
+        const textNode = walker.nextNode();
+        if (textNode) return { node: textNode, offset: 0 };
+      }
+    }
+
+    const fallbackWalker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null);
+    const fallbackText = fallbackWalker.nextNode();
+    if (fallbackText) return { node: fallbackText, offset: 0 };
+    return null;
+  }
   function expandWord(text, idx) {
     const isWordChar = (ch) => {
       const code = ch.codePointAt(0);
@@ -425,21 +455,11 @@
     const sel = window.getSelection();
     if (sel && !sel.isCollapsed) return;
 
-    const pos = caretFromPoint(ev.clientX, ev.clientY);
-    if (!pos || !pos.node) return;
-    let node = pos.node;
-    let offset = pos.offset;
-    if (node.nodeType === Node.ELEMENT_NODE) {
-      const tw = document.createTreeWalker(node, NodeFilter.SHOW_TEXT, null);
-      const tn = tw.nextNode();
-      if (!tn) return;
-      node = tn;
-      offset = Math.min(offset, tn.nodeValue.length);
-    }
-    if (node.nodeType !== Node.TEXT_NODE) return;
-    const text = node.nodeValue || '';
+   const resolved = resolveTextNode(pos);
+    if (!resolved) return;
+    const text = resolved.node.nodeValue || '';
     if (!text) return;
-    const { word } = expandWord(text, Math.max(0, Math.min(offset, text.length - 1)));
+    const { word } = expandWord(text, Math.max(0, Math.min(resolved.offset, text.length - 1)));
     const normalized = normalizeHebrew(word);
     if (!normalized) return;
 
