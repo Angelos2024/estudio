@@ -455,7 +455,8 @@
     const sel = window.getSelection();
     if (sel && !sel.isCollapsed) return;
 
-   const resolved = resolveTextNode(pos);
+  const pos = caretFromPoint(ev.clientX, ev.clientY);
+    const resolved = resolveTextNode(pos);
     if (!resolved) return;
     const text = resolved.node.nodeValue || '';
     if (!text) return;
