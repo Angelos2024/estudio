@@ -759,7 +759,7 @@ const heBookCache = {};             // slug -> chapters[][]
 
 let bookDataRV = null;
 let bookDataOrig = null;
-
+let pendingRestoreState = null;
 /***********************
  * Helpers
  ***********************/
@@ -814,6 +814,19 @@ async function loadJson(path){
 
 async function copy(text){
   try{ await navigator.clipboard.writeText(text); }catch{}
+}
+    function saveReaderState(){
+  try{
+    const state = {
+      url: location.href,
+      scrollY: window.scrollY || 0,
+      origHidden: document.body.classList.contains('orig-hidden') ? 1 : 0,
+      currentBookSlug: currentBookSlug || null,
+      currentBookName: currentBookName || null,
+      lastSearch: (document.getElementById('searchInput')?.value || '').trim()
+    };
+    sessionStorage.setItem('lectorState', JSON.stringify(state));
+  }catch{}
 }
 function applyTheme(theme){
  const allowedThemes = new Set(['cream', 'white']);
@@ -1165,20 +1178,7 @@ async function runSearch(){
       p.set('version', versionSelect.value || 'RVR1960');
 
     // ✅ Guardar estado del lector (para restaurar si el navegador recarga)
-try{
-  const state = {
-    url: location.href,
-    scrollY: window.scrollY || 0,
-    origHidden: document.body.classList.contains('orig-hidden') ? 1 : 0,
-    // opcional: lo que el usuario estaba viendo
-currentBookSlug: currentBookSlug || null,
-currentBookName: currentBookName || null,
-
-    lastSearch: (document.getElementById('searchInput')?.value || '').trim()
-  };
-  sessionStorage.setItem('lectorState', JSON.stringify(state));
-}catch{}
-
+saveReaderState();
       window.location.href = `./busqueda.html?${p.toString()}`;
       return;
     }
@@ -1281,6 +1281,9 @@ btnNextPage?.addEventListener('click', () => {
   if(!slug || !chapter) return;
   navigateToPage(slug, chapter);
 });
+    document.querySelector('a[href="analisis.html"]')?.addEventListener('click', () => {
+  saveReaderState();
+});
 /***********************
  * Boot
  ***********************/
@@ -1293,6 +1296,24 @@ btnNextPage?.addEventListener('click', () => {
   metaVersion.textContent = versionSelect.value;
 
   try{
+     try{
+      const raw = sessionStorage.getItem('lectorState');
+      if(raw){
+        pendingRestoreState = JSON.parse(raw);
+        if (pendingRestoreState?.lastSearch && searchInput) {
+          searchInput.value = pendingRestoreState.lastSearch;
+        }
+        if (pendingRestoreState?.currentBookSlug) {
+          currentBookSlug = pendingRestoreState.currentBookSlug;
+        }
+        if (pendingRestoreState?.currentBookName) {
+          currentBookName = pendingRestoreState.currentBookName;
+        }
+        if (typeof pendingRestoreState?.origHidden === 'number') {
+          setOriginalVisible(pendingRestoreState.origHidden ? false : true);
+        }
+      }
+    }catch{}
     passageTextRV.innerHTML = `<div class="text-muted">Cargando ${leftLabel.textContent}…</div>`;
     passageTextOrig.innerHTML = `<div class="text-muted">Cargando Original…</div>`;
     await ensureBookLoaded(currentBookSlug, currentBookName);
@@ -1301,21 +1322,9 @@ btnNextPage?.addEventListener('click', () => {
     // ✅ Restaurar scroll/estado si venimos de busqueda.html
 // ✅ Restaurar scroll/estado si venimos de busqueda.html
 try{
-  const raw = sessionStorage.getItem('lectorState');
-  if(raw){
-    const st = JSON.parse(raw);
+ const st = pendingRestoreState;
+  if(st){
 
-    // Restaura visibilidad original
-    if(typeof st.origHidden === 'number'){
-      setOriginalVisible(st.origHidden ? false : true);
-    }
-
-    // (opcional recomendado) Restaura el texto del buscador
-    if (st.lastSearch && searchInput) {
-      searchInput.value = st.lastSearch;
-    }
-
-    // Restaura scroll
     if(typeof st.scrollY === 'number'){
       requestAnimationFrame(() => window.scrollTo(0, st.scrollY));
     }
