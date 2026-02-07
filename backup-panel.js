@@ -7,7 +7,7 @@
       <div class="panel-header">Respaldo</div>
       <div class="panel-body">
         <div class="backup-hint">
-          Guarda tus notas y subrayados en un archivo para restaurarlos o compartirlos si se borra la caché.
+          Guarda tus datos, notas y subrayados en un archivo para restaurarlos o compartirlos si se borra la caché.
         </div>
         <div class="backup-actions d-grid gap-2">
           <button id="btnBackupDownload" class="btn btn-soft w-100" type="button">
@@ -29,7 +29,9 @@
   const statusEl = mount.querySelector('#backupStatus');
 
   const STORE_HL = 'highlights';
-  const STORE_NOTES = 'notes';
+  const STORE_NOTES = 'notes
+    const XREF_DB = 'textos_cruzados_db';
+  const XREF_STORE = 'links';
 
   const setStatus = (message, type = '') => {
     statusEl.textContent = message;
@@ -60,6 +62,29 @@
     await waitTx(tx);
     return rows || [];
   };
+const openCrossRefsDB = () => new Promise((resolve, reject) => {
+    const req = indexedDB.open(XREF_DB, 1);
+    req.onupgradeneeded = () => {
+      const db = req.result;
+      if (!db.objectStoreNames.contains(XREF_STORE)) db.createObjectStore(XREF_STORE);
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+
+  const getCrossRefs = async (db) => {
+    const tx = db.transaction(XREF_STORE, 'readonly');
+    const store = tx.objectStore(XREF_STORE);
+    const [keys, values] = await Promise.all([
+      requestToPromise(store.getAllKeys()),
+      requestToPromise(store.getAll()),
+    ]);
+    await waitTx(tx);
+    return keys.map((key, index) => ({
+      key,
+      refs: Array.isArray(values[index]) ? values[index] : [],
+    }));
+  };
 
   const buildFilename = () => {
     const now = new Date();
@@ -72,14 +97,15 @@
     const data = payload?.data || payload;
     const highlights = Array.isArray(data?.highlights) ? data.highlights : null;
     const notes = Array.isArray(data?.notes) ? data.notes : null;
-
-    if (!highlights && !notes) {
-      throw new Error('El archivo no contiene notas ni subrayados.');
+const crossRefs = Array.isArray(data?.crossRefs) ? data.crossRefs : null;
+   if (!highlights && !notes && !crossRefs) {
+      throw new Error('El archivo no contiene notas, subrayados ni textos relacionados.');
     }
 
     return {
       highlights: highlights || [],
       notes: notes || [],
+      crossRefs: crossRefs || [],
     };
   };
 
@@ -91,15 +117,19 @@
       const db = await window.AnnotationsDB?.openDB?.();
       if (!db) throw new Error('No se pudo abrir la base de datos local.');
 
-      const [highlights, notes] = await Promise.all([
+      const [highlights, notes, crossRefs] = await Promise.all([
         getAll(db, STORE_HL),
         getAll(db, STORE_NOTES),
+        openCrossRefsDB()
+          .then((xrefDb) => getCrossRefs(xrefDb))
+          .catch(() => []),
       ]);
 
       const payload = {
         version: 1,
         exportedAt: new Date().toISOString(),
         data: { highlights, notes },
+        data: { highlights, notes, crossRefs },
       };
 
       const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
@@ -112,7 +142,10 @@
       a.remove();
       URL.revokeObjectURL(url);
 
-      setStatus(`Respaldo listo: ${highlights.length} subrayados, ${notes.length} notas.`, 'is-ok');
+      setStatus(
+        `Respaldo listo: ${highlights.length} subrayados, ${notes.length} notas, ${crossRefs.length} textos relacionados.`,
+        'is-ok'
+      );
     } catch (error) {
       setStatus(error.message || 'No se pudo crear el respaldo.', 'is-error');
     } finally {
@@ -127,10 +160,10 @@
     try {
       const text = await file.text();
       const payload = JSON.parse(text);
-      const { highlights, notes } = normalizePayload(payload);
+      const { highlights, notes, crossRefs } = normalizePayload(payload);
 
       const confirmed = window.confirm(
-        'Al cargar el respaldo se reemplazarán las notas y subrayados actuales. ¿Deseas continuar?'
+        'Al cargar el respaldo se reemplazarán las notas, subrayados y textos relacionados actuales. ¿Deseas continuar?'
       );
       if (!confirmed) {
         setStatus('Carga cancelada.');
@@ -139,6 +172,7 @@
 
       const db = await window.AnnotationsDB?.openDB?.();
       if (!db) throw new Error('No se pudo abrir la base de datos local.');
+      const xrefDb = await openCrossRefsDB();
 
       const tx = db.transaction([STORE_HL, STORE_NOTES], 'readwrite');
       const hlStore = tx.objectStore(STORE_HL);
@@ -152,7 +186,18 @@
 
       await waitTx(tx);
 
-      setStatus(`Respaldo cargado: ${highlights.length} subrayados, ${notes.length} notas.`, 'is-ok');
+      const xrefTx = xrefDb.transaction(XREF_STORE, 'readwrite');
+      const xrefStore = xrefTx.objectStore(XREF_STORE);
+      await requestToPromise(xrefStore.clear());
+      crossRefs.forEach(({ key, refs }) => {
+        if (key) xrefStore.put(refs || [], key);
+      });
+      await waitTx(xrefTx);
+
+      setStatus(
+        `Respaldo cargado: ${highlights.length} subrayados, ${notes.length} notas, ${crossRefs.length} textos relacionados.`,
+        'is-ok'
+      );
     } catch (error) {
       setStatus(error.message || 'No se pudo cargar el respaldo.', 'is-error');
     } finally {
