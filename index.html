@@ -1183,6 +1183,9 @@ if (window.BibleComments?.attachCommentsToRV) {
 }
 
 scheduleSyncVerseHeights();
+  if (bookDataOrig && passageTextOrig.classList.contains('greek') && document.fonts?.ready) {
+  document.fonts.ready.then(scheduleSyncVerseHeights).catch(() => {});
+}
 }
 
 
