@@ -1046,7 +1046,35 @@ function showFeedback(kind, text){
   b.innerHTML = icon + '<span>' + esc(text) + '</span>';
   setTimeout(() => b.classList.remove('feedback-animate-pop','feedback-animate-shake'), 350);
 }
+let syncVerseHeightsRaf = null;
+function scheduleSyncVerseHeights(){
+  if(syncVerseHeightsRaf) cancelAnimationFrame(syncVerseHeightsRaf);
+  syncVerseHeightsRaf = requestAnimationFrame(() => {
+    syncVerseHeightsRaf = null;
+    syncVerseHeights();
+  });
+}
 
+function syncVerseHeights(){
+  const rvLines = passageTextRV.querySelectorAll('.verse-line[data-side="rv"]');
+  const origLines = passageTextOrig.querySelectorAll('.verse-line[data-side="orig"]');
+
+  rvLines.forEach((line) => { line.style.minHeight = ''; });
+  origLines.forEach((line) => { line.style.minHeight = ''; });
+
+  if(!bookDataOrig || document.body.classList.contains('orig-hidden')) return;
+
+  const origByVerse = new Map();
+  origLines.forEach((line) => { origByVerse.set(line.dataset.v, line); });
+
+  rvLines.forEach((line) => {
+    const twin = origByVerse.get(line.dataset.v);
+    if(!twin) return;
+    const height = Math.max(line.getBoundingClientRect().height, twin.getBoundingClientRect().height);
+    line.style.minHeight = `${height}px`;
+    twin.style.minHeight = `${height}px`;
+  });
+}
 function render(ref){
   if(!bookDataRV) return;
 
@@ -1152,7 +1180,7 @@ if (window.BibleComments?.attachCommentsToRV) {
   window.BibleComments.attachCommentsToRV(passageTextRV, currentBookSlug, ch);
 }
 
-
+scheduleSyncVerseHeights();
 }
 
 
@@ -1223,6 +1251,7 @@ function setOriginalVisible(isVisible){
   document.body.classList.toggle('orig-hidden', !isVisible);
   btnToggleOrig.setAttribute('aria-expanded', String(isVisible));
   btnToggleOrig.textContent = isVisible ? 'Ocultar original' : 'Mostrar original';
+  scheduleSyncVerseHeights();
 }
 
 /***********************
@@ -1268,6 +1297,7 @@ btnToggleOrig.addEventListener('click', () => {
   const isVisible = !document.body.classList.contains('orig-hidden');
   setOriginalVisible(!isVisible);
 });
+    window.addEventListener('resize', scheduleSyncVerseHeights);
 btnPrevPage?.addEventListener('click', () => {
   const slug = btnPrevPage.dataset.book;
   const chapter = Number(btnPrevPage.dataset.chapter);
