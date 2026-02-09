@@ -170,10 +170,26 @@
     .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace; }
 
     /* Layout paralelo (español izquierda / original derecha) con colapsado del original */
-    .parallel{ display:flex; flex-wrap:wrap; gap:1rem; }
-    .parallel-col{ flex:1 1 360px; min-width:320px; }
-    .orig-hidden #origCol{ display:none !important; }
-    .orig-hidden #spanishCol{ flex:1 1 100%; min-width:100%; }
+  .parallel{
+      display:grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      column-gap:1rem;
+      row-gap:.5rem;
+      align-items:start;
+    }
+    .parallel-col{ display: contents; }
+    #passageTextRV,
+    #passageTextOrig{ display: contents; }
+    #leftLabel{ grid-column:1; grid-row:1; }
+    #rightLabel{ grid-column:2; grid-row:1; }
+    .verse-line[data-side="rv"]{ grid-column:1; }
+    .verse-line[data-side="orig"]{ grid-column:2; }
+    #passageTextRV > div{ grid-column:1; grid-row:2; }
+    #passageTextOrig > div{ grid-column:2; grid-row:2; }
+    .orig-hidden .parallel{ grid-template-columns: minmax(0, 1fr); }
+    .orig-hidden #rightLabel,
+    .orig-hidden #passageTextOrig > div,
+    .orig-hidden .verse-line[data-side="orig"]{ display:none !important; }
 
     /* Columna de herramientas a la izquierda, más compacta */
     .tools-panel .panel-body{ padding:.75rem; }
@@ -1129,7 +1145,7 @@ function render(ref){
   let htmlRV = '';
   for(let v=v1; v<=v2; v++){
     const t = versesRV[v-1] ?? '';
- htmlRV += `<p class="mb-2 verse-line" data-side="rv" data-book="${esc(currentBookSlug)}" data-ch="${ch}" data-v="${v}">
+ htmlRV += `<p class="mb-2 verse-line" data-side="rv" data-book="${esc(currentBookSlug)}" data-ch="${ch}" data-v="${v}" style="grid-row:${v + 1}">
     <span class="verse-num">${v}</span><span class="verse-text">${fmtVerse(t)}</span>
     </p>`;
 
@@ -1142,7 +1158,7 @@ function render(ref){
     let htmlOrig = '';
     for(let v=v1; v<=v2; v++){
       const t = versesOrig[v-1] ?? '';
-      htmlOrig += `<p class="mb-2 verse-line" data-side="orig" data-book="${esc(currentBookSlug)}" data-ch="${ch}" data-v="${v}">
+htmlOrig += `<p class="mb-2 verse-line" data-side="orig" data-book="${esc(currentBookSlug)}" data-ch="${ch}" data-v="${v}" style="grid-row:${v + 1}">
          <span class="verse-num">${v}</span><span class="verse-text">${fmtOrigVerse(t, isNT(currentBookSlug))}</span>
       </p>`;
     }
@@ -1281,8 +1297,14 @@ themeItems.forEach((item) => {
 });
 
 btnCopyText.addEventListener('click', async () => {
-  const left = (passageTextRV.innerText || '').trim();
-  const right = (passageTextOrig.innerText || '').trim();
+  const left = Array.from(document.querySelectorAll('.verse-line[data-side="rv"]'))
+    .map((line) => (line.innerText || '').trim())
+    .filter(Boolean)
+    .join('\n');
+  const right = Array.from(document.querySelectorAll('.verse-line[data-side="orig"]'))
+    .map((line) => (line.innerText || '').trim())
+    .filter(Boolean)
+    .join('\n');
   const includeOrig = !document.body.classList.contains('orig-hidden');
   const combined =
     includeOrig
