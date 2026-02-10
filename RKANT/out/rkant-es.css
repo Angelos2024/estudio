@@ -1,7 +1,7 @@
-/* NA28-Es (scoped): replica 1.html pero sin tocar body del sitio */
+/* RKANT-Es (scoped): replica 1.html pero sin tocar body del sitio */
 
 /* Caja principal del aparato */
-.na28es-container{
+.rkantes-container{
   background-color:#fff;
   padding:10px;
   border-radius:5px;
@@ -15,8 +15,8 @@
 
 /* IMPORTANTE: tus fragmentos traen <div class="container">...
    Bootstrap aplica .container con max-width/paddings.
-   Neutralizamos eso SOLO dentro de NA28. */
-.na28es-container .container{
+   Neutralizamos eso SOLO dentro de RKANT. */
+.rkantes-container .container{
   max-width: none !important;
   width: 100% !important;
   padding: 0 !important;
@@ -27,14 +27,14 @@
 }
 
 /* títulos */
-.na28es-container h2,
-.na28es-container h3{
+.rkantes-container h2,
+.rkantes-container h3{
   color:#333 !important;
   margin: 10px 0 8px 0 !important;
 }
 
 /* griego */
-.na28es-container .greek{
+.rkantes-container .greek{
   font-family:"Times New Roman", serif !important;
   font-size:1.4em !important;
   color:#444 !important;
@@ -45,7 +45,7 @@
    ========================= */
 
 /* Bootstrap a veces mete estilos generales; forzamos aquí */
-.na28es-container table{
+.rkantes-container table{
   width:100% !important;
   border-collapse:collapse !important;
   margin-top:10px !important;
@@ -55,8 +55,8 @@
 }
 
 /* celdas */
-.na28es-container table th,
-.na28es-container table td{
+.rkantes-container table th,
+.rkantes-container table td{
   border:1px solid #ddd !important;
   padding:8px !important;
   vertical-align: top !important;
@@ -66,12 +66,12 @@
 }
 
 /* encabezado */
-.na28es-container table th{
+.rkantes-container table th{
   background-color:#f4f4f4 !important;
   font-weight:600 !important;
 }
 
 /* enlaces / crossrefs */
-.na28es-container .crossrefs{
+.rkantes-container .crossrefs{
   color:#0066cc !important;
 }

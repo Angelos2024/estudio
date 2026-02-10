@@ -156,7 +156,7 @@
  
    const langLabels = {
      es: 'RVR1960',
-     gr: 'NA28',
+     gr: 'RKANT',
     he: 'Hebreo',
     lxx: 'LXX'
    };
@@ -1284,7 +1284,7 @@ const posTag = lang === 'gr' ? extractPos(entry) : '—';
       `Lema: <span class="fw-semibold">${lemmaLabel}</span>`,
       `Transliteración: ${translitLabel}`,
       `POS: ${posTag}`,
-      `NA28: ${grRefs.length}`,
+      `RKANT: ${grRefs.length}`,
       `LXX: ${lxxMatches.refs.length}`,
       `Hebreo: ${heRefs.length}`,
       `RVR1960: ${esRefs.length}`
@@ -1301,7 +1301,7 @@ const posTag = lang === 'gr' ? extractPos(entry) : '—';
 samplesTasks.push(
         buildSamplesForRefs(grRefs, 'gr', 3).then((grSamples) => {
           cards.push(buildCorrespondenceCard({
-            title: 'NA28 (NT)',
+            title: 'RKANT (NT)',
             word: greekLemma,
             transliteration: greekTranslit,
             samples: grSamples,

@@ -5,17 +5,17 @@
  const ROOT = process.cwd();
  
  // Entradas/salidas (ajustadas a tu estructura)
- const INPUT_DIR = path.join(ROOT, "NA28", "libros");
- const OUT_DIR   = path.join(ROOT, "NA28", "out");
+ const INPUT_DIR = path.join(ROOT, "RKANT", "libros");
+ const OUT_DIR   = path.join(ROOT, "RKANT", "out");
 const OUT_LIBROS_DIR = path.join(OUT_DIR, "libros");
  
  // CSS central (se carga 1 sola vez)
  const CSS = `
 
-/* NA28-Es (scoped): replica 1.html pero sin tocar body del sitio */
+/* RKANT-Es (scoped): replica 1.html pero sin tocar body del sitio */
 
 /* Caja principal del aparato */
- .na28es-container{
+ .rkantes-container{
 
   background-color:#fff;
    padding:10px;
@@ -31,8 +31,8 @@ color:#333;
 
 /* IMPORTANTE: tus fragmentos traen <div class="container">...
  Bootstrap aplica .container con max-width/paddings.
- Neutralizamos eso SOLO dentro de NA28. */
-.na28es-container .container{
+ Neutralizamos eso SOLO dentro de RKANT. */
+.rkantes-container .container{
 max-width: none !important;
 width: 100% !important;
 padding: 0 !important;
@@ -43,14 +43,14 @@ box-shadow: none !important;
  }
 
 /* títulos */
-.na28es-container h2,
-.na28es-container h3{
+.rkantes-container h2,
+.rkantes-container h3{
 color:#333 !important;
 margin: 10px 0 8px 0 !important;
 }
 
 /* griego */
- .na28es-container .greek{
+ .rkantes-container .greek{
 
 font-family:"Times New Roman", serif !important;
 font-size:1.4em !important;
@@ -62,7 +62,7 @@ color:#444 !important;
  ========================= */
 
 /* Bootstrap a veces mete estilos generales; forzamos aquí */
- .na28es-container table{
+ .rkantes-container table{
 
 width:100% !important;
 border-collapse:collapse !important;
@@ -73,8 +73,8 @@ border-spacing:0 !important;
 }
 
 /* celdas */
-.na28es-container table th,
-.na28es-container table td{
+.rkantes-container table th,
+.rkantes-container table td{
 border:1px solid #ddd !important;
 padding:8px !important;
 vertical-align: top !important;
@@ -84,14 +84,14 @@ background: #fff !important;
 }
 
 /* encabezado */
-.na28es-container table th{
+.rkantes-container table th{
 background-color:#f4f4f4 !important;
 font-weight:600 !important;
  }
 
 
 /* enlaces / crossrefs */
-.na28es-container .crossrefs{
+.rkantes-container .crossrefs{
 color:#0066cc !important;
  }
 
@@ -137,7 +137,7 @@ if(!fs.existsSync(dir)) return [];
    const containerBlock = (end !== -1) ? from.slice(0, end) : from;
  
    // envolver en clase propia (evita choques con Bootstrap y estilos globales)
-   return `<div class="na28es-container">\n${containerBlock}\n</div>`;
+   return `<div class="rkantes-container">\n${containerBlock}\n</div>`;
  }
  
  // Parse filename: <libro><cap>_<verso>.html  (ej. galatas5_12.html)
@@ -220,7 +220,7 @@ function main(){
 ensureDir(OUT_DIR);
 
 // 1) CSS
-writeUtf8(path.join(OUT_DIR, "na28-es.css"), CSS.trim() + "\n");
+writeUtf8(path.join(OUT_DIR, "rkant-es.css"), CSS.trim() + "\n");
 
 let mode = "out";
 let indexResult = null;
@@ -256,7 +256,7 @@ if(fs.existsSync(INPUT_DIR)){
         continue;
       }
 
-      // salida: NA28/out/libros/<book>/<cap>/<verso>.html
+      // salida: RKANT/out/libros/<book>/<cap>/<verso>.html
       const outRel = path.join("libros", book, ref.ch, `${ref.v}.html`);
       const outPath = path.join(OUT_DIR, outRel);
       writeUtf8(outPath, frag + "\n");
@@ -279,7 +279,7 @@ if(fs.existsSync(INPUT_DIR)){
   process.exit(1);
 }
  
-   console.log("=== NA28-Es build ===");
+   console.log("=== RKANT-Es build ===");
 console.log("MODO  :", mode);
    console.log("INPUT :", INPUT_DIR);
    console.log("OUTPUT:", OUT_DIR);
@@ -291,7 +291,7 @@ console.log("LIBROS:", books);
      problems.slice(0, 200).forEach(p => console.log(" -", p));
      if(problems.length > 200) console.log(" ... (mostrando solo 200)");
    }
-   console.log("\nOK: NA28/out/index.json y NA28/out/na28-es.css generados.");
+   console.log("\nOK: RKANT/out/index.json y RKANT/out/rkant-es.css generados.");
  }
  
  main();

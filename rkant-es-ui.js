@@ -12,25 +12,25 @@ if(!el) return;
     el.style.display = 'none';
   }
  
-   async function initNA28(){
-     const btn = $("btnNA28Es");
-     const na28Panel = $("na28Panel");
+   async function initRKANT(){
+     const btn = $("btnRKANTEs");
+     const rkantPanel = $("rkantPanel");
      const biblePanel = $("biblePanel"); // ✅ lo agregaste en tu panel-body
-     const selBook = $("na28Book");
-     const selCh = $("na28Chapter");
-     const selV = $("na28Verse");
-     const viewer = $("na28Viewer");
+     const selBook = $("rkantBook");
+     const selCh = $("rkantChapter");
+     const selV = $("rkantVerse");
+     const viewer = $("rkantViewer");
         const panelHeaderTitle = $("panelHeaderTitle");
  
      // Si aún no están en el DOM, no hacemos nada (evita errores silenciosos)
-    if(!btn || !na28Panel || !biblePanel || !selBook || !selCh || !selV || !viewer || !panelHeaderTitle){
-       console.warn("[NA28-Es] Faltan elementos en el DOM. Revisa ids: btnNA28Es, biblePanel, na28Panel, na28Book, na28Chapter, na28Verse, na28Viewer, panelHeaderTitle");
+    if(!btn || !rkantPanel || !biblePanel || !selBook || !selCh || !selV || !viewer || !panelHeaderTitle){
+       console.warn("[RKANT-Es] Faltan elementos en el DOM. Revisa ids: btnRKANTEs, biblePanel, rkantPanel, rkantBook, rkantChapter, rkantVerse, rkantViewer, panelHeaderTitle");
        return;
      }
 
    
 
-    const NA28_BOOKS = [
+    const RKANT_BOOKS = [
      'mateo','marcos','lucas','juan','hechos',
       'romanos','1_corintios','2_corintios','galatas','efesios','filipenses','colosenses',
       '1_tesalonicenses','2_tesalonicenses','1_timoteo','2_timoteo','tito','filemon',
@@ -39,8 +39,8 @@ if(!el) return;
 
 
      let enabled = false;
-      const INDEX_PATH = './NA28/out/index.json';
-    let na28Index = null;
+      const INDEX_PATH = './RKANT/out/index.json';
+    let rkantIndex = null;
  
      // Cache del último estado seleccionado
      let lastSel = { book: null, ch: null, v: null };
@@ -61,7 +61,7 @@ if(!el) return;
         if(!data || typeof data !== "object") throw new Error("Formato inválido en index.json");
         return data;
       }catch(err){
-        console.warn("[NA28-Es]", err);
+        console.warn("[RKANT-Es]", err);
      return null;
       }
 
@@ -69,14 +69,14 @@ if(!el) return;
    
 function getAvailableBooks(index){
       const available = index ? Object.keys(index) : [];
-      return NA28_BOOKS.filter(book => available.includes(book));
+      return RKANT_BOOKS.filter(book => available.includes(book));
     }
        function numericKeys(obj){
       return Object.keys(obj || {}).sort((a, b) => Number(a) - Number(b));
     }
  
  function fillBooks(){
-      const books = getAvailableBooks(na28Index);
+      const books = getAvailableBooks(rkantIndex);
       if(books.length === 0){
         selBook.innerHTML = `<option value="">No hay libros disponibles</option>`;
         return;
@@ -85,7 +85,7 @@ function getAvailableBooks(index){
     }
 
     function fillChapters(book){
-      const chapters = numericKeys(na28Index?.[book]);
+      const chapters = numericKeys(rkantIndex?.[book]);
       if(chapters.length === 0){
         selCh.innerHTML = `<option value="">No hay capítulos</option>`;
         return;
@@ -94,7 +94,7 @@ function getAvailableBooks(index){
     }
 
     function fillVerses(book, ch){
-      const verses = numericKeys(na28Index?.[book]?.[ch]);
+      const verses = numericKeys(rkantIndex?.[book]?.[ch]);
       if(verses.length === 0){
         selV.innerHTML = `<option value="">No hay versos</option>`;
         return;
@@ -103,7 +103,7 @@ function getAvailableBooks(index){
     }
 
     async function syncSelection(useLastSelection = false){
-      if(useLastSelection && lastSel.book && na28Index?.[lastSel.book]){
+      if(useLastSelection && lastSel.book && rkantIndex?.[lastSel.book]){
         selBook.value = lastSel.book;
       }
 
@@ -114,19 +114,19 @@ function getAvailableBooks(index){
       }
 
      fillChapters(selBook.value);
-      if(useLastSelection && lastSel.ch && na28Index?.[selBook.value]?.[lastSel.ch]){
+      if(useLastSelection && lastSel.ch && rkantIndex?.[selBook.value]?.[lastSel.ch]){
         selCh.value = lastSel.ch;
       }
 
       fillVerses(selBook.value, selCh.value);
-      if(useLastSelection && lastSel.v && na28Index?.[selBook.value]?.[selCh.value]?.[lastSel.v]){
+      if(useLastSelection && lastSel.v && rkantIndex?.[selBook.value]?.[selCh.value]?.[lastSel.v]){
         selV.value = lastSel.v;
       }
     }
-   function buildNA28Paths(book, ch, v){
+   function buildRKANTPaths(book, ch, v){
       return [
-        `./NA28/out/libros/${book}/${ch}/${ch}_${v}.html`,
-        `./NA28/out/libros/${book}/${ch}/${v}.html`
+        `./RKANT/out/libros/${book}/${ch}/${ch}_${v}.html`,
+        `./RKANT/out/libros/${book}/${ch}/${v}.html`
       ];
     }
 
@@ -142,11 +142,11 @@ function getAvailableBooks(index){
   }
 
    const candidates = [];
-  const indexedPath = na28Index?.[book]?.[ch]?.[v];
+  const indexedPath = rkantIndex?.[book]?.[ch]?.[v];
   if(indexedPath){
-    candidates.push(`./NA28/out/${indexedPath}`);
+    candidates.push(`./RKANT/out/${indexedPath}`);
   }
-  candidates.push(...buildNA28Paths(book, ch, v));
+  candidates.push(...buildRKANTPaths(book, ch, v));
   let htmlText = null;
   let lastError = null;
 
@@ -174,11 +174,11 @@ function getAvailableBooks(index){
     return;
   }
  
-   // 🔒 Encapsular para que el CSS NA28-Es aplique solo aquí
-   viewer.innerHTML = `<div class="na28es-container">${htmlText}</div>`;
+   // 🔒 Encapsular para que el CSS RKANT-Es aplique solo aquí
+   viewer.innerHTML = `<div class="rkantes-container">${htmlText}</div>`;
  
    // 🧹 Quitar doctype si llega como texto (algunos HTML lo traen)
-   const wrap = viewer.querySelector(".na28es-container");
+   const wrap = viewer.querySelector(".rkantes-container");
    if (wrap) {
      wrap.innerHTML = wrap.innerHTML.replace(/<!doctype[^>]*>/ig, "");
    }
@@ -186,15 +186,15 @@ function getAvailableBooks(index){
  
  
      async function enable(){
-        na28Index = await loadIndex();
+        rkantIndex = await loadIndex();
       fillBooks();
- const availableBooks = getAvailableBooks(na28Index);
+ const availableBooks = getAvailableBooks(rkantIndex);
      if(!selBook.value) selBook.value = availableBooks[0] || "";
     await syncSelection(true);
  
-       // mostrar NA28 y ocultar Biblia normal
+       // mostrar RKANT y ocultar Biblia normal
        hide(biblePanel);
-       show(na28Panel);
+       show(rkantPanel);
  panelHeaderTitle.textContent = "Roans Kritischer Apparat Neuen Testament";
        enabled = true;
        setButtonState();
@@ -203,7 +203,7 @@ function getAvailableBooks(index){
      }
  
      function disable(){
-       hide(na28Panel);
+       hide(rkantPanel);
        show(biblePanel);
  panelHeaderTitle.textContent = "Texto del pasaje";
        
@@ -218,7 +218,7 @@ function getAvailableBooks(index){
          else disable();
        }catch(e){
          console.error(e);
-         viewer.innerHTML = `<div class="text-danger">No se pudo activar NA28-Es. Revisa consola.</div>`;
+         viewer.innerHTML = `<div class="text-danger">No se pudo activar RKANT-Es. Revisa consola.</div>`;
        }
      });
  
@@ -240,9 +240,9 @@ function getAvailableBooks(index){
  
    // ✅ Garantiza que los elementos existan aunque el script esté en <head>
    if(document.readyState === "loading"){
-     document.addEventListener("DOMContentLoaded", initNA28);
+     document.addEventListener("DOMContentLoaded", initRKANT);
    } else {
-     initNA28();
+     initRKANT();
    }
  })();
 ;

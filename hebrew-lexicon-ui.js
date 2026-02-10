@@ -1,5 +1,5 @@
 /* hebrew-lexicon-ui.js
-   Tooltip de diccionario para hebreo, con correspondencias NA28 usando LXX como puente.
+   Tooltip de diccionario para hebreo, con correspondencias RKANT usando LXX como puente.
 */
 (() => {
   'use strict';
@@ -311,8 +311,8 @@
         .he-lex-popup .lab{ opacity:.7; margin-right:6px; }
         .he-lex-popup .sep{ border:0; border-top:1px solid rgba(255,255,255,.12); margin:10px 0; }
         .he-lex-popup .def{ margin-top:4px; line-height:1.35; max-height:160px; overflow:auto; }
-        .he-lex-popup .na28{ margin-top:6px; max-height:180px; overflow:auto; }
-        .he-lex-popup .na28-row{ margin-top:4px; font-size:12px; line-height:1.3; }
+        .he-lex-popup .rkant{ margin-top:6px; max-height:180px; overflow:auto; }
+        .he-lex-popup .rkant-row{ margin-top:4px; font-size:12px; line-height:1.3; }
         .he-lex-popup .muted{ opacity:.7; }
         .he-lex-popup .close{ position:absolute; right:10px; top:8px; background:transparent; border:0; color:#cbd6ff; cursor:pointer; font-size:16px; }
       `;
@@ -331,8 +331,8 @@
       '<div class="t2 row"><span class="lab">Variantes:</span><span id="he-lex-variants"></span></div>' +
       '<div class="t2 row"><span class="lab">Referencias:</span><span id="he-lex-refs"></span></div>' +
       '<hr class="sep" />' +
-      '<div class="t2"><span class="lab">Correspondencia NA28:</span></div>' +
-      '<div id="he-lex-na28" class="na28"></div>';
+      '<div class="t2"><span class="lab">Correspondencia RKANT:</span></div>' +
+      '<div id="he-lex-rkant" class="rkant"></div>';
 
     document.body.appendChild(box);
     state.popupEl = box;
@@ -474,7 +474,7 @@
     const morphEl = document.getElementById('he-lex-morph');
     const variantsEl = document.getElementById('he-lex-variants');
     const refsEl = document.getElementById('he-lex-refs');
-    const na28El = document.getElementById('he-lex-na28');
+    const rkantEl = document.getElementById('he-lex-rkant');
 
     if (wordEl) wordEl.textContent = word || normalized;
     if (entryEl) entryEl.textContent = 'Cargando…';
@@ -482,7 +482,7 @@
     if (morphEl) morphEl.textContent = '—';
     if (variantsEl) variantsEl.textContent = '—';
     if (refsEl) refsEl.textContent = '—';
-    if (na28El) na28El.innerHTML = '<div class="na28-row muted">Buscando correspondencias NA28…</div>';
+    if (rkantEl) rkantEl.innerHTML = '<div class="rkant-row muted">Buscando correspondencias RKANT…</div>';
     showPopupNear(ev.target);
 
     let entry = null;
@@ -517,32 +517,32 @@
          if (requestId !== state.popupRequestId) return;
       const refs = heIndex.tokens?.[normalized] || [];
       if (!refs.length) {
-        if (na28El) na28El.innerHTML = '<div class="na28-row muted">Sin referencias hebreas en el índice.</div>';
+        if (rkantEl) rkantEl.innerHTML = '<div class="rkant-row muted">Sin referencias hebreas en el índice.</div>';
         return;
       }
       const greekCandidate = await buildGreekCandidateFromHebrewRefs(refs);
            if (requestId !== state.popupRequestId) return;
       if (!greekCandidate) {
-        if (na28El) na28El.innerHTML = '<div class="na28-row muted">No se pudo determinar correspondencia griega.</div>';
+        if (rkantEl) rkantEl.innerHTML = '<div class="rkant-row muted">No se pudo determinar correspondencia griega.</div>';
         return;
       }
-      const na28Samples = await buildNa28Samples(greekCandidate.normalized, 4);
+      const rkantSamples = await buildNa28Samples(greekCandidate.normalized, 4);
           if (requestId !== state.popupRequestId) return;
-      if (!na28Samples.length) {
-        if (na28El) na28El.innerHTML = `<div class="na28-row muted">Lema griego: ${escapeHtml(greekCandidate.lemma)} · Sin ocurrencias en NA28.</div>`;
+      if (!rkantSamples.length) {
+        if (rkantEl) rkantEl.innerHTML = `<div class="rkant-row muted">Lema griego: ${escapeHtml(greekCandidate.lemma)} · Sin ocurrencias en RKANT.</div>`;
         return;
       }
-      const items = na28Samples.map((sample) => (
-        `<div class="na28-row">• <b>${escapeHtml(sample.ref)}</b> — ${escapeHtml(sample.text)}</div>`
+      const items = rkantSamples.map((sample) => (
+        `<div class="rkant-row">• <b>${escapeHtml(sample.ref)}</b> — ${escapeHtml(sample.text)}</div>`
       )).join('');
-      if (na28El) {
-        na28El.innerHTML = `
-          <div class="na28-row"><span class="muted">Lema griego:</span> ${escapeHtml(greekCandidate.lemma)}</div>
+      if (rkantEl) {
+        rkantEl.innerHTML = `
+          <div class="rkant-row"><span class="muted">Lema griego:</span> ${escapeHtml(greekCandidate.lemma)}</div>
           ${items}
         `;
       }
     } catch (error) {
-      if (na28El) na28El.innerHTML = '<div class="na28-row muted">No se pudo cargar la correspondencia NA28.</div>';
+      if (rkantEl) rkantEl.innerHTML = '<div class="rkant-row muted">No se pudo cargar la correspondencia RKANT.</div>';
     }
   }, false);
 })();
