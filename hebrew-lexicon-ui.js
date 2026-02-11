@@ -187,7 +187,28 @@ function toArray(value) {
   function getHebrewLxx(entry) {
     return entry?.LXX || entry?.lxx || entry?.lxx_refs || null;
   }
+function findHebrewEntry(normalizedWord) {
+    if (!normalizedWord) return null;
 
+    const direct = state.dictMap.get(normalizedWord);
+    if (direct) {
+      return { entry: direct, lookup: normalizedWord, mode: 'direct' };
+    }
+
+    // Soporte para palabras compuestas con prefijos inseparables (ej. בראשית = ב + ראשית).
+    let trimmed = normalizedWord;
+    for (let i = 0; i < 3 && trimmed.length > 1; i++) {
+      const first = trimmed[0];
+      if (!HEBREW_PREFIX_LETTERS.has(first)) break;
+      trimmed = trimmed.slice(1);
+      const hit = state.dictMap.get(trimmed);
+      if (hit) {
+        return { entry: hit, lookup: trimmed, mode: 'prefixed' };
+      }
+    }
+
+    return null;
+  }
   function formatHebrewLxx(lxxData) {
     if (!lxxData) return '—';
     if (typeof lxxData === 'string') return lxxData;
@@ -381,6 +402,12 @@ function toArray(value) {
         .he-lex-popup .rkant-row{ margin-top:4px; font-size:12px; line-height:1.3; }
         .he-lex-popup .muted{ opacity:.7; }
         .he-lex-popup .close{ position:absolute; right:10px; top:8px; background:transparent; border:0; color:#cbd6ff; cursor:pointer; font-size:16px; }
+        .he-lex-active-word{
+          text-decoration: underline;
+          text-decoration-thickness: 2px;
+          text-underline-offset: 3px;
+          text-decoration-color: currentColor;
+        }
       `;
       document.head.appendChild(st);
     }
@@ -443,6 +470,35 @@ function toArray(value) {
   function hidePopup() {
     if (!state.popupEl) return;
     state.popupEl.style.display = 'none';
+     clearActiveWordMarker();
+  }
+
+  function clearActiveWordMarker() {
+    const markers = document.querySelectorAll('.he-lex-active-word');
+    markers.forEach((marker) => {
+      const parent = marker.parentNode;
+      if (!parent) return;
+      while (marker.firstChild) parent.insertBefore(marker.firstChild, marker);
+      parent.removeChild(marker);
+      if (parent.normalize) parent.normalize();
+    });
+  }
+
+  function markActiveWord(node, start, end) {
+    if (!node || node.nodeType !== Node.TEXT_NODE) return null;
+    if (start < 0 || end <= start) return null;
+    clearActiveWordMarker();
+    const range = document.createRange();
+    range.setStart(node, start);
+    range.setEnd(node, end);
+    const marker = document.createElement('span');
+    marker.className = 'he-lex-active-word';
+    try {
+      range.surroundContents(marker);
+      return marker;
+    } catch (error) {
+      return null;
+    }
   }
 
   function caretFromPoint(x, y) {
@@ -530,10 +586,11 @@ function toArray(value) {
     if (!resolved) return;
     const text = resolved.node.nodeValue || '';
     if (!text) return;
-    const { word } = expandWord(text, Math.max(0, Math.min(resolved.offset, text.length - 1)));
+    const { word, start, end } = expandWord(text, Math.max(0, Math.min(resolved.offset, text.length - 1)));
     const normalized = normalizeHebrew(word);
     if (!normalized) return;
 
+     const marker = markActiveWord(resolved.node, start, end);
      const requestId = ++state.popupRequestId;
     ensurePopup();
 
@@ -558,13 +615,14 @@ function toArray(value) {
     if (variantsEl) variantsEl.textContent = '—';
    if (lxxEl) lxxEl.textContent = '—';
     if (rkantEl) rkantEl.innerHTML = '<div class="rkant-row muted">Buscando correspondencias RKANT…</div>';
-    showPopupNear(ev.target);
+    showPopupNear(marker || ev.target);
 
     let entry = null;
     try {
       await loadHebrewDict();
       if (requestId !== state.popupRequestId) return;
-      entry = state.dictMap.get(normalized) || null;
+     const found = findHebrewEntry(normalized);
+      entry = found?.entry || null;
       if (!entry) {
         if (entryEl) entryEl.textContent = '—';
         if (descEl) descEl.textContent = 'No se pudo cargar el diccionario hebreo.';
