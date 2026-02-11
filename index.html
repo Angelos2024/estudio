@@ -802,11 +802,16 @@ function fmtOrigVerse(raw, isGreek){
 }
 function updateViewModeButton(){
   if(!btnViewMode) return;
-  btnViewMode.textContent = viewMode === 'interlinear' ? 'Transliterado' : 'Paralelo';
+   btnViewMode.textContent = viewMode === 'interlinear' ? 'Interlineal (AT)' : 'Paralelo';
+}
+
+function isInterlinearAvailable(){
+  return !isNT(currentBookSlug);
 }
 
 function setViewMode(mode){
-  viewMode = mode === 'interlinear' ? 'interlinear' : 'parallel';
+   const requestedInterlinear = mode === 'interlinear';
+  viewMode = (requestedInterlinear && isInterlinearAvailable()) ? 'interlinear' : 'parallel';
   document.body.classList.toggle('interlinear-mode', viewMode === 'interlinear');
   updateViewModeButton();
   if(lastRef){
@@ -1145,7 +1150,7 @@ async function render(ref){
     : `${currentBookName} ${ch}:${v1}${(v2 !== v1 ? '-' + v2 : '')}`;
 
   pageTitle.textContent = range;
-  metaVersion.textContent = versionSelect.value;
+ metaVersion.textContent = (viewMode === 'interlinear' && isInterlinearAvailable()) ? 'Interlineal' : versionSelect.value;
 
   // Español
   let htmlRV = '';
@@ -1165,18 +1170,18 @@ async function render(ref){
     let htmlOrig = '';
     for(let v=v1; v<=v2; v++){
       const t = versesOrig[v-1] ?? '';
-     if(viewMode === 'interlinear'){
+ if(viewMode === 'interlinear' && !isGreekBook){
         if(window.InterlinearView?.buildInterlinearRows){
-          const rows = await window.InterlinearView.buildInterlinearRows(t, isGreekBook);
+           const rows = await window.InterlinearView.buildInterlinearRows(t);
           htmlOrig += `<p class="mb-2 verse-line interlinear-verse" data-side="orig" data-book="${esc(currentBookSlug)}" data-ch="${ch}" data-v="${v}">
             <span class="verse-num">${v}</span>
-            <span class="interlinear-original">${fmtOrigVerse(rows.originalLine || t, isGreekBook)}</span>
-            <span class="interlinear-spanish">${fmtVerse(rows.spanishLine || '-')}</span>
+ <span class="interlinear-original">${fmtOrigVerse(rows.originalLine || t, false)}</span>
+ <span class="interlinear-spanish">${fmtVerse(rows.spanishLine || '-')}</span>
           </p>`;
         }else{
           htmlOrig += `<p class="mb-2 verse-line interlinear-verse" data-side="orig" data-book="${esc(currentBookSlug)}" data-ch="${ch}" data-v="${v}">
             <span class="verse-num">${v}</span>
-            <span class="interlinear-original">${fmtOrigVerse(t, isGreekBook)}</span>
+            <span class="interlinear-original">${fmtOrigVerse(t, false)}</span>
             <span class="interlinear-spanish">-</span>
           </p>`;
         }
@@ -1285,7 +1290,7 @@ function setFromUrl(){
   const view = p.get('view');
 
   if(bk) currentBookSlug = bk.trim();
-  if(view === 'interlinear') viewMode = 'interlinear';
+  if(view === 'interlinear' && !isNT(currentBookSlug)) viewMode = 'interlinear';
   if(nm) currentBookName = nm.trim();
   if(q) searchInput.value = q;
   if(v) versionSelect.value = v;
