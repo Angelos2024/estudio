@@ -205,7 +205,8 @@ function normalizeGreek(text) {
       .replace(/[\u0300-\u036f]/g, '')
       .toLowerCase();
   }
-   function transliterateGreek(text) {
+  
+  function transliterateGreek(text) {
     const map = {
       α: 'a', β: 'b', γ: 'g', δ: 'd', ε: 'e', ζ: 'z', η: 'e', θ: 'th',
       ι: 'i', κ: 'k', λ: 'l', μ: 'm', ν: 'n', ξ: 'x', ο: 'o', π: 'p',
@@ -290,7 +291,16 @@ function normalizeSpanish(text) {
   function buildTokenRegex(token, lang) {
     const escaped = token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     if (lang === 'es') {
-      return new RegExp(escaped, 'gi');
+      const accentMap = {
+        a: '[aáàâäãå]',
+        e: '[eéèêë]',
+        i: '[iíìîï]',
+        o: '[oóòôöõ]',
+        u: '[uúùûü]',
+        n: '[nñ]'
+      };
+      const pattern = escaped.split('').map((ch) => accentMap[ch] || ch).join('');
+      return new RegExp(pattern, 'giu');
     }
 
     const letters = [];
@@ -815,7 +825,7 @@ function mapOtRefsToLxxRefs(refs) {
       })
       .filter(Boolean);
   }
-   function mapLxxRefsToHebrewRefs(refs) {
+function mapLxxRefsToHebrewRefs(refs) {
     return refs
       .map((ref) => {
         const [book, chapter, verse] = ref.split('|');
