@@ -18,7 +18,7 @@
     bySurface: new Map(), // normalizedSurface -> { lemma, tr, surface }
       lxxCache: new Map(), // normalizedLemma -> [{ ref, word, lemma, morph }]
     tipEl: null,
-    hideTimer: null,
+    tipDrag: null,
   };
 
   function ensureTip() {
@@ -43,6 +43,9 @@
           display:none;
         }
         .gr-lex-tip .t1{ font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+        .gr-lex-tip .head{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:4px; cursor:move; user-select:none; }
+        .gr-lex-tip .head .t1{ margin-bottom:0; }
+        .gr-lex-tip .close{ border:0; background:transparent; color:#cbd6ff; font-size:16px; line-height:1; cursor:pointer; padding:0 2px; }
         .gr-lex-tip .t2{ font-size: 12px; opacity: .9; }
         .gr-lex-tip .t3{ margin-top: 6px; font-size: 12px; opacity: .95; }
         .gr-lex-tip .muted{ opacity: .7; }
@@ -54,6 +57,7 @@
     el.className = 'gr-lex-tip';
     el.setAttribute('role', 'dialog');
     el.setAttribute('aria-hidden', 'true');
+     el.innerHTML = '<div class="head"><div class="t1" id="gr-lex-word"></div><button type="button" class="close" aria-label="Cerrar">×</button></div><div id="gr-lex-content"></div>';
 
     // Cierra al click afuera
     document.addEventListener('mousedown', (ev) => {
@@ -66,15 +70,52 @@
     document.addEventListener('keydown', (ev) => {
       if (ev.key === 'Escape') hideTip();
     });
+const onPointerMove = (ev) => {
+      const drag = state.tipDrag;
+      if (!drag) return;
+      const box = state.tipEl;
+      if (!box) return;
+      const pad = 10;
+      const maxX = Math.max(pad, window.innerWidth - box.offsetWidth - pad);
+      const maxY = Math.max(pad, window.innerHeight - box.offsetHeight - pad);
+      const nx = Math.max(pad, Math.min(ev.clientX - drag.offsetX, maxX));
+      const ny = Math.max(pad, Math.min(ev.clientY - drag.offsetY, maxY));
+      box.style.left = `${Math.round(nx)}px`;
+      box.style.top = `${Math.round(ny)}px`;
+    };
+
+    const stopDrag = () => {
+      state.tipDrag = null;
+      document.removeEventListener('pointermove', onPointerMove, true);
+      document.removeEventListener('pointerup', stopDrag, true);
+      document.removeEventListener('pointercancel', stopDrag, true);
+    };
+
+    const head = el.querySelector('.head');
+    head?.addEventListener('pointerdown', (ev) => {
+      if (ev.button !== 0) return;
+      if (ev.target?.closest?.('.close')) return;
+      const r = el.getBoundingClientRect();
+      state.tipDrag = { offsetX: ev.clientX - r.left, offsetY: ev.clientY - r.top };
+      document.addEventListener('pointermove', onPointerMove, true);
+      document.addEventListener('pointerup', stopDrag, true);
+      document.addEventListener('pointercancel', stopDrag, true);
+      ev.preventDefault();
+    });
+
+    el.querySelector('.close')?.addEventListener('click', hideTip, false);
 
     document.body.appendChild(el);
     state.tipEl = el;
     return el;
   }
 
-  function showTip(html, x, y) {
+  function showTip(title, bodyHtml, x, y) {
     const el = ensureTip();
-    el.innerHTML = html;
+   const titleEl = el.querySelector('#gr-lex-word');
+    const bodyEl = el.querySelector('#gr-lex-content');
+    if (titleEl) titleEl.textContent = title || '—';
+    if (bodyEl) bodyEl.innerHTML = bodyHtml;
 
     el.style.display = 'block';
     el.setAttribute('aria-hidden', 'false');
@@ -94,9 +135,6 @@
 
     el.style.left = nx + 'px';
     el.style.top  = ny + 'px';
-
-    clearTimeout(state.hideTimer);
-    state.hideTimer = setTimeout(hideTip, 9000);
   }
 
   function hideTip() {
@@ -366,7 +404,8 @@
     const hit = state.bySurface.get(norm);
     if (!hit) {
       showTip(
-        `<div class="t1">${escapeHtml(norm)}</div><div class="t2 muted">Sin entrada (aún) en tu data</div>`,
+               norm,
+        `<div class="t2 muted">Sin entrada (aún) en tu data</div>`,
         ev.clientX, ev.clientY
       );
       return;
@@ -379,8 +418,8 @@
       : `<div class="t3 muted">Definición: pendiente (no hay diccionario cargado)</div>`;
 
     showTip(
+       norm,
       `
-        <div class="t1">${escapeHtml(norm)}</div>
         <div class="t2"><b>Lema:</b> ${escapeHtml(hit.lemma || '—')} &nbsp; <span class="muted">|</span> &nbsp; <b>Translit.:</b> ${escapeHtml(hit.tr || '—')}</div>
         ${glossHtml}
          ${renderLxxSection([], true)}
@@ -389,8 +428,8 @@
     );
       const lxxSamples = await findLxxSamples(hit.lemma || norm, 4);
     if (state.tipEl && state.tipEl.style.display !== 'none') {
-      state.tipEl.innerHTML = `
-        <div class="t1">${escapeHtml(norm)}</div>
+     const bodyEl = state.tipEl.querySelector('#gr-lex-content');
+      if (bodyEl) bodyEl.innerHTML = `
         <div class="t2"><b>Lema:</b> ${escapeHtml(hit.lemma || '—')} &nbsp; <span class="muted">|</span> &nbsp; <b>Translit.:</b> ${escapeHtml(hit.tr || '—')}</div>
         ${glossHtml}
         ${renderLxxSection(lxxSamples, false)}
