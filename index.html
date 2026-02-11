@@ -176,7 +176,18 @@
     .orig-hidden #spanishCol{ flex:1 1 100%; min-width:100%; }
      .interlinear-mode #spanishCol{ display:none !important; }
     .interlinear-mode #origCol{ flex:1 1 100%; min-width:100%; }
-    .interlinear-verse{ margin-bottom:.6rem; }
+     .interlinear-verse{
+      margin-bottom:.6rem;
+      display:flex;
+      align-items:flex-start;
+      gap:.35rem;
+    }
+    .interlinear-verse .verse-num{
+      margin-right:0;
+      margin-top:.06em;
+      line-height:1.25;
+      flex:0 0 auto;
+    }
     .interlinear-original{ display:block; direction:rtl; unicode-bidi:plaintext; }
     .interlinear-grid{
       display:flex;
