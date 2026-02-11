@@ -146,7 +146,8 @@ function setGlossCandidate(map, key, gloss, score, usage){
     const { hebrewMap } = await getDictionaries();
      const tokens = splitTokens(originalText)
       .flatMap((token) => expandTokenForLookup(token, hebrewMap));
-    const spanish = tokens.map((token) => mapTokenToSpanish(token, hebrewMap, true));
+    tokens,
+      spanishTokens: spanish,
     return {
       originalLine: tokens.join(' '),
       spanishLine: spanish.join(' ')
