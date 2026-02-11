@@ -91,8 +91,7 @@ const onPointerMove = (ev) => {
       document.removeEventListener('pointercancel', stopDrag, true);
     };
 
-    const head = el.querySelector('.head');
-    head?.addEventListener('pointerdown', (ev) => {
+    const beginDrag = (ev) => {
       if (ev.button !== 0) return;
       if (ev.target?.closest?.('.close')) return;
       const r = el.getBoundingClientRect();
@@ -102,7 +101,14 @@ const onPointerMove = (ev) => {
       document.addEventListener('pointercancel', stopDrag, true);
       ev.preventDefault();
     });
+ };
 
+    const head = el.querySelector('.head');
+    head?.addEventListener('pointerdown', beginDrag);
+    el.addEventListener('pointerdown', (ev) => {
+      if (ev.target?.closest?.('.head')) return;
+      beginDrag(ev);
+        });
     el.querySelector('.close')?.addEventListener('click', hideTip, false);
 
     document.body.appendChild(el);
