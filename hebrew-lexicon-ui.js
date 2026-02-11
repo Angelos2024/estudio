@@ -169,9 +169,30 @@ function toArray(value) {
   function getHebrewTranslit(entry) {
     return entry?.translit || entry?.transliteracion || entry?.strong_detail?.transliteracion || '—';
   }
-
+function cleanPrintedEntry(value) {
+    const text = String(value || '').replace(/\s+/g, ' ').trim();
+    if (!text) return '';
+    if (/\bstrong\b/i.test(text)) return '';
+    if (/\b(?:hebreo|hebrew)\s*#?\d+/i.test(text)) return '';
+    return text;
+  }
  function getHebrewPrintedEntry(entry) {
-    return entry?.printed_entry || entry?.entrada_impresa || entry?.entrada || entry?.strong_detail?.header || '—';
+  const candidates = [
+      entry?.printed_entry,
+      entry?.entrada_impresa,
+      entry?.entrada,
+      entry?.composicion,
+      entry?.composición,
+      entry?.morfologia_impresa,
+      entry?.morfología_impresa,
+      entry?.morfologia,
+      entry?.morfología
+    ];
+    for (const candidate of candidates) {
+      const cleaned = cleanPrintedEntry(candidate);
+      if (cleaned) return cleaned;
+    }
+    return '';
   }
 
   function getHebrewDefinition(entry) {
@@ -467,7 +488,7 @@ function findHebrewEntry(normalizedWord) {
       '<div class="t1" id="he-lex-word"></div>' +
      '<div class="t2 row"><span class="lab">Lemma:</span><span id="he-lex-entry"></span></div>' +
       '<div class="t2 row"><span class="lab">Forma léxica:</span><span id="he-lex-translit"></span></div>' +
-'<div class="t2 row"><span class="lab">Entrada impresa:</span><span id="he-lex-printed"></span></div>' +
+'<div class="t2 row" id="he-lex-printed-row"><span class="lab">Entrada impresa:</span><span id="he-lex-printed"></span></div>' +
       '<div class="t2 row"><span class="lab">Formas:</span><span id="he-lex-variants"></span></div>' +
        '<div class="t2 row"><span class="lab">Definición:</span><div id="he-lex-desc" class="def"></div></div>' +
       '<div class="t2 row"><span class="lab">LXX:</span><div id="he-lex-lxx" class="def"></div></div>' +
@@ -664,8 +685,9 @@ function findHebrewEntry(normalizedWord) {
     const wordEl = document.getElementById('he-lex-word');
     const entryEl = document.getElementById('he-lex-entry');
     const descEl = document.getElementById('he-lex-desc');
-     const translitEl = document.getElementById('he-lex-translit');
+    const translitEl = document.getElementById('he-lex-translit');
     const printedEl = document.getElementById('he-lex-printed');
+     const printedRowEl = document.getElementById('he-lex-printed-row');
     const variantsEl = document.getElementById('he-lex-variants');
     const lxxEl = document.getElementById('he-lex-lxx');
     const rkantEl = document.getElementById('he-lex-rkant');
@@ -674,6 +696,7 @@ function findHebrewEntry(normalizedWord) {
     if (entryEl) entryEl.textContent = 'Cargando…';
     if (translitEl) translitEl.textContent = '—';
     if (printedEl) printedEl.textContent = '—';
+     if (printedRowEl) printedRowEl.style.display = '';
     if (descEl) descEl.textContent = 'Buscando entrada en el diccionario hebreo…';
     if (variantsEl) variantsEl.textContent = '—';
     if (lxxEl) lxxEl.textContent = '—';
@@ -692,12 +715,15 @@ function findHebrewEntry(normalizedWord) {
         if (descEl) descEl.textContent = 'Sin entrada para esta palabra.';
         if (translitEl) translitEl.textContent = '—';
         if (printedEl) printedEl.textContent = '—';
+        if (printedRowEl) printedRowEl.style.display = 'none';
         if (variantsEl) variantsEl.textContent = '—';
          if (lxxEl) lxxEl.textContent = '—';
       } else {
         if (entryEl) entryEl.textContent = getHebrewLemma(entry);
         if (translitEl) translitEl.textContent = getHebrewTranslit(entry);
-       if (printedEl) printedEl.textContent = getHebrewPrintedEntry(entry);
+      const printedEntry = getHebrewPrintedEntry(entry);
+        if (printedEl) printedEl.textContent = printedEntry || '—';
+        if (printedRowEl) printedRowEl.style.display = printedEntry ? '' : 'none';
         if (descEl) descEl.textContent = getHebrewDefinition(entry);
         if (variantsEl) variantsEl.textContent = getHebrewForms(entry).join(', ') || '—';
         if (lxxEl) lxxEl.textContent = formatHebrewLxx(getHebrewLxx(entry));
@@ -737,6 +763,7 @@ function findHebrewEntry(normalizedWord) {
       if (descEl) descEl.textContent = 'No se pudo cargar el diccionario hebreo.';
       if (translitEl) translitEl.textContent = '—';
       if (printedEl) printedEl.textContent = '—';
+       if (printedRowEl) printedRowEl.style.display = 'none';
       if (variantsEl) variantsEl.textContent = '—';
       if (lxxEl) lxxEl.textContent = '—';
       if (rkantEl) rkantEl.innerHTML = '<div class="rkant-row muted">No se pudo cargar la correspondencia RKANT.</div>';
