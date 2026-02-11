@@ -9,7 +9,7 @@
    };
    const TEXT_BASE = './search/texts';
   const LXX_FILES = [
-    'lxx_rahlfs_1935_1Chr',
+    'lxx_rahlfs_1935_1Chr.json',
     'lxx_rahlfs_1935_1Esdr.json',
     'lxx_rahlfs_1935_1Kgs.json',
     'lxx_rahlfs_1935_1Macc.json',
@@ -171,6 +171,7 @@
     lxxFileCache: new Map(),
     lxxBookCache: new Map(),
     lxxVerseCache: new Map(),
+  lxxBookStatsCache: new Map(),
     lxxSearchCache: new Map(),
      filter: 'todo',
     last: null,
@@ -462,6 +463,56 @@ async function loadLxxBookData(bookCode) {
     state.lxxVerseCache.set(key, tokens);
     return tokens;
   }
+  async function loadLxxBookStats(bookCode) {
+    if (state.lxxBookStatsCache.has(bookCode)) return state.lxxBookStatsCache.get(bookCode);
+    const data = await loadLxxBookData(bookCode);
+    const verseFreq = new Map();
+    let totalVerses = 0;
+    const chapters = data?.text?.[bookCode] || {};
+    Object.values(chapters).forEach((verses) => {
+      Object.values(verses || {}).forEach((tokens) => {
+        totalVerses += 1;
+        const verseLemmas = new Set();
+        (tokens || []).forEach((token) => {
+          const normalized = normalizeGreek(token?.lemma || token?.w || '');
+          if (!normalized || greekStopwords.has(normalized)) return;
+          verseLemmas.add(normalized);
+        });
+        verseLemmas.forEach((lemma) => {
+          verseFreq.set(lemma, (verseFreq.get(lemma) || 0) + 1);
+        });
+      });
+    });
+    const stats = { totalVerses, verseFreq };
+    state.lxxBookStatsCache.set(bookCode, stats);
+    return stats;
+  }
+
+  async function rankGreekCandidatesByLxxStats(counts, samples, usedBooks) {
+    if (!counts.size) return null;
+    let totalVerses = 0;
+    const verseFreq = new Map();
+    for (const bookCode of usedBooks) {
+      const stats = await loadLxxBookStats(bookCode);
+      totalVerses += stats.totalVerses;
+      stats.verseFreq.forEach((count, lemma) => {
+        verseFreq.set(lemma, (verseFreq.get(lemma) || 0) + count);
+      });
+    }
+    if (!totalVerses) return pickBestCandidate(counts, samples);
+    const ranked = [...counts.entries()].map(([lemma, hits]) => {
+      const df = verseFreq.get(lemma) || 0;
+      const score = hits * Math.log((totalVerses + 1) / (df + 1));
+      return { lemma, hits, score };
+    }).sort((a, b) => (b.score - a.score) || (b.hits - a.hits));
+    const best = ranked[0];
+    if (!best) return null;
+    return {
+      normalized: best.lemma,
+      lemma: samples.get(best.lemma) || best.lemma,
+      count: best.hits
+    };
+  }
   function transliterateHebrew(word) {
     if (!word) return '—';
     const consonants = {
@@ -596,6 +647,7 @@ async function loadLxxBookData(bookCode) {
     if (!refs.length) return null;
     const counts = new Map();
     const samples = new Map();
+     const usedBooks = new Set();
     for (const ref of refs.slice(0, 40)) {
       const [slug, chapterRaw, verseRaw] = ref.split('|');
       const chapter = Number(chapterRaw);
@@ -604,23 +656,29 @@ async function loadLxxBookData(bookCode) {
       for (const lxxCode of lxxCodes) {
         const tokens = await loadLxxVerseTokens(lxxCode, chapter, verse);
         if (!tokens) continue;
+       usedBooks.add(lxxCode);
+        const verseLemmas = new Set();
         tokens.forEach((token) => {
           const lemma = token?.lemma || token?.w || '';
           const normalized = normalizeGreek(lemma);
           if (!normalized) return;
           if (greekStopwords.has(normalized)) return;
-          counts.set(normalized, (counts.get(normalized) || 0) + 1);
+         verseLemmas.add(normalized);
           if (!samples.has(normalized) && token?.lemma) samples.set(normalized, token.lemma);
+        });
+        verseLemmas.forEach((lemma) => {
+          counts.set(lemma, (counts.get(lemma) || 0) + 1);
         });
       }
     }
-    return pickBestCandidate(counts, samples);
+   return rankGreekCandidatesByLxxStats(counts, samples, usedBooks);
   }
 
   async function buildGreekCandidateFromGreekRefs(refs) {
     if (!refs.length) return null;
     const counts = new Map();
     const samples = new Map();
+   const usedBooks = new Set();
     for (const ref of refs.slice(0, 40)) {
       const [book, chapterRaw, verseRaw] = ref.split('|');
       const chapter = Number(chapterRaw);
@@ -653,15 +711,20 @@ async function loadLxxBookData(bookCode) {
       const verse = Number(verseRaw);
       const tokens = await loadLxxVerseTokens(book, chapter, verse);
       if (!tokens) continue;
+      usedBooks.add(book);
+      const verseLemmas = new Set();
       tokens.forEach((token) => {
         const lemma = token?.lemma || token?.w || '';
         const normalized = normalizeGreek(lemma);
         if (!normalized || greekStopwords.has(normalized)) return;
-        counts.set(normalized, (counts.get(normalized) || 0) + 1);
+        verseLemmas.add(normalized);
         if (!samples.has(normalized) && token?.lemma) samples.set(normalized, token.lemma);
       });
+     verseLemmas.forEach((lemma) => {
+        counts.set(lemma, (counts.get(lemma) || 0) + 1);
+      });
     }
-    return pickBestCandidate(counts, samples);
+    return rankGreekCandidatesByLxxStats(counts, samples, usedBooks);
   }
 
   function extractPos(entry) {
