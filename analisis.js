@@ -1238,11 +1238,16 @@ function mapOtRefsToLxxRefs(refs) {
       hebrewEntry = state.hebrewDictMap.get(normalized) || null;
     }
  
-     const indexPromise = loadIndex(lang);
+    const indexPromise = loadIndex(lang);
     const index = await indexPromise;
    const refs = lang === 'gr' ? getGreekRefs(normalized, index) : (index.tokens?.[normalized] || []);
  
-    if (!refs.length) {
+   const initialLxxMatches = lang === 'gr' && normalized
+      ? await buildLxxMatches(normalized, 70)
+      : { refs: [], texts: new Map() };
+    const hasInitialGreekMatches = refs.length || initialLxxMatches.refs.length;
+
+    if (!refs.length && !(lang === 'gr' && hasInitialGreekMatches)) {
       renderTags([
         `Lema: <span class="fw-semibold">${term}</span>`,
         'Transliteración: —',
@@ -1284,7 +1289,8 @@ function mapOtRefsToLxxRefs(refs) {
       es: esDisplayWord,
       [lang]: lang === 'gr' ? (entry?.lemma || term) : term
     };
-    await buildSummary(term, lang, entry || greekEntry, hebrewEntry, refs, summaryHighlightQueries);
+const summaryRefs = lang === 'gr' && !refs.length ? initialLxxMatches.refs : refs;
+    await buildSummary(term, lang, entry || greekEntry, hebrewEntry, summaryRefs, summaryHighlightQueries);
     const esRefs = [];
     const esSeen = new Set();
     esSearchTokens.forEach((token) => {
@@ -1330,7 +1336,9 @@ function mapOtRefsToLxxRefs(refs) {
      const grIndex = await grIndexPromise;
    const grRefs = greekTerm ? getGreekRefs(greekTerm, grIndex) : [];
    const lxxMatchesPromise = greekTerm
-      ? buildLxxMatches(greekTerm, 70)
+      ? (lang === 'gr' && greekTerm === normalized
+          ? Promise.resolve(initialLxxMatches)
+          : buildLxxMatches(greekTerm, 70))
       : Promise.resolve({ refs: [], texts: new Map() });
     const lxxMatches = await lxxMatchesPromise;
 
