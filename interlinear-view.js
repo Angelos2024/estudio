@@ -142,13 +142,14 @@ function setGlossCandidate(map, key, gloss, score, usage){
     return map.get(key) || '-';
   }
 
- async function buildInterlinearRows(originalText){
+async function buildInterlinearRows(originalText){
     const { hebrewMap } = await getDictionaries();
-     const tokens = splitTokens(originalText)
+    const tokens = splitTokens(originalText)
       .flatMap((token) => expandTokenForLookup(token, hebrewMap));
-    tokens,
-      spanishTokens: spanish,
+const spanish = tokens.map((token) => mapTokenToSpanish(token, hebrewMap, true));
     return {
+      tokens,
+      spanishTokens: spanish,
       originalLine: tokens.join(' '),
       spanishLine: spanish.join(' ')
     };
