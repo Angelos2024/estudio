@@ -100,7 +100,6 @@ const onPointerMove = (ev) => {
       document.addEventListener('pointerup', stopDrag, true);
       document.addEventListener('pointercancel', stopDrag, true);
       ev.preventDefault();
-    });
  };
 
     const head = el.querySelector('.head');
