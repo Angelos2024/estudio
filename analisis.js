@@ -205,6 +205,18 @@ function normalizeGreek(text) {
       .replace(/[\u0300-\u036f]/g, '')
       .toLowerCase();
   }
+   function transliterateGreek(text) {
+    const map = {
+      α: 'a', β: 'b', γ: 'g', δ: 'd', ε: 'e', ζ: 'z', η: 'e', θ: 'th',
+      ι: 'i', κ: 'k', λ: 'l', μ: 'm', ν: 'n', ξ: 'x', ο: 'o', π: 'p',
+      ρ: 'r', σ: 's', ς: 's', τ: 't', υ: 'u', φ: 'f', χ: 'ch', ψ: 'ps', ω: 'o'
+    };
+    const normalized = String(text || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase();
+    return normalized.split('').map((char) => map[char] || char).join('');
+  }
   function buildGreekSearchKeys(normalized) {
     if (!normalized) return [];
     const variants = new Set();
@@ -803,6 +815,16 @@ function mapOtRefsToLxxRefs(refs) {
       })
       .filter(Boolean);
   }
+   function mapLxxRefsToHebrewRefs(refs) {
+    return refs
+      .map((ref) => {
+        const [book, chapter, verse] = ref.split('|');
+        const slug = LXX_TO_HEBREW_SLUG[book];
+        if (!slug) return null;
+        return `${slug}|${chapter}|${verse}`;
+      })
+      .filter(Boolean);
+  }
 
   async function buildHebrewCandidateFromRefs(refs) {
     const counts = new Map();
@@ -1275,7 +1297,7 @@ function mapOtRefsToLxxRefs(refs) {
     } else {
       esSearchTokens = [normalizeSpanish(term)].filter(Boolean);
     }
-       const esDisplayWord = lang === 'es' ? term : (esSearchTokens[0] || '');
+     const esDisplayWord = lang === 'es' ? term : (esSearchTokens[0] || term);
     let greekEntry = entry;
     let greekTerm = null;
     let greekCandidate = null;
@@ -1293,6 +1315,18 @@ const summaryRefs = lang === 'gr' && !refs.length ? initialLxxMatches.refs : ref
     await buildSummary(term, lang, entry || greekEntry, hebrewEntry, summaryRefs, summaryHighlightQueries);
     const esRefs = [];
     const esSeen = new Set();
+        const directEsRefs = [];
+    if (lang === 'gr') {
+      refs.forEach((ref) => directEsRefs.push(ref));
+      mapLxxRefsToHebrewRefs(initialLxxMatches.refs).forEach((ref) => directEsRefs.push(ref));
+    } else if (lang === 'he') {
+      refs.forEach((ref) => directEsRefs.push(ref));
+    }
+    directEsRefs.forEach((ref) => {
+      if (esSeen.has(ref)) return;
+      esSeen.add(ref);
+      esRefs.push(ref);
+    });
     esSearchTokens.forEach((token) => {
       const matches = esIndex.tokens?.[token] || [];
       matches.forEach((ref) => {
@@ -1330,9 +1364,9 @@ const summaryRefs = lang === 'gr' && !refs.length ? initialLxxMatches.refs : ref
       }
     }
 
-    const greekTranslit = greekEntry?.['Forma lexica'] || '—';
-    const greekLemma = greekEntry?.lemma || greekCandidate?.lemma || (lang === 'gr' ? term : '—');
 
+    const greekLemma = greekEntry?.lemma || greekCandidate?.lemma || (lang === 'gr' ? term : '—');
+const greekTranslit = greekEntry?.['Forma lexica'] || (greekTerm ? transliterateGreek(greekLemma || term) : '—');
      const grIndex = await grIndexPromise;
    const grRefs = greekTerm ? getGreekRefs(greekTerm, grIndex) : [];
    const lxxMatchesPromise = greekTerm
@@ -1365,7 +1399,7 @@ const posTag = lang === 'gr' ? extractPos(entry) : '—';
     const lemmaLabel = lang === 'gr' ? (entry?.lemma || term) : term;
     const translitLabel = lang === 'he'
       ? transliterateHebrew(term)
-      : (entry?.['Forma lexica'] || '—');
+       : (entry?.['Forma lexica'] || (lang === 'gr' ? transliterateGreek(term) : '—'));
     renderTags([
       `Lema: <span class="fw-semibold">${lemmaLabel}</span>`,
       `Transliteración: ${translitLabel}`,
