@@ -1,7 +1,7 @@
 
  (() => {
    const DICT_URL = './diccionario/masterdiccionario.json';
-  const HEBREW_DICT_URL = './diccionario/lexico_hebreo.json';
+   const HEBREW_DICT_URL = './diccionario/diccionario_unificado.min.json';
    const SEARCH_INDEX = {
      es: './search/index-es.json',
      gr: './search/index-gr.json',
@@ -249,6 +249,9 @@ function normalizeSpanish(text) {
       .replace(/[\u0300-\u036f]/g, '')
       .replace(/[^a-z0-9ñ]/g, '');
   }
+  function getHebrewDefinition(entry) {
+    return entry?.definitions?.short || entry?.strong_detail?.definicion || entry?.descripcion || '';
+  }
   function normalizeTransliteration(text) {
     return normalizeSpanish(text).replace(/ñ/g, 'n');
   }
@@ -392,8 +395,20 @@ function getGreekRefs(normalized, index) {
     state.hebrewDict = data;
     const map = new Map();
     (data || []).forEach((item) => {
-      const key = normalizeHebrew(item?.palabra || '');
-      if (key && !map.has(key)) map.set(key, item);
+     const keys = [
+        item?.palabra,
+        item?.lemma,
+        item?.hebreo,
+        item?.forma,
+        ...(item?.forms || []),
+        ...(item?.formas || []),
+        ...(item?.hebreos || [])
+      ]
+        .map((token) => normalizeHebrew(token || ''))
+        .filter(Boolean);
+      keys.forEach((key) => {
+        if (!map.has(key)) map.set(key, item);
+      });
     });
     state.hebrewDictMap = map;
     return data;
@@ -1077,7 +1092,7 @@ function mapOtRefsToLxxRefs(refs) {
      const lemma = entry?.lemma || term;
      const transliteration = entry?.['Forma lexica'] || '—';
      const pos = extractPos(entry);
-     const hebrewDefinition = hebrewEntry?.descripcion || '';
+     const hebrewDefinition = getHebrewDefinition(hebrewEntry);
      const definition = lang === 'he' ? hebrewDefinition : (entry?.definicion || '');
      const defShort = definition ? shortDefinition(definition) : '';
      const keywords = keywordList(definition);
@@ -1187,8 +1202,8 @@ function mapOtRefsToLxxRefs(refs) {
       esSearchTokens = [normalized].filter(Boolean);
     } else if (entry?.definicion) {
       esSearchTokens = extractSpanishTokensFromDefinition(entry.definicion);
-       } else if (lang === 'he' && hebrewEntry?.descripcion) {
-      esSearchTokens = extractSpanishTokensFromDefinition(hebrewEntry.descripcion);
+ } else if (lang === 'he' && getHebrewDefinition(hebrewEntry)) {
+      esSearchTokens = extractSpanishTokensFromDefinition(getHebrewDefinition(hebrewEntry));
     } else {
       esSearchTokens = [normalizeSpanish(term)].filter(Boolean);
     }
