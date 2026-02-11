@@ -133,6 +133,7 @@
     lxxVerseCache: new Map(),
     lxxBookStatsCache: new Map(),
     popupEl: null,
+     popupDrag: null,
      popupRequestId: 0
   };
  const HEBREW_PREFIX_LETTERS = new Set(['ו', 'ה', 'ב', 'ל', 'כ', 'מ', 'ש']);
@@ -461,6 +462,8 @@ function findHebrewEntry(normalizedWord) {
           display:none;
         }
         .he-lex-popup .t1{ font-weight:700; font-size:15px; margin-bottom:6px; padding-right:18px; direction:rtl; }
+        .he-lex-popup .head{ display:flex; align-items:center; justify-content:space-between; gap:8px; cursor:move; user-select:none; }
+        .he-lex-popup .head .t1{ margin-bottom:0; flex:1; }
         .he-lex-popup .t2{ font-size:13px; opacity:.92; line-height:1.35; }
         .he-lex-popup .row{ margin-top:6px; }
         .he-lex-popup .lab{ opacity:.7; margin-right:6px; }
@@ -484,8 +487,7 @@ function findHebrewEntry(normalizedWord) {
     box.id = 'he-lex-popup';
     box.className = 'he-lex-popup';
     box.innerHTML =
-      '<button class="close" aria-label="Cerrar">×</button>' +
-      '<div class="t1" id="he-lex-word"></div>' +
+     '<div class="head"><div class="t1" id="he-lex-word"></div><button class="close" aria-label="Cerrar" type="button">×</button></div>' +
      '<div class="t2 row"><span class="lab">Lemma:</span><span id="he-lex-entry"></span></div>' +
       '<div class="t2 row"><span class="lab">Forma léxica:</span><span id="he-lex-translit"></span></div>' +
 '<div class="t2 row" id="he-lex-printed-row"><span class="lab">Entrada impresa:</span><span id="he-lex-printed"></span></div>' +
@@ -500,6 +502,37 @@ function findHebrewEntry(normalizedWord) {
     state.popupEl = box;
 
     box.querySelector('.close').addEventListener('click', hidePopup, false);
+      const onPointerMove = (ev) => {
+      const drag = state.popupDrag;
+      if (!drag) return;
+      const popup = state.popupEl;
+      if (!popup) return;
+      const pad = 10;
+      const maxX = Math.max(pad, window.innerWidth - popup.offsetWidth - pad);
+      const maxY = Math.max(pad, window.innerHeight - popup.offsetHeight - pad);
+      const nx = Math.max(pad, Math.min(ev.clientX - drag.offsetX, maxX));
+      const ny = Math.max(pad, Math.min(ev.clientY - drag.offsetY, maxY));
+      popup.style.left = `${Math.round(nx)}px`;
+      popup.style.top = `${Math.round(ny)}px`;
+    };
+
+    const stopDrag = () => {
+      state.popupDrag = null;
+      document.removeEventListener('pointermove', onPointerMove, true);
+      document.removeEventListener('pointerup', stopDrag, true);
+      document.removeEventListener('pointercancel', stopDrag, true);
+    };
+
+    box.querySelector('.head')?.addEventListener('pointerdown', (ev) => {
+      if (ev.button !== 0) return;
+      if (ev.target?.closest?.('.close')) return;
+      const r = box.getBoundingClientRect();
+      state.popupDrag = { offsetX: ev.clientX - r.left, offsetY: ev.clientY - r.top };
+      document.addEventListener('pointermove', onPointerMove, true);
+      document.addEventListener('pointerup', stopDrag, true);
+      document.addEventListener('pointercancel', stopDrag, true);
+      ev.preventDefault();
+    });
     document.addEventListener('keydown', (ev) => {
       if (ev.key === 'Escape') hidePopup();
     }, false);
