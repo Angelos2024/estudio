@@ -669,6 +669,7 @@ async function loadLxxBookData(bookCode) {
     if (!refs.length) return null;
     const counts = new Map();
     const samples = new Map();
+   const usedBooks = new Set();
     for (const ref of refs.slice(0, 40)) {
       const [slug, chapterRaw, verseRaw] = ref.split('|');
       const chapter = Number(chapterRaw);
