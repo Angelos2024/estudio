@@ -135,7 +135,8 @@
     popupEl: null,
      popupRequestId: 0
   };
- const jsonCache = new Map();
+ const HEBREW_PREFIX_LETTERS = new Set(['ו', 'ה', 'ב', 'ל', 'כ', 'מ', 'ש']);
+  const jsonCache = new Map();
   function normalizeHebrew(text) {
     return String(text || '')
       .replace(/[\u0591-\u05BD\u05BF\u05C1-\u05C2\u05C4-\u05C7]/g, '')
@@ -169,21 +170,14 @@ function toArray(value) {
     return entry?.translit || entry?.transliteracion || entry?.strong_detail?.transliteracion || '—';
   }
 
-  function getHebrewPos(entry) {
-    return entry?.pos || entry?.categoria || entry?.tipo || '—';
+ function getHebrewPrintedEntry(entry) {
+    return entry?.printed_entry || entry?.entrada_impresa || entry?.entrada || entry?.strong_detail?.header || '—';
   }
 
   function getHebrewDefinition(entry) {
     return entry?.definitions?.short || entry?.strong_detail?.definicion || entry?.descripcion || '—';
   }
 
-  function getHebrewDefinitionRv(entry) {
-    return entry?.definitions?.rv || entry?.strong_detail?.def_rv || '—';
-  }
-
-  function getHebrewMorphs(entry) {
-    return uniqueList([...(entry?.morphs || []), ...(entry?.morfs || []), ...(entry?.morfologia || [])]);
-  }
 
   function getHebrewForms(entry) {
     return uniqueList([entry?.forma, ...(entry?.forms || []), ...(entry?.formas || []), ...(entry?.variantes || [])]);
@@ -473,11 +467,9 @@ function findHebrewEntry(normalizedWord) {
       '<div class="t1" id="he-lex-word"></div>' +
      '<div class="t2 row"><span class="lab">Lemma:</span><span id="he-lex-entry"></span></div>' +
       '<div class="t2 row"><span class="lab">Forma léxica:</span><span id="he-lex-translit"></span></div>' +
-      '<div class="t2 row"><span class="lab">POS:</span><span id="he-lex-pos"></span></div>' +
-      '<div class="t2 row"><span class="lab">Definición:</span><div id="he-lex-desc" class="def"></div></div>' +
-      '<div class="t2 row"><span class="lab">Definición RV:</span><div id="he-lex-def-rv" class="def"></div></div>' +
-      '<div class="t2 row"><span class="lab">Morfología:</span><span id="he-lex-morph"></span></div>' +
+'<div class="t2 row"><span class="lab">Entrada impresa:</span><span id="he-lex-printed"></span></div>' +
       '<div class="t2 row"><span class="lab">Formas:</span><span id="he-lex-variants"></span></div>' +
+       '<div class="t2 row"><span class="lab">Definición:</span><div id="he-lex-desc" class="def"></div></div>' +
       '<div class="t2 row"><span class="lab">LXX:</span><div id="he-lex-lxx" class="def"></div></div>' +
       '<hr class="sep" />' +
       '<div class="t2"><span class="lab">Correspondencia RKANT:</span></div>' +
@@ -593,19 +585,36 @@ function findHebrewEntry(normalizedWord) {
       }
     }
 
-    const fallbackWalker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null);
-    const fallbackText = fallbackWalker.nextNode();
-    if (fallbackText) return { node: fallbackText, offset: 0 };
     return null;
   }
+   function isHebrewWordChar(ch) {
+    if (!ch) return false;
+    const code = ch.codePointAt(0);
+    return (
+      (code >= 0x0590 && code <= 0x05FF) ||
+      (code >= 0x0300 && code <= 0x036F)
+    );
+  }
+
+  function pointInsideWordRect(node, start, end, x, y) {
+    if (!node || start < 0 || end <= start) return false;
+    const range = document.createRange();
+    range.setStart(node, start);
+    range.setEnd(node, end);
+    const rects = range.getClientRects();
+    const pad = 2;
+    for (const rect of rects) {
+      if (
+        x >= rect.left - pad &&
+        x <= rect.right + pad &&
+        y >= rect.top - pad &&
+        y <= rect.bottom + pad
+      ) return true;
+    }
+    return false;
+  }
   function expandWord(text, idx) {
-    const isWordChar = (ch) => {
-      const code = ch.codePointAt(0);
-      return (
-        (code >= 0x0590 && code <= 0x05FF) ||
-        (code >= 0x0300 && code <= 0x036F)
-      );
-    };
+    const isWordChar = isHebrewWordChar;
     let start = idx;
     let end = idx;
     while (start > 0 && isWordChar(text[start - 1])) start--;
@@ -639,7 +648,12 @@ function findHebrewEntry(normalizedWord) {
     if (!resolved) return;
     const text = resolved.node.nodeValue || '';
     if (!text) return;
-    const { word, start, end } = expandWord(text, Math.max(0, Math.min(resolved.offset, text.length - 1)));
+    const pivot = Math.max(0, Math.min(resolved.offset, text.length - 1));
+    let idx = pivot;
+    if (!isHebrewWordChar(text[idx]) && idx > 0 && isHebrewWordChar(text[idx - 1])) idx -= 1;
+    if (!isHebrewWordChar(text[idx])) return;
+    const { word, start, end } = expandWord(text, idx);
+    if (!pointInsideWordRect(resolved.node, start, end, ev.clientX, ev.clientY)) return;
     const normalized = normalizeHebrew(word);
     if (!normalized) return;
 
@@ -650,23 +664,19 @@ function findHebrewEntry(normalizedWord) {
     const wordEl = document.getElementById('he-lex-word');
     const entryEl = document.getElementById('he-lex-entry');
     const descEl = document.getElementById('he-lex-desc');
-      const translitEl = document.getElementById('he-lex-translit');
-    const posEl = document.getElementById('he-lex-pos');
-    const defRvEl = document.getElementById('he-lex-def-rv');
-    const morphEl = document.getElementById('he-lex-morph');
+     const translitEl = document.getElementById('he-lex-translit');
+    const printedEl = document.getElementById('he-lex-printed');
     const variantsEl = document.getElementById('he-lex-variants');
     const lxxEl = document.getElementById('he-lex-lxx');
     const rkantEl = document.getElementById('he-lex-rkant');
 
     if (wordEl) wordEl.textContent = word || normalized;
     if (entryEl) entryEl.textContent = 'Cargando…';
-     if (translitEl) translitEl.textContent = '—';
-    if (posEl) posEl.textContent = '—';
+    if (translitEl) translitEl.textContent = '—';
+    if (printedEl) printedEl.textContent = '—';
     if (descEl) descEl.textContent = 'Buscando entrada en el diccionario hebreo…';
-      if (defRvEl) defRvEl.textContent = '—';
-    if (morphEl) morphEl.textContent = '—';
     if (variantsEl) variantsEl.textContent = '—';
-   if (lxxEl) lxxEl.textContent = '—';
+    if (lxxEl) lxxEl.textContent = '—';
     if (rkantEl) rkantEl.innerHTML = '<div class="rkant-row muted">Buscando correspondencias RKANT…</div>';
     showPopupNear(marker || ev.target);
 
@@ -675,42 +685,27 @@ function findHebrewEntry(normalizedWord) {
       await loadHebrewDict();
       if (requestId !== state.popupRequestId) return;
      const found = findHebrewEntry(normalized);
+        const lookupWord = found?.lookup || normalized;
       entry = found?.entry || null;
       if (!entry) {
         if (entryEl) entryEl.textContent = '—';
-        if (descEl) descEl.textContent = 'No se pudo cargar el diccionario hebreo.';
-         if (translitEl) translitEl.textContent = '—';
-        if (posEl) posEl.textContent = '—';
-        if (defRvEl) defRvEl.textContent = '—';
-        if (morphEl) morphEl.textContent = '—';
+        if (descEl) descEl.textContent = 'Sin entrada para esta palabra.';
+        if (translitEl) translitEl.textContent = '—';
+        if (printedEl) printedEl.textContent = '—';
         if (variantsEl) variantsEl.textContent = '—';
          if (lxxEl) lxxEl.textContent = '—';
       } else {
         if (entryEl) entryEl.textContent = getHebrewLemma(entry);
         if (translitEl) translitEl.textContent = getHebrewTranslit(entry);
-        if (posEl) posEl.textContent = getHebrewPos(entry);
+       if (printedEl) printedEl.textContent = getHebrewPrintedEntry(entry);
         if (descEl) descEl.textContent = getHebrewDefinition(entry);
-        if (defRvEl) defRvEl.textContent = getHebrewDefinitionRv(entry);
-        if (morphEl) morphEl.textContent = getHebrewMorphs(entry).join(', ') || '—';
         if (variantsEl) variantsEl.textContent = getHebrewForms(entry).join(', ') || '—';
         if (lxxEl) lxxEl.textContent = formatHebrewLxx(getHebrewLxx(entry));
       }
-    } catch (error) {
-      if (requestId !== state.popupRequestId) return;
-      if (entryEl) entryEl.textContent = '—';
-       if (descEl) descEl.textContent = 'No se pudo cargar el diccionario hebreo.';
-        if (translitEl) translitEl.textContent = '—';
-      if (posEl) posEl.textContent = '—';
-      if (defRvEl) defRvEl.textContent = '—';
-      if (morphEl) morphEl.textContent = '—';
-      if (variantsEl) variantsEl.textContent = '—';
-      if (lxxEl) lxxEl.textContent = '—';
-    
-    }
-       try {
+  
       const heIndex = await loadIndex('he');
-         if (requestId !== state.popupRequestId) return;
-      const refs = heIndex.tokens?.[normalized] || [];
+        if (requestId !== state.popupRequestId) return;
+      const refs = heIndex.tokens?.[lookupWord] || heIndex.tokens?.[normalized] || [];
       if (!refs.length) {
         if (rkantEl) rkantEl.innerHTML = '<div class="rkant-row muted">Sin referencias hebreas en el índice.</div>';
         return;
@@ -737,6 +732,13 @@ function findHebrewEntry(normalizedWord) {
         `;
       }
     } catch (error) {
+        if (requestId !== state.popupRequestId) return;
+      if (entryEl) entryEl.textContent = '—';
+      if (descEl) descEl.textContent = 'No se pudo cargar el diccionario hebreo.';
+      if (translitEl) translitEl.textContent = '—';
+      if (printedEl) printedEl.textContent = '—';
+      if (variantsEl) variantsEl.textContent = '—';
+      if (lxxEl) lxxEl.textContent = '—';
       if (rkantEl) rkantEl.innerHTML = '<div class="rkant-row muted">No se pudo cargar la correspondencia RKANT.</div>';
     }
   }, false);
