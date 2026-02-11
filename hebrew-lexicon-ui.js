@@ -9,7 +9,7 @@
   const GREEK_INDEX_PATH = './search/index-gr.json';
   const TEXT_BASE = './search/texts';
   const LXX_FILES = [
-    'lxx_rahlfs_1935_1Chr',
+    'lxx_rahlfs_1935_1Chr.json',
     'lxx_rahlfs_1935_1Esdr.json',
     'lxx_rahlfs_1935_1Kgs.json',
     'lxx_rahlfs_1935_1Macc.json',
@@ -118,7 +118,11 @@
     acc[slug].push(lxx);
     return acc;
   }, {});
-
+ const greekStopwords = new Set([
+    'και', 'δε', 'ο', 'η', 'το', 'του', 'της', 'των', 'τω', 'τον', 'την',
+    'εις', 'εν', 'αυτος', 'αυτη', 'αυτο', 'ου', 'μη', 'γαρ',
+    'ως', 'επι', 'προς', 'δια', 'μετα', 'κατα', 'εκ', 'υπο'
+  ]);
   const state = {
     dictMap: new Map(),
     dictLoaded: false,
@@ -127,6 +131,7 @@
     lxxFileCache: new Map(),
     lxxBookCache: new Map(),
     lxxVerseCache: new Map(),
+    lxxBookStatsCache: new Map(),
     popupEl: null,
      popupRequestId: 0
   };
@@ -311,11 +316,37 @@ function findHebrewEntry(normalizedWord) {
     state.lxxVerseCache.set(key, tokens);
     return tokens;
   }
+    async function loadLxxBookStats(bookCode) {
+    if (state.lxxBookStatsCache.has(bookCode)) return state.lxxBookStatsCache.get(bookCode);
+    const data = await loadLxxBookData(bookCode);
+    const verseFreq = new Map();
+    let totalVerses = 0;
+    const chapters = data?.text?.[bookCode] || {};
+    Object.values(chapters).forEach((verses) => {
+      Object.values(verses || {}).forEach((tokens) => {
+        totalVerses += 1;
+        const verseLemmas = new Set();
+        (tokens || []).forEach((token) => {
+          const normalized = normalizeGreek(token?.lemma || token?.w || '');
+          if (!normalized || greekStopwords.has(normalized)) return;
+          verseLemmas.add(normalized);
+        });
+        verseLemmas.forEach((lemma) => {
+          verseFreq.set(lemma, (verseFreq.get(lemma) || 0) + 1);
+        });
+      });
+    });
+    const stats = { totalVerses, verseFreq };
+    state.lxxBookStatsCache.set(bookCode, stats);
+    return stats;
+  }
+
 
   async function buildGreekCandidateFromHebrewRefs(refs) {
     if (!refs.length) return null;
     const counts = new Map();
     const samples = new Map();
+      const usedBooks = new Set();
     for (const ref of refs.slice(0, 50)) {
       const [slug, chapterRaw, verseRaw] = ref.split('|');
       const chapter = Number(chapterRaw);
@@ -324,17 +355,39 @@ function findHebrewEntry(normalizedWord) {
       for (const lxxCode of lxxCodes) {
         const tokens = await loadLxxVerseTokens(lxxCode, chapter, verse);
         if (!tokens) continue;
+          usedBooks.add(lxxCode);
+        const verseLemmas = new Set();
         tokens.forEach((token) => {
           const lemma = token?.lemma || token?.w || '';
           const normalized = normalizeGreek(lemma);
-          if (!normalized) return;
-          counts.set(normalized, (counts.get(normalized) || 0) + 1);
+          if (!normalized || greekStopwords.has(normalized)) return;
+          verseLemmas.add(normalized);
           if (!samples.has(normalized) && token?.lemma) samples.set(normalized, token.lemma);
+        });
+          verseLemmas.forEach((lemma) => {
+          counts.set(lemma, (counts.get(lemma) || 0) + 1);
         });
       }
     }
     if (!counts.size) return null;
-    const [best] = [...counts.entries()].sort((a, b) => b[1] - a[1])[0];
+    let totalVerses = 0;
+    const verseFreq = new Map();
+    for (const bookCode of usedBooks) {
+      const stats = await loadLxxBookStats(bookCode);
+      totalVerses += stats.totalVerses;
+      stats.verseFreq.forEach((count, lemma) => {
+        verseFreq.set(lemma, (verseFreq.get(lemma) || 0) + count);
+      });
+    }
+
+    const ranked = [...counts.entries()].map(([lemma, hits]) => {
+      const df = verseFreq.get(lemma) || 0;
+      const score = hits * Math.log((totalVerses + 1) / (df + 1));
+      return { lemma, hits, score };
+    }).sort((a, b) => (b.score - a.score) || (b.hits - a.hits));
+
+    const best = ranked[0]?.lemma;
+    if (!best) return null;
     return {
       normalized: best,
       lemma: samples.get(best) || best
