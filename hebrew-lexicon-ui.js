@@ -4,7 +4,7 @@
 (() => {
   'use strict';
 
-  const HEBREW_DICT_PATH = './diccionario/lexico_hebreo.json';
+ const HEBREW_DICT_PATH = './diccionario/diccionario_unificado.min.json';
   const HEBREW_INDEX_PATH = './search/index-he.json';
   const GREEK_INDEX_PATH = './search/index-gr.json';
   const TEXT_BASE = './search/texts';
@@ -146,7 +146,65 @@
       .replace(/[\u0300-\u036f]/g, '')
       .toLowerCase();
   }
+function toArray(value) {
+    if (Array.isArray(value)) return value;
+    if (value == null || value === '') return [];
+    return [value];
+  }
 
+  function uniqueList(values) {
+    return [...new Set(toArray(values).map((item) => String(item || '').trim()).filter(Boolean))];
+  }
+
+  function getHebrewLemma(entry) {
+    return entry?.lemma || entry?.strong_detail?.lemma || entry?.hebreo || entry?.palabra || '—';
+  }
+
+  function getHebrewTranslit(entry) {
+    return entry?.translit || entry?.transliteracion || entry?.strong_detail?.transliteracion || '—';
+  }
+
+  function getHebrewPos(entry) {
+    return entry?.pos || entry?.categoria || entry?.tipo || '—';
+  }
+
+  function getHebrewDefinition(entry) {
+    return entry?.definitions?.short || entry?.strong_detail?.definicion || entry?.descripcion || '—';
+  }
+
+  function getHebrewDefinitionRv(entry) {
+    return entry?.definitions?.rv || entry?.strong_detail?.def_rv || '—';
+  }
+
+  function getHebrewMorphs(entry) {
+    return uniqueList([...(entry?.morphs || []), ...(entry?.morfs || []), ...(entry?.morfologia || [])]);
+  }
+
+  function getHebrewForms(entry) {
+    return uniqueList([entry?.forma, ...(entry?.forms || []), ...(entry?.formas || []), ...(entry?.variantes || [])]);
+  }
+
+  function getHebrewLxx(entry) {
+    return entry?.LXX || entry?.lxx || entry?.lxx_refs || null;
+  }
+
+  function formatHebrewLxx(lxxData) {
+    if (!lxxData) return '—';
+    if (typeof lxxData === 'string') return lxxData;
+    if (Array.isArray(lxxData)) return lxxData.map((item) => {
+      if (typeof item === 'string') return item;
+      const ref = item?.ref || item?.reference || item?.cita || '';
+      const form = item?.forma || item?.form || item?.word || '';
+      const lemma = item?.lemma || '';
+      return [ref, form, lemma].filter(Boolean).join(' — ');
+    }).filter(Boolean).join('\n');
+    if (typeof lxxData === 'object') {
+      return Object.entries(lxxData)
+        .map(([key, value]) => `${key}: ${Array.isArray(value) ? value.join(', ') : value}`)
+        .join('\n');
+    }
+    return String(lxxData);
+  }
   async function loadJson(url) {
     if (jsonCache.has(url)) return jsonCache.get(url);
     const promise = fetch(url, { cache: 'force-cache' }).then((res) => {
@@ -166,10 +224,18 @@
     if (state.dictLoaded) return state.dictMap;
     const data = await loadJson(HEBREW_DICT_PATH);
     (data || []).forEach((item) => {
-      const key = normalizeHebrew(item?.palabra || '');
-      if (key && !state.dictMap.has(key)) {
-        state.dictMap.set(key, item);
-      }
+     const keys = uniqueList([
+        item?.palabra,
+        item?.lemma,
+        item?.hebreo,
+        item?.forma,
+        ...(item?.forms || []),
+        ...(item?.formas || []),
+        ...(item?.hebreos || [])
+      ]).map((token) => normalizeHebrew(token));
+      keys.forEach((key) => {
+        if (key && !state.dictMap.has(key)) state.dictMap.set(key, item);
+      });
     });
     state.dictLoaded = true;
     return state.dictMap;
@@ -325,11 +391,14 @@
     box.innerHTML =
       '<button class="close" aria-label="Cerrar">×</button>' +
       '<div class="t1" id="he-lex-word"></div>' +
-      '<div class="t2 row"><span class="lab">Entrada:</span><span id="he-lex-entry"></span></div>' +
-      '<div class="t2 row"><span class="lab">Descripción:</span><div id="he-lex-desc" class="def"></div></div>' +
+     '<div class="t2 row"><span class="lab">Lemma:</span><span id="he-lex-entry"></span></div>' +
+      '<div class="t2 row"><span class="lab">Forma léxica:</span><span id="he-lex-translit"></span></div>' +
+      '<div class="t2 row"><span class="lab">POS:</span><span id="he-lex-pos"></span></div>' +
+      '<div class="t2 row"><span class="lab">Definición:</span><div id="he-lex-desc" class="def"></div></div>' +
+      '<div class="t2 row"><span class="lab">Definición RV:</span><div id="he-lex-def-rv" class="def"></div></div>' +
       '<div class="t2 row"><span class="lab">Morfología:</span><span id="he-lex-morph"></span></div>' +
-      '<div class="t2 row"><span class="lab">Variantes:</span><span id="he-lex-variants"></span></div>' +
-      '<div class="t2 row"><span class="lab">Referencias:</span><span id="he-lex-refs"></span></div>' +
+      '<div class="t2 row"><span class="lab">Formas:</span><span id="he-lex-variants"></span></div>' +
+      '<div class="t2 row"><span class="lab">LXX:</span><div id="he-lex-lxx" class="def"></div></div>' +
       '<hr class="sep" />' +
       '<div class="t2"><span class="lab">Correspondencia RKANT:</span></div>' +
       '<div id="he-lex-rkant" class="rkant"></div>';
@@ -471,17 +540,23 @@
     const wordEl = document.getElementById('he-lex-word');
     const entryEl = document.getElementById('he-lex-entry');
     const descEl = document.getElementById('he-lex-desc');
+      const translitEl = document.getElementById('he-lex-translit');
+    const posEl = document.getElementById('he-lex-pos');
+    const defRvEl = document.getElementById('he-lex-def-rv');
     const morphEl = document.getElementById('he-lex-morph');
     const variantsEl = document.getElementById('he-lex-variants');
-    const refsEl = document.getElementById('he-lex-refs');
+    const lxxEl = document.getElementById('he-lex-lxx');
     const rkantEl = document.getElementById('he-lex-rkant');
 
     if (wordEl) wordEl.textContent = word || normalized;
     if (entryEl) entryEl.textContent = 'Cargando…';
+     if (translitEl) translitEl.textContent = '—';
+    if (posEl) posEl.textContent = '—';
     if (descEl) descEl.textContent = 'Buscando entrada en el diccionario hebreo…';
+      if (defRvEl) defRvEl.textContent = '—';
     if (morphEl) morphEl.textContent = '—';
     if (variantsEl) variantsEl.textContent = '—';
-    if (refsEl) refsEl.textContent = '—';
+   if (lxxEl) lxxEl.textContent = '—';
     if (rkantEl) rkantEl.innerHTML = '<div class="rkant-row muted">Buscando correspondencias RKANT…</div>';
     showPopupNear(ev.target);
 
@@ -493,23 +568,32 @@
       if (!entry) {
         if (entryEl) entryEl.textContent = '—';
         if (descEl) descEl.textContent = 'No se pudo cargar el diccionario hebreo.';
+         if (translitEl) translitEl.textContent = '—';
+        if (posEl) posEl.textContent = '—';
+        if (defRvEl) defRvEl.textContent = '—';
         if (morphEl) morphEl.textContent = '—';
         if (variantsEl) variantsEl.textContent = '—';
-        if (refsEl) refsEl.textContent = '—';
+         if (lxxEl) lxxEl.textContent = '—';
       } else {
-        if (entryEl) entryEl.textContent = entry.palabra || '—';
-        if (descEl) descEl.textContent = entry.descripcion || '—';
-        if (morphEl) morphEl.textContent = (entry.morfologia || []).join(', ') || '—';
-        if (variantsEl) variantsEl.textContent = (entry.variantes || []).join(', ') || '—';
-        if (refsEl) refsEl.textContent = (entry.referencias || []).join(', ') || '—';
+        if (entryEl) entryEl.textContent = getHebrewLemma(entry);
+        if (translitEl) translitEl.textContent = getHebrewTranslit(entry);
+        if (posEl) posEl.textContent = getHebrewPos(entry);
+        if (descEl) descEl.textContent = getHebrewDefinition(entry);
+        if (defRvEl) defRvEl.textContent = getHebrewDefinitionRv(entry);
+        if (morphEl) morphEl.textContent = getHebrewMorphs(entry).join(', ') || '—';
+        if (variantsEl) variantsEl.textContent = getHebrewForms(entry).join(', ') || '—';
+        if (lxxEl) lxxEl.textContent = formatHebrewLxx(getHebrewLxx(entry));
       }
     } catch (error) {
       if (requestId !== state.popupRequestId) return;
       if (entryEl) entryEl.textContent = '—';
        if (descEl) descEl.textContent = 'No se pudo cargar el diccionario hebreo.';
+        if (translitEl) translitEl.textContent = '—';
+      if (posEl) posEl.textContent = '—';
+      if (defRvEl) defRvEl.textContent = '—';
       if (morphEl) morphEl.textContent = '—';
       if (variantsEl) variantsEl.textContent = '—';
-      if (refsEl) refsEl.textContent = '—';
+      if (lxxEl) lxxEl.textContent = '—';
     
     }
        try {
