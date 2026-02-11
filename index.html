@@ -174,11 +174,6 @@
     .parallel-col{ flex:1 1 360px; min-width:320px; }
     .orig-hidden #origCol{ display:none !important; }
     .orig-hidden #spanishCol{ flex:1 1 100%; min-width:100%; }
-     .interlinear-mode #spanishCol{ display:none !important; }
-    .interlinear-mode #origCol{ flex:1 1 100%; min-width:100%; }
-    .interlinear-verse{ margin-bottom:.6rem; }
-    .interlinear-original{ display:block; }
-    .interlinear-spanish{ display:block; margin-top:.25rem; font-size:.95em; color:var(--muted); }
 
     /* Columna de herramientas a la izquierda, más compacta */
     .tools-panel .panel-body{ padding:.75rem; }
@@ -374,7 +369,6 @@
 <script defer src="./annotations-ui.js?v=4"></script>
 <script defer src="./listanotas.js?v=1"></script>
   <script defer src="./backup-panel.js?v=1"></script>
-  <script defer src="./interlinear-view.js?v=1"></script>
   <script src="./greek-lexicon-ui.js"></script>
    <script src="./hebrew-lexicon-ui.js"></script>
 <script src="./diccionario/greek-lexicon.js?v=12"></script>
@@ -428,7 +422,7 @@
             </ul>
           </div>
           <button id="btnCopyText" class="btn btn-soft btn-sm" type="button">Copiar</button>
-          <button id="btnViewMode" class="btn btn-soft btn-sm" type="button">Paralelo</button>
+          <button id="btnPrint" class="btn btn-soft btn-sm" type="button">Imprimir</button>
         </div>
       </div>
     </div>
@@ -744,7 +738,7 @@ const rightLabel = document.getElementById('rightLabel');
 
 
 const btnCopyText = document.getElementById('btnCopyText');
-const btnViewMode = document.getElementById('btnViewMode');
+const btnPrint = document.getElementById('btnPrint');
 const btnToggleOrig = document.getElementById('btnToggleOrig');
     const btnPrevPage = document.getElementById('btnPrevPage');
 const btnNextPage = document.getElementById('btnNextPage');
@@ -766,7 +760,6 @@ const heBookCache = {};             // slug -> chapters[][]
 let bookDataRV = null;
 let bookDataOrig = null;
 let pendingRestoreState = null;
-let viewMode = 'parallel';
 /***********************
  * Helpers
  ***********************/
@@ -800,19 +793,7 @@ function fmtOrigVerse(raw, isGreek){
   out += esc(normalized.slice(last));
   return out.replace(/\n/g, '<br>');
 }
-function updateViewModeButton(){
-  if(!btnViewMode) return;
-  btnViewMode.textContent = viewMode === 'interlinear' ? 'Transliterado' : 'Paralelo';
-}
 
-function setViewMode(mode){
-  viewMode = mode === 'interlinear' ? 'interlinear' : 'parallel';
-  document.body.classList.toggle('interlinear-mode', viewMode === 'interlinear');
-  updateViewModeButton();
-  if(lastRef){
-    render({ chapter: lastRef.chapter, verseStart: lastRef.verseStart, verseEnd: lastRef.verseEnd });
-  }
-}
 function normalizeSpaces(s){
   return (s || '').trim().replace(/\s+/g,' ');
 }
@@ -914,7 +895,7 @@ async function navigateToPage(slug, chapter){
   searchInput.value = buildSearchString(slug, chapter);
   await ensureBookLoaded(slug, prettyBookName(slug));
   leftLabel.textContent = versionSelect.value;
-  await render({ chapter, verseStart: null, verseEnd: null });
+  render({ chapter, verseStart: null, verseEnd: null });
 }
 /***********************
  * Builder: verses[] -> chapters[][]
@@ -1081,7 +1062,7 @@ function syncVerseHeights(){
 rvLines.forEach((line) => { line.style.minHeight = ''; });
   origLines.forEach((line) => { line.style.minHeight = ''; });
 
-if(!bookDataOrig || document.body.classList.contains('orig-hidden') || viewMode === 'interlinear') return;
+  if(!bookDataOrig || document.body.classList.contains('orig-hidden')) return;
 
   const origByVerse = new Map();
   origLines.forEach((line) => { origByVerse.set(line.dataset.v, line); });
@@ -1096,7 +1077,7 @@ const rvHeight = line.getBoundingClientRect().height;
     twin.style.minHeight = `${maxHeight}px`;
   });
 }
-async function render(ref){
+function render(ref){
   if(!bookDataRV) return;
 
   clearFeedback();
@@ -1106,8 +1087,7 @@ async function render(ref){
   // Validación: capítulo solicitado
   if(ref.chapter < 1 || ref.chapter > chapterCount){
     pageTitle.textContent = `${currentBookName} ${ref.chapter}`;
-   metaVersion.textContent = viewMode === 'interlinear' ? 'Interlineal' : versionSelect.value;
-  rightLabel.textContent = viewMode === 'interlinear' ? 'Texto original + Español' : (isNT(currentBookSlug) ? 'Griego' : 'Hebreo');
+    metaVersion.textContent = versionSelect.value;
     statusLine.textContent = `Capítulos: ${chapterCount}`;
     passageTextRV.innerHTML = `<div class="text-muted">No existe el capítulo <strong>${esc(String(ref.chapter))}</strong> en <strong>${esc(currentBookName)}</strong>.</div>`;
     passageTextOrig.innerHTML = `<div class="text-muted">—</div>`;
@@ -1158,39 +1138,22 @@ async function render(ref){
   }
   passageTextRV.innerHTML = htmlRV || `<div class="text-muted">Sin contenido para esta referencia.</div>`;
 
-  // Original / interlineal
+  // Original
   if(bookDataOrig){
     const versesOrig = bookDataOrig[ch-1] || [];
-    const isGreekBook = isNT(currentBookSlug);
     let htmlOrig = '';
     for(let v=v1; v<=v2; v++){
       const t = versesOrig[v-1] ?? '';
-     if(viewMode === 'interlinear'){
-        if(window.InterlinearView?.buildInterlinearRows){
-          const rows = await window.InterlinearView.buildInterlinearRows(t, isGreekBook);
-          htmlOrig += `<p class="mb-2 verse-line interlinear-verse" data-side="orig" data-book="${esc(currentBookSlug)}" data-ch="${ch}" data-v="${v}">
-            <span class="verse-num">${v}</span>
-            <span class="interlinear-original">${fmtOrigVerse(rows.originalLine || t, isGreekBook)}</span>
-            <span class="interlinear-spanish">${fmtVerse(rows.spanishLine || '-')}</span>
-          </p>`;
-        }else{
-          htmlOrig += `<p class="mb-2 verse-line interlinear-verse" data-side="orig" data-book="${esc(currentBookSlug)}" data-ch="${ch}" data-v="${v}">
-            <span class="verse-num">${v}</span>
-            <span class="interlinear-original">${fmtOrigVerse(t, isGreekBook)}</span>
-            <span class="interlinear-spanish">-</span>
-          </p>`;
-        }
-      }else{
-        htmlOrig += `<p class="mb-2 verse-line" data-side="orig" data-book="${esc(currentBookSlug)}" data-ch="${ch}" data-v="${v}">
-           <span class="verse-num">${v}</span><span class="verse-text">${fmtOrigVerse(t, isGreekBook)}</span>
-        </p>`;
-      }
+      htmlOrig += `<p class="mb-2 verse-line" data-side="orig" data-book="${esc(currentBookSlug)}" data-ch="${ch}" data-v="${v}">
+         <span class="verse-num">${v}</span><span class="verse-text">${fmtOrigVerse(t, isNT(currentBookSlug))}</span>
+      </p>`;
     }
     passageTextOrig.innerHTML = htmlOrig || `<div class="text-muted">Sin contenido original para esta referencia.</div>`;
     // ✅ Hacer cada palabra griega clickeable (antes de subrayados/notas)
- if(viewMode === 'parallel' && window.GreekLexicon?.decoratePassage) {
-      window.GreekLexicon.decoratePassage(passageTextOrig, currentBookSlug, ch, v1, v2);
-    }
+if (window.GreekLexicon?.decoratePassage) {
+  window.GreekLexicon.decoratePassage(passageTextOrig, currentBookSlug, ch, v1, v2);
+}
+
   } else {
     passageTextOrig.innerHTML = `<div class="text-muted">Original no disponible para esta referencia.</div>`;
   }
@@ -1203,7 +1166,7 @@ async function render(ref){
   history.replaceState(
     null,
     '',
-      `?book=${encodeURIComponent(currentBookSlug)}&name=${encodeURIComponent(currentBookName)}&search=${encodeURIComponent(userSearch)}&version=${encodeURIComponent(versionSelect.value)}&orig=${ORIGINAL_ENABLED_DEFAULT?'1':'0'}&view=${viewMode}`
+    `?book=${encodeURIComponent(currentBookSlug)}&name=${encodeURIComponent(currentBookName)}&search=${encodeURIComponent(userSearch)}&version=${encodeURIComponent(versionSelect.value)}&orig=${ORIGINAL_ENABLED_DEFAULT?'1':'0'}`
   );
 
 
@@ -1264,7 +1227,7 @@ saveReaderState();
   try{
     await ensureBookLoaded(ref.slug, ref.bookDisplay);
     leftLabel.textContent = versionSelect.value;
-    await render(ref);
+    render(ref);
   }catch(err){
     const msg = `<div class="text-danger fw-semibold">Error:</div><div class="text-muted">${esc(err.message || String(err))}</div>`;
     passageTextRV.innerHTML = msg;
@@ -1282,10 +1245,8 @@ function setFromUrl(){
   const v = p.get('version');
   const bk = p.get('book');
   const nm = p.get('name');
-  const view = p.get('view');
 
   if(bk) currentBookSlug = bk.trim();
-  if(view === 'interlinear') viewMode = 'interlinear';
   if(nm) currentBookName = nm.trim();
   if(q) searchInput.value = q;
   if(v) versionSelect.value = v;
@@ -1335,10 +1296,7 @@ btnCopyText.addEventListener('click', async () => {
   await copy(combined);
 });
 
-btnViewMode?.addEventListener('click', () => {
-  const nextMode = viewMode === 'parallel' ? 'interlinear' : 'parallel';
-  setViewMode(nextMode);
-});
+btnPrint.addEventListener('click', () => window.print());
 
 btnToggleOrig.addEventListener('click', () => {
   const isVisible = !document.body.classList.contains('orig-hidden');
@@ -1367,7 +1325,6 @@ btnNextPage?.addEventListener('click', () => {
 (async function boot(){
   setFromUrl();
   setOriginalVisible(ORIGINAL_ENABLED_DEFAULT);
-   setViewMode(viewMode);
   applyTheme(localStorage.getItem('lectorTheme') || 'cream');
 
   leftLabel.textContent = versionSelect.value;
