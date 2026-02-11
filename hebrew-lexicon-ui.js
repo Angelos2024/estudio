@@ -536,13 +536,12 @@ function findHebrewEntry(normalizedWord) {
     document.addEventListener('keydown', (ev) => {
       if (ev.key === 'Escape') hidePopup();
     }, false);
-    document.addEventListener('click', (ev) => {
+   document.addEventListener('pointerdown', (ev) => {
       const p = state.popupEl;
       if (!p || p.style.display !== 'block') return;
       if (p.contains(ev.target)) return;
-       if (isHebrewPanel(ev.target) && !ev.target?.closest?.('.note-mark')) return;
       hidePopup();
-    }, false);
+     }, true);
 
     return box;
   }
