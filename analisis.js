@@ -1253,7 +1253,6 @@ function mapLxxRefsToHebrewRefs(refs) {
  
   async function analyze() {
     if (state.isLoading) return;
-    s
     const term = queryInput.value.trim();
     if (!term) {
       return;
