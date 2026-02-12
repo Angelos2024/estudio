@@ -1451,8 +1451,7 @@ btnNextPage?.addEventListener('click', () => {
         pendingRestoreState = JSON.parse(raw);
     const safeRefSearch = normalizeSpaces(pendingRestoreState?.lastReferenceSearch || '');
         const fallbackSearch = normalizeSpaces(pendingRestoreState?.lastSearch || '');
-        if (safeRefSearch && searchInput) {
-          searchInput.value = safeRefSearch;
+        if (safeRefSearch && parseSearch(safeRefSearch) && searchInput) {          searchInput.value = safeRefSearch;
         } else if (fallbackSearch && parseSearch(fallbackSearch) && searchInput) {
           searchInput.value = fallbackSearch;
         }
