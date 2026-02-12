@@ -208,11 +208,35 @@ function cleanPrintedEntry(value) {
   function getHebrewLxx(entry) {
     return entry?.LXX || entry?.lxx || entry?.lxx_refs || null;
   }
-function findHebrewEntry(normalizedWord) {
+  function scoreHebrewEntryForLookup(entry, normalizedWord) {
+    const primaryKeys = uniqueList([
+      entry?.palabra,
+      entry?.lemma,
+      entry?.hebreo
+    ]).map((token) => normalizeHebrew(token));
+    if (primaryKeys.includes(normalizedWord)) return 3;
+
+    const formKeys = getHebrewForms(entry).map((token) => normalizeHebrew(token));
+    if (formKeys.includes(normalizedWord)) return 2;
+
+    const extraKeys = uniqueList([...(entry?.hebreos || [])]).map((token) => normalizeHebrew(token));
+    if (extraKeys.includes(normalizedWord)) return 1;
+
+    return 0;
+  }
+
+  function pickBestHebrewEntry(entries, normalizedWord) {
+    if (!Array.isArray(entries) || !entries.length) return null;
+    return entries
+      .map((entry, idx) => ({ entry, idx, score: scoreHebrewEntryForLookup(entry, normalizedWord) }))
+      .sort((a, b) => (b.score - a.score) || (a.idx - b.idx))[0]?.entry || null;
+  }
+
+  function findHebrewEntry(normalizedWord) {
     if (!normalizedWord) return null;
 
-    const direct = state.dictMap.get(normalizedWord);
-    if (direct) {
+    const direct = pickBestHebrewEntry(state.dictMap.get(normalizedWord), normalizedWord);
+     if (direct) {
       return { entry: direct, lookup: normalizedWord, mode: 'direct' };
     }
 
@@ -222,8 +246,8 @@ function findHebrewEntry(normalizedWord) {
       const first = trimmed[0];
       if (!HEBREW_PREFIX_LETTERS.has(first)) break;
       trimmed = trimmed.slice(1);
-      const hit = state.dictMap.get(trimmed);
-      if (hit) {
+ const hit = pickBestHebrewEntry(state.dictMap.get(trimmed), trimmed);
+       if (hit) {
         return { entry: hit, lookup: trimmed, mode: 'prefixed' };
       }
     }
@@ -329,7 +353,9 @@ function findHebrewEntry(normalizedWord) {
         ...(item?.hebreos || [])
       ]).map((token) => normalizeHebrew(token));
       keys.forEach((key) => {
-        if (key && !state.dictMap.has(key)) state.dictMap.set(key, item);
+ if (!key) return;
+        if (!state.dictMap.has(key)) state.dictMap.set(key, []);
+        state.dictMap.get(key).push(item);
       });
     });
     state.dictLoaded = true;
