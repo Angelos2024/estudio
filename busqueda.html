@@ -188,11 +188,9 @@
   <script src="./busqueda.js?v=2"></script>
   <script>
   document.getElementById('backToReader')?.addEventListener('click', () => {
-    if (document.referrer && document.referrer.includes('index.html')) {
-      history.back();   // vuelve con cache y scroll
-    } else {
-      location.href = './index.html';
-    }
+// Ir directo al lector evita bucles cuando el historial vuelve a
+    // index.html con una búsqueda de palabra (que redirige otra vez aquí).
+    location.href = './index.html';
   });
 </script>
 <script>
