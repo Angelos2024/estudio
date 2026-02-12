@@ -166,6 +166,13 @@ function toArray(value) {
 
   function uniqueList(values) {
     return [...new Set(toArray(values).map((item) => String(item || '').trim()).filter(Boolean))];
+      }
+  function extractHebrewFromStrongHeader(header) {
+    const text = String(header || '');
+    if (!text) return '';
+    const match = text.match(/[\u05D0-\u05EA\u0591-\u05C7]+/g);
+    if (!match?.length) return '';
+    return match[0] || '';
   }
    function buildHebrewEntryTokens(entry) {
     return uniqueList([
@@ -173,6 +180,8 @@ function toArray(value) {
       entry?.lemma,
       entry?.hebreo,
       entry?.forma,
+      entry?.strong_detail?.lemma,
+      extractHebrewFromStrongHeader(entry?.strong_detail?.header),
       ...(entry?.forms || []),
       ...(entry?.formas || []),
       ...(entry?.hebreos || [])
