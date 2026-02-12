@@ -9,7 +9,7 @@
       .replace(/^[\s.,;:!?¡¿()\[\]{}"'“”‘’«»·]+|[\s.,;:!?¡¿()\[\]{}"'“”‘’«»·]+$/g, '');
 
     if(isHebrew){
-      clean = clean.replace(/[\u0591-\u05C7]/g, '');
+      clean = clean.replace(/[\u0591-\u05AF\u05B0-\u05BC\u05BD\u05BF\u05C1-\u05C2\u05C7]/g, '');
     }
 
     return clean.toLowerCase();
@@ -107,7 +107,7 @@ function setGlossCandidate(map, key, gloss, score, usage, exactLemmaMatch = fals
 
       if(map && map.has(normalizeToken(remaining, true))) break;
 
-      const head = remaining.match(/^([\u05D0-\u05EA][\u0591-\u05C7]*)/);
+const head = remaining.match(/^([\u05D0-\u05EA][\u0591-\u05AF\u05B0-\u05BC\u05BD\u05BF\u05C1-\u05C2\u05C7]*)/);
       if(!head) break;
 
       const baseLetter = head[1].charAt(0);
