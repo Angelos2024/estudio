@@ -49,6 +49,9 @@ if(!el) return;
        // opcional: cambia apariencia cuando está activo
        btn.classList.toggle('btn-primary', enabled);
        btn.classList.toggle('btn-soft', !enabled);
+        btn.textContent = enabled
+         ? 'Volver al Texto del pasaje'
+         : 'Aparato crítico RKANT';
      }
  
    
