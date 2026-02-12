@@ -166,6 +166,32 @@
       border-radius:50%;
       animation:spin .8s linear infinite;
     }
+    .results-loading-stage{
+      min-height:320px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:.85rem;
+      color:var(--muted);
+      background:color-mix(in srgb, var(--soft-bg) 55%, #ffffff);
+      border:1px dashed var(--bd);
+      border-radius:12px;
+      margin-bottom:1rem;
+    }
+    .results-loading-stage .big-spinner{
+      width:4.5rem;
+      height:4.5rem;
+      border:6px solid color-mix(in srgb, var(--primary) 20%, #ffffff);
+      border-top-color:var(--primary);
+      border-radius:50%;
+      animation:spin .9s linear infinite;
+    }
+    [data-theme="cream"] .results-loading-stage{
+      background:#ffffff;
+      color:#000000;
+      border-color:#4b2743;
+    }
     .form-control,
     .form-select{
       background:#ffffff;
@@ -231,7 +257,7 @@
       </div>
     </section>
 
-    <div class="row g-3">
+    <div id="analysisResultsSection" class="row g-3">
       <div class="col-12 col-lg-4">
         <section class="panel h-100">
           <div class="panel-header">Resumen del lema</div>
@@ -260,6 +286,10 @@
             </div>
           </div>
           <div class="panel-body">
+             <div id="resultsLoadingStage" class="results-loading-stage" role="status" aria-live="polite" hidden>
+              <span class="big-spinner" aria-hidden="true"></span>
+              <span class="fw-semibold">Cargando análisis...</span>
+            </div>
             <div id="resultsByCorpus" class="row g-3"></div>
           </div>
         </section>
