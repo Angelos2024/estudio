@@ -876,6 +876,17 @@ function setViewMode(mode){
 function normalizeSpaces(s){
   return (s || '').trim().replace(/\s+/g,' ');
 }
+    function buildLastReferenceSearch(){
+  if(!lastRef?.chapter) return '';
+  const chapter = Number(lastRef.chapter);
+  const verseStart = Number(lastRef.verseStart);
+  const verseEnd = Number(lastRef.verseEnd);
+  if(Number.isFinite(verseStart) && Number.isFinite(verseEnd) && verseStart > 0 && verseEnd >= verseStart){
+    if(verseStart === verseEnd) return `${prettyBookName(currentBookSlug)} ${chapter}:${verseStart}`;
+    return `${prettyBookName(currentBookSlug)} ${chapter}:${verseStart}-${verseEnd}`;
+  }
+  return `${prettyBookName(currentBookSlug)} ${chapter}`;
+}
 async function loadJson(path){
  if (jsonCache.has(path)) return jsonCache.get(path);
   const promise = fetch(path, { cache: 'force-cache' }).then(async (r) => {
@@ -902,7 +913,8 @@ async function copy(text){
       origHidden: document.body.classList.contains('orig-hidden') ? 1 : 0,
       currentBookSlug: currentBookSlug || null,
       currentBookName: currentBookName || null,
-      lastSearch: (document.getElementById('searchInput')?.value || '').trim()
+     lastSearch: (document.getElementById('searchInput')?.value || '').trim(),
+      lastReferenceSearch: buildLastReferenceSearch()
     };
     sessionStorage.setItem('lectorState', JSON.stringify(state));
   }catch{}
@@ -1437,8 +1449,12 @@ btnNextPage?.addEventListener('click', () => {
       const raw = sessionStorage.getItem('lectorState');
       if(raw){
         pendingRestoreState = JSON.parse(raw);
-        if (pendingRestoreState?.lastSearch && searchInput) {
-          searchInput.value = pendingRestoreState.lastSearch;
+    const safeRefSearch = normalizeSpaces(pendingRestoreState?.lastReferenceSearch || '');
+        const fallbackSearch = normalizeSpaces(pendingRestoreState?.lastSearch || '');
+        if (safeRefSearch && searchInput) {
+          searchInput.value = safeRefSearch;
+        } else if (fallbackSearch && parseSearch(fallbackSearch) && searchInput) {
+          searchInput.value = fallbackSearch;
         }
         if (pendingRestoreState?.currentBookSlug) {
           currentBookSlug = pendingRestoreState.currentBookSlug;
