@@ -149,9 +149,10 @@
    function stripHebrewCantillation(text) {
     return String(text || '').replace(/[\u0591-\u05AF]/g, '');
   }
+
 function normalizeHebrewPointed(text) {
-    return stripHebrewCantillation(text)
-       .replace(/[\s\u05BE]/g, '')
+ return stripHebrewCantillation(text)
+    .replace(/[\s\u05BE]/g, '')
       .replace(/[׃,:;.!?()"“”]/g, '');
    }
     function normalizeHebrewSkeleton(text) {
@@ -265,6 +266,29 @@ function cleanPrintedEntry(value) {
 
   function getHebrewLxx(entry) {
     return entry?.LXX || entry?.lxx || entry?.lxx_refs || null;
+  }
+   function resolveClickedFormContext(entry, clickedWord = '') {
+    if (!entry) return null;
+    const clickedPointed = normalizeHebrewPointed(clickedWord);
+    const clickedUnpointed = normalizeHebrew(clickedWord);
+    if (!clickedPointed && !clickedUnpointed) return null;
+
+    const forms = toArray(entry?.formas);
+    const morphs = toArray(entry?.morfs);
+    const glosses = toArray(entry?.glosas);
+
+    const idx = forms.findIndex((form) => {
+      return normalizeHebrewPointed(form) === clickedPointed || normalizeHebrew(form) === clickedUnpointed;
+    });
+    if (idx < 0) return null;
+
+    const gloss = glosses[idx] || '';
+    const morph = morphs[idx] || '';
+    return {
+      form: forms[idx] || '',
+      gloss: String(gloss || '').trim(),
+      morph: String(morph || '').trim()
+    };
   }
 function scoreHebrewEntryForLookup(entry, normalizedWord, pointedWord = '') {
     if (pointedWord) {
@@ -935,7 +959,9 @@ function isLikelyVerbEntry(entry) {
       const printedEntry = getHebrewPrintedEntry(entry);
         if (printedEl) printedEl.textContent = printedEntry || '—';
         if (printedRowEl) printedRowEl.style.display = printedEntry ? '' : 'none';
-        if (descEl) descEl.textContent = getHebrewDefinition(entry);
+        const clickedContext = resolveClickedFormContext(entry, word);
+        const contextualDefinition = clickedContext?.gloss || getHebrewDefinition(entry);
+        if (descEl) descEl.textContent = contextualDefinition;
         if (variantsEl) variantsEl.textContent = getHebrewForms(entry).join(', ') || '—';
          currentLxxData = formatHebrewLxx(getHebrewLxx(entry));
         if (lxxEl) lxxEl.textContent = currentLxxData;
