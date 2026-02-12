@@ -37,14 +37,18 @@ function normalizeGloss(gloss){
     }
     return response.json();
   }
-function setGlossCandidate(map, key, gloss, score, usage){
-    if(!key) return;
+function setGlossCandidate(map, key, gloss, score, usage, exactLemmaMatch = false){
+  if(!key) return;
     const normalizedGloss = normalizeGloss(gloss);
     if(!normalizedGloss || normalizedGloss === '-') return;
 
-    const prev = map.get(key);
-    if(!prev || score > prev.score || (score === prev.score && usage > prev.usage)){
-      map.set(key, { gloss: normalizedGloss, score, usage });
+   if(
+      !prev ||
+      score > prev.score ||
+      (score === prev.score && Number(exactLemmaMatch) > Number(prev.exactLemmaMatch)) ||
+      (score === prev.score && exactLemmaMatch === prev.exactLemmaMatch && usage > prev.usage)
+    ){
+      map.set(key, { gloss: normalizedGloss, score, usage, exactLemmaMatch });
     }
   }
   function buildHebrewMap(rows){
@@ -53,21 +57,23 @@ function setGlossCandidate(map, key, gloss, score, usage){
     for(const row of rows || []){
       const usage = Number(row?.stats?.tokens) || 0;
       const fallbackGloss = takeFirstGloss(row?.glosas || row?.glosa || row?.strong_detail?.def_rv);
-
+      const normalizedLemma = normalizeToken(row?.hebreo, true);
       if(Array.isArray(row?.formas) && Array.isArray(row?.glosas)){
         const limit = Math.min(row.formas.length, row.glosas.length);
         for(let i = 0; i < limit; i++){
           const formKey = normalizeToken(row.formas[i], true);
-          setGlossCandidate(map, formKey, row.glosas[i], 4, usage);
+          setGlossCandidate(map, formKey, row.glosas[i], 4, usage, formKey === normalizedLemma);
         }
       }
 
-     setGlossCandidate(map, normalizeToken(row?.forma, true), row?.glosa || fallbackGloss, 3, usage);
-      setGlossCandidate(map, normalizeToken(row?.hebreo, true), fallbackGloss, 2, usage);
+    const primaryFormKey = normalizeToken(row?.forma, true);
+     setGlossCandidate(map, primaryFormKey, row?.glosa || fallbackGloss, 3, usage, primaryFormKey === normalizedLemma);
+      setGlossCandidate(map, normalizedLemma, fallbackGloss, 2, usage, true);
 
       if(Array.isArray(row?.formas)){
         for(const form of row.formas){
-          setGlossCandidate(map, normalizeToken(form, true), fallbackGloss, 1, usage);
+          const formKey = normalizeToken(form, true);
+          setGlossCandidate(map, formKey, fallbackGloss, 1, usage, formKey === normalizedLemma);
         }
       }
     }
