@@ -810,8 +810,9 @@ function scoreHebrewEntryForLookup(entry, normalizedWord, pointedWord = '') {
     if (!isHebrewWordChar(text[idx])) return;
     const { word, start, end } = expandWord(text, idx);
     if (!pointInsideWordRect(resolved.node, start, end, ev.clientX, ev.clientY)) return;
+    const normalized = normalizeHebrew(word);
     const pointed = normalizeHebrewPointed(word);
-     if (!normalized) return;
+    if (!normalized) return;
 
      const marker = markActiveWord(resolved.node, start, end);
      const requestId = ++state.popupRequestId;
