@@ -146,9 +146,12 @@
       .replace(/[׃,:;.!?()"“”]/g, '');
      
   }
+   function stripHebrewCantillation(text) {
+    return String(text || '').replace(/[\u0591-\u05AF]/g, '');
+  }
 function normalizeHebrewPointed(text) {
-    return String(text || '')
-      .replace(/[\s\u05BE]/g, '')
+    return stripHebrewCantillation(text)
+       .replace(/[\s\u05BE]/g, '')
       .replace(/[׃,:;.!?()"“”]/g, '');
    }
     function normalizeHebrewSkeleton(text) {
@@ -899,7 +902,8 @@ function isLikelyVerbEntry(entry) {
     const rkantEl = document.getElementById('he-lex-rkant');
 
     let currentLxxData = '—';
-    if (wordEl) wordEl.textContent = word || normalized;
+    const displayWord = stripHebrewCantillation(word) || word || normalized;
+    if (wordEl) wordEl.textContent = displayWord;
     if (entryEl) entryEl.textContent = 'Cargando…';
     if (translitEl) translitEl.textContent = '—';
     if (printedEl) printedEl.textContent = '—';
