@@ -247,6 +247,59 @@ function findHebrewEntry(normalizedWord) {
     }
     return String(lxxData);
   }
+    function isMissingLxxData(value) {
+    const normalized = String(value || '').replace(/[\s\u200E\u200F]/g, '');
+    return !normalized || normalized === '-' || normalized === '—';
+  }
+
+  function formatLxxRef(bookCode, chapter, verse) {
+    return `${bookCode} ${chapter}:${verse}`;
+  }
+
+  async function buildLxxSamplesFromHebrewRefs(refs, preferredLemma = '', max = 4) {
+    if (!refs.length) return [];
+    const normalizedPreferred = normalizeGreek(preferredLemma);
+    const samples = [];
+    const seen = new Set();
+
+    for (const ref of refs.slice(0, 120)) {
+      if (samples.length >= max) break;
+      const [slug, chapterRaw, verseRaw] = ref.split('|');
+      const chapter = Number(chapterRaw);
+      const verse = Number(verseRaw);
+      const lxxCodes = HEBREW_SLUG_TO_LXX[slug] || [];
+
+      for (const lxxCode of lxxCodes) {
+        if (samples.length >= max) break;
+        const tokens = await loadLxxVerseTokens(lxxCode, chapter, verse);
+        if (!tokens?.length) continue;
+
+        const matches = tokens.filter((token) => {
+          const lemmaNorm = normalizeGreek(token?.lemma || token?.w || '');
+          if (!lemmaNorm || greekStopwords.has(lemmaNorm)) return false;
+          if (!normalizedPreferred) return true;
+          return lemmaNorm === normalizedPreferred;
+        });
+        const candidate = matches[0] || tokens.find((token) => {
+          const lemmaNorm = normalizeGreek(token?.lemma || token?.w || '');
+          return lemmaNorm && !greekStopwords.has(lemmaNorm);
+        });
+        if (!candidate) continue;
+
+        const sample = {
+          ref: formatLxxRef(lxxCode, chapter, verse),
+          word: String(candidate?.w || ''),
+          lemma: String(candidate?.lemma || candidate?.w || '')
+        };
+        const key = `${sample.ref}|${normalizeGreek(sample.lemma)}|${normalizeGreek(sample.word)}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        samples.push(sample);
+      }
+    }
+
+    return samples;
+  }
   async function loadJson(url) {
     if (jsonCache.has(url)) return jsonCache.get(url);
     const promise = fetch(url, { cache: 'force-cache' }).then((res) => {
@@ -724,6 +777,7 @@ function findHebrewEntry(normalizedWord) {
     const lxxEl = document.getElementById('he-lex-lxx');
     const rkantEl = document.getElementById('he-lex-rkant');
 
+    let currentLxxData = '—';
     if (wordEl) wordEl.textContent = word || normalized;
     if (entryEl) entryEl.textContent = 'Cargando…';
     if (translitEl) translitEl.textContent = '—';
@@ -758,7 +812,8 @@ function findHebrewEntry(normalizedWord) {
         if (printedRowEl) printedRowEl.style.display = printedEntry ? '' : 'none';
         if (descEl) descEl.textContent = getHebrewDefinition(entry);
         if (variantsEl) variantsEl.textContent = getHebrewForms(entry).join(', ') || '—';
-        if (lxxEl) lxxEl.textContent = formatHebrewLxx(getHebrewLxx(entry));
+         currentLxxData = formatHebrewLxx(getHebrewLxx(entry));
+        if (lxxEl) lxxEl.textContent = currentLxxData;
       }
   
       const heIndex = await loadIndex('he');
@@ -770,6 +825,18 @@ function findHebrewEntry(normalizedWord) {
       }
       const greekCandidate = await buildGreekCandidateFromHebrewRefs(refs);
            if (requestId !== state.popupRequestId) return;
+       if (lxxEl && isMissingLxxData(currentLxxData)) {
+        const lxxSamples = await buildLxxSamplesFromHebrewRefs(refs, greekCandidate?.normalized || '', 4);
+        if (requestId !== state.popupRequestId) return;
+        if (lxxSamples.length) {
+          lxxEl.innerHTML = lxxSamples.map((sample) => (
+            `<div>• <b>${escapeHtml(sample.ref)}</b> — ${escapeHtml(sample.word || '—')} <span class="muted">|</span> ${escapeHtml(sample.lemma || '—')}</div>`
+          )).join('');
+        } else if (greekCandidate?.lemma) {
+          lxxEl.textContent = greekCandidate.lemma;
+        }
+      }
+
       if (!greekCandidate) {
         if (rkantEl) rkantEl.innerHTML = '<div class="rkant-row muted">No se pudo determinar correspondencia griega.</div>';
         return;
