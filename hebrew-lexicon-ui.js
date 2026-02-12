@@ -125,6 +125,7 @@
   ]);
   const state = {
     dictMap: new Map(),
+    dictPointedMap: new Map(),
     dictLoaded: false,
     indexes: {},
     textCache: new Map(),
@@ -144,7 +145,11 @@
       .replace(/[\s\u05BE]/g, '')
       .replace(/[׃,:;.!?()"“”]/g, '');
   }
-
+function normalizeHebrewPointed(text) {
+    return String(text || '')
+      .replace(/[\s\u05BE]/g, '')
+      .replace(/[׃,:;.!?()"“”]/g, '');
+  }
   function normalizeGreek(text) {
     return String(text || '')
       .replace(/[··.,;:!?“”"(){}\[\]<>«»]/g, '')
@@ -161,6 +166,17 @@ function toArray(value) {
 
   function uniqueList(values) {
     return [...new Set(toArray(values).map((item) => String(item || '').trim()).filter(Boolean))];
+  }
+   function buildHebrewEntryTokens(entry) {
+    return uniqueList([
+      entry?.palabra,
+      entry?.lemma,
+      entry?.hebreo,
+      entry?.forma,
+      ...(entry?.forms || []),
+      ...(entry?.formas || []),
+      ...(entry?.hebreos || [])
+    ]);
   }
 
   function getHebrewLemma(entry) {
@@ -208,8 +224,12 @@ function cleanPrintedEntry(value) {
   function getHebrewLxx(entry) {
     return entry?.LXX || entry?.lxx || entry?.lxx_refs || null;
   }
-  function scoreHebrewEntryForLookup(entry, normalizedWord) {
-    const primaryKeys = uniqueList([
+function scoreHebrewEntryForLookup(entry, normalizedWord, pointedWord = '') {
+    if (pointedWord) {
+      const pointedTokens = buildHebrewEntryTokens(entry).map((token) => normalizeHebrewPointed(token));
+      if (pointedTokens.includes(pointedWord)) return 5;
+    }
+   const primaryKeys = uniqueList([
       entry?.palabra,
       entry?.lemma,
       entry?.hebreo
@@ -225,17 +245,24 @@ function cleanPrintedEntry(value) {
     return 0;
   }
 
-  function pickBestHebrewEntry(entries, normalizedWord) {
-    if (!Array.isArray(entries) || !entries.length) return null;
+  function pickBestHebrewEntry(entries, normalizedWord, pointedWord = '') {
+     if (!Array.isArray(entries) || !entries.length) return null;
     return entries
-      .map((entry, idx) => ({ entry, idx, score: scoreHebrewEntryForLookup(entry, normalizedWord) }))
-      .sort((a, b) => (b.score - a.score) || (a.idx - b.idx))[0]?.entry || null;
+      .map((entry, idx) => ({ entry, idx, score: scoreHebrewEntryForLookup(entry, normalizedWord, pointedWord) }))
+       .sort((a, b) => (b.score - a.score) || (a.idx - b.idx))[0]?.entry || null;
   }
 
-  function findHebrewEntry(normalizedWord) {
-    if (!normalizedWord) return null;
+  function findHebrewEntry(normalizedWord, pointedWord = '') {
+     if (!normalizedWord) return null;
 
-    const direct = pickBestHebrewEntry(state.dictMap.get(normalizedWord), normalizedWord);
+    if (pointedWord) {
+      const pointed = pickBestHebrewEntry(state.dictPointedMap.get(pointedWord), normalizedWord, pointedWord);
+      if (pointed) {
+        return { entry: pointed, lookup: normalizedWord, mode: 'pointed' };
+      }
+    }
+
+    const direct = pickBestHebrewEntry(state.dictMap.get(normalizedWord), normalizedWord, pointedWord);
      if (direct) {
       return { entry: direct, lookup: normalizedWord, mode: 'direct' };
     }
@@ -246,7 +273,7 @@ function cleanPrintedEntry(value) {
       const first = trimmed[0];
       if (!HEBREW_PREFIX_LETTERS.has(first)) break;
       trimmed = trimmed.slice(1);
- const hit = pickBestHebrewEntry(state.dictMap.get(trimmed), trimmed);
+ const hit = pickBestHebrewEntry(state.dictMap.get(trimmed), trimmed, pointedWord);
        if (hit) {
         return { entry: hit, lookup: trimmed, mode: 'prefixed' };
       }
@@ -343,19 +370,16 @@ function cleanPrintedEntry(value) {
     if (state.dictLoaded) return state.dictMap;
     const data = await loadJson(HEBREW_DICT_PATH);
     (data || []).forEach((item) => {
-     const keys = uniqueList([
-        item?.palabra,
-        item?.lemma,
-        item?.hebreo,
-        item?.forma,
-        ...(item?.forms || []),
-        ...(item?.formas || []),
-        ...(item?.hebreos || [])
-      ]).map((token) => normalizeHebrew(token));
-      keys.forEach((key) => {
- if (!key) return;
+    const rawKeys = buildHebrewEntryTokens(item);
+      rawKeys.map((token) => normalizeHebrew(token)).forEach((key) => {
+        if (!key) return;
         if (!state.dictMap.has(key)) state.dictMap.set(key, []);
         state.dictMap.get(key).push(item);
+      });
+       rawKeys.map((token) => normalizeHebrewPointed(token)).forEach((key) => {
+        if (!key) return;
+        if (!state.dictPointedMap.has(key)) state.dictPointedMap.set(key, []);
+        state.dictPointedMap.get(key).push(item);
       });
     });
     state.dictLoaded = true;
@@ -786,8 +810,8 @@ function cleanPrintedEntry(value) {
     if (!isHebrewWordChar(text[idx])) return;
     const { word, start, end } = expandWord(text, idx);
     if (!pointInsideWordRect(resolved.node, start, end, ev.clientX, ev.clientY)) return;
-    const normalized = normalizeHebrew(word);
-    if (!normalized) return;
+    const pointed = normalizeHebrewPointed(word);
+     if (!normalized) return;
 
      const marker = markActiveWord(resolved.node, start, end);
      const requestId = ++state.popupRequestId;
@@ -819,8 +843,8 @@ function cleanPrintedEntry(value) {
     try {
       await loadHebrewDict();
       if (requestId !== state.popupRequestId) return;
-     const found = findHebrewEntry(normalized);
-        const lookupWord = found?.lookup || normalized;
+     const found = findHebrewEntry(normalized, pointed);
+       const lookupWord = found?.lookup || normalized;
       entry = found?.entry || null;
       if (!entry) {
         if (entryEl) entryEl.textContent = '—';
