@@ -173,6 +173,21 @@
       color:var(--text);
     }
     .form-control::placeholder{ color:color-mix(in srgb, var(--muted) 80%, transparent); }
+    .analysis-title{
+      position:absolute;
+      left:50%;
+      transform:translateX(-50%);
+      text-align:center;
+      line-height:1.2;
+    }
+    @media (max-width: 640px){
+      .analysis-title{
+        position:static;
+        transform:none;
+        width:100%;
+        margin-top:.5rem;
+      }
+    }
     @keyframes spin{
       to{ transform:rotate(360deg); }
     }
@@ -180,14 +195,12 @@
 </head>
 <body>
   <header class="topbar">
-    <div class="container sitewrap py-2 d-flex flex-wrap gap-2 align-items-center justify-content-between">
-       <div class="d-flex gap-2">
-        <a class="btn btn-soft btn-sm" href="index.html">Volver al lector</a>
-      <div>
-        <div class="text-center flex-grow-1">
+  <div class="container sitewrap py-2 d-flex flex-wrap gap-2 align-items-center position-relative">
+      <a class="btn btn-soft btn-sm" href="index.html">Volver al lector</a>
+      <div class="analysis-title">
         <div class="fw-semibold">Área de análisis textual</div>
- <div class="small muted">LXX · Hebreo · RKANT · RVR1960</div>
-        </div>
+<div class="small muted">LXX · Hebreo · RKANT · RVR1960</div>
+      </div>
     </div>
   </header>
 
