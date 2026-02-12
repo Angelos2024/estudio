@@ -189,8 +189,19 @@
   const resultsLoadingIndicator = document.getElementById('resultsLoadingIndicator');
   const resultsLoadingStage = document.getElementById('resultsLoadingStage');
   const analysisResultsSection = document.getElementById('analysisResultsSection');
+  const lemmaSummaryPanel = document.getElementById('lemmaSummaryPanel');
 
   const nextFrame = () => new Promise((resolve) => requestAnimationFrame(resolve));
+  function scrollToLemmaSummary() {
+    if (!lemmaSummaryPanel) {
+      analysisResultsSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+    const topbar = document.querySelector('.topbar');
+    const topbarHeight = topbar ? topbar.getBoundingClientRect().height : 0;
+    const top = window.scrollY + lemmaSummaryPanel.getBoundingClientRect().top - topbarHeight - 12;
+    window.scrollTo({ top: Math.max(top, 0), behavior: 'smooth' });
+  }
 
   function setLoading(isLoading) {
     state.isLoading = isLoading;
@@ -1257,8 +1268,8 @@ function mapLxxRefsToHebrewRefs(refs) {
     if (!term) {
       return;
     }
-  analysisResultsSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    setLoading(true);
+    scrollToLemmaSummary();
+   setLoading(true);
     await nextFrame();
       try {
     const lang = detectLang(term);
