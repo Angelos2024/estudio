@@ -185,8 +185,10 @@
    const lemmaSummary = document.getElementById('lemmaSummary');
   const lemmaCorrespondence = document.getElementById('lemmaCorrespondence');
    const lemmaExamples = document.getElementById('lemmaExamples');
-   const resultsByCorpus = document.getElementById('resultsByCorpus');
-   const resultsLoadingIndicator = document.getElementById('resultsLoadingIndicator');
+  const resultsByCorpus = document.getElementById('resultsByCorpus');
+  const resultsLoadingIndicator = document.getElementById('resultsLoadingIndicator');
+  const resultsLoadingStage = document.getElementById('resultsLoadingStage');
+  const analysisResultsSection = document.getElementById('analysisResultsSection');
 
   const nextFrame = () => new Promise((resolve) => requestAnimationFrame(resolve));
 
@@ -194,6 +196,8 @@
     state.isLoading = isLoading;
   
    if (resultsLoadingIndicator) resultsLoadingIndicator.hidden = !isLoading;
+    if (resultsLoadingStage) resultsLoadingStage.hidden = !isLoading;
+    if (resultsByCorpus) resultsByCorpus.hidden = isLoading;
     if (analyzeBtn) analyzeBtn.disabled = isLoading;
   }
  
@@ -1247,16 +1251,16 @@ function mapLxxRefsToHebrewRefs(refs) {
 
    }
  
-   async function analyze() {
+  async function analyze() {
     if (state.isLoading) return;
-    setLoading(true);
-    await nextFrame();
+    s
     const term = queryInput.value.trim();
     if (!term) {
-      setLoading(false);
       return;
     }
- 
+  analysisResultsSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setLoading(true);
+    await nextFrame();
       try {
     const lang = detectLang(term);
     const normalized = normalizeByLang(term, lang);
