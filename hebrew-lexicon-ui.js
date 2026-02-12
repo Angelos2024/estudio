@@ -144,12 +144,42 @@
       .replace(/[\u0591-\u05BD\u05BF\u05C1-\u05C2\u05C4-\u05C7]/g, '')
       .replace(/[\s\u05BE]/g, '')
       .replace(/[׃,:;.!?()"“”]/g, '');
+     
   }
 function normalizeHebrewPointed(text) {
     return String(text || '')
       .replace(/[\s\u05BE]/g, '')
       .replace(/[׃,:;.!?()"“”]/g, '');
+   }
+    function normalizeHebrewSkeleton(text) {
+    return normalizeHebrew(text).replace(/[וי]/g, '');
   }
+function hasHebrewNikkud(text) {
+    return /[\u0591-\u05C7]/.test(String(text || ''));
+  }
+  function levenshteinDistance(a, b) {
+    const left = String(a || '');
+    const right = String(b || '');
+    if (!left) return right.length;
+    if (!right) return left.length;
+    const prev = new Array(right.length + 1).fill(0);
+    const curr = new Array(right.length + 1).fill(0);
+    for (let j = 0; j <= right.length; j++) prev[j] = j;
+    for (let i = 1; i <= left.length; i++) {
+      curr[0] = i;
+      for (let j = 1; j <= right.length; j++) {
+        const cost = left[i - 1] === right[j - 1] ? 0 : 1;
+        curr[j] = Math.min(
+          prev[j] + 1,
+          curr[j - 1] + 1,
+          prev[j - 1] + cost
+        );
+      }
+      for (let j = 0; j <= right.length; j++) prev[j] = curr[j];
+    }
+    return prev[right.length];
+  }
+   
   function normalizeGreek(text) {
     return String(text || '')
       .replace(/[··.,;:!?“”"(){}\[\]<>«»]/g, '')
@@ -237,6 +267,20 @@ function scoreHebrewEntryForLookup(entry, normalizedWord, pointedWord = '') {
     if (pointedWord) {
       const pointedTokens = buildHebrewEntryTokens(entry).map((token) => normalizeHebrewPointed(token));
       if (pointedTokens.includes(pointedWord)) return 5;
+       const pointedCandidates = buildHebrewEntryTokens(entry)
+        .filter((token) => hasHebrewNikkud(token))
+        .map((token) => normalizeHebrewPointed(token))
+        .filter(Boolean);
+      if (pointedCandidates.length) {
+        const minDistance = pointedCandidates.reduce((best, token) => {
+          const distance = levenshteinDistance(pointedWord, token);
+          return distance < best ? distance : best;
+        }, Number.POSITIVE_INFINITY);
+        if (Number.isFinite(minDistance)) {
+          if (minDistance <= 1) return 4.5;
+          if (minDistance <= 2) return 4;
+        }
+      }
     }
    const primaryKeys = uniqueList([
       entry?.palabra,
@@ -245,6 +289,15 @@ function scoreHebrewEntryForLookup(entry, normalizedWord, pointedWord = '') {
     ]).map((token) => normalizeHebrew(token));
     if (primaryKeys.includes(normalizedWord)) return 3;
 
+    const querySkeleton = normalizeHebrewSkeleton(normalizedWord);
+    if (querySkeleton) {
+      const primarySkeletons = uniqueList([
+        entry?.palabra,
+        entry?.lemma,
+        entry?.hebreo
+      ]).map((token) => normalizeHebrewSkeleton(token));
+      if (primarySkeletons.includes(querySkeleton)) return 2.5;
+    }
     const formKeys = getHebrewForms(entry).map((token) => normalizeHebrew(token));
     if (formKeys.includes(normalizedWord)) return 2;
 
@@ -253,12 +306,20 @@ function scoreHebrewEntryForLookup(entry, normalizedWord, pointedWord = '') {
 
     return 0;
   }
-
+function isLikelyVerbEntry(entry) {
+    const morphTags = toArray(entry?.morfs).map((tag) => String(tag || '').toUpperCase());
+    return morphTags.some((tag) => tag.includes('VERBO') || tag.startsWith('V.'));
+  }
   function pickBestHebrewEntry(entries, normalizedWord, pointedWord = '') {
      if (!Array.isArray(entries) || !entries.length) return null;
     return entries
-      .map((entry, idx) => ({ entry, idx, score: scoreHebrewEntryForLookup(entry, normalizedWord, pointedWord) }))
-       .sort((a, b) => (b.score - a.score) || (a.idx - b.idx))[0]?.entry || null;
+      .map((entry, idx) => ({
+        entry,
+        idx,
+        score: scoreHebrewEntryForLookup(entry, normalizedWord, pointedWord),
+        verbPenalty: isLikelyVerbEntry(entry) ? 1 : 0
+      }))
+       .sort((a, b) => (b.score - a.score) || (a.verbPenalty - b.verbPenalty) || (a.idx - b.idx))[0]?.entry || null;
   }
 
   function findHebrewEntry(normalizedWord, pointedWord = '') {
