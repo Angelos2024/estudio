@@ -188,9 +188,27 @@
   <script src="./busqueda.js?v=2"></script>
   <script>
   document.getElementById('backToReader')?.addEventListener('click', () => {
-// Ir directo al lector evita bucles cuando el historial vuelve a
-    // index.html con una búsqueda de palabra (que redirige otra vez aquí).
-    location.href = './index.html';
+let target = './index.html';
+    try{
+      const rawState = sessionStorage.getItem('lectorState');
+      if(rawState){
+        const state = JSON.parse(rawState);
+        const refSearch = String(state?.lastReferenceSearch || '').trim();
+        const book = String(state?.currentBookSlug || '').trim();
+        const name = String(state?.currentBookName || '').trim();
+
+        if(refSearch){
+          const p = new URLSearchParams();
+          if(book) p.set('book', book);
+          if(name) p.set('name', name);
+          p.set('search', refSearch);
+          p.set('version', 'RVR1960');
+          p.set('orig', '1');
+          target = `./index.html?${p.toString()}`;
+        }
+      }
+    }catch{}
+    location.href = target;
   });
 </script>
 <script>
