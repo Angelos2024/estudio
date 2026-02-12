@@ -26,7 +26,7 @@ function normalizeGreek(s){
 function normalizeHebrew(s){
   return (s || "")
     .normalize("NFD")
-    .replace(/[\u0591-\u05C7]/g,"")
+    .replace(/[\u0591-\u05AF\u05B0-\u05BC\u05BD\u05BF\u05C1-\u05C2\u05C7]/g,"")
     .replace(/[^\p{L}\p{N}\s]/gu, " ")
     .replace(/\s+/g," ")
     .trim();
