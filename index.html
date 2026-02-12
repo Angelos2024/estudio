@@ -1362,6 +1362,11 @@ function setFromUrl(){
   if(v) versionSelect.value = v;
 }
 
+    function hasReaderNavigationParams(){
+  const p = new URLSearchParams(location.search);
+  return ['book', 'search', 'name'].some((key) => normalizeSpaces(p.get(key) || '') !== '');
+}
+    
 function setOriginalVisible(isVisible){
   document.body.classList.toggle('orig-hidden', !isVisible);
   btnToggleOrig.setAttribute('aria-expanded', String(isVisible));
@@ -1437,6 +1442,7 @@ btnNextPage?.addEventListener('click', () => {
  ***********************/
 (async function boot(){
   setFromUrl();
+    const hasExplicitNavigation = hasReaderNavigationParams();
   setOriginalVisible(ORIGINAL_ENABLED_DEFAULT);
    setViewMode(viewMode);
   applyTheme(localStorage.getItem('lectorTheme') || 'cream');
@@ -1451,15 +1457,18 @@ btnNextPage?.addEventListener('click', () => {
         pendingRestoreState = JSON.parse(raw);
     const safeRefSearch = normalizeSpaces(pendingRestoreState?.lastReferenceSearch || '');
         const fallbackSearch = normalizeSpaces(pendingRestoreState?.lastSearch || '');
-        if (safeRefSearch && parseSearch(safeRefSearch) && searchInput) {          searchInput.value = safeRefSearch;
-        } else if (fallbackSearch && parseSearch(fallbackSearch) && searchInput) {
-          searchInput.value = fallbackSearch;
-        }
-        if (pendingRestoreState?.currentBookSlug) {
-          currentBookSlug = pendingRestoreState.currentBookSlug;
-        }
-        if (pendingRestoreState?.currentBookName) {
-          currentBookName = pendingRestoreState.currentBookName;
+       if (!hasExplicitNavigation) {
+          if (safeRefSearch && parseSearch(safeRefSearch) && searchInput) {
+            searchInput.value = safeRefSearch;
+          } else if (fallbackSearch && parseSearch(fallbackSearch) && searchInput) {
+            searchInput.value = fallbackSearch;
+          }
+          if (pendingRestoreState?.currentBookSlug) {
+            currentBookSlug = pendingRestoreState.currentBookSlug;
+          }
+          if (pendingRestoreState?.currentBookName) {
+            currentBookName = pendingRestoreState.currentBookName;
+          }
         }
         if (typeof pendingRestoreState?.origHidden === 'number') {
           setOriginalVisible(pendingRestoreState.origHidden ? false : true);
