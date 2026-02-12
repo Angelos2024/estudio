@@ -41,6 +41,7 @@ function setGlossCandidate(map, key, gloss, score, usage, exactLemmaMatch = fals
   if(!key) return;
     const normalizedGloss = normalizeGloss(gloss);
     if(!normalizedGloss || normalizedGloss === '-') return;
+      const prev = map.get(key);
 
    if(
       !prev ||
