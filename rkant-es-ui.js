@@ -37,18 +37,59 @@ if(!el) return;
       'hebreos','santiago','1_pedro','2_pedro','1_juan','2_juan','3_juan','judas','apocalipsis'
   ];
 
-
+ const STORAGE_KEYS = {
+      enabled: 'rkant.es.enabled',
+      selection: 'rkant.es.selection'
+    };
      let enabled = false;
       const INDEX_PATH = './RKANT/out/index.json';
     let rkantIndex = null;
  
      // Cache del último estado seleccionado
      let lastSel = { book: null, ch: null, v: null };
- 
+  function saveSelectionState(){
+      try{
+        localStorage.setItem(STORAGE_KEYS.selection, JSON.stringify(lastSel));
+      }catch(err){
+        console.warn('[RKANT-Es] No se pudo guardar la selección.', err);
+      }
+     }
+
+     function saveEnabledState(){
+      try{
+        localStorage.setItem(STORAGE_KEYS.enabled, enabled ? '1' : '0');
+      }catch(err){
+        console.warn('[RKANT-Es] No se pudo guardar el estado del panel.', err);
+      }
+     }
+
+     function loadSavedState(){
+      try{
+        const savedSelection = localStorage.getItem(STORAGE_KEYS.selection);
+        if(savedSelection){
+          const parsed = JSON.parse(savedSelection);
+          if(parsed && typeof parsed === 'object'){
+            lastSel = {
+              book: parsed.book || null,
+              ch: parsed.ch || null,
+              v: parsed.v || null
+            };
+          }
+        }
+      }catch(err){
+        console.warn('[RKANT-Es] No se pudo recuperar la selección guardada.', err);
+      }
+
+      try{
+        return localStorage.getItem(STORAGE_KEYS.enabled) === '1';
+      }catch(err){
+        console.warn('[RKANT-Es] No se pudo recuperar el estado del panel.', err);
+        return false;
+      }
+     }
      function setButtonState(){
-       // opcional: cambia apariencia cuando está activo
-       btn.classList.toggle('btn-primary', enabled);
-       btn.classList.toggle('btn-soft', !enabled);
+    btn.classList.toggle('btn-primary', !enabled);
+       btn.classList.toggle('btn-rkant-active', enabled);
         btn.textContent = enabled
          ? 'Volver al Texto del pasaje'
          : 'Aparato crítico RKANT';
@@ -139,6 +180,7 @@ function getAvailableBooks(index){
    const v = selV.value;
  
    lastSel = { book, ch, v };
+      saveSelectionState();
     if(!book || !ch || !v){
     viewer.innerHTML = `<div class="text-muted">No hay selección disponible.</div>`;
     return;
@@ -201,6 +243,7 @@ function getAvailableBooks(index){
  panelHeaderTitle.textContent = "Roans Kritischer Apparat Neuen Testament";
        enabled = true;
        setButtonState();
+       saveEnabledState();
  
        await renderCurrent();
      }
@@ -212,6 +255,7 @@ function getAvailableBooks(index){
        
        enabled = false;
        setButtonState();
+       saveEnabledState();
      }
  
      // Eventos UI
@@ -239,6 +283,14 @@ function getAvailableBooks(index){
  
      // Estado inicial del botón
      setButtonState();
+      const shouldRestoreRKANT = loadSavedState();
+     if(shouldRestoreRKANT){
+      try{
+        await enable();
+      }catch(err){
+        console.error('[RKANT-Es] No se pudo restaurar el panel tras recargar.', err);
+      }
+     }
    }
  
    // ✅ Garantiza que los elementos existan aunque el script esté en <head>
