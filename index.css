@@ -242,6 +242,51 @@
     .tools-panel .panel-body{ padding:.75rem; }
     .tools-panel .btn{ padding:.4rem .6rem; font-size:.9rem; }
 
+ /* Botones de Herramientas + Respaldo: mantienen anclaje a la derecha en todos los anchos */
+    .tools-panel .panel-body,
+    .backup-panel .panel-body{
+      display:flex;
+      flex-direction:column;
+      align-items:stretch;
+      gap:.5rem;
+    }
+
+    .tools-panel .panel-body > .btn,
+    .tools-panel .panel-body > a.btn,
+    .backup-panel .backup-actions .btn{
+      width:auto !important;
+      max-width:100%;
+      margin-left:auto;
+      white-space:nowrap;
+    }
+
+    .backup-panel .backup-actions{
+      display:grid !important;
+      gap:.5rem;
+      justify-items:end;
+    }
+
+    .tools-panel .notas-panel,
+    .backup-panel #backupStatus{
+      width:100%;
+    }
+
+    @media (max-width: 1000px){
+      .tools-panel .panel-body > .btn,
+      .tools-panel .panel-body > a.btn,
+      .backup-panel .backup-actions .btn{
+        min-width:clamp(9.5rem, 42vw, 14rem);
+      }
+    }
+
+    @media (min-width: 1001px){
+      .tools-panel .panel-body > .btn,
+      .tools-panel .panel-body > a.btn,
+      .backup-panel .backup-actions .btn{
+        min-width:clamp(8.75rem, 9.5vw, 13rem);
+      }
+    }
+
      .page-nav{ display:flex; flex-wrap:wrap; gap:.5rem; }
     .page-nav .btn{ display:flex; align-items:center; gap:.35rem; }
     /* Greek font */
