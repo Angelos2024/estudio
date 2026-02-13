@@ -49,6 +49,7 @@
         .gr-lex-tip .t2{ font-size: 12px; opacity: .9; }
         .gr-lex-tip .t3{ margin-top: 6px; font-size: 12px; opacity: .95; }
         .gr-lex-tip .muted{ opacity: .7; }
+       .gr-lex-tip #gr-lex-content{ user-select: text; }
       `;
       document.head.appendChild(st);
     }
@@ -104,10 +105,6 @@ const onPointerMove = (ev) => {
 
     const head = el.querySelector('.head');
     head?.addEventListener('pointerdown', beginDrag);
-    el.addEventListener('pointerdown', (ev) => {
-      if (ev.target?.closest?.('.head')) return;
-      beginDrag(ev);
-        });
     el.querySelector('.close')?.addEventListener('click', hideTip, false);
 
     document.body.appendChild(el);
