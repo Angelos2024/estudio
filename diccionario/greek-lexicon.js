@@ -16,6 +16,7 @@
    var equivDictIndex = null; // objeto { lemma_normalizado: [equivalencias...] }
   var equivDictLoaded = false;
    var lxxCache = new Map(); // Map<lemma_normalizado, samples[]>
+     var popupDrag = null;
 
   // Cantidad de capítulos por libro MorphGNT abbr
   var ABBR_CHAPTERS = {
@@ -467,6 +468,36 @@ function slugToAbbr(slug) {
       hidePopup();
     }, false);
 
+     var onPointerMove = function (ev) {
+      if (!popupDrag) return;
+      var popup = document.getElementById('gk-lex-popup');
+      if (!popup) return;
+      var pad = 10;
+      var maxX = Math.max(pad, window.innerWidth - popup.offsetWidth - pad);
+      var maxY = Math.max(pad, window.innerHeight - popup.offsetHeight - pad);
+      var nx = Math.max(pad, Math.min(ev.clientX - popupDrag.offsetX, maxX));
+      var ny = Math.max(pad, Math.min(ev.clientY - popupDrag.offsetY, maxY));
+      popup.style.left = Math.round(nx) + 'px';
+      popup.style.top = Math.round(ny) + 'px';
+    };
+
+    var stopDrag = function () {
+      popupDrag = null;
+      document.removeEventListener('pointermove', onPointerMove, true);
+      document.removeEventListener('pointerup', stopDrag, true);
+      document.removeEventListener('pointercancel', stopDrag, true);
+    };
+
+    box.addEventListener('pointerdown', function (ev) {
+      if (ev.button !== 0) return;
+      if (ev.target && ev.target.closest && ev.target.closest('.close')) return;
+      var r = box.getBoundingClientRect();
+      popupDrag = { offsetX: ev.clientX - r.left, offsetY: ev.clientY - r.top };
+      document.addEventListener('pointermove', onPointerMove, true);
+      document.addEventListener('pointerup', stopDrag, true);
+      document.addEventListener('pointercancel', stopDrag, true);
+      ev.preventDefault();
+    }, false);
     document.addEventListener('keydown', function (ev) {
       if (ev.key === 'Escape') hidePopup();
     }, false);
@@ -484,6 +515,7 @@ function slugToAbbr(slug) {
     ensurePopup();
     var box = document.getElementById('gk-lex-popup');
     if (!box) return;
+     
 
     document.getElementById('gk-lex-g').textContent = g || '';
     document.getElementById('gk-lex-lemma').textContent = lemma || '—';
@@ -583,6 +615,7 @@ box.style.maxHeight = 'calc(100vh - ' + (pad * 2) + 'px)';
   function hidePopup() {
     var box = document.getElementById('gk-lex-popup');
     if (!box) return;
+    popupDrag = null;
     box.style.display = 'none';
   }
 
