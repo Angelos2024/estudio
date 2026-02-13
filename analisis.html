@@ -2,7 +2,7 @@
 <html lang="es" data-theme="cream">
 <head>
   <meta charset="utf-8"/>
-  <meta name="viewport" content="width=1024, initial-scale=1"/>
+ <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Área de Análisis Textual</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
@@ -206,7 +206,7 @@
       text-align:center;
       line-height:1.2;
     }
-    @media (max-width: 640px){
+    @media (max-width: 767.98px){
       .analysis-title{
         position:static;
         transform:none;
@@ -216,6 +216,40 @@
     }
     @keyframes spin{
       to{ transform:rotate(360deg); }
+    }
+     /* Responsive tablet + desktop (celulares fuera de alcance) */
+    :root{
+      --layout-min-tablet: 768px;
+    }
+
+    @media (max-width: 767.98px){
+      body{
+        min-width: var(--layout-min-tablet);
+        overflow-x:auto;
+      }
+      .container.sitewrap{
+        min-width: var(--layout-min-tablet);
+      }
+    }
+
+    @media (min-width: 768px) and (max-width: 1024px){
+      .sitewrap{ max-width: 980px; }
+      .panel-header{ padding:.65rem .85rem; }
+      .panel-body{ padding:.85rem; }
+    }
+
+    @media (min-width: 1025px) and (max-width: 1366px){
+      .sitewrap{ max-width: 1240px; }
+    }
+
+    @media (min-width: 1367px) and (max-width: 1920px){
+      .sitewrap{ max-width: 1460px; }
+    }
+
+    @media (min-width: 1921px){
+      .sitewrap{ max-width: 1720px; }
+      .panel-body{ padding:1.1rem 1.15rem; }
+      .panel-header{ font-size:1.03rem; }
     }
   </style>
 </head>
