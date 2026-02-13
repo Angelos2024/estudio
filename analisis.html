@@ -246,10 +246,21 @@
       .sitewrap{ max-width: 1460px; }
     }
 
-    @media (min-width: 1921px){
+    @media (min-width: 1921px) and (max-width: 2499px){
       .sitewrap{ max-width: 1720px; }
       .panel-body{ padding:1.1rem 1.15rem; }
       .panel-header{ font-size:1.03rem; }
+    }
+     @media (min-width: 2500px){
+      .sitewrap{ max-width: 2100px; }
+      .topbar .btn,
+      .topbar .form-control,
+      .topbar .form-select{ font-size:1.05rem; }
+      .panel-header{ padding:.9rem 1.2rem; font-size:1.08rem; }
+      .panel-body{ padding:1.3rem; }
+      .lexicon-grid{ grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+      .greek,
+      .hebrew{ font-size:1.2rem; }
     }
   </style>
 </head>
