@@ -114,7 +114,16 @@
       border-color:color-mix(in srgb, var(--primary) 85%, #000);
       color:var(--primary-contrast);
     }
-
+.btn-rkant-active{
+      background:#ffffff;
+      border-color:var(--primary);
+      color:var(--primary);
+    }
+    .btn-rkant-active:hover{
+      background:color-mix(in srgb, #ffffff 88%, var(--primary));
+      border-color:var(--primary);
+      color:var(--primary);
+    }
     .btn-outline-primary{
       color:var(--primary);
       border-color:var(--primary);
