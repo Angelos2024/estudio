@@ -65,7 +65,7 @@
       border-bottom:1px solid var(--bd);
       position:sticky; top:0; z-index:1000;
     }
-    .sitewrap{ max-width: 1200px; }
+    .sitewrap{ max-width: 1280px; }
     .site-brand{
       width:180px;
       flex:0 0 auto;
@@ -82,6 +82,10 @@
     #searchForm{
       margin-left:-2.75rem;
       min-width:0;
+    }
+     .top-actions{
+      flex-wrap:wrap;
+      justify-content:flex-end;
     }
     @media (max-width: 767.98px){
       .site-brand{
@@ -447,7 +451,76 @@
       }
     }
 
-    @media (min-width: 768px) and (max-width: 1024px){
+@media (min-width: 800px) and (max-width: 1000px){
+      .sitewrap{ max-width: 940px; }
+      .header-main{
+        align-items:stretch;
+        gap:.5rem !important;
+      }
+      .site-brand{ width: 140px; }
+      .site-brand img{ margin-left:-10px; max-height:40px; }
+      .search-form{
+        display:grid !important;
+        grid-template-columns:minmax(0, 1fr) auto auto;
+        gap:.45rem;
+      }
+      .search-form #searchInput{
+        grid-column:1 / -1;
+        font-size:.95rem;
+        padding:.4rem .6rem;
+      }
+      .search-form #versionSelect{
+        max-width:170px !important;
+        font-size:.92rem;
+        padding:.35rem .5rem;
+      }
+      .search-form .btn{
+        font-size:.92rem;
+        padding:.36rem .68rem;
+        line-height:1.2;
+      }
+      .top-actions{
+        width:100%;
+        justify-content:flex-start;
+        flex-wrap:nowrap;
+        gap:.4rem !important;
+      }
+      .top-actions .btn,
+      .top-actions .dropdown{
+        flex:0 0 auto;
+      }
+      .top-actions .btn.btn-sm,
+      .top-actions .dropdown .btn{
+        font-size:.88rem;
+        padding:.28rem .58rem;
+        line-height:1.2;
+      }
+      .page-nav{
+        gap:.35rem;
+      }
+      .page-nav .btn{
+        font-size:.88rem;
+        padding:.32rem .58rem;
+        white-space:nowrap;
+      }
+      .panel-header{
+        font-size:1.02rem;
+      }
+      .panel-body{
+        padding:.75rem;
+      }
+      .tools-panel .btn,
+      #backupPanelMount .btn{
+        font-size:.9rem;
+        padding:.34rem .58rem;
+      }
+      .passage-title{ font-size:1.35rem; }
+      .meta-row{ font-size:.85rem; }
+      .passage-text,
+      .orig-text{ font-size:1rem; line-height:1.72; }
+    }
+
+    @media ((min-width: 768px) and (max-width: 799px)) , ((min-width: 1001px) and (max-width: 1024px)){
       .sitewrap{ max-width: 980px; }
       .site-brand{ width: 160px; }
       .site-brand img{ margin-left: -16px; max-height:44px; }
@@ -469,29 +542,38 @@
     }
 
     @media (min-width: 1441px) and (max-width: 1920px){
-      .sitewrap{ max-width: 1460px; }
+.sitewrap{ max-width: 1820px; }
+      .panel-body{ padding:1.1rem; }
       .passage-text,
-      .orig-text{ font-size:1.08rem; }
+.orig-text{ font-size:1.12rem; line-height:1.95; }
+      .parallel{ gap:1.25rem; }
+      .parallel-col{ min-width:420px; }
     }
 
     @media (min-width: 1921px) and (max-width: 2499px){
-      .sitewrap{ max-width: 1720px; }
+      .sitewrap{ max-width: 2200px; }
       .passage-text,
-      .orig-text{ font-size:1.14rem; line-height:1.95; }
-      .topbar .btn{ font-size: .98rem; }
+      .orig-text{ font-size:1.2rem; line-height:2; }
+      .topbar .btn{ font-size: 1.02rem; }
+      .parallel{ gap:1.5rem; }
+      .parallel-col{ min-width:500px; }
+      aside.col-lg-2{ width:20%; }
+      .col-lg-10{ width:80%; }
     }
     @media (min-width: 2500px){
-      .sitewrap{ max-width: 2100px; }
+      .sitewrap{ max-width: 2420px; }
       .topbar .btn,
       .topbar .form-control,
-      .topbar .form-select{ font-size: 1.05rem; }
-      .passage-title{ font-size: 1.5rem; }
-      .panel-header{ padding: .9rem 1.2rem; font-size: 1.08rem; }
-      .panel-body{ padding: 1.25rem; }
+      .topbar .form-select{ font-size: 1.12rem; }
+      .passage-title{ font-size: 1.75rem; }
+      .panel-header{ padding: 1rem 1.3rem; font-size: 1.16rem; }
+      .panel-body{ padding: 1.4rem; }
       .passage-text,
-      .orig-text{ font-size:1.2rem; line-height:2.05; }
-      .parallel{ gap:1.5rem; }
-      .parallel-col{ min-width: 440px; }
+      .orig-text{ font-size:1.3rem; line-height:2.1; }
+      .parallel{ gap:1.8rem; }
+      .parallel-col{ min-width: 620px; }
+      aside.col-lg-2{ width:18%; }
+      .col-lg-10{ width:82%; }
     }
   </style>
 
@@ -524,12 +606,12 @@
   <!-- TOP SEARCH BAR -->
   <header class="topbar">
     <div class="container sitewrap py-2">
-      <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-2 gap-lg-3">
+      <div class="header-main d-flex flex-column flex-lg-row align-items-lg-center gap-2 gap-lg-3">
         <div class="d-flex align-items-center gap-2 flex-grow-1">
           <div class="site-brand" aria-label="Lector">
             <img src="logo.png" alt="Lector"/>
           </div>
-          <form id="searchForm" class="d-flex gap-2 flex-grow-1">
+          <form id="searchForm" class="search-form d-flex gap-2 flex-grow-1">
             <input id="searchInput" class="form-control" value="1 Corintios 13:1-7" placeholder="Buscar: ej. 1 Corintios 13 / 1Co 13:1-7"/>
             <select id="versionSelect" class="form-select" style="max-width:180px">
               <option value="RVR1960" selected>RVR1960</option>
@@ -538,7 +620,7 @@
           </form>
         </div>
 
-        <div class="d-flex gap-2">
+        <div class="top-actions d-flex gap-2">
           <div class="dropdown">
             <button class="btn btn-soft btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="themeMenuBtn">
               Fondo
