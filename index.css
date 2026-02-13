@@ -185,6 +185,10 @@
       margin-right:.5rem;
     }
     .sticky-aside{ position: sticky; top: 86px; }
+.tools-column,
+    .main-column{
+      display:block;
+    }
     .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace; }
 
     /* Layout paralelo (español izquierda / original derecha) con colapsado del original */
@@ -437,6 +441,27 @@
       }
       .container.sitewrap{
         min-width: var(--layout-min-tablet);
+      }
+         .tools-column,
+      .main-column{
+        flex:0 0 auto;
+      }
+      .tools-column{
+        width:31%;
+      }
+      .main-column{
+        width:69%;
+      }
+      .sticky-aside{
+        position:static;
+      }
+      .tools-panel .btn,
+      #backupPanelMount .btn{
+        font-size:.82rem;
+        padding:.3rem .45rem;
+      }
+      .backup-panel .backup-actions .btn{
+        font-size:.82rem;
       }
     }
 
