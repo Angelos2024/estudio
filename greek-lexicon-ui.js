@@ -43,7 +43,8 @@
           display:none;
         }
         .gr-lex-tip .t1{ font-size: 14px; font-weight: 700; margin-bottom: 4px; }
-        .gr-lex-tip .head{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:4px; cursor:move; user-select:none; }
+.gr-lex-tip .head{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:4px; }
+        .gr-lex-tip .drag-handle{ cursor:move; user-select:none; color:#9fb3ff; font-size:12px; letter-spacing:.02em; padding:2px 6px; border:1px solid rgba(255,255,255,.16); border-radius:999px; touch-action:none; }
         .gr-lex-tip .head .t1{ margin-bottom:0; }
         .gr-lex-tip .close{ border:0; background:transparent; color:#cbd6ff; font-size:16px; line-height:1; cursor:pointer; padding:0 2px; }
         .gr-lex-tip .t2{ font-size: 12px; opacity: .9; }
@@ -58,8 +59,8 @@
     el.className = 'gr-lex-tip';
     el.setAttribute('role', 'dialog');
     el.setAttribute('aria-hidden', 'true');
-     el.innerHTML = '<div class="head"><div class="t1" id="gr-lex-word"></div><button type="button" class="close" aria-label="Cerrar">×</button></div><div id="gr-lex-content"></div>';
-
+     el.innerHTML = '<div class="head"><span class="drag-handle" title="Arrastrar" aria-label="Arrastrar">↕ mover</span><div class="t1" id="gr-lex-word"></div><button type="button" class="close" aria-label="Cerrar">×</button></div><div id="gr-lex-content"></div>';
+     
     // Cierra al click afuera
     document.addEventListener('mousedown', (ev) => {
       if (!el || el.style.display === 'none') return;
@@ -103,10 +104,10 @@ const onPointerMove = (ev) => {
       ev.preventDefault();
  };
 
-    const head = el.querySelector('.head');
-    head?.addEventListener('pointerdown', beginDrag);
+   
+const handle = el.querySelector('.drag-handle');
+    handle?.addEventListener('pointerdown', beginDrag);
     el.querySelector('.close')?.addEventListener('click', hideTip, false);
-
     document.body.appendChild(el);
     state.tipEl = el;
     return el;
