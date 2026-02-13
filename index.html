@@ -474,11 +474,24 @@
       .orig-text{ font-size:1.08rem; }
     }
 
-    @media (min-width: 1921px){
+    @media (min-width: 1921px) and (max-width: 2499px){
       .sitewrap{ max-width: 1720px; }
       .passage-text,
       .orig-text{ font-size:1.14rem; line-height:1.95; }
       .topbar .btn{ font-size: .98rem; }
+    }
+    @media (min-width: 2500px){
+      .sitewrap{ max-width: 2100px; }
+      .topbar .btn,
+      .topbar .form-control,
+      .topbar .form-select{ font-size: 1.05rem; }
+      .passage-title{ font-size: 1.5rem; }
+      .panel-header{ padding: .9rem 1.2rem; font-size: 1.08rem; }
+      .panel-body{ padding: 1.25rem; }
+      .passage-text,
+      .orig-text{ font-size:1.2rem; line-height:2.05; }
+      .parallel{ gap:1.5rem; }
+      .parallel-col{ min-width: 440px; }
     }
   </style>
 
