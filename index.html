@@ -66,6 +66,28 @@
       position:sticky; top:0; z-index:1000;
     }
     .sitewrap{ max-width: 1200px; }
+    .site-brand{
+      width:120px;
+      flex:0 0 auto;
+    }
+    .site-brand img{
+      display:block;
+      width:100%;
+      height:auto;
+      max-height:34px;
+      object-fit:contain;
+    }
+    #searchForm{
+      margin-left:.35rem;
+    }
+    @media (max-width: 576px){
+      .site-brand{
+        width:96px;
+      }
+      #searchForm{
+        margin-left:0;
+      }
+    }
     .panel{
       background:var(--surface);
       border:1px solid var(--bd);
@@ -439,7 +461,9 @@
     <div class="container sitewrap py-2">
       <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-2 gap-lg-3">
         <div class="d-flex align-items-center gap-2 flex-grow-1">
-          <span class="badge text-bg-dark rounded-pill">Lector</span>
+          <div class="site-brand" aria-label="Lector">
+            <img src="logo.png" alt="Lector"/>
+          </div>
           <form id="searchForm" class="d-flex gap-2 flex-grow-1">
             <input id="searchInput" class="form-control" value="1 Corintios 13:1-7" placeholder="Buscar: ej. 1 Corintios 13 / 1Co 13:1-7"/>
             <select id="versionSelect" class="form-select" style="max-width:180px">
