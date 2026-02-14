@@ -676,11 +676,30 @@ async function ensureBookLoaded(slug, displayName){
 
     try{
       if(!heBookCache[slug]){
-        const path = `${HEBREO_BOOK_BASE}${slug}.json`;
-        const heBook = await loadJson(path);
+        const hebrewFileCandidates = [
+          `${HEBREO_BOOK_BASE}${slug}.json`,
+          `${HEBREO_BOOK_BASE}${slug.replaceAll('_',' ')}.json`
+        ];
+
+        let heBook = null;
+        let loadedPath = hebrewFileCandidates[0];
+        let lastErr = null;
+        for(const candidate of hebrewFileCandidates){
+          try{
+            heBook = await loadJson(candidate);
+            loadedPath = candidate;
+            break;
+          }catch(err){
+            lastErr = err;
+          }
+        }
+
+        if(!heBook){
+          throw lastErr || new Error('No se pudo cargar el archivo hebreo.');
+        } 
 
         if(!heBook || !Array.isArray(heBook.text)){
-          throw new Error(`Estructura hebrea inválida en ${path}: falta "text" como array (chapters[][]).`);
+           throw new Error(`Estructura hebrea inválida en ${loadedPath}: falta "text" como array (chapters[][]).`);
         }
 
         // Normaliza a strings (por si hay nulls)
