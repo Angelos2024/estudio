@@ -1,5 +1,6 @@
 // comentarios/comentarios.js
 (function(){
+    const chapterCommentsCache = new Map();
   async function ensureCommentsUI(){
     if (document.getElementById('cm-template')) return;
 
@@ -53,13 +54,20 @@ function getCommentSlugCandidates(bookSlug){
     }
   }
 async function loadChapterComments(bookSlug, chapter){
+   const cacheKey = `${bookSlug}:${chapter}`;
+    if (chapterCommentsCache.has(cacheKey)) {
+      return chapterCommentsCache.get(cacheKey);
+    }
     const slugCandidates = getCommentSlugCandidates(bookSlug);
 
     for (const slug of slugCandidates) {
       const comments = await fetchCommentsBySlug(slug, chapter);
-      if (comments) return comments;
+      if (comments) {
+        chapterCommentsCache.set(cacheKey, comments);
+        return comments;
+      }
     }
-
+    chapterCommentsCache.set(cacheKey, null);
     return null;
   }
   async function attachCommentsToRV(containerEl, bookSlug, chapter){
