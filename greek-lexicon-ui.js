@@ -165,7 +165,7 @@ const header = el.querySelector('.head');
   }
 
   const LXX_FILES = [
-    'lxx_rahlfs_1935_1Chr',
+    'lxx_rahlfs_1935_1Chr.json',
     'lxx_rahlfs_1935_1Esdr.json',
     'lxx_rahlfs_1935_1Kgs.json',
     'lxx_rahlfs_1935_1Macc.json',
