@@ -439,6 +439,8 @@ function slugToAbbr(slug) {
       ' border:1px solid rgba(255,255,255,0.10); border-radius:14px;' +
       ' box-shadow:0 20px 50px rgba(0,0,0,0.35); padding:12px; color:#e9eefc; display:none; }' +
       '.gk-lex-popup .t1{ font-weight:700; font-size:14px; margin-bottom:6px; padding-right:18px; }' +
+       '.gk-lex-popup .head{ display:flex; align-items:center; justify-content:space-between; gap:8px; cursor:move; user-select:none; }' +
+      '.gk-lex-popup .head .t1{ margin-bottom:0; flex:1; }' +
       '.gk-lex-popup .t2{ font-size:13px; opacity:.92; line-height:1.35; }' +
       '.gk-lex-popup .row{ margin-top:6px; }' +
       '.gk-lex-popup .lab{ opacity:.7; margin-right:6px; }' +
@@ -455,8 +457,7 @@ function slugToAbbr(slug) {
     box.id = 'gk-lex-popup';
     box.className = 'gk-lex-popup';
     box.innerHTML =
-      '<button class="close" aria-label="Cerrar">×</button>' +
-      '<div class="t1" id="gk-lex-g"></div>' +
+      '<div class="head"><div class="t1" id="gk-lex-g"></div><button class="close" aria-label="Cerrar" type="button">×</button></div>' +
       '<div class="t2"><span class="lab">Lemma:</span><span id="gk-lex-lemma"></span></div>' +
       '<div class="t2 row"><span class="lab">Forma léxica:</span><span id="gk-lex-forma-lex"></span></div>' +
       '<div class="t2 row"><span class="lab">Entrada impresa:</span><span id="gk-lex-entrada"></span></div>' +
@@ -491,7 +492,7 @@ function slugToAbbr(slug) {
       document.removeEventListener('pointercancel', stopDrag, true);
     };
 
-    box.addEventListener('pointerdown', function (ev) {
+    box.querySelector('.head').addEventListener('pointerdown', function (ev) {
       if (ev.button !== 0) return;
       if (ev.target && ev.target.closest && ev.target.closest('.close')) return;
       var r = box.getBoundingClientRect();
