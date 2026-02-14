@@ -47,8 +47,7 @@
         }
         .gr-lex-tip{ cursor: default; }
         .gr-lex-tip .t1{ font-size: 14px; font-weight: 700; margin-bottom: 4px; }
-        .gr-lex-tip .head{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:4px; cursor:move; user-select:none; touch-action:none; }
-        .gr-lex-tip .head *{ cursor:move; }
+        .gr-lex-tip .head{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:4px; cursor:move; user-select:none; }
         .gr-lex-tip .head .t1{ margin-bottom:0; }
         .gr-lex-tip .close{ border:0; background:transparent; color:#cbd6ff; font-size:16px; line-height:1; cursor:pointer; padding:0 2px; }
         .gr-lex-tip .t2{ font-size: 12px; opacity: .9; }
@@ -75,10 +74,9 @@
     document.addEventListener('keydown', (ev) => {
       if (ev.key === 'Escape') hideTip();
     });
-const onPointerMove = (ev) => {
+      const onPointerMove = (ev) => {
       const drag = state.tipDrag;
       if (!drag) return;
-         if (typeof drag.pointerId === 'number' && ev.pointerId !== drag.pointerId) return;
       const box = state.tipEl;
       if (!box) return;
       const pad = 10;
@@ -89,10 +87,8 @@ const onPointerMove = (ev) => {
       box.style.left = `${Math.round(nx)}px`;
       box.style.top = `${Math.round(ny)}px`;
     };
-
-    const stopDrag = (ev) => {
-        if (ev && state.tipDrag && typeof state.tipDrag.pointerId === 'number' && ev.pointerId !== state.tipDrag.pointerId) return;
-       state.tipDrag = null;
+const stopDrag = () => {
+      state.tipDrag = null;
       document.removeEventListener('pointermove', onPointerMove, true);
       document.removeEventListener('pointerup', stopDrag, true);
       document.removeEventListener('pointercancel', stopDrag, true);
@@ -102,21 +98,16 @@ const onPointerMove = (ev) => {
       if (ev.button !== 0) return;
       if (ev.target?.closest?.('.close')) return;
       const r = el.getBoundingClientRect();
- state.tipDrag = {
-        pointerId: ev.pointerId,
-        offsetX: ev.clientX - r.left,
-        offsetY: ev.clientY - r.top
-      };
-       document.addEventListener('pointermove', onPointerMove, true);
+  state.tipDrag = { offsetX: ev.clientX - r.left, offsetY: ev.clientY - r.top };
+      document.addEventListener('pointermove', onPointerMove, true);
       document.addEventListener('pointerup', stopDrag, true);
       document.addEventListener('pointercancel', stopDrag, true);
       ev.preventDefault();
- };
+     };
 
    
 const header = el.querySelector('.head');
     header?.addEventListener('pointerdown', beginDrag);
-    el.querySelector('#gr-lex-content')?.addEventListener('pointerdown', stopDrag, true);
     el.querySelector('.close')?.addEventListener('click', hideTip, false);
     document.body.appendChild(el);
     state.tipEl = el;
