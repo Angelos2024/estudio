@@ -62,7 +62,7 @@
     apocalipsis: 're', re: 're'
   };
 var LXX_FILES = [
-    'lxx_rahlfs_1935_1Chr',
+    'lxx_rahlfs_1935_1Chr.json',
     'lxx_rahlfs_1935_1Esdr.json',
     'lxx_rahlfs_1935_1Kgs.json',
     'lxx_rahlfs_1935_1Macc.json',
@@ -228,6 +228,9 @@ function slugToAbbr(slug) {
     max = max || 4;
     var normalized = normalizeGreekLemmaKey(lemma);
     if (!normalized) return Promise.resolve([]);
+     if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+      return Promise.resolve([]);
+    }
     if (lxxCache.has(normalized)) return Promise.resolve(lxxCache.get(normalized));
 
     var results = [];
