@@ -19,6 +19,7 @@
       lxxCache: new Map(), // normalizedLemma -> [{ ref, word, lemma, morph }]
     tipEl: null,
     tipDrag: null,
+    tipRequestId: 0,
   };
 
   function ensureTip() {
@@ -33,6 +34,8 @@
           position: fixed;
           z-index: 9999;
           max-width: min(420px, calc(100vw - 24px));
+           max-height: calc(100vh - 24px);
+          overflow: auto;
           background: rgba(0,0,0,.96);
           border: 1px solid rgba(255,255,255,.12);
           border-radius: 12px;
@@ -42,8 +45,10 @@
           font: 13px/1.35 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
           display:none;
         }
+        .gr-lex-tip{ cursor: default; }
         .gr-lex-tip .t1{ font-size: 14px; font-weight: 700; margin-bottom: 4px; }
         .gr-lex-tip .head{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:4px; cursor:move; user-select:none; touch-action:none; }
+        .gr-lex-tip .head *{ cursor:move; }
         .gr-lex-tip .head .t1{ margin-bottom:0; }
         .gr-lex-tip .close{ border:0; background:transparent; color:#cbd6ff; font-size:16px; line-height:1; cursor:pointer; padding:0 2px; }
         .gr-lex-tip .t2{ font-size: 12px; opacity: .9; }
@@ -403,6 +408,7 @@ const header = el.querySelector('.head');
     if (!norm) return;
 
     const hit = state.bySurface.get(norm);
+         const requestId = ++state.tipRequestId;
     if (!hit) {
       showTip(
                norm,
@@ -427,8 +433,9 @@ const header = el.querySelector('.head');
       `,
       ev.clientX, ev.clientY
     );
-      const lxxSamples = await findLxxSamples(hit.lemma || norm, 4);
-    if (state.tipEl && state.tipEl.style.display !== 'none') {
+const lxxSamples = await findLxxSamples(hit.lemma || norm, 4);
+    if (requestId !== state.tipRequestId) return;
+     if (state.tipEl && state.tipEl.style.display !== 'none') {
      const bodyEl = state.tipEl.querySelector('#gr-lex-content');
       if (bodyEl) bodyEl.innerHTML = `
         <div class="t2"><b>Lema:</b> ${escapeHtml(hit.lemma || '—')} &nbsp; <span class="muted">|</span> &nbsp; <b>Translit.:</b> ${escapeHtml(hit.tr || '—')}</div>
