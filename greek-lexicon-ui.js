@@ -20,6 +20,7 @@
     tipEl: null,
     tipDrag: null,
     tipRequestId: 0,
+    tipStopDrag: null,
   };
 
   function ensureTip() {
@@ -114,10 +115,11 @@
       document.removeEventListener('pointerup', stopDrag, true);
       document.removeEventListener('pointercancel', stopDrag, true);
     };
-
+    state.tipStopDrag = stopDrag;
     const beginDrag = (ev) => {
       if (ev.button !== 0) return;
       if (ev.target?.closest?.('.close')) return;
+             stopDrag();
       const r = el.getBoundingClientRect();
              state.tipDrag = {
         offsetX: ev.clientX - r.left,
@@ -167,6 +169,7 @@
   }
 
   function hideTip() {
+   state.tipStopDrag?.();
     const el = state.tipEl;
     if (!el) return;
     el.style.display = 'none';
