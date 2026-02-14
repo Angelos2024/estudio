@@ -47,13 +47,12 @@
         }
         .gr-lex-tip{ cursor: default; }
         .gr-lex-tip .t1{ font-size: 14px; font-weight: 700; margin-bottom: 4px; }
-        .gr-lex-tip .head{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:4px; cursor:move; user-select:none; }
-        .gr-lex-tip .head .t1{ margin-bottom:0; }
+        .gr-lex-tip .head{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:4px; cursor:move; user-select:none; -webkit-user-select:none; touch-action:none; }        .gr-lex-tip .head .t1{ margin-bottom:0; }
         .gr-lex-tip .close{ border:0; background:transparent; color:#cbd6ff; font-size:16px; line-height:1; cursor:pointer; padding:0 2px; }
         .gr-lex-tip .t2{ font-size: 12px; opacity: .9; }
         .gr-lex-tip .t3{ margin-top: 6px; font-size: 12px; opacity: .95; }
         .gr-lex-tip .muted{ opacity: .7; }
-       .gr-lex-tip #gr-lex-content{ cursor:text; user-select:text; }
+       .gr-lex-tip #gr-lex-content{ cursor:text; user-select:text; -webkit-user-select:text; touch-action: pan-y; }
        `;
       document.head.appendChild(st);
     }
@@ -87,8 +86,9 @@
       box.style.left = `${Math.round(nx)}px`;
       box.style.top = `${Math.round(ny)}px`;
     };
-const stopDrag = () => {
-      state.tipDrag = null;
+const stopDrag = (ev) => {
+   state.tipDrag = null;
+      try { state.tipEl?.releasePointerCapture?.(ev.pointerId); } catch(e) {}
       document.removeEventListener('pointermove', onPointerMove, true);
       document.removeEventListener('pointerup', stopDrag, true);
       document.removeEventListener('pointercancel', stopDrag, true);
@@ -99,6 +99,7 @@ const stopDrag = () => {
       if (ev.target?.closest?.('.close')) return;
       const r = el.getBoundingClientRect();
   state.tipDrag = { offsetX: ev.clientX - r.left, offsetY: ev.clientY - r.top };
+             try { el.setPointerCapture(ev.pointerId); } catch(e) {}
       document.addEventListener('pointermove', onPointerMove, true);
       document.addEventListener('pointerup', stopDrag, true);
       document.addEventListener('pointercancel', stopDrag, true);
