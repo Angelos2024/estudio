@@ -258,7 +258,24 @@ function cleanPrintedEntry(value) {
   function getHebrewDefinition(entry) {
     return entry?.definitions?.short || entry?.strong_detail?.definicion || entry?.descripcion || '—';
   }
+function getDisplayedHebrewDefinition(entry, clickedWord = '') {
+    const fullDefinition = getHebrewDefinition(entry);
+    const clickedContext = resolveClickedFormContext(entry, clickedWord);
+    const formGloss = String(clickedContext?.gloss || '').trim();
+    if (!formGloss) return fullDefinition;
 
+    if (!fullDefinition || fullDefinition === '—') {
+      return `Glosa de forma: ${formGloss}`;
+    }
+
+    const normalizedFull = fullDefinition.toLowerCase();
+    const normalizedGloss = formGloss.toLowerCase();
+    if (normalizedFull.includes(normalizedGloss)) {
+      return fullDefinition;
+    }
+
+    return `${fullDefinition}\n\nGlosa de forma: ${formGloss}`;
+  }
 
   function getHebrewForms(entry) {
     return uniqueList([entry?.forma, ...(entry?.forms || []), ...(entry?.formas || []), ...(entry?.variantes || [])]);
@@ -959,9 +976,7 @@ function isLikelyVerbEntry(entry) {
       const printedEntry = getHebrewPrintedEntry(entry);
         if (printedEl) printedEl.textContent = printedEntry || '—';
         if (printedRowEl) printedRowEl.style.display = printedEntry ? '' : 'none';
-        const clickedContext = resolveClickedFormContext(entry, word);
-        const contextualDefinition = clickedContext?.gloss || getHebrewDefinition(entry);
-        if (descEl) descEl.textContent = contextualDefinition;
+       if (descEl) descEl.textContent = getDisplayedHebrewDefinition(entry, word);
         if (variantsEl) variantsEl.textContent = getHebrewForms(entry).join(', ') || '—';
          currentLxxData = formatHebrewLxx(getHebrewLxx(entry));
         if (lxxEl) lxxEl.textContent = currentLxxData;
