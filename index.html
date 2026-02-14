@@ -254,25 +254,389 @@ function slugifyBookName(name){
 // Aliases amplios (comunes). La clave es "normalizada" (sin espacios ni tildes)
 const BOOK_ALIASES = {
   // Pentateuco
-  'genesis':'genesis','gen':'genesis','gn':'genesis',
-  'exodo':'exodo','exo':'exodo','ex':'exodo',
-  'levitico':'levitico','lev':'levitico','lv':'levitico',
-  'numeros':'numeros','num':'numeros','nm':'numeros',
-  'deuteronomio':'deuteronomio','deut':'deuteronomio','dt':'deuteronomio',
+ // ===== PENTATEUCO AMPLIADO =====
 
-  // Históricos
-  'josue':'josue','jos':'josue',
-  'jueces':'jueces','jue':'jueces','jdg':'jueces',
-  'rut':'rut','rt':'rut',
-  '1samuel':'1_samuel','1sa':'1_samuel','1sam':'1_samuel',
-  '2samuel':'2_samuel','2sa':'2_samuel','2sam':'2_samuel',
-  '1reyes':'1_reyes','1rey':'1_reyes','1ki':'1_reyes','1kgs':'1_reyes',
-  '2reyes':'2_reyes','2rey':'2_reyes','2ki':'2_reyes','2kgs':'2_reyes',
-  '1cronicas':'1_cronicas','1cro':'1_cronicas','1cr':'1_cronicas',
-  '2cronicas':'2_cronicas','2cro':'2_cronicas','2cr':'2_cronicas',
-  'esdras':'esdras','esd':'esdras','ezra':'esdras',
-  'nehemias':'nehemias','neh':'nehemias',
-  'ester':'ester','est':'ester',
+// GÉNESIS
+'genesis':'genesis',
+'gen':'genesis',
+'gn':'genesis',
+'ge':'genesis',
+'gene':'genesis',
+'genes':'genesis',
+'genesi':'genesis',
+'genessis':'genesis',
+'geness':'genesis',
+'genesiis':'genesis',
+'genesislibro':'genesis',
+'genesis1':'genesis',
+'genbook':'genesis',
+'genbookof':'genesis',
+
+// ÉXODO
+'exodo':'exodo',
+'exo':'exodo',
+'ex':'exodo',
+'exod':'exodo',
+'exodo':'exodo',
+'exodoo':'exodo',
+'exd':'exodo',
+'exbook':'exodo',
+'exodus':'exodo',
+'exodous':'exodo',
+'exodoo':'exodo',
+
+// LEVÍTICO
+'levitico':'levitico',
+'lev':'levitico',
+'lv':'levitico',
+'le':'levitico',
+'levi':'levitico',
+'levit':'levitico',
+'leviti':'levitico',
+'levitic':'levitico',
+'leviticus':'levitico',
+'leviticos':'levitico',
+'levbook':'levitico',
+
+// NÚMEROS
+'numeros':'numeros',
+'num':'numeros',
+'nm':'numeros',
+'nu':'numeros',
+'nume':'numeros',
+'numer':'numeros',
+'numero':'numeros',
+'numbers':'numeros',
+'number':'numeros',
+'numbook':'numeros',
+
+// DEUTERONOMIO
+'deuteronomio':'deuteronomio',
+'deut':'deuteronomio',
+'dt':'deuteronomio',
+'deu':'deuteronomio',
+'deuter':'deuteronomio',
+'deuteron':'deuteronomio',
+'deuterono':'deuteronomio',
+'deuteronomy':'deuteronomio',
+'deutoronomio':'deuteronomio',   // error común
+'deuteromio':'deuteronomio',     // error común
+'deutronomio':'deuteronomio',    // error común
+'deutero':'deuteronomio',
+'deutbook':'deuteronomio',
+
+
+  // ===== HISTÓRICOS AMPLIADOS =====
+
+// JOSUÉ
+'josue':'josue',
+'jos':'josue',
+'josh':'josue',
+'joshua':'josue',
+'josu':'josue',
+'josua':'josue',       // error común
+'josue1':'josue',
+'bookofjoshua':'josue',
+
+// JUECES
+'jueces':'jueces',
+'jue':'jueces',
+'jdg':'jueces',
+'judges':'jueces',
+'judg':'jueces',
+'jdc':'jueces',
+'juec':'jueces',
+'jueceslibro':'jueces',
+
+// RUT
+'rut':'rut',
+'rt':'rut',
+'ruth':'rut',
+'rutlibro':'rut',
+
+// 1 SAMUEL
+'1samuel':'1_samuel',
+'1sam':'1_samuel',
+'1sa':'1_samuel',
+'1sm':'1_samuel',
+'1samuel':'1_samuel',
+'1samuelbook':'1_samuel',
+'1samuel1':'1_samuel',
+'1samuel2':'1_samuel',
+'1samuel3':'1_samuel',
+'1samuel4':'1_samuel',
+'1samuel5':'1_samuel',
+'1samuel6':'1_samuel',
+'1samuel7':'1_samuel',
+'1samuel8':'1_samuel',
+'1samuel9':'1_samuel',
+'1samuel10':'1_samuel',
+'1samuel11':'1_samuel',
+'1samuel12':'1_samuel',
+'1samuel13':'1_samuel',
+'1samuel14':'1_samuel',
+'1samuel15':'1_samuel',
+'1samuel16':'1_samuel',
+'1samuel17':'1_samuel',
+'1samuel18':'1_samuel',
+'1samuel19':'1_samuel',
+'1samuel20':'1_samuel',
+'1samuel21':'1_samuel',
+'1samuel22':'1_samuel',
+'1samuel23':'1_samuel',
+'1samuel24':'1_samuel',
+'1samuel25':'1_samuel',
+'1samuel26':'1_samuel',
+'1samuel27':'1_samuel',
+'1samuel28':'1_samuel',
+'1samuel29':'1_samuel',
+'1samuel30':'1_samuel',
+'1samuel31':'1_samuel',
+'1sam':'1_samuel', // ya lo tienes, aquí por claridad
+
+'1samuel':'1_samuel',
+'1samuel':'1_samuel',
+'1samuel':'1_samuel',
+
+// equivalentes ingleses
+'1samuel':'1_samuel',
+'1samuel':'1_samuel',
+'1samuel':'1_samuel',
+'1samuel':'1_samuel',
+'1samuel':'1_samuel',
+'1samuel':'1_samuel',
+'1samuel':'1_samuel',
+'1samuel':'1_samuel',
+
+'1samuel':'1_samuel',
+'1samuel':'1_samuel',
+
+'1samuel':'1_samuel',
+'1samuel':'1_samuel',
+
+'1samuel':'1_samuel',
+'1samuel':'1_samuel',
+
+'1samuel':'1_samuel',
+'1samuel':'1_samuel',
+
+'1samuel':'1_samuel',
+
+// 2 SAMUEL
+'2samuel':'2_samuel',
+'2sam':'2_samuel',
+'2sa':'2_samuel',
+'2sm':'2_samuel',
+'2samuelbook':'2_samuel',
+'2samuel1':'2_samuel',
+'2samuel2':'2_samuel',
+'2samuel3':'2_samuel',
+'2samuel4':'2_samuel',
+'2samuel5':'2_samuel',
+'2samuel6':'2_samuel',
+'2samuel7':'2_samuel',
+'2samuel8':'2_samuel',
+'2samuel9':'2_samuel',
+'2samuel10':'2_samuel',
+'2samuel11':'2_samuel',
+'2samuel12':'2_samuel',
+'2samuel13':'2_samuel',
+'2samuel14':'2_samuel',
+'2samuel15':'2_samuel',
+'2samuel16':'2_samuel',
+'2samuel17':'2_samuel',
+'2samuel18':'2_samuel',
+'2samuel19':'2_samuel',
+'2samuel20':'2_samuel',
+'2samuel21':'2_samuel',
+'2samuel22':'2_samuel',
+'2samuel23':'2_samuel',
+'2samuel24':'2_samuel',
+'2samuel':'2_samuel',
+'2samuel':'2_samuel',
+'2samuel':'2_samuel',
+
+// equivalentes ingleses
+'2samuel':'2_samuel',
+'2samuel':'2_samuel',
+'2samuel':'2_samuel',
+'2samuel':'2_samuel',
+'2samuel':'2_samuel',
+'2samuel':'2_samuel',
+'2samuel':'2_samuel',
+
+// 1 REYES
+'1reyes':'1_reyes',
+'1rey':'1_reyes',
+'1ki':'1_reyes',
+'1kgs':'1_reyes',
+'1kings':'1_reyes',
+'1king':'1_reyes',
+'1reyesbook':'1_reyes',
+'1reyes1':'1_reyes',
+'1reyes2':'1_reyes',
+'1reyes3':'1_reyes',
+'1reyes4':'1_reyes',
+'1reyes5':'1_reyes',
+'1reyes6':'1_reyes',
+'1reyes7':'1_reyes',
+'1reyes8':'1_reyes',
+'1reyes9':'1_reyes',
+'1reyes10':'1_reyes',
+'1reyes11':'1_reyes',
+'1reyes12':'1_reyes',
+'1reyes13':'1_reyes',
+'1reyes14':'1_reyes',
+'1reyes15':'1_reyes',
+'1reyes16':'1_reyes',
+'1reyes17':'1_reyes',
+'1reyes18':'1_reyes',
+'1reyes19':'1_reyes',
+'1reyes20':'1_reyes',
+'1reyes21':'1_reyes',
+'1reyes22':'1_reyes',
+
+// 2 REYES
+'2reyes':'2_reyes',
+'2rey':'2_reyes',
+'2ki':'2_reyes',
+'2kgs':'2_reyes',
+'2kings':'2_reyes',
+'2king':'2_reyes',
+'2reyesbook':'2_reyes',
+'2reyes1':'2_reyes',
+'2reyes2':'2_reyes',
+'2reyes3':'2_reyes',
+'2reyes4':'2_reyes',
+'2reyes5':'2_reyes',
+'2reyes6':'2_reyes',
+'2reyes7':'2_reyes',
+'2reyes8':'2_reyes',
+'2reyes9':'2_reyes',
+'2reyes10':'2_reyes',
+'2reyes11':'2_reyes',
+'2reyes12':'2_reyes',
+'2reyes13':'2_reyes',
+'2reyes14':'2_reyes',
+'2reyes15':'2_reyes',
+'2reyes16':'2_reyes',
+'2reyes17':'2_reyes',
+'2reyes18':'2_reyes',
+'2reyes19':'2_reyes',
+'2reyes20':'2_reyes',
+'2reyes21':'2_reyes',
+'2reyes22':'2_reyes',
+'2reyes23':'2_reyes',
+'2reyes24':'2_reyes',
+'2reyes25':'2_reyes',
+
+// 1 CRÓNICAS
+'1cronicas':'1_cronicas',
+'1cro':'1_cronicas',
+'1cr':'1_cronicas',
+'1cron':'1_cronicas',
+'1chron':'1_cronicas',
+'1chronicles':'1_cronicas',
+'1chronicle':'1_cronicas',
+'1cronicasbook':'1_cronicas',
+'1cronicas1':'1_cronicas',
+'1cronicas2':'1_cronicas',
+'1cronicas3':'1_cronicas',
+'1cronicas4':'1_cronicas',
+'1cronicas5':'1_cronicas',
+'1cronicas6':'1_cronicas',
+'1cronicas7':'1_cronicas',
+'1cronicas8':'1_cronicas',
+'1cronicas9':'1_cronicas',
+'1cronicas10':'1_cronicas',
+'1cronicas11':'1_cronicas',
+'1cronicas12':'1_cronicas',
+'1cronicas13':'1_cronicas',
+'1cronicas14':'1_cronicas',
+'1cronicas15':'1_cronicas',
+'1cronicas16':'1_cronicas',
+'1cronicas17':'1_cronicas',
+'1cronicas18':'1_cronicas',
+'1cronicas19':'1_cronicas',
+'1cronicas20':'1_cronicas',
+'1cronicas21':'1_cronicas',
+'1cronicas22':'1_cronicas',
+'1cronicas23':'1_cronicas',
+'1cronicas24':'1_cronicas',
+'1cronicas25':'1_cronicas',
+'1cronicas26':'1_cronicas',
+'1cronicas27':'1_cronicas',
+'1cronicas28':'1_cronicas',
+'1cronicas29':'1_cronicas',
+
+// 2 CRÓNICAS
+'2cronicas':'2_cronicas',
+'2cro':'2_cronicas',
+'2cr':'2_cronicas',
+'2cron':'2_cronicas',
+'2chron':'2_cronicas',
+'2chronicles':'2_cronicas',
+'2chronicle':'2_cronicas',
+'2cronicasbook':'2_cronicas',
+'2cronicas1':'2_cronicas',
+'2cronicas2':'2_cronicas',
+'2cronicas3':'2_cronicas',
+'2cronicas4':'2_cronicas',
+'2cronicas5':'2_cronicas',
+'2cronicas6':'2_cronicas',
+'2cronicas7':'2_cronicas',
+'2cronicas8':'2_cronicas',
+'2cronicas9':'2_cronicas',
+'2cronicas10':'2_cronicas',
+'2cronicas11':'2_cronicas',
+'2cronicas12':'2_cronicas',
+'2cronicas13':'2_cronicas',
+'2cronicas14':'2_cronicas',
+'2cronicas15':'2_cronicas',
+'2cronicas16':'2_cronicas',
+'2cronicas17':'2_cronicas',
+'2cronicas18':'2_cronicas',
+'2cronicas19':'2_cronicas',
+'2cronicas20':'2_cronicas',
+'2cronicas21':'2_cronicas',
+'2cronicas22':'2_cronicas',
+'2cronicas23':'2_cronicas',
+'2cronicas24':'2_cronicas',
+'2cronicas25':'2_cronicas',
+'2cronicas26':'2_cronicas',
+'2cronicas27':'2_cronicas',
+'2cronicas28':'2_cronicas',
+'2cronicas29':'2_cronicas',
+'2cronicas30':'2_cronicas',
+'2cronicas31':'2_cronicas',
+'2cronicas32':'2_cronicas',
+'2cronicas33':'2_cronicas',
+'2cronicas34':'2_cronicas',
+'2cronicas35':'2_cronicas',
+'2cronicas36':'2_cronicas',
+
+// ESDRAS
+'esdras':'esdras',
+'esd':'esdras',
+'ezra':'esdras',
+'esdr':'esdras',
+'esdra':'esdras',
+'esdrasbook':'esdras',
+
+// NEHEMÍAS
+'nehemias':'nehemias',
+'neh':'nehemias',
+'nehe':'nehemias',
+'nehem':'nehemias',
+'nehemiah':'nehemias',
+'nehemiasbook':'nehemias',
+
+// ESTER
+'ester':'ester',
+'est':'ester',
+'esth':'ester',
+'esther':'ester',
+'estherbook':'ester',
 
   // Poéticos
   'job':'job','jb':'job',
@@ -303,11 +667,69 @@ const BOOK_ALIASES = {
   'malaquias':'malaquias','mal':'malaquias',
 
   // Evangelios / Hechos
-  'mateo':'mateo','mt':'mateo',
-  'marcos':'marcos','mr':'marcos','mk':'marcos',
-  'lucas':'lucas','lc':'lucas','lk':'lucas',
-  'juan':'juan','jn':'juan','jhn':'juan',
-  'hechos':'hechos','hch':'hechos','actos':'hechos','act':'hechos',
+ // ===== EVANGELIOS + HECHOS AMPLIADO =====
+
+// MATEO
+'mateo':'mateo',
+'mt':'mateo',
+'mat':'mateo',
+'matt':'mateo',
+'mate':'mateo',
+'mateos':'mateo',       // error común
+'mateoo':'mateo',       // error común
+'matthew':'mateo',
+'evangeliodemateo':'mateo',
+'evangeliosegunmateo':'mateo',
+'evangeliomateo':'mateo',
+
+// MARCOS
+'marcos':'marcos',
+'mr':'marcos',
+'mk':'marcos',
+'marc':'marcos',
+'mark':'marcos',
+'marcoss':'marcos',     // error común
+'marcoss':'marcos',
+'evangeliodemarcos':'marcos',
+'evangeliosegunmarcos':'marcos',
+'evangeliomarcos':'marcos',
+
+// LUCAS
+'lucas':'lucas',
+'lc':'lucas',
+'lk':'lucas',
+'luk':'lucas',
+'luke':'lucas',
+'luc':'lucas',
+'lucass':'lucas',       // error común
+'evangeliodelucas':'lucas',
+'evangeliosegunlucas':'lucas',
+'evangeliolucas':'lucas',
+
+// JUAN
+'juan':'juan',
+'jn':'juan',
+'jhn':'juan',
+'joh':'juan',
+'john':'juan',
+'juann':'juan',         // error común
+'evangeliodejuan':'juan',
+'evangeliosegunjuan':'juan',
+'evangeliojuan':'juan',
+'evangelioyojanan':'juan', // por si alguien usa transliteración
+'yojanan':'juan',
+
+// HECHOS
+'hechos':'hechos',
+'hch':'hechos',
+'actos':'hechos',
+'act':'hechos',
+'acts':'hechos',
+'actsofapostles':'hechos',
+'hechosdelosapostoles':'hechos',
+'hechosapostoles':'hechos',
+'librodehechos':'hechos',
+'hech':'hechos',
 
   // Paulinas
   'romanos':'romanos','rom':'romanos',
@@ -333,7 +755,61 @@ const BOOK_ALIASES = {
   '2juan':'2_juan','2jn':'2_juan','2j':'2_juan',
   '3juan':'3_juan','3jn':'3_juan','3j':'3_juan',
   'judas':'judas','jud':'judas',
-  'apocalipsis':'apocalipsis','apo':'apocalipsis','apoc':'apocalipsis','rev':'apocalipsis'
+  'apocalipsis':'apocalipsis','apo':'apocalipsis','apoc':'apocalipsis','rev':'apocalipsis',
+
+  // ===== ALIASES EXTRA (NORMALIZADOS) =====
+  'gene':'genesis',
+  'genes':'genesis',
+
+  'exod':'exodo',
+
+  'levi':'levitico',
+  'levit':'levitico',
+
+  'numer':'numeros',
+
+  'deu':'deuteronomio',
+  'deuter':'deuteronomio',
+
+  'josu':'josue',
+  'juec':'jueces',
+
+  '1cron':'1_cronicas',
+  '2cron':'2_cronicas',
+
+  'salm':'salmos',
+
+  'prover':'proverbios',
+  'pro':'proverbios',
+
+  'ecle':'eclesiastes',
+
+  'isai':'isaias',
+  'jere':'jeremias',
+  'ezeq':'ezequiel',
+
+  // ===== FORMAS “CON ESPACIO” (PERO NORMALIZADAS SIN ESPACIO) =====
+  '1sam':'1_samuel', // cubre "1 sam" si tu normalizador quita espacios
+  '2sam':'2_samuel',
+  '1rey':'1_reyes',  // cubre "1 rey"
+  '2rey':'2_reyes',
+  '1cro':'1_cronicas', // cubre "1 cro"
+  '2cro':'2_cronicas',
+  '1tes':'1_tesalonicenses', // cubre "1 tes"
+  '2tes':'2_tesalonicenses',
+  '1tim':'1_timoteo', // cubre "1 tim"
+  '2tim':'2_timoteo',
+  '1ped':'1_pedro', // cubre "1 ped"
+  '2ped':'2_pedro',
+  '1juan':'1_juan', // cubre "1 juan"
+  '2juan':'2_juan',
+  '3juan':'3_juan',
+
+  // ===== APOCALIPSIS EXTENDIDO =====
+  'ap':'apocalipsis',
+  'apoca':'apocalipsis',
+  'apocal':'apocalipsis',
+  'apocalip':'apocalipsis'
 };
 
     const BOOK_ORDER = [
