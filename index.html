@@ -677,8 +677,8 @@ async function ensureBookLoaded(slug, displayName){
     try{
       if(!heBookCache[slug]){
         const hebrewFileCandidates = [
-          `${HEBREO_BOOK_BASE}${slug}.json`,
-          `${HEBREO_BOOK_BASE}${slug.replaceAll('_',' ')}.json`
+           `${HEBREO_BOOK_BASE}${slug.replaceAll('_',' ')}.json`,
+          `${HEBREO_BOOK_BASE}${slug}.json`
         ];
 
         let heBook = null;
