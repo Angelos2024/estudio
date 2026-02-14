@@ -99,6 +99,391 @@ function getNormalizedQuery(lang, q){
   if(lang === 'he') return normalizeHebrew(q);
   return normalizeLatin(q);
 }
+function normalizeReferenceQuery(s){
+  return (s || '')
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/(\d)([a-zñ])/gi, '$1 $2')
+    .replace(/([a-zñ])(\d)/gi, '$1 $2')
+    .replace(/[^\p{L}\p{N}:\s]/gu, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function buildBookAliasMap(){
+  const map = new Map();
+  const books = manifest?.langs?.es?.books || [];
+  for(const slug of books){
+    const canonical = normalizeLatin(slug.replaceAll('_', ' '));
+    if(canonical) map.set(canonical, slug);
+  }
+
+  const aliases = {
+    // ===== PENTATEUCO =====
+  'gen': 'genesis',
+  'gén': 'genesis',
+  'gene': 'genesis',
+  'génes': 'genesis',
+  'genesis': 'genesis',
+
+  'exo': 'exodo',
+  'éxo': 'exodo',
+  'exod': 'exodo',
+  'éxod': 'exodo',
+  'exodo': 'exodo',
+  'éxodo': 'exodo',
+
+  'lev': 'levitico',
+  'levi': 'levitico',
+  'levit': 'levitico',
+  'levitico': 'levitico',
+  'levítico': 'levitico',
+
+  'num': 'numeros',
+  'núm': 'numeros',
+  'numer': 'numeros',
+  'numeros': 'numeros',
+  'números': 'numeros',
+
+  'deut': 'deuteronomio',
+  'deu': 'deuteronomio',
+  'deuter': 'deuteronomio',
+  'deuteronomio': 'deuteronomio',
+
+  // ===== HISTÓRICOS =====
+  'jos': 'josue',
+  'josu': 'josue',
+  'josue': 'josue',
+  'josué': 'josue',
+
+  'jue': 'jueces',
+  'juec': 'jueces',
+  'jueces': 'jueces',
+
+  'rut': 'rut',
+
+  '1sam': '1_samuel',
+  '1 sam': '1_samuel',
+  '1sa': '1_samuel',
+  '1samuel': '1_samuel',
+
+  '2sam': '2_samuel',
+  '2 sam': '2_samuel',
+  '2sa': '2_samuel',
+  '2samuel': '2_samuel',
+
+  '1rey': '1_reyes',
+  '1 rey': '1_reyes',
+  '1re': '1_reyes',
+  '1reyes': '1_reyes',
+
+  '2rey': '2_reyes',
+  '2 rey': '2_reyes',
+  '2re': '2_reyes',
+  '2reyes': '2_reyes',
+
+  '1cro': '1_cronicas',
+  '1 cro': '1_cronicas',
+  '1cron': '1_cronicas',
+  '1cronicas': '1_cronicas',
+  '1crónicas': '1_cronicas',
+
+  '2cro': '2_cronicas',
+  '2 cro': '2_cronicas',
+  '2cron': '2_cronicas',
+  '2cronicas': '2_cronicas',
+  '2crónicas': '2_cronicas',
+
+  'esd': 'esdras',
+  'esdr': 'esdras',
+  'esdras': 'esdras',
+
+  'neh': 'nehemias',
+  'nehe': 'nehemias',
+  'nehemias': 'nehemias',
+  'nehemías': 'nehemias',
+
+  'est': 'ester',
+  'ester': 'ester',
+
+  // ===== POÉTICOS =====
+  'job': 'job',
+
+  'sal': 'salmos',
+  'salm': 'salmos',
+  'salmo': 'salmos',
+  'salmos': 'salmos',
+
+  'prov': 'proverbios',
+  'pro': 'proverbios',
+  'prover': 'proverbios',
+  'proverbios': 'proverbios',
+
+  'ecl': 'eclesiastes',
+  'ecle': 'eclesiastes',
+  'eclesiastes': 'eclesiastes',
+  'eclesiastés': 'eclesiastes',
+
+  'cant': 'cantares',
+  'cantar': 'cantares',
+  'cantares': 'cantares',
+
+  // ===== PROFETAS =====
+  'isa': 'isaias',
+  'isai': 'isaias',
+  'isaias': 'isaias',
+  'isaías': 'isaias',
+
+  'jer': 'jeremias',
+  'jere': 'jeremias',
+  'jeremias': 'jeremias',
+  'jeremías': 'jeremias',
+
+  'lam': 'lamentaciones',
+  'lament': 'lamentaciones',
+  'lamentaciones': 'lamentaciones',
+
+  'eze': 'ezequiel',
+  'ezeq': 'ezequiel',
+  'ezequiel': 'ezequiel',
+
+  'dan': 'daniel',
+  'daniel': 'daniel',
+
+  'ose': 'oseas',
+  'oseas': 'oseas',
+
+  'joe': 'joel',
+  'joel': 'joel',
+
+  'amo': 'amos',
+  'amós': 'amos',
+  'amos': 'amos',
+
+  'abd': 'abdias',
+  'abdias': 'abdias',
+  'abdías': 'abdias',
+
+  'jon': 'jonas',
+  'jonas': 'jonas',
+  'jonás': 'jonas',
+
+  'miq': 'miqueas',
+  'miqueas': 'miqueas',
+
+  'nah': 'nahum',
+  'nahum': 'nahum',
+
+  'hab': 'habacuc',
+  'habacuc': 'habacuc',
+
+  'sof': 'sofonias',
+  'sofonias': 'sofonias',
+  'sofonías': 'sofonias',
+
+  'hag': 'hageo',
+  'hageo': 'hageo',
+
+  'zac': 'zacarias',
+  'zacarias': 'zacarias',
+  'zacarías': 'zacarias',
+
+  'mal': 'malaquias',
+  'malaquias': 'malaquias',
+  'malaquías': 'malaquias',
+
+  // ===== EVANGELIOS =====
+  'mat': 'mateo',
+  'mate': 'mateo',
+  'mateo': 'mateo',
+
+  'mar': 'marcos',
+  'marc': 'marcos',
+  'marcos': 'marcos',
+
+  'luc': 'lucas',
+  'luca': 'lucas',
+  'lucas': 'lucas',
+
+  'juan': 'juan',
+  'jn': 'juan',
+
+  // ===== HECHOS =====
+  'hech': 'hechos',
+  'hechos': 'hechos',
+
+  // ===== CARTAS =====
+  'rom': 'romanos',
+  'romanos': 'romanos',
+
+  '1cor': '1_corintios',
+  '1 cor': '1_corintios',
+  '1corintios': '1_corintios',
+
+  '2cor': '2_corintios',
+  '2 cor': '2_corintios',
+  '2corintios': '2_corintios',
+
+  'gal': 'galatas',
+  'galatas': 'galatas',
+  'gálatas': 'galatas',
+
+  'efe': 'efesios',
+  'efesios': 'efesios',
+
+  'fil': 'filipenses',
+  'filipenses': 'filipenses',
+
+  'col': 'colosenses',
+  'colosenses': 'colosenses',
+
+  '1tes': '1_tesalonicenses',
+  '1 tes': '1_tesalonicenses',
+  '1tesalonicenses': '1_tesalonicenses',
+
+  '2tes': '2_tesalonicenses',
+  '2 tes': '2_tesalonicenses',
+  '2tesalonicenses': '2_tesalonicenses',
+
+  '1tim': '1_timoteo',
+  '1 tim': '1_timoteo',
+  '1timoteo': '1_timoteo',
+
+  '2tim': '2_timoteo',
+  '2 tim': '2_timoteo',
+  '2timoteo': '2_timoteo',
+
+  'tit': 'tito',
+  'tito': 'tito',
+
+  'file': 'filemon',
+  'filemon': 'filemon',
+
+  'heb': 'hebreos',
+  'hebreos': 'hebreos',
+
+  'stg': 'santiago',
+  'sant': 'santiago',
+  'santiago': 'santiago',
+
+  '1ped': '1_pedro',
+  '1 ped': '1_pedro',
+  '1pedro': '1_pedro',
+
+  '2ped': '2_pedro',
+  '2 ped': '2_pedro',
+  '2pedro': '2_pedro',
+
+  '1juan': '1_juan',
+  '1 juan': '1_juan',
+  '1jn': '1_juan',
+
+  '2juan': '2_juan',
+  '2 juan': '2_juan',
+  '2jn': '2_juan',
+
+  '3juan': '3_juan',
+  '3 juan': '3_juan',
+  '3jn': '3_juan',
+
+  'jud': 'judas',
+  'judas': 'judas',
+
+  // ===== APOCALIPSIS =====
+  'ap': 'apocalipsis',
+  'apo': 'apocalipsis',
+  'apoc': 'apocalipsis',
+  'apoca': 'apocalipsis',
+  'apocal': 'apocalipsis',
+  'apocalip': 'apocalipsis',
+  'apocalipsis': 'apocalipsis'
+  };
+
+  for(const [alias, slug] of Object.entries(aliases)){
+    if(books.includes(slug)) map.set(alias, slug);
+  }
+
+  return map;
+}
+
+function resolveBookSlug(rawBook, aliasMap){
+  const key = normalizeLatin(rawBook);
+  if(!key) return null;
+  if(aliasMap.has(key)) return aliasMap.get(key);
+
+  // Coincidencia prefijo ("apocal" => "apocalipsis")
+  for(const [name, slug] of aliasMap.entries()){
+    if(name.startsWith(key)) return slug;
+  }
+
+  // Coincidencia parcial por tokens ("tesal" => "2 tesalonicenses")
+  const tokens = key.split(' ').filter(Boolean);
+  for(const [name, slug] of aliasMap.entries()){
+    if(tokens.every(tok => name.includes(tok))) return slug;
+  }
+
+  return null;
+}
+
+function parsePassageQuery(rawQuery){
+  const q = normalizeReferenceQuery(rawQuery);
+  if(!q || !/\d/.test(q)) return null;
+
+  const cvMatch = q.match(/(\d+)\s*[:.]\s*(\d+)/);
+  let chapter = null;
+  let verse = null;
+  let bookPart = q;
+
+  if(cvMatch){
+    chapter = Number(cvMatch[1]);
+    verse = Number(cvMatch[2]);
+    bookPart = `${q.slice(0, cvMatch.index)} ${q.slice(cvMatch.index + cvMatch[0].length)}`;
+  }else{
+    const tailNums = q.match(/(\d+)\s+(\d+)\s*$/);
+    if(tailNums){
+      chapter = Number(tailNums[1]);
+      verse = Number(tailNums[2]);
+      bookPart = q.slice(0, q.length - tailNums[0].length);
+    }else{
+      const chapterOnly = q.match(/(\d+)\s*$/);
+      if(chapterOnly){
+        chapter = Number(chapterOnly[1]);
+        bookPart = q.slice(0, q.length - chapterOnly[0].length);
+      }
+    }
+  }
+
+  bookPart = bookPart
+    .replace(/\b(capitulo|cap|capitulos|caps|versiculo|versiculos|vers|v)\b/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  if(!bookPart || !chapter || chapter < 1) return null;
+  if(verse != null && verse < 1) return null;
+
+  return { bookPart, chapter, verse };
+}
+
+function getReferenceMatches(mode, rawQuery){
+  const parsed = parsePassageQuery(rawQuery);
+  if(!parsed) return [];
+
+  const aliasMap = buildBookAliasMap();
+  const slug = resolveBookSlug(parsed.bookPart, aliasMap);
+  if(!slug) return [];
+
+  const langs = mode === 'all' ? ['es', 'gr', 'he'] : [mode];
+  const results = [];
+  for(const lang of langs){
+    const books = manifest?.langs?.[lang]?.books || [];
+    const chapterCounts = manifest?.langs?.[lang]?.chapterCounts || {};
+    if(!books.includes(slug)) continue;
+    if(parsed.chapter > Number(chapterCounts[slug] || 0)) continue;
+    const v = parsed.verse ?? 1;
+    results.push({ lang, ref: `${slug}|${parsed.chapter}|${v}` });
+  }
+  return results;
+}
 
 function hasGreekChars(s){
   return /[\u0370-\u03FF\u1F00-\u1FFF]/.test(s || '');
@@ -426,7 +811,16 @@ async function runSearch(){
     }
 
     await ensureIndexLoadedForMode(mode);
-
+    
+const refItems = getReferenceMatches(mode, q);
+    if(refItems.length){
+      RAW_RESULTS = refItems;
+      applyScopeFilter();
+      PAGE = 1;
+      statusEl.textContent = `Listo. ${ALL_RESULTS.length} pasaje(s) encontrado(s).`;
+      renderPage(q);
+      return;
+    }
     statusEl.textContent = 'Buscando...';
     const items = await searchWithWorker(mode, q);
 
