@@ -178,6 +178,8 @@
      isLoading: false
     };
   const jsonCache = new Map();
+  const failedJsonRequests = new Map();
+  const JSON_RETRY_COOLDOWN_MS = 15000;
  
    const queryInput = document.getElementById('queryInput');
    const analyzeBtn = document.getElementById('analyzeBtn');
@@ -376,6 +378,11 @@ function getGreekRefs(normalized, index) {
     return refs;
   }
   async function loadJson(url) {
+   const failedRequest = failedJsonRequests.get(url);
+    if (failedRequest && (Date.now() - failedRequest.timestamp) < JSON_RETRY_COOLDOWN_MS) {
+      throw failedRequest.error;
+    }
+
    if (jsonCache.has(url)) return jsonCache.get(url);
     const promise = fetch(url, { cache: 'force-cache' }).then((res) => {
       if (!res.ok) throw new Error(`No se pudo cargar ${url}`);
@@ -383,10 +390,21 @@ function getGreekRefs(normalized, index) {
     });
     jsonCache.set(url, promise);
     try {
+    failedJsonRequests.delete(url);
       return await promise;
     } catch (error) {
       jsonCache.delete(url);
-      throw error;
+const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
+      const isNetworkError = offline || error instanceof TypeError;
+      const normalizedError = isNetworkError
+        ? new Error(
+          `Error de red cargando ${url}. Revisa si el navegador está en modo Offline (DevTools), ` +
+          'si el servidor local está activo y si no hay un bloqueador/proxy interrumpiendo peticiones locales.'
+        )
+        : error;
+
+      failedJsonRequests.set(url, { timestamp: Date.now(), error: normalizedError });
+      throw normalizedError;
     }
   }
 
