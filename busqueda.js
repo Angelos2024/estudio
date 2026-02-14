@@ -74,7 +74,112 @@ function normalizeLatin(s){
     .replace(/\s+/g," ")
     .trim();
 }
+function normalizeKey(s){
+  return (s || '')
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/\./g, '')
+    .replace(/\s+/g, '')
+    .trim();
+}
 
+const BOOK_ALIASES = {
+  genesis:'genesis',gen:'genesis',gn:'genesis',
+  exodo:'exodo',exo:'exodo',ex:'exodo',
+  levitico:'levitico',lev:'levitico',lv:'levitico',
+  numeros:'numeros',num:'numeros',nm:'numeros',
+  deuteronomio:'deuteronomio',deut:'deuteronomio',dt:'deuteronomio',
+  josue:'josue',jos:'josue',jueces:'jueces',jue:'jueces',jdg:'jueces',rut:'rut',rt:'rut',
+  '1samuel':'1_samuel','1sa':'1_samuel','1sam':'1_samuel','2samuel':'2_samuel','2sa':'2_samuel','2sam':'2_samuel',
+  '1reyes':'1_reyes','1rey':'1_reyes','1ki':'1_reyes','2reyes':'2_reyes','2rey':'2_reyes','2ki':'2_reyes',
+  '1cronicas':'1_cronicas','1cro':'1_cronicas','1cr':'1_cronicas','2cronicas':'2_cronicas','2cro':'2_cronicas','2cr':'2_cronicas',
+  esdras:'esdras',esd:'esdras',ezra:'esdras',nehemias:'nehemias',neh:'nehemias',ester:'ester',est:'ester',
+  job:'job',jb:'job',salmos:'salmos',salmo:'salmos',sal:'salmos',ps:'salmos',
+  proverbios:'proverbios',prov:'proverbios',pr:'proverbios',eclesiastes:'eclesiastes',ecl:'eclesiastes',ec:'eclesiastes',
+  cantares:'cantares',cantar:'cantares',cnt:'cantares',cant:'cantares',isaias:'isaias',isa:'isaias',
+  jeremias:'jeremias',jer:'jeremias',lamentaciones:'lamentaciones',lam:'lamentaciones',ezequiel:'ezequiel',eze:'ezequiel',ez:'ezequiel',
+  daniel:'daniel',dan:'daniel',oseas:'oseas',os:'oseas',joel:'joel',jl:'joel',amos:'amos',am:'amos',
+  abdias:'abdias',abd:'abdias',obadias:'abdias',obad:'abdias',jonas:'jonas',jon:'jonas',miqueas:'miqueas',miq:'miqueas',mic:'miqueas',
+  nahum:'nahum',nah:'nahum',habacuc:'habacuc',hab:'habacuc',sofonias:'sofonias',sof:'sofonias',zep:'sofonias',
+  hageo:'hageo',hag:'hageo',zacarias:'zacarias',zac:'zacarias',zec:'zacarias',malaquias:'malaquias',mal:'malaquias',
+  mateo:'mateo',mt:'mateo',marcos:'marcos',mr:'marcos',mk:'marcos',lucas:'lucas',lc:'lucas',lk:'lucas',
+  juan:'juan',jn:'juan',jhn:'juan',hechos:'hechos',hch:'hechos',actos:'hechos',act:'hechos',
+  romanos:'romanos',rom:'romanos','1corintios':'1_corintios','1cor':'1_corintios','1co':'1_corintios',
+  '2corintios':'2_corintios','2cor':'2_corintios','2co':'2_corintios',galatas:'galatas',gal:'galatas',
+  efesios:'efesios',efe:'efesios',eph:'efesios',filipenses:'filipenses',fil:'filipenses',php:'filipenses',
+  colosenses:'colosenses',col:'colosenses','1tesalonicenses':'1_tesalonicenses','1tes':'1_tesalonicenses','1th':'1_tesalonicenses',
+  '2tesalonicenses':'2_tesalonicenses','2tes':'2_tesalonicenses','2th':'2_tesalonicenses','1timoteo':'1_timoteo','1tim':'1_timoteo',
+  '2timoteo':'2_timoteo','2tim':'2_timoteo',tito:'tito',tit:'tito',filemon:'filemon',flm:'filemon',phm:'filemon',
+  hebreos:'hebreos',heb:'hebreos',santiago:'santiago',stg:'santiago',jas:'santiago',
+  '1pedro':'1_pedro','1pe':'1_pedro','1pet':'1_pedro','2pedro':'2_pedro','2pe':'2_pedro','2pet':'2_pedro',
+  '1juan':'1_juan','1jn':'1_juan','1j':'1_juan','2juan':'2_juan','2jn':'2_juan','2j':'2_juan','3juan':'3_juan','3jn':'3_juan','3j':'3_juan',
+  judas:'judas',jud:'judas',apocalipsis:'apocalipsis',apo:'apocalipsis',apoc:'apocalipsis',apocal:'apocalipsis',rev:'apocalipsis'
+};
+
+function resolveBookSlugFlexible(bookRaw){
+  const key = normalizeKey(bookRaw);
+  if(!key) return null;
+  if(BOOK_ALIASES[key]) return BOOK_ALIASES[key];
+
+  let bestAlias = null;
+  for(const alias of Object.keys(BOOK_ALIASES)){
+    if(key.startsWith(alias) || alias.startsWith(key)){
+      if(!bestAlias || alias.length > bestAlias.length) bestAlias = alias;
+    }
+  }
+  return bestAlias ? BOOK_ALIASES[bestAlias] : null;
+}
+
+function parseReferenceQuery(raw){
+  const q = String(raw || '').trim();
+  if(!/\d/.test(q)) return null;
+  const cleaned = q
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^\p{L}\p{N}:,;\-\s]/gu, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  let match = cleaned.match(/^(.*?)\s*(\d+)\s*[:.,;]\s*(\d+)(?:\s*-\s*(\d+))?$/);
+  if(!match){
+    match = cleaned.match(/^(.*?)\s+(\d+)\s+(\d+)(?:\s*-\s*(\d+))?$/);
+  }
+  if(!match) return null;
+
+  const [, rawBook, chS, vFromS, vToS] = match;
+  const slug = resolveBookSlugFlexible(rawBook);
+  if(!slug) return null;
+
+  const ch = Number(chS);
+  const vFrom = Number(vFromS);
+  const vTo = vToS ? Number(vToS) : vFrom;
+  if(!Number.isInteger(ch) || !Number.isInteger(vFrom) || !Number.isInteger(vTo)) return null;
+  if(ch < 1 || vFrom < 1 || vTo < vFrom) return null;
+  return { slug, ch, vFrom, vTo };
+}
+
+async function resolveReferenceMatches(mode, query){
+  const ref = parseReferenceQuery(query);
+  if(!ref) return null;
+  await ensureManifest();
+
+  const langs = mode === 'all' ? ['es','gr','he'] : [mode];
+  const items = [];
+  for(const lang of langs){
+    const chapterCounts = manifest?.langs?.[lang]?.chapterCounts || {};
+    if(!chapterCounts[ref.slug]) continue;
+    if(ref.ch > Number(chapterCounts[ref.slug])) continue;
+
+    const verses = await getChapterPack(lang, ref.slug, ref.ch);
+    const maxVerse = verses.length;
+    if(!maxVerse) continue;
+    const end = Math.min(ref.vTo, maxVerse);
+    for(let v = ref.vFrom; v <= end; v++){
+      items.push({ lang, ref: `${ref.slug}|${ref.ch}|${v}` });
+    }
+  }
+  return items;
+}
 function normalizeGreek(s){
   return (s || "")
     .toLowerCase()
@@ -394,7 +499,15 @@ async function runSearch(){
   try{
     statusEl.textContent = 'Preparando búsqueda...';
     HIGHLIGHT_QUERY = q;
-
+ const referenceItems = await resolveReferenceMatches(mode, q);
+    if(referenceItems && referenceItems.length){
+      RAW_RESULTS = referenceItems;
+      applyScopeFilter();
+      PAGE = 1;
+      statusEl.textContent = `Listo. ${ALL_RESULTS.length} pasaje(s) encontrado(s).`;
+      renderPage(q);
+      return;
+    }
     if(mode === 'es' && hasGreekChars(q)){
       const spanishTokens = await getSpanishTokensFromGreekQuery(q);
       if(spanishTokens.length){
