@@ -103,8 +103,17 @@ function normalizeReferenceQuery(s){
   return (s || '')
     .toLowerCase()
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/\b(i{1,3})\b/g, (m) => {
+      const roman = m.toLowerCase();
+      if(roman === 'i') return '1';
+      if(roman === 'ii') return '2';
+      if(roman === 'iii') return '3';
+      return m;
+    })
     .replace(/(\d)([a-zñ])/gi, '$1 $2')
     .replace(/([a-zñ])(\d)/gi, '$1 $2')
+    .replace(/[;,\-]/g, ' ')
+    .replace(/\s*[:.]\s*/g, ':')
     .replace(/[^\p{L}\p{N}:\s]/gu, ' ')
     .replace(/\s+/g, ' ')
     .trim();
@@ -411,6 +420,11 @@ function resolveBookSlug(rawBook, aliasMap){
   if(!key) return null;
   if(aliasMap.has(key)) return aliasMap.get(key);
 
+   const compactKey = key.replace(/\s+/g, '');
+  for(const [name, slug] of aliasMap.entries()){
+    if(name.replace(/\s+/g, '') === compactKey) return slug;
+        if(name.replace(/\s+/g, '').startsWith(compactKey)) return slug;
+  }
   // Coincidencia prefijo ("apocal" => "apocalipsis")
   for(const [name, slug] of aliasMap.entries()){
     if(name.startsWith(key)) return slug;
@@ -429,7 +443,7 @@ function parsePassageQuery(rawQuery){
   const q = normalizeReferenceQuery(rawQuery);
   if(!q || !/\d/.test(q)) return null;
 
-  const cvMatch = q.match(/(\d+)\s*[:.]\s*(\d+)/);
+  const cvMatch = q.match(/(\d+)\s*:\s*(\d+)/);
   let chapter = null;
   let verse = null;
   let bookPart = q;
@@ -452,7 +466,14 @@ function parsePassageQuery(rawQuery){
       }
     }
   }
-
+if(!chapter || !verse){
+    const anywhereCv = q.match(/^(.*?)\s*(\d+)\s*:\s*(\d+)\s*(.*?)$/);
+    if(anywhereCv){
+      chapter = Number(anywhereCv[2]);
+      verse = Number(anywhereCv[3]);
+      bookPart = `${anywhereCv[1]} ${anywhereCv[4]}`;
+    }
+  }
   bookPart = bookPart
     .replace(/\b(capitulo|cap|capitulos|caps|versiculo|versiculos|vers|v)\b/g, ' ')
     .replace(/\s+/g, ' ')
