@@ -80,8 +80,8 @@
     el.setAttribute('aria-hidden', 'true');
      el.innerHTML = '<div class="head"><div class="t1" id="gr-lex-word"></div><button type="button" class="close" aria-label="Cerrar">×</button></div><div id="gr-lex-content"></div>';     
     // Cierra al click afuera
-    document.addEventListener('mousedown', (ev) => {
-      if (!el || el.style.display === 'none') return;
+    document.addEventListener('pointerdown', (ev) => {
+       if (!el || el.style.display === 'none') return;
       if (ev.target === el || el.contains(ev.target)) return;
       hideTip();
     }, true);
@@ -93,6 +93,11 @@
       const onPointerMove = (ev) => {
       const drag = state.tipDrag;
       if (!drag) return;
+         if (ev.pointerId !== drag.pointerId) return;
+      if ((ev.buttons & 1) !== 1) {
+        stopDrag();
+        return;
+      }
       const box = state.tipEl;
       if (!box) return;
       const pad = 10;
@@ -103,9 +108,8 @@
       box.style.left = `${Math.round(nx)}px`;
       box.style.top = `${Math.round(ny)}px`;
     };
-const stopDrag = (ev) => {
-   state.tipDrag = null;
-      try { state.tipEl?.releasePointerCapture?.(ev.pointerId); } catch(e) {}
+    const stopDrag = () => {
+      state.tipDrag = null;
       document.removeEventListener('pointermove', onPointerMove, true);
       document.removeEventListener('pointerup', stopDrag, true);
       document.removeEventListener('pointercancel', stopDrag, true);
@@ -115,17 +119,20 @@ const stopDrag = (ev) => {
       if (ev.button !== 0) return;
       if (ev.target?.closest?.('.close')) return;
       const r = el.getBoundingClientRect();
-  state.tipDrag = { offsetX: ev.clientX - r.left, offsetY: ev.clientY - r.top };
-             try { el.setPointerCapture(ev.pointerId); } catch(e) {}
+             state.tipDrag = {
+        offsetX: ev.clientX - r.left,
+        offsetY: ev.clientY - r.top,
+        pointerId: ev.pointerId,
+      };
       document.addEventListener('pointermove', onPointerMove, true);
       document.addEventListener('pointerup', stopDrag, true);
       document.addEventListener('pointercancel', stopDrag, true);
       ev.preventDefault();
-     };
+      };
 
    
-const header = el.querySelector('.head');
-    header?.addEventListener('pointerdown', beginDrag);
+     const header = el.querySelector('.head');
+     header?.addEventListener('pointerdown', beginDrag);
     el.querySelector('.close')?.addEventListener('click', hideTip, false);
     document.body.appendChild(el);
     state.tipEl = el;
