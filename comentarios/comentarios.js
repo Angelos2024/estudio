@@ -4,15 +4,23 @@
   async function ensureCommentsUI(){
     if (document.getElementById('cm-template')) return;
 
-    const res = await fetch('./comentarios/ui.html', { cache: 'no-store' });
-    if(!res.ok) throw new Error('No se pudo cargar comentarios/ui.html');
+   if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+      console.warn('[comentarios] sin conexión: se omite carga de UI de comentarios.');
+      return;
+    }
 
-    const html = await res.text();
-    const wrap = document.createElement('div');
-    wrap.innerHTML = html;
+    try {
+      const res = await fetch('./comentarios/ui.html', { cache: 'no-store' });
+      if(!res.ok) throw new Error('No se pudo cargar comentarios/ui.html');
 
-    // Inserta estilos + template en <body>
+     const html = await res.text();
+     const wrap = document.createElement('div');
+     wrap.innerHTML = html;
+
     document.body.appendChild(wrap);
+    } catch (err) {
+      console.warn('[comentarios] fallo cargando UI:', err);
+    }
   }
 
   function esc(s){
@@ -43,13 +51,15 @@ function getCommentSlugCandidates(bookSlug){
 
   async function fetchCommentsBySlug(slug, chapter){
     const url = `./comentarios/${encodeURIComponent(slug)}/${encodeURIComponent(String(chapter))}.json`;
-    const res = await fetch(url, { cache: 'no-store' });
-    if(!res.ok) return null;
-    try{
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) return null;
+
+    try {
+      const res = await fetch(url, { cache: 'no-store' });
+      if(!res.ok) return null;
       const data = await res.json();
       if(!data || typeof data !== 'object') return null;
       return data;
-    }catch{
+    } catch {
       return null;
     }
   }
