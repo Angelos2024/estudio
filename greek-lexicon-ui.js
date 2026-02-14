@@ -33,7 +33,7 @@
           position: fixed;
           z-index: 9999;
           max-width: min(420px, calc(100vw - 24px));
-          background: rgba(17,26,46,.98);
+          background: rgba(0,0,0,.96);
           border: 1px solid rgba(255,255,255,.12);
           border-radius: 12px;
           box-shadow: 0 18px 45px rgba(0,0,0,.45);
@@ -43,8 +43,7 @@
           display:none;
         }
         .gr-lex-tip .t1{ font-size: 14px; font-weight: 700; margin-bottom: 4px; }
-.gr-lex-tip .head{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:4px; }
-        .gr-lex-tip .drag-handle{ cursor:move; user-select:none; color:#9fb3ff; font-size:12px; letter-spacing:.02em; padding:2px 6px; border:1px solid rgba(255,255,255,.16); border-radius:999px; touch-action:none; }
+        .gr-lex-tip .head{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:4px; cursor:move; user-select:none; touch-action:none; }
         .gr-lex-tip .head .t1{ margin-bottom:0; }
         .gr-lex-tip .close{ border:0; background:transparent; color:#cbd6ff; font-size:16px; line-height:1; cursor:pointer; padding:0 2px; }
         .gr-lex-tip .t2{ font-size: 12px; opacity: .9; }
@@ -59,8 +58,7 @@
     el.className = 'gr-lex-tip';
     el.setAttribute('role', 'dialog');
     el.setAttribute('aria-hidden', 'true');
-     el.innerHTML = '<div class="head"><span class="drag-handle" title="Arrastrar" aria-label="Arrastrar">↕ mover</span><div class="t1" id="gr-lex-word"></div><button type="button" class="close" aria-label="Cerrar">×</button></div><div id="gr-lex-content"></div>';
-     
+     el.innerHTML = '<div class="head"><div class="t1" id="gr-lex-word"></div><button type="button" class="close" aria-label="Cerrar">×</button></div><div id="gr-lex-content"></div>';     
     // Cierra al click afuera
     document.addEventListener('mousedown', (ev) => {
       if (!el || el.style.display === 'none') return;
@@ -105,8 +103,8 @@ const onPointerMove = (ev) => {
  };
 
    
-const handle = el.querySelector('.drag-handle');
-    handle?.addEventListener('pointerdown', beginDrag);
+const header = el.querySelector('.head');
+    header?.addEventListener('pointerdown', beginDrag);
     el.querySelector('.close')?.addEventListener('click', hideTip, false);
     document.body.appendChild(el);
     state.tipEl = el;
