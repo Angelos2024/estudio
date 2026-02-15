@@ -73,7 +73,7 @@
             </ul>
           </div>
           <button id="btnCopyText" class="btn btn-soft btn-sm" type="button">Copiar</button>
-          <button id="btnAboutExtractor" class="btn btn-soft btn-sm" type="button">Acerca de</button>
+          <button id="btnAboutExtractor" class="btn btn-soft btn-sm" type="button" disabled>Acerca de</button>
         </div>
       </div>
     </div>
@@ -868,7 +868,6 @@ const rightLabel = document.getElementById('rightLabel');
 const btnCopyText = document.getElementById('btnCopyText');
 const btnViewMode = document.getElementById('btnViewMode');
 const btnToggleOrig = document.getElementById('btnToggleOrig');
-    const btnAboutExtractor = document.getElementById('btnAboutExtractor');
     const btnPrevPage = document.getElementById('btnPrevPage');
 const btnNextPage = document.getElementById('btnNextPage');
 const themeMenuBtn = document.getElementById('themeMenuBtn');
@@ -881,8 +880,7 @@ let lastRef = null;
 const rvCache = {};                 // slug -> chapters[][]
 let trData = null;                  // NT griego completo (verses[])
 const trChaptersCache = {};         // slug -> chapters[][]
-    const extractorMorphCache = {};      // slug -> morph chapters[][]
-let extractorMasterDictMap = null;   // lemma normalizado -> item
+
 
 // ✅ Hebreo por libro (cada archivo ya trae text[][])
 const heBookCache = {};             // slug -> chapters[][]
@@ -1209,135 +1207,6 @@ async function ensureBookLoaded(slug, displayName){
   currentBookSlug = slug;
   currentBookName = displayName || prettyBookName(slug);
 }
-function normalizeGreekLemmaKey(value){
-  return String(value || '')
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[··.,;:!?“”"(){}\[\]<>«»]/g, '')
-    .trim()
-    .toLowerCase();
-}
-
-function getMorphBookAbbr(slug){
-  const map = {
-    mateo: 'mt', marcos: 'mk', lucas: 'lk', juan: 'jn', hechos: 'ac',
-    romanos: 'ro', '1_corintios': '1co', '2_corintios': '2co', galatas: 'ga', efesios: 'eph',
-    filipenses: 'php', colosenses: 'col', '1_tesalonicenses': '1th', '2_tesalonicenses': '2th',
-    '1_timoteo': '1ti', '2_timoteo': '2ti', tito: 'tit', filemon: 'phm', hebreos: 'heb',
-    santiago: 'jas', '1_pedro': '1pe', '2_pedro': '2pe', '1_juan': '1jn', '2_juan': '2jn',
-    '3_juan': '3jn', judas: 'jud', apocalipsis: 're'
-  };
-  return map[slug] || null;
-}
-
-async function ensureExtractorMasterLexicon(){
-  if(extractorMasterDictMap) return extractorMasterDictMap;
-  const lex = await loadJson('./diccionario/masterdiccionario.json');
-  const items = Array.isArray(lex?.items) ? lex.items : [];
-  const map = new Map();
-  for(const item of items){
-    const key = normalizeGreekLemmaKey(item?.lemma);
-    if(key && !map.has(key)) map.set(key, item);
-  }
-  extractorMasterDictMap = map;
-  return map;
-}
-
-async function ensureMorphBookLoaded(slug){
-  if(extractorMorphCache[slug]) return extractorMorphCache[slug];
-  const abbr = getMorphBookAbbr(slug);
-  if(!abbr) return null;
-  try{
-    const payload = await loadJson(`./diccionario/${abbr}-morphgnt.translit.json`);
-    extractorMorphCache[slug] = payload?.chapters?.[9] || null;
-    return extractorMorphCache[slug];
-  }catch{
-    extractorMorphCache[slug] = null;
-    return null;
-  }
-}
-
-function getMorphVerseTokens(morphBookData, chapter, verse){
-  if(!Array.isArray(morphBookData)) return [];
-  const idx = chapter * 100 + verse;
-  const tokens = morphBookData[idx];
-  return Array.isArray(tokens) ? tokens : [];
-}
-
-async function buildVisibleGreekExtractionPayload(){
-  if(!currentBookSlug) throw new Error('Primero selecciona un libro para extraer datos.');
-  if(!isNT(currentBookSlug)) throw new Error('Este extractor aplica al texto griego del NT.');
-  if(!bookDataRV || !bookDataOrig) throw new Error('No hay datos cargados para extraer.');
-
-  
-
-  const morphBook = await ensureMorphBookLoaded(currentBookSlug);
-  const masterMap = await ensureExtractorMasterLexicon();
-
-
- const chapterRows = [];
-
-  for(let chapter = 1; chapter <= bookDataOrig.length; chapter++){
-    const versesOrig = bookDataOrig[chapter - 1] || [];
-    const versesRV = bookDataRV[chapter - 1] || [];
-    const maxVerses = Math.max(versesOrig.length, versesRV.length);
-    const verseRows = [];
-
-    for(let verse = 1; verse <= maxVerses; verse++){
-      const greekText = versesOrig[verse - 1] || '';
-      const spanishText = versesRV[verse - 1] || '';
-      const interlinear = await window.InterlinearView?.buildInterlinearRows?.(greekText, { isGreek: true }) || { tokens: [], spanishTokens: [] };
-      const morphTokens = getMorphVerseTokens(morphBook, chapter, verse);
-
-      const palabras = interlinear.tokens.map((token, index) => {
-        const morph = morphTokens[index] || {};
-        const lemma = morph.lemma || '';
-        const lexical = masterMap.get(normalizeGreekLemmaKey(lemma)) || {};
-        return {
-          palabra_griega: token || '',
-          interlineal_espanol: interlinear.spanishTokens[index] || '-',
-          lemma,
-          forma_lexica: lexical['Forma lexica'] || '',
-          entrada_impresa: lexical.entrada_impresa || '',
-          definicion: lexical.definicion || ''
-        };
-      });
-
-      verseRows.push({
-        versiculo: verse,
-        texto_griego: greekText,
-        texto_espanol_interlineal: spanishText,
-        palabras
-      });
-    }
-   chapterRows.push({
-      capitulo: chapter,
-      versiculos: verseRows
-    });
-  }
-
-  return {
-    tipo: 'extractor_texto_griego_visible',
-    origen: 'IdiomaORIGEN/Bgriega.json',
-    modo_extraccion: 'por_libro',
-    libros: [{
-      slug: currentBookSlug,
-      nombre: currentBookName,
-         capitulos: chapterRows
-    }]
-  };
-}
-
-async function openExtractorDocument(){
-  try{
-    const payload = await buildVisibleGreekExtractionPayload();
-    sessionStorage.setItem('aboutExtractorPayload', JSON.stringify(payload));
-    window.open('./acerca-extractor.html', '_blank', 'noopener');
-    showFeedback('ok', 'Extractor JSON listo');
-  }catch(err){
-    showFeedback('err', err?.message || 'No se pudo crear el extractor JSON');
-  }
-}
 
 /***********************
  * Parse búsqueda
@@ -1652,9 +1521,7 @@ btnCopyText.addEventListener('click', async () => {
       : `=== ${leftLabel.textContent} ===\n${left}\n`;
   await copy(combined);
 });
-btnAboutExtractor?.addEventListener('click', () => {
-  openExtractorDocument();
-});
+
 btnViewMode?.addEventListener('click', () => {
   const nextMode = viewMode === 'parallel' ? 'interlinear' : 'parallel';
   setViewMode(nextMode);
