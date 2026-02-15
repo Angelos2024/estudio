@@ -1265,58 +1265,65 @@ function getMorphVerseTokens(morphBookData, chapter, verse){
 }
 
 async function buildVisibleGreekExtractionPayload(){
-  if(!lastRef) throw new Error('Primero busca una cita para extraer datos.');
+  if(!currentBookSlug) throw new Error('Primero selecciona un libro para extraer datos.');
   if(!isNT(currentBookSlug)) throw new Error('Este extractor aplica al texto griego del NT.');
   if(!bookDataRV || !bookDataOrig) throw new Error('No hay datos cargados para extraer.');
 
-  const chapter = Number(lastRef.chapter);
-  const verseStart = Number(lastRef.verseStart);
-  const verseEnd = Number(lastRef.verseEnd);
-  const versesOrig = bookDataOrig[chapter - 1] || [];
-  const versesRV = bookDataRV[chapter - 1] || [];
+  
 
   const morphBook = await ensureMorphBookLoaded(currentBookSlug);
   const masterMap = await ensureExtractorMasterLexicon();
-  const verseRows = [];
 
-  for(let verse = verseStart; verse <= verseEnd; verse++){
-    const greekText = versesOrig[verse - 1] || '';
-    const spanishText = versesRV[verse - 1] || '';
-    const interlinear = await window.InterlinearView?.buildInterlinearRows?.(greekText, { isGreek: true }) || { tokens: [], spanishTokens: [] };
-    const morphTokens = getMorphVerseTokens(morphBook, chapter, verse);
 
-    const palabras = interlinear.tokens.map((token, index) => {
-      const morph = morphTokens[index] || {};
-      const lemma = morph.lemma || '';
-      const lexical = masterMap.get(normalizeGreekLemmaKey(lemma)) || {};
-      return {
-        palabra_griega: token || '',
-        interlineal_espanol: interlinear.spanishTokens[index] || '-',
-        lemma,
-        forma_lexica: lexical['Forma lexica'] || '',
-        entrada_impresa: lexical.entrada_impresa || '',
-        definicion: lexical.definicion || ''
-      };
-    });
+ const chapterRows = [];
 
-    verseRows.push({
-      versiculo: verse,
-      texto_griego: greekText,
-      texto_espanol_interlineal: spanishText,
-      palabras
+  for(let chapter = 1; chapter <= bookDataOrig.length; chapter++){
+    const versesOrig = bookDataOrig[chapter - 1] || [];
+    const versesRV = bookDataRV[chapter - 1] || [];
+    const maxVerses = Math.max(versesOrig.length, versesRV.length);
+    const verseRows = [];
+
+    for(let verse = 1; verse <= maxVerses; verse++){
+      const greekText = versesOrig[verse - 1] || '';
+      const spanishText = versesRV[verse - 1] || '';
+      const interlinear = await window.InterlinearView?.buildInterlinearRows?.(greekText, { isGreek: true }) || { tokens: [], spanishTokens: [] };
+      const morphTokens = getMorphVerseTokens(morphBook, chapter, verse);
+
+      const palabras = interlinear.tokens.map((token, index) => {
+        const morph = morphTokens[index] || {};
+        const lemma = morph.lemma || '';
+        const lexical = masterMap.get(normalizeGreekLemmaKey(lemma)) || {};
+        return {
+          palabra_griega: token || '',
+          interlineal_espanol: interlinear.spanishTokens[index] || '-',
+          lemma,
+          forma_lexica: lexical['Forma lexica'] || '',
+          entrada_impresa: lexical.entrada_impresa || '',
+          definicion: lexical.definicion || ''
+        };
+      });
+
+      verseRows.push({
+        versiculo: verse,
+        texto_griego: greekText,
+        texto_espanol_interlineal: spanishText,
+        palabras
+      });
+    }
+   chapterRows.push({
+      capitulo: chapter,
+      versiculos: verseRows
     });
   }
 
   return {
     tipo: 'extractor_texto_griego_visible',
     origen: 'IdiomaORIGEN/Bgriega.json',
-    solo_contenido_visible: true,
+    modo_extraccion: 'por_libro',
     libros: [{
       slug: currentBookSlug,
       nombre: currentBookName,
-      capitulos: [{
-        capitulo: chapter,
-        versiculos: verseRows
+         capitulos: chapterRows
       }]
     }]
   };
