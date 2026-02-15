@@ -226,14 +226,12 @@
       line-height:1.25;
       flex:0 0 auto;
     }
-    .interlinear-original{ display:block; direction:rtl; unicode-bidi:plaintext; }
-    .interlinear-grid{
+    .interlinear-original{ display:block; }
+.interlinear-grid{
       display:flex;
       flex-wrap:wrap;
       align-items:flex-start;
       gap:.35rem .75rem;
-      direction:rtl;
-      unicode-bidi:plaintext;
     }
     .interlinear-word{
       display:inline-flex;
@@ -249,14 +247,19 @@
       direction:rtl;
       unicode-bidi:plaintext;
     }
+.interlinear-greek{
+      font-family: 'Gentium Plus','SBL Greek','Times New Roman',serif;
+      direction:ltr;
+      unicode-bidi:plaintext;
+    }
     .interlinear-spanish{
       margin-top:.1rem;
       color:var(--muted);
-      direction:rtl;
-      unicode-bidi:plaintext;
       text-align:center;
       white-space:nowrap;
     }
+.interlinear-dir-rtl{ direction:rtl; unicode-bidi:plaintext; }
+    .interlinear-dir-ltr{ direction:ltr; unicode-bidi:plaintext; }
 
     /* Columna de herramientas a la izquierda, más compacta */
     .tools-panel .panel-body{ padding:.75rem; }
