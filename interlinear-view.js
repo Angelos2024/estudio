@@ -8,8 +8,12 @@
     let clean = String(token || '').trim();
     clean = clean
  .replace(/^[\s.,;:!?¡¿()\[\]{}"'“”‘’«»··;᾽᾿ʼʹʽ]+|[\s.,;:!?¡¿()\[\]{}"'“”‘’«»··;᾽᾿ʼʹʽ]+$/g, '');
+    clean = clean.replace(/[\u200c-\u200f\u202a-\u202e\ufeff]/g, '');
+    
+    
     if(isHebrew){
       clean = clean.replace(/[\u0591-\u05AF\u05B0-\u05BC\u05BD\u05BF\u05C1-\u05C2\u05C7]/g, '');
+      clean = clean.replace(/[\u05BE\u05C0\u05C3\u05C6\u05F3\u05F4]/g, '');
     }
 
      if(isGreek){
