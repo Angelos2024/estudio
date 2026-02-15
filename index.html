@@ -983,6 +983,13 @@ async function loadJson(path){
   }
 }
 
+    function getFriendlySearchErrorMessage(error){
+  const rawMessage = String(error?.message || error || '');
+  if(rawMessage.includes('HTTP 404') && rawMessage.includes(RV_BASE)){
+    return 'intenta con una entrada valida.';
+  }
+  return rawMessage || 'intenta con una entrada valida.';
+}
 async function copy(text){
   try{ await navigator.clipboard.writeText(text); }catch{}
 }
@@ -1437,7 +1444,7 @@ saveReaderState();
     leftLabel.textContent = versionSelect.value;
     await render(ref);
   }catch(err){
-    const msg = `<div class="text-danger fw-semibold">Error:</div><div class="text-muted">${esc(err.message || String(err))}</div>`;
+    const msg = `<div class="text-danger fw-semibold">Error:</div><div class="text-muted">${esc(getFriendlySearchErrorMessage(err))}</div>`;
     passageTextRV.innerHTML = msg;
     passageTextOrig.innerHTML = `<div class="text-muted">—</div>`;
     statusLine.textContent = '';
