@@ -18,6 +18,12 @@
       <div class="col-md-auto">
         <button id="btnGenerate" class="btn btn-success btn-sm" type="button">Generar extracción</button>
       </div>
+      <div class="col-md-4 col-lg-3">
+        <label for="partSelect" class="form-label form-label-sm mb-1">Bloque (5 capítulos)</label>
+        <select id="partSelect" class="form-select form-select-sm" disabled>
+          <option value="">Primero genera una extracción</option>
+        </select>
+      </div>
       <div class="col-12">
         <small id="statusMsg" class="text-muted"></small>
       </div>
@@ -37,6 +43,9 @@
     const btnGenerate = document.getElementById('btnGenerate');
     const bookSelect = document.getElementById('bookSelect');
     const statusMsg = document.getElementById('statusMsg');
+     const partSelect = document.getElementById('partSelect');
+
+    const CHAPTER_BATCH_SIZE = 5;
 
     const BOOK_OPTIONS = [
       ['mateo', 'Mateo'], ['marcos', 'Marcos'], ['lucas', 'Lucas'], ['juan', 'Juan'], ['hechos', 'Hechos'],
@@ -57,6 +66,7 @@
     };
 
     let currentPayload = null;
+        let currentPayloads = [];
 
     for (const [slug, name] of BOOK_OPTIONS) {
       const opt = document.createElement('option');
@@ -122,7 +132,12 @@
       }
       return chapters;
     }
-
+ function splitInChunks(items, chunkSize){
+      const chunks = [];
+      for (let i = 0; i < items.length; i += chunkSize) chunks.push(items.slice(i, i + chunkSize));
+      return chunks;
+    }
+    
     async function buildPayloadForBook(slug, name){
       const [rvBook, greekRaw, masterDict] = await Promise.all([
         loadJson(`./librosRV1960/${slug}.json`),
@@ -182,20 +197,55 @@
         chapterRows.push({ capitulo: chapter, versiculos: verseRows });
       }
 
-      return {
-        tipo: 'extractor_texto_griego_visible',
-        origen: 'IdiomaORIGEN/Bgriega.json',
-        modo_extraccion: 'por_libro',
-        libros: [{ slug, nombre: name, capitulos: chapterRows }]
-      };
+       const chapterChunks = splitInChunks(chapterRows, CHAPTER_BATCH_SIZE);
+      const payloads = chapterChunks.map((chaptersChunk, index) => {
+        const firstChapter = chaptersChunk?.[0]?.capitulo || 1;
+        const lastChapter = chaptersChunk?.[chaptersChunk.length - 1]?.capitulo || firstChapter;
+        return {
+          tipo: 'extractor_texto_griego_visible',
+          origen: 'IdiomaORIGEN/Bgriega.json',
+          modo_extraccion: 'por_libro',
+          parte: index + 1,
+          total_partes: chapterChunks.length,
+          rango_capitulos: `${firstChapter}-${lastChapter}`,
+          libros: [{ slug, nombre: name, capitulos: chaptersChunk }]
+        };
+      });
+
+      return { payloads, totalChapters: chapterRows.length };
+    }
+
+    function refreshPartSelector(payloads){
+      partSelect.innerHTML = '';
+      if (!Array.isArray(payloads) || payloads.length === 0) {
+        partSelect.disabled = true;
+        partSelect.innerHTML = '<option value="">No hay partes</option>';
+        return;
+      }
+
+      for (let i = 0; i < payloads.length; i++) {
+        const payload = payloads[i];
+        const opt = document.createElement('option');
+        opt.value = String(i);
+        opt.textContent = `Parte ${payload.parte}/${payload.total_partes} (cap. ${payload.rango_capitulos})`;
+        partSelect.appendChild(opt);
+      }
+      partSelect.disabled = false;
+      partSelect.value = '0';
     }
 
     function setPayload(payload){
       currentPayload = payload;
-     setPayload(payload);
+      out.textContent = JSON.stringify(payload, null, 2);
       const existingSlug = payload?.libros?.[0]?.slug;
       if (existingSlug) bookSelect.value = existingSlug;
     }
+     partSelect.addEventListener('change', () => {
+      const selectedIdx = Number(partSelect.value);
+      const selectedPayload = currentPayloads[selectedIdx];
+      if (selectedPayload) setPayload(selectedPayload);
+    });
+    
     btnGenerate.addEventListener('click', async () => {
       const slug = bookSelect.value;
       const name = bookSelect.options[bookSelect.selectedIndex]?.textContent || slug;
@@ -203,10 +253,15 @@
       statusMsg.textContent = `Generando extracción de ${name}...`;
 
       try {
-        const payload = await buildPayloadForBook(slug, name);
-        sessionStorage.setItem('aboutExtractorPayload', JSON.stringify(payload));
-        setPayload(payload);
-        statusMsg.textContent = `Extracción lista para ${name}.`;
+const result = await buildPayloadForBook(slug, name);
+        currentPayloads = result.payloads || [];
+        refreshPartSelector(currentPayloads);
+        const firstPayload = currentPayloads[0] || null;
+        if (firstPayload) {
+          sessionStorage.setItem('aboutExtractorPayload', JSON.stringify(firstPayload));
+          setPayload(firstPayload);
+        }
+        statusMsg.textContent = `Extracción lista para ${name}: ${result.totalChapters} capítulos en ${currentPayloads.length} parte(s) de ${CHAPTER_BATCH_SIZE} capítulos.`;
       } catch (err) {
         statusMsg.textContent = err?.message || 'No se pudo generar la extracción.';
       } finally {
