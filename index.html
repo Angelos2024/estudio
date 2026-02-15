@@ -144,7 +144,7 @@
               <button id="btnToggleOrig" class="btn btn-soft btn-sm" type="button" aria-expanded="true">
                 Ocultar original
               </button>
-              <button id="btnViewMode" class="btn btn-soft btn-sm" type="button">Paralelo</button>
+              <button id="btnViewMode" class="btn btn-soft btn-sm" type="button">Interlineal (AT)</button>
             </div>
           </div>
 
@@ -939,7 +939,7 @@ function fmtOrigVerse(raw, isGreek){
 }
 function updateViewModeButton(){
   if(!btnViewMode) return;
-   btnViewMode.textContent = viewMode === 'interlinear' ? 'Interlineal (AT)' : 'Paralelo';
+   btnViewMode.textContent = viewMode === 'interlinear' ? 'Paralelo' : 'Interlineal (AT) (AT)';
 }
 
 function isInterlinearAvailable(){
