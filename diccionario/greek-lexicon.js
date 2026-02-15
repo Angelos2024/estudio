@@ -759,6 +759,8 @@ box.style.maxHeight = 'calc(100vh - ' + (pad * 2) + 'px)';
 
     for (var i = 0; i < lines.length; i++) {
       var line = lines[i];
+       if (line.classList && line.classList.contains('interlinear-verse')) continue;
+      if (line.querySelector && line.querySelector('.interlinear-grid, .interlinear-original')) continue;
       var ref = getChVFromElement(line);
       if (!ref) continue;
 
