@@ -49,8 +49,11 @@
     style.id = 'xrefs-style';
     style.textContent = `
       .xrefs-inline-wrap{ display:inline-flex; align-items:center; gap:.25rem; margin-left:.45rem; vertical-align:middle; }
-      .xrefs-add{ border:1px solid #cbd5e1; background:#f8fafc; border-radius:8px; font-size:.78rem; line-height:1; padding:.1rem .34rem; cursor:pointer; }
+      .xrefs-add{ border:1px solid #cbd5e1; background:#f8fafc; color:#64748b; border-radius:8px; font-size:.78rem; line-height:1; padding:.1rem .34rem; cursor:pointer; }
       .xrefs-add:hover{ background:#eef2f7; }
+      .xrefs-add.has-links{ background:#4b2743; border-color:#4b2743; color:#fff; }
+      .xrefs-empty{ display:flex; align-items:center; gap:.45rem; }
+      .xrefs-add-inline{ border:1px solid #cbd5e1; background:#fff; color:#1f2937; border-radius:7px; font-size:.72rem; padding:.08rem .45rem; line-height:1.2; }
       .xrefs-panel{ margin:.3rem 0 0 1.55rem; padding:.45rem .65rem; border-radius:10px; border:1px solid rgba(0,0,0,.11); background:#eef6ff; }
       .xrefs-panel ul{ margin:0; padding-left:1rem; }
       .xrefs-panel li{ margin:.2rem 0; }
@@ -157,13 +160,41 @@ function snippetText(text, maxLength = 180){
     });
   }
 
+  async function refreshAddButtonState(line, refs){
+    const btnAdd = line.querySelector('.xrefs-add');
+    if (!btnAdd) return;
+    const list = Array.isArray(refs) ? refs : await getLinks(makeKey(line.getAttribute('data-book'), line.getAttribute('data-ch'), line.getAttribute('data-v')));
+    btnAdd.classList.toggle('has-links', list.length > 0);
+  }
   async function renderPanel(line, panel){
     const source = parseSource(line);
     const sourceKey = makeKey(source.book, source.chapter, source.verse);
     const refs = await getLinks(sourceKey);
+        await refreshAddButtonState(line, refs);
 
     if (!refs.length) {
-      panel.innerHTML = '<div class="text-muted small">No hay textos relacionados todavía.</div>';
+ panel.innerHTML = '';
+      const empty = document.createElement('div');
+      empty.className = 'xrefs-empty';
+
+      const msg = document.createElement('span');
+      msg.className = 'text-muted small';
+      msg.textContent = 'No hay textos relacionados todavía.';
+
+      const addBtn = document.createElement('button');
+      addBtn.type = 'button';
+      addBtn.className = 'xrefs-add-inline';
+      addBtn.textContent = 'Agregar';
+      addBtn.addEventListener('click', () => {
+        createModalForVerse(line, async () => {
+          panel.style.display = 'block';
+          await renderPanel(line, panel);
+        });
+      });
+
+      empty.appendChild(msg);
+      empty.appendChild(addBtn);
+      panel.appendChild(empty);
       return;
     }
 
@@ -187,6 +218,7 @@ function snippetText(text, maxLength = 180){
       removeBtn.addEventListener('click', async () => {
         const next = refs.filter((_, i) => i !== idx);
         await saveLinks(sourceKey, next);
+        await refreshAddButtonState(line, next);
         await renderPanel(line, panel);
       });
 
@@ -339,23 +371,14 @@ function snippetText(text, maxLength = 180){
       }
     });
 
-    btnAdd.addEventListener('contextmenu', (event) => {
-      event.preventDefault();
-      createModalForVerse(line, async () => {
-        panel.style.display = 'block';
-        await renderPanel(line, panel);
-      });
-    });
+  
 
     
     inlineWrap.appendChild(btnAdd);
     textNode.insertAdjacentElement('afterend', inlineWrap);
     getLinks(makeKey(line.getAttribute('data-book'), line.getAttribute('data-ch'), line.getAttribute('data-v')))
       .then((refs) => {
-        if (refs.length) {
-          panel.style.display = 'block';
-          renderPanel(line, panel).catch(console.error);
-        }
+              refreshAddButtonState(line, refs).catch(console.error);
       })
       .catch(console.error);
   }
