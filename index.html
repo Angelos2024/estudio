@@ -1261,8 +1261,16 @@ function syncVerseHeights(){
   const rvLines = passageTextRV.querySelectorAll('.verse-line[data-side="rv"]');
   const origLines = passageTextOrig.querySelectorAll('.verse-line[data-side="orig"]');
 
-rvLines.forEach((line) => { line.style.minHeight = ''; });
-  origLines.forEach((line) => { line.style.minHeight = ''; });
+rvLines.forEach((line) => {
+    line.style.minHeight = '';
+    line.style.paddingTop = '';
+    line.style.paddingBottom = '';
+  });
+  origLines.forEach((line) => {
+    line.style.minHeight = '';
+    line.style.paddingTop = '';
+    line.style.paddingBottom = '';
+  });
 
 if(!bookDataOrig || document.body.classList.contains('orig-hidden') || viewMode === 'interlinear') return;
 
@@ -1277,6 +1285,14 @@ const rvHeight = line.getBoundingClientRect().height;
     const maxHeight = Math.max(rvHeight, origHeight);
     line.style.minHeight = `${maxHeight}px`;
     twin.style.minHeight = `${maxHeight}px`;
+    const diff = Math.abs(rvHeight - origHeight);
+    if(diff < 1) return;
+
+    const topPad = Math.floor(diff / 2);
+    const bottomPad = diff - topPad;
+    const shorter = rvHeight < origHeight ? line : twin;
+    shorter.style.paddingTop = `${topPad}px`;
+    shorter.style.paddingBottom = `${bottomPad}px`;
   });
 }
 async function render(ref){
