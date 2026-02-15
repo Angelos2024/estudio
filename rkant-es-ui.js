@@ -33,7 +33,7 @@ if(!el) return;
     const RKANT_BOOKS = [
      'mateo','marcos','lucas','juan','hechos',
       'romanos','1_corintios','2_corintios','galatas','efesios','filipenses','colosenses',
-      '1_tesalonicenses','2_tesalonicenses','1_timoteo','2_timoteo','tito','filemon',
+      '1tesalonicenses','2tesalonicenses','1_timoteo','2_timoteo','tito','filemon',
       'hebreos','santiago','1_pedro','2_pedro','1_juan','2_juan','3_juan','judas','apocalipsis'
   ];
 
@@ -190,6 +190,9 @@ function getAvailableBooks(index){
   const indexedPath = rkantIndex?.[book]?.[ch]?.[v];
   if(indexedPath){
     candidates.push(`./RKANT/out/${indexedPath}`);
+    if(indexedPath.includes('1tesalonicenses/')){
+      candidates.push(`./RKANT/out/${indexedPath.replace('1tesalonicenses/', '1tesalonicences/')}`);
+    }
   }
   candidates.push(...buildRKANTPaths(book, ch, v));
   let htmlText = null;
