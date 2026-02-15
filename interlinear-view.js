@@ -96,6 +96,14 @@ function setGlossCandidate(map, key, gloss, score, usage, exactLemmaMatch = fals
     const map = new Map();
 
     for(const row of rows || []){
+       if(Array.isArray(row)){
+        const lemma = normalizeToken(row[0], false, true);
+        const gloss = takeFirstGloss(row[1]);
+        setGlossCandidate(map, lemma, gloss, 2, 0, true);
+        continue;
+      }
+
+      if(!row || typeof row !== 'object') continue;
       const usage = Number(row?.stats?.tokens) || 0;
       const fallbackGloss = takeFirstGloss(row?.glosas || row?.glosa || row?.strong_detail?.def_rv);
       const normalizedLemma = normalizeToken(row?.griego, false, true);
