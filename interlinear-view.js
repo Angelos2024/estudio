@@ -6,10 +6,11 @@
 
   function normalizeToken(token, isHebrew, isGreek = false){
     let clean = String(token || '').trim();
+     // Quita primero marcas invisibles para que no bloqueen la limpieza de puntuación final/inicial.
+    clean = clean.replace(/[\u200c-\u200f\u202a-\u202e\u2066-\u2069\ufeff]/g, '');
     clean = clean
  .replace(/^[\s.,;:!?¡¿()\[\]{}"'“”‘’«»··;᾽᾿ʼʹʽ]+|[\s.,;:!?¡¿()\[\]{}"'“”‘’«»··;᾽᾿ʼʹʽ]+$/g, '');
-    clean = clean.replace(/[\u200c-\u200f\u202a-\u202e\ufeff]/g, '');
-    
+    clean = clean.replace(/[\u200c-\u200f\u202a-\u202e\u2066-\u2069\ufeff]/g, '');    
     
     if(isHebrew){
       clean = clean.replace(/[\u0591-\u05AF\u05B0-\u05BC\u05BD\u05BF\u05C1-\u05C2\u05C7]/g, '');
