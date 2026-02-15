@@ -9,54 +9,238 @@
 <body class="bg-light">
   <main class="container py-4">
     <h1 class="h4 mb-3">Extractor JSON · contenido visible</h1>
-    <p class="text-muted">Este documento muestra solamente el contenido actualmente visible del lector.</p>
+    <p class="text-muted">Elige un libro del NT y genera la extracción completa del texto griego interlineal.</p>
+    <div class="row g-2 align-items-end mb-3">
+      <div class="col-md-5 col-lg-4">
+        <label for="bookSelect" class="form-label form-label-sm mb-1">Libro</label>
+        <select id="bookSelect" class="form-select form-select-sm"></select>
+      </div>
+      <div class="col-md-auto">
+        <button id="btnGenerate" class="btn btn-success btn-sm" type="button">Generar extracción</button>
+      </div>
+      <div class="col-12">
+        <small id="statusMsg" class="text-muted"></small>
+      </div>
+    </div>
     <div class="d-flex gap-2 mb-3">
       <button id="btnDownload" class="btn btn-primary btn-sm" type="button">Descargar JSON</button>
       <button id="btnCopy" class="btn btn-outline-secondary btn-sm" type="button">Copiar JSON</button>
     </div>
     <pre id="jsonOutput" class="bg-white border rounded p-3 small" style="max-height:70vh;overflow:auto;">Cargando…</pre>
   </main>
+    <script src="./interlinear-view.js"></script>
   <script>
     const out = document.getElementById('jsonOutput');
     const btnDownload = document.getElementById('btnDownload');
     const btnCopy = document.getElementById('btnCopy');
 
+    const btnGenerate = document.getElementById('btnGenerate');
+    const bookSelect = document.getElementById('bookSelect');
+    const statusMsg = document.getElementById('statusMsg');
+
+    const BOOK_OPTIONS = [
+      ['mateo', 'Mateo'], ['marcos', 'Marcos'], ['lucas', 'Lucas'], ['juan', 'Juan'], ['hechos', 'Hechos'],
+      ['romanos', 'Romanos'], ['1_corintios', '1 Corintios'], ['2_corintios', '2 Corintios'], ['galatas', 'Gálatas'], ['efesios', 'Efesios'],
+      ['filipenses', 'Filipenses'], ['colosenses', 'Colosenses'], ['1_tesalonicenses', '1 Tesalonicenses'], ['2_tesalonicenses', '2 Tesalonicenses'],
+      ['1_timoteo', '1 Timoteo'], ['2_timoteo', '2 Timoteo'], ['tito', 'Tito'], ['filemon', 'Filemón'], ['hebreos', 'Hebreos'],
+      ['santiago', 'Santiago'], ['1_pedro', '1 Pedro'], ['2_pedro', '2 Pedro'], ['1_juan', '1 Juan'], ['2_juan', '2 Juan'],
+      ['3_juan', '3 Juan'], ['judas', 'Judas'], ['apocalipsis', 'Apocalipsis']
+    ];
+
+    const NT_TR_BOOKNAME = {
+      mateo: 'Matthew', marcos: 'Mark', lucas: 'Luke', juan: 'John', hechos: 'Acts',
+      romanos: 'Romans', '1_corintios': '1 Corinthians', '2_corintios': '2 Corinthians', galatas: 'Galatians', efesios: 'Ephesians',
+      filipenses: 'Philippians', colosenses: 'Colossians', '1_tesalonicenses': '1 Thessalonians', '2_tesalonicenses': '2 Thessalonians',
+      '1_timoteo': '1 Timothy', '2_timoteo': '2 Timothy', tito: 'Titus', filemon: 'Philemon', hebreos: 'Hebrews',
+      santiago: 'James', '1_pedro': '1 Peter', '2_pedro': '2 Peter', '1_juan': '1 John', '2_juan': '2 John',
+      '3_juan': '3 John', judas: 'Jude', apocalipsis: 'Revelation'
+    };
+
+    let currentPayload = null;
+
+    for (const [slug, name] of BOOK_OPTIONS) {
+      const opt = document.createElement('option');
+      opt.value = slug;
+      opt.textContent = name;
+      bookSelect.appendChild(opt);
+    }
     function safeParse(raw){
       try { return JSON.parse(raw); } catch { return null; }
     }
 
-    const payload = safeParse(sessionStorage.getItem('aboutExtractorPayload') || '');
-    if(!payload){
-      out.textContent = 'No hay datos de extracción disponibles. Regresa al lector y vuelve a ejecutar "Acerca de".';
-      btnDownload.disabled = true;
-      btnCopy.disabled = true;
-    } else {
-      const pretty = JSON.stringify(payload, null, 2);
-      out.textContent = pretty;
-      const fileName = `extractor-${payload?.libros?.[0]?.slug || 'pasaje'}-${Date.now()}.json`;
-
-      btnDownload.addEventListener('click', () => {
-        const blob = new Blob([pretty], { type: 'application/json;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = fileName;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        URL.revokeObjectURL(url);
-      });
-
-      btnCopy.addEventListener('click', async () => {
-        try {
-          await navigator.clipboard.writeText(pretty);
-          btnCopy.textContent = 'Copiado';
-          setTimeout(() => { btnCopy.textContent = 'Copiar JSON'; }, 1200);
-        } catch {
-          btnCopy.textContent = 'No se pudo copiar';
-        }
-      });
+    function normalizeGreekLemmaKey(value){
+      return String(value || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[··.,;:!?“”"(){}\[\]<>«»]/g, '')
+        .trim()
+        .toLowerCase();
     }
+
+    function getMorphBookAbbr(slug){
+      const map = {
+        mateo: 'mt', marcos: 'mk', lucas: 'lk', juan: 'jn', hechos: 'ac',
+        romanos: 'ro', '1_corintios': '1co', '2_corintios': '2co', galatas: 'ga', efesios: 'eph',
+        filipenses: 'php', colosenses: 'col', '1_tesalonicenses': '1th', '2_tesalonicenses': '2th',
+        '1_timoteo': '1ti', '2_timoteo': '2ti', tito: 'tit', filemon: 'phm', hebreos: 'heb',
+        santiago: 'jas', '1_pedro': '1pe', '2_pedro': '2pe', '1_juan': '1jn', '2_juan': '2jn',
+        '3_juan': '3jn', judas: 'jud', apocalipsis: 're'
+      };
+      return map[slug] || null;
+    }
+
+    async function loadJson(path){
+      const res = await fetch(path, { cache: 'force-cache' });
+      if (!res.ok) throw new Error(`No se pudo cargar ${path} (HTTP ${res.status})`);
+      return res.json();
+    }
+
+    function buildChaptersFromVersesForBook(allVerses, bookName){
+      const verses = Array.isArray(allVerses) ? allVerses.filter(v => v && v.book_name === bookName) : [];
+      if (!verses.length) return null;
+
+      let maxCh = 0;
+      const maxVerseByCh = {};
+      for (const v of verses) {
+        const ch = Number(v.chapter);
+        const vs = Number(v.verse);
+        if (Number.isFinite(ch) && ch > maxCh) maxCh = ch;
+        if (!maxVerseByCh[ch] || vs > maxVerseByCh[ch]) maxVerseByCh[ch] = vs;
+      }
+
+      const chapters = Array.from({ length: maxCh }, (_, i) => {
+        const ch = i + 1;
+        return Array.from({ length: maxVerseByCh[ch] || 0 }, () => '');
+      });
+
+      for (const v of verses) {
+        const ch = Number(v.chapter);
+        const vs = Number(v.verse);
+        if (ch >= 1 && ch <= chapters.length && vs >= 1 && vs <= chapters[ch - 1].length) {
+          chapters[ch - 1][vs - 1] = v.text || '';
+        }
+      }
+      return chapters;
+    }
+
+    async function buildPayloadForBook(slug, name){
+      const [rvBook, greekRaw, masterDict] = await Promise.all([
+        loadJson(`./librosRV1960/${slug}.json`),
+        loadJson('./IdiomaORIGEN/Bgriega.json'),
+        loadJson('./diccionario/masterdiccionario.json')
+      ]);
+
+      const morphAbbr = getMorphBookAbbr(slug);
+      const morphData = morphAbbr ? await loadJson(`./diccionario/${morphAbbr}-morphgnt.translit.json`) : null;
+      const morphBook = morphData?.chapters?.[9] || [];
+
+      const masterMap = new Map();
+      for (const item of (masterDict?.items || [])) {
+        const key = normalizeGreekLemmaKey(item?.lemma);
+        if (key && !masterMap.has(key)) masterMap.set(key, item);
+      }
+
+      const bookName = NT_TR_BOOKNAME[slug];
+      const greekBook = buildChaptersFromVersesForBook(greekRaw?.verses, bookName);
+      if (!greekBook) throw new Error(`No se encontró el libro griego para ${name}.`);
+
+      const chapterRows = [];
+      for (let chapter = 1; chapter <= greekBook.length; chapter++) {
+        const versesOrig = greekBook[chapter - 1] || [];
+        const versesRV = rvBook[chapter - 1] || [];
+        const maxVerses = Math.max(versesOrig.length, versesRV.length);
+        const verseRows = [];
+
+        for (let verse = 1; verse <= maxVerses; verse++) {
+          const greekText = versesOrig[verse - 1] || '';
+          const spanishText = versesRV[verse - 1] || '';
+          const interlinear = await window.InterlinearView?.buildInterlinearRows?.(greekText, { isGreek: true }) || { tokens: [], spanishTokens: [] };
+          const morphTokens = morphBook[chapter * 100 + verse] || [];
+
+          const palabras = interlinear.tokens.map((token, index) => {
+            const morph = morphTokens[index] || {};
+            const lemma = morph.lemma || '';
+            const lexical = masterMap.get(normalizeGreekLemmaKey(lemma)) || {};
+            return {
+              palabra_griega: token || '',
+              interlineal_espanol: interlinear.spanishTokens[index] || '-',
+              lemma,
+              forma_lexica: lexical['Forma lexica'] || '',
+              entrada_impresa: lexical.entrada_impresa || '',
+              definicion: lexical.definicion || ''
+            };
+          });
+
+          verseRows.push({
+            versiculo: verse,
+            texto_griego: greekText,
+            texto_espanol_interlineal: spanishText,
+            palabras
+          });
+        }
+
+        chapterRows.push({ capitulo: chapter, versiculos: verseRows });
+      }
+
+      return {
+        tipo: 'extractor_texto_griego_visible',
+        origen: 'IdiomaORIGEN/Bgriega.json',
+        modo_extraccion: 'por_libro',
+        libros: [{ slug, nombre: name, capitulos: chapterRows }]
+      };
+    }
+
+    function setPayload(payload){
+      currentPayload = payload;
+     setPayload(payload);
+      const existingSlug = payload?.libros?.[0]?.slug;
+      if (existingSlug) bookSelect.value = existingSlug;
+    }
+    btnGenerate.addEventListener('click', async () => {
+      const slug = bookSelect.value;
+      const name = bookSelect.options[bookSelect.selectedIndex]?.textContent || slug;
+      btnGenerate.disabled = true;
+      statusMsg.textContent = `Generando extracción de ${name}...`;
+
+      try {
+        const payload = await buildPayloadForBook(slug, name);
+        sessionStorage.setItem('aboutExtractorPayload', JSON.stringify(payload));
+        setPayload(payload);
+        statusMsg.textContent = `Extracción lista para ${name}.`;
+      } catch (err) {
+        statusMsg.textContent = err?.message || 'No se pudo generar la extracción.';
+      } finally {
+        btnGenerate.disabled = false;
+      }
+    });
+
+    btnDownload.addEventListener('click', () => {
+      if (!currentPayload) return;
+      const pretty = JSON.stringify(currentPayload, null, 2);
+      const fileName = `extractor-${currentPayload?.libros?.[0]?.slug || 'pasaje'}-${Date.now()}.json`;
+
+      const blob = new Blob([pretty], { type: 'application/json;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    btnCopy.addEventListener('click', async () => {
+      if (!currentPayload) return;
+      const pretty = JSON.stringify(currentPayload, null, 2);
+      try {
+        await navigator.clipboard.writeText(pretty);
+        btnCopy.textContent = 'Copiado';
+        setTimeout(() => { btnCopy.textContent = 'Copiar JSON'; }, 1200);
+      } catch {
+        btnCopy.textContent = 'No se pudo copiar';
+      }
+    });
   </script>
 </body>
 </html>
