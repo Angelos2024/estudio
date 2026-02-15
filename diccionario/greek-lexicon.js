@@ -784,7 +784,25 @@ box.style.maxHeight = 'calc(100vh - ' + (pad * 2) + 'px)';
 
       var t = ev.target;
       if (!t) return;
+var interlinearWord = null;
+      if (t.classList && t.classList.contains('interlinear-greek')) {
+        interlinearWord = t;
+      } else if (t.closest) {
+        interlinearWord = t.closest('.interlinear-greek');
+      }
 
+      if (interlinearWord) {
+        var line = interlinearWord.closest ? interlinearWord.closest('.verse-line') : null;
+        var ref = getChVFromElement(line);
+        if (!ref) return;
+
+        var interlinearSurface = interlinearWord.textContent || '';
+        var resolved = resolveLemmaFromMorph(ref.ch, ref.v, interlinearSurface);
+
+        ev.stopPropagation();
+        showPopupNear(interlinearWord, interlinearSurface, resolved.lemma);
+        return;
+      }
       if (!t.classList || !t.classList.contains('gk-w')) return;
 
       var sel = window.getSelection ? window.getSelection() : null;
@@ -798,7 +816,32 @@ box.style.maxHeight = 'calc(100vh - ' + (pad * 2) + 'px)';
 showPopupNear(t, g, lemma);
     }, false);
   }
+function resolveLemmaFromMorph(ch, v, surface) {
+    var fallback = {
+      lemma: normalizeGreekToken(surface || '') || String(surface || '').trim(),
+      tr: ''
+    };
 
+    var tokens = getTokens(ch, v);
+    if (!tokens || !tokens.length) return fallback;
+
+    var normalizedSurface = normalizeGreekToken(surface || '');
+    if (!normalizedSurface) return fallback;
+
+    for (var i = 0; i < tokens.length; i++) {
+      var token = tokens[i];
+      if (!token || token.g == null) continue;
+
+      if (normalizeGreekToken(String(token.g)) !== normalizedSurface) continue;
+
+      return {
+        lemma: String(token.lemma || '').trim() || fallback.lemma,
+        tr: normalizeTranslit(token.tr || '')
+      };
+    }
+
+    return fallback;
+  }
   // -------------------- load per book --------------------
   function clearMorph() {
     morphKey = null;
