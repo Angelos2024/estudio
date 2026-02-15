@@ -226,19 +226,26 @@
       line-height:1.25;
       flex:0 0 auto;
     }
-    .interlinear-original{ display:block; }
+.interlinear-original{
+      display:block;
+      min-width:0;
+      max-width:100%;
+    }
 .interlinear-grid{
       display:flex;
       flex-wrap:wrap;
       align-items:flex-start;
       gap:.35rem .75rem;
+        max-width:100%;
+      overflow:hidden;
     }
     .interlinear-word{
       display:inline-flex;
       flex-direction:column;
       align-items:center;
       justify-content:flex-start;
-      min-width:max-content;
+        min-width:0;
+      max-width:100%;
       line-height:1.25;
       font-size:1.4rem;
     }
@@ -251,12 +258,19 @@
       font-family: 'Gentium Plus','SBL Greek','Times New Roman',serif;
       direction:ltr;
       unicode-bidi:plaintext;
+    max-width:100%;
+      overflow-wrap:anywhere;
     }
     .interlinear-spanish{
       margin-top:.1rem;
       color:var(--muted);
       text-align:center;
-      white-space:nowrap;
+ white-space:normal;
+      max-width:10ch;
+      overflow-wrap:anywhere;
+      word-break:break-word;
+      font-size:.78rem;
+      line-height:1.2;
     }
 .interlinear-dir-rtl{ direction:rtl; unicode-bidi:plaintext; }
     .interlinear-dir-ltr{ direction:ltr; unicode-bidi:plaintext; }
