@@ -133,16 +133,17 @@
   ]);
  
    const TORAH = ['genesis', 'exodo', 'levitico', 'numeros', 'deuteronomio'];
+   const HISTORICAL = [
+     'josue', 'jueces', 'rut', '1_samuel', '2_samuel', '1_reyes', '2_reyes',
+     '1_cronicas', '2_cronicas', 'esdras', 'nehemias', 'ester', 'hechos'
+   ];
+   const WISDOM = ['job', 'salmos', 'proverbios', 'eclesiastes', 'cantares'];
    const PROPHETS = [
-     'josue', 'jueces', '1_samuel', '2_samuel', '1_reyes', '2_reyes', 'isaias',
-     'jeremias', 'lamentaciones', 'ezequiel', 'daniel', 'oseas', 'joel', 'amos',
+     'isaias', 'jeremias', 'lamentaciones', 'ezequiel', 'daniel', 'oseas', 'joel', 'amos',
      'abdias', 'jonas', 'miqueas', 'nahum', 'habacuc', 'sofonias', 'hageo',
      'zacarias', 'malaquias'
    ];
-   const WRITINGS = [
-     'rut', '1_cronicas', '2_cronicas', 'esdras', 'nehemias', 'ester', 'job',
-     'salmos', 'proverbios', 'eclesiastes', 'cantares'
-   ];
+   
    const GOSPELS = ['mateo', 'marcos', 'lucas', 'juan'];
    const ACTS = ['hechos'];
    const LETTERS = [
@@ -192,7 +193,9 @@
   const resultsLoadingStage = document.getElementById('resultsLoadingStage');
   const analysisResultsSection = document.getElementById('analysisResultsSection');
   const lemmaSummaryPanel = document.getElementById('lemmaSummaryPanel');
-
+const occurrenceDonutMount = document.getElementById('occurrenceDonutMount');
+  const occurrenceDonut = window.AnalisisOccurrenceDonut?.create(occurrenceDonutMount)
+  
   const nextFrame = () => new Promise((resolve) => requestAnimationFrame(resolve));
   function scrollToLemmaSummary() {
     if (!lemmaSummaryPanel) {
@@ -919,21 +922,37 @@ function mapLxxRefsToHebrewRefs(refs) {
   function groupForBook(book) {
      const slug = LXX_TO_HEBREW_SLUG[book] || book;
      if (TORAH.includes(slug)) return { key: 'torah', label: 'Torah' };
+    if (HISTORICAL.includes(slug)) return { key: 'historicos', label: 'Históricos' };
+     if (WISDOM.includes(slug)) return { key: 'sabiduria', label: 'Sabiduría' };
      if (PROPHETS.includes(slug)) return { key: 'profetas', label: 'Profetas' };
-     if (WRITINGS.includes(slug)) return { key: 'escritos', label: 'Escritos' };
      if (GOSPELS.includes(slug)) return { key: 'evangelios', label: 'Evangelios' };
-     if (ACTS.includes(slug)) return { key: 'hechos', label: 'Hechos' };
      if (LETTERS.includes(slug)) return { key: 'cartas', label: 'Cartas' };
      if (APOCALYPSE.includes(slug)) return { key: 'apocalipsis', label: 'Apocalipsis' };
      return { key: 'otros', label: 'Otros' };
    }
- 
+
+  function prettyBookLabel(book) {
+     return (book || '').replace(/_/g, ' ').replace(/\b\w/g, (m) => m.toUpperCase());
+   }
+
+   function buildBookCountRows(refs) {
+     const counts = new Map();
+     refs.forEach((ref) => {
+       const [book] = String(ref || '').split('|');
+       if (!book) return;
+       const slug = LXX_TO_HEBREW_SLUG[book] || book;
+       counts.set(slug, (counts.get(slug) || 0) + 1);
+     });
+     return [...counts.entries()]
+       .map(([book, count]) => ({ book, label: prettyBookLabel(book), count }))
+       .sort((a, b) => b.count - a.count);
+   }
    function formatRef(book, chapter, verse) {
-     const bookLabel = book.replace(/_/g, ' ').replace(/\b\w/g, (m) => m.toUpperCase());
-     return `${bookLabel} ${chapter}:${verse}`;
+     const bookLabel = prettyBookLabel(book);
+    return `${bookLabel} ${chapter}:${verse}`;
    }
  
-   function classForLang(lang) {
+    function classForLang(lang) {
     if (lang === 'gr' || lang === 'lxx') return 'greek';
      if (lang === 'he') return 'hebrew';
      return 'mono';
@@ -1321,6 +1340,7 @@ function mapLxxRefsToHebrewRefs(refs) {
       lemmaSummary.textContent = 'No se encontraron ocurrencias en los índices disponibles.';
       renderCorrespondence([]);
        lemmaExamples.innerHTML = '';
+      occurrenceDonut?.setData({ es: [], he: [], gr: [] });
       state.last = { term, lang, refs: [], groupsByCorpus: [] };
       return;
      }
@@ -1438,6 +1458,11 @@ const greekTranslit = greekEntry?.['Forma lexica'] || (greekTerm ? transliterate
     }
     const heIndex = await heIndexPromise;
     const heRefs = hebrewCandidate ? (heIndex.tokens?.[hebrewCandidate.normalized] || []) : [];
+        occurrenceDonut?.setData({
+      es: buildBookCountRows(esRefs),
+      he: buildBookCountRows(heRefs),
+      gr: buildBookCountRows([...grRefs, ...lxxMatches.refs])
+    });
 const posTag = lang === 'gr' ? extractPos(entry) : '—';
     const lemmaLabel = lang === 'gr' ? (entry?.lemma || term) : term;
     const translitLabel = lang === 'he'
