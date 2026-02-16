@@ -149,17 +149,24 @@
       font-family: 'SBL Hebrew','Ezra SIL','Times New Roman',serif;
       font-size:1.08rem;
     }
-    .search-row{ gap:.75rem; }
-     .search-row > [class*="col-"]{
+     .search-row{
+      display:grid;
+      grid-template-columns:minmax(0, 1.2fr) minmax(360px, .9fr);
+      gap:.75rem;
+      align-items:stretch;
+    }
+    .search-column,
+    .donut-column{
       display:flex;
       flex-direction:column;
+      min-width:0;
     }
     #occurrenceDonutMount .occurrence-donut.card-like{
       margin-top:0;
       height:100%;
     }
     #occurrenceDonutMount .occurrence-donut-layout{ grid-template-columns:1fr; }
-    #occurrenceDonutMount .donut-svg{ width:170px; height:170px; }
+#occurrenceDonutMount .donut-svg{ width:clamp(132px, 15vw, 170px); height:clamp(132px, 15vw, 170px); }
     #occurrenceDonutMount .donut-total{ font-size:1.6rem; }
     #occurrenceDonutMount .legend-row{ font-size:.8rem; }
     .helper-list li{ margin-bottom:.35rem; }
@@ -292,6 +299,7 @@
       .sitewrap{ max-width: 980px; }
       .panel-header{ padding:.65rem .85rem; }
       .panel-body{ padding:.85rem; }
+      .search-row{ grid-template-columns:minmax(0, 1.1fr) minmax(300px, .9fr); }
       .occurrence-donut-layout{ grid-template-columns:1fr; }
     }
 
@@ -319,9 +327,7 @@
       .greek,
       .hebrew{ font-size:1.2rem; }
     }
-      @media (max-width: 1199.98px){
-      .occurrence-donut-layout{ grid-template-columns:1fr; }
-    }
+     
   </style>
 </head>
 <body>
@@ -339,8 +345,8 @@
     <section class="panel mb-3">
       <div class="panel-header">Buscador y criterio</div>
       <div class="panel-body">
-        <div class="row search-row g-2 align-items-stretch">
-          <div class="col-12 col-lg-5">
+       <div class="search-row">
+          <div class="search-column">
            <div class="search-controls">
               <div>
                 <label for="queryInput" class="form-label fw-semibold">Buscar palabra, lema o frase compuesta</label>
@@ -363,8 +369,8 @@
             </div>
             <div class="form-text">Los filtros ajustan los resultados por corpus según el idioma detectado.</div>
           </div>
-         <div class="col-12 col-lg-7" id="occurrenceDonutMount"></div>
-        </div>
+         <div class="donut-column" id="occurrenceDonutMount"></div>
+       </div>
       </div>
     </section>
 
