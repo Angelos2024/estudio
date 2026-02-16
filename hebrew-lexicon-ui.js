@@ -144,7 +144,14 @@
       .replace(/[\u0591-\u05BD\u05BF\u05C1-\u05C2\u05C4-\u05C7]/g, '')
       .replace(/[\s\u05BE]/g, '')
       .replace(/[׃,:;.!?()"“”]/g, '');
-     
+    }
+  function splitHebrewCompoundTokens(text) {
+    return uniqueList(
+      String(text || '')
+        .split(/[\u05BE\-]/g)
+        .map((part) => normalizeHebrew(part))
+        .filter(Boolean)
+    ); 
   }
    function stripHebrewCantillation(text) {
     return String(text || '').replace(/[\u0591-\u05AF]/g, '');
@@ -924,6 +931,7 @@ function isLikelyVerbEntry(entry) {
     if (!isHebrewWordChar(text[idx])) return;
     const { word, start, end } = expandWord(text, idx);
     if (!pointInsideWordRect(resolved.node, start, end, ev.clientX, ev.clientY)) return;
+    const compoundTokens = splitHebrewCompoundTokens(word);
     const normalized = normalizeHebrew(word);
     const pointed = normalizeHebrewPointed(word);
     if (!normalized) return;
@@ -959,8 +967,16 @@ function isLikelyVerbEntry(entry) {
     try {
       await loadHebrewDict();
       if (requestId !== state.popupRequestId) return;
-     const found = findHebrewEntry(normalized, pointed);
-       const lookupWord = found?.lookup || normalized;
+    const lookupCandidates = uniqueList([
+        ...compoundTokens.sort((a, b) => b.length - a.length),
+        normalized
+      ]);
+      let found = null;
+      for (const candidate of lookupCandidates) {
+        found = findHebrewEntry(candidate, pointed);
+        if (found) break;
+      }
+      const lookupWord = found?.lookup || lookupCandidates[0] || normalized;
       entry = found?.entry || null;
       if (!entry) {
         if (entryEl) entryEl.textContent = '—';
@@ -984,8 +1000,9 @@ function isLikelyVerbEntry(entry) {
   
       const heIndex = await loadIndex('he');
         if (requestId !== state.popupRequestId) return;
-      const refs = heIndex.tokens?.[lookupWord] || heIndex.tokens?.[normalized] || [];
-      if (!refs.length) {
+const refCandidates = uniqueList([lookupWord, normalized, ...compoundTokens]);
+      const refs = [...new Set(refCandidates.flatMap((token) => heIndex.tokens?.[token] || []))];
+       if (!refs.length) {
         if (rkantEl) rkantEl.innerHTML = '<div class="rkant-row muted">Sin referencias hebreas en el índice.</div>';
         return;
       }
