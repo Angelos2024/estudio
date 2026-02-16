@@ -206,6 +206,50 @@
       text-align:center;
       line-height:1.2;
     }
+    .occurrence-donut.card-like{
+      border:1px solid var(--bd);
+      border-radius:12px;
+      padding:.75rem;
+      background:#fff;
+      margin-top:.75rem;
+    }
+    .occurrence-donut-layout{
+      display:grid;
+      grid-template-columns:minmax(230px, 1fr) minmax(180px, 1fr);
+      gap:.75rem;
+      align-items:center;
+    }
+    .donut-stage{ position:relative; display:grid; place-items:center; }
+    .donut-svg{ width:220px; height:220px; }
+    .donut-center{
+      position:absolute;
+      inset:0;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      pointer-events:none;
+    }
+    .donut-total{ font-weight:700; font-size:2rem; line-height:1; }
+    .donut-subtitle{ font-size:.8rem; color:#64748b; margin-top:.25rem; }
+    .donut-center [data-role="reset"]{ pointer-events:auto; }
+    .donut-legend{ display:grid; gap:.45rem; align-content:start; }
+    .legend-row{
+      width:100%;
+      border:1px solid var(--bd);
+      border-radius:10px;
+      background:#fff;
+      display:flex;
+      align-items:center;
+      gap:.45rem;
+      padding:.35rem .45rem;
+      font-size:.86rem;
+      text-align:left;
+    }
+    .legend-dot{ width:.7rem; height:.7rem; border-radius:50%; flex:0 0 .7rem; }
+    .legend-label{ flex:1; }
+    .legend-value{ font-weight:700; }
     @media (max-width: 767.98px){
       .analysis-title{
         position:static;
@@ -236,6 +280,7 @@
       .sitewrap{ max-width: 980px; }
       .panel-header{ padding:.65rem .85rem; }
       .panel-body{ padding:.85rem; }
+      .occurrence-donut-layout{ grid-template-columns:1fr; }
     }
 
     @media (min-width: 1025px) and (max-width: 1366px){
@@ -261,6 +306,9 @@
       .lexicon-grid{ grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
       .greek,
       .hebrew{ font-size:1.2rem; }
+    }
+      @media (max-width: 1199.98px){
+      .occurrence-donut-layout{ grid-template-columns:1fr; }
     }
   </style>
 </head>
@@ -298,6 +346,7 @@
             </div>
             <div class="form-text">Los filtros ajustan los resultados por corpus según el idioma detectado.</div>
           </div>
+        <div id="occurrenceDonutMount"></div>
         </div>
       </div>
     </section>
@@ -341,6 +390,7 @@
       </div>
     </div>
   </main>
+    <script src="./analisis-donut.js"></script>
   <script src="./analisis.js"></script>
   <script>
     (function(){
