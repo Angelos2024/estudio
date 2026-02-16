@@ -867,6 +867,9 @@ function isLikelyVerbEntry(entry) {
    function isHebrewWordChar(ch) {
     if (!ch) return false;
     const code = ch.codePointAt(0);
+      // El maqaf (U+05BE) separa palabras en hebreo bíblico y debe tratarse
+    // como límite de clic, no como parte de una sola palabra compuesta.
+    if (code === 0x05BE) return false;
     return (
       (code >= 0x0590 && code <= 0x05FF) ||
       (code >= 0x0300 && code <= 0x036F)
