@@ -339,27 +339,31 @@
     <section class="panel mb-3">
       <div class="panel-header">Buscador y criterio</div>
       <div class="panel-body">
-        <div class="row search-row g-2">
+        <div class="row search-row g-2 align-items-stretch">
           <div class="col-12 col-lg-5">
-            <label for="queryInput" class="form-label fw-semibold">Buscar palabra, lema o frase compuesta</label>
-            <div class="input-group">
-              <input id="queryInput" class="form-control" placeholder="Ej: אָב, πατήρ, origen, fuente" value="πατήρ"/>
-             <button id="analyzeBtn" class="btn btn-primary" type="button">Analizar</button>
-            </div>
-            <div class="form-text">Se aceptan términos en hebreo, griego o español. El sistema prioriza el lema y las variantes morfológicas.</div>
-          </div>
-          <div class="col-12 col-lg-4">
-            <label class="form-label fw-semibold">Filtros rápidos</label>
-            <div class="d-flex flex-wrap gap-2">
-              <button class="btn btn-soft btn-sm" type="button" data-filter="torah">Torah</button>
-              <button class="btn btn-soft btn-sm" type="button" data-filter="profetas">Profetas</button>
-              <button class="btn btn-soft btn-sm" type="button" data-filter="evangelios">Evangelios</button>
-              <button class="btn btn-soft btn-sm" type="button" data-filter="cartas">Cartas</button>
-              <button class="btn btn-soft btn-sm" type="button" data-filter="todo">Todo</button>
+           <div class="search-controls">
+              <div>
+                <label for="queryInput" class="form-label fw-semibold">Buscar palabra, lema o frase compuesta</label>
+                <div class="input-group">
+                  <input id="queryInput" class="form-control" placeholder="Ej: אָב, πατήρ, origen, fuente" value="πατήρ"/>
+                 <button id="analyzeBtn" class="btn btn-primary" type="button">Analizar</button>
+                </div>
+                <div class="form-text">Se aceptan términos en hebreo, griego o español. El sistema prioriza el lema y las variantes morfológicas.</div>
+              </div>
+              <div>
+                <label class="form-label fw-semibold">Filtros rápidos</label>
+                <div class="d-flex flex-wrap gap-2">
+                  <button class="btn btn-soft btn-sm" type="button" data-filter="torah">Torah</button>
+                  <button class="btn btn-soft btn-sm" type="button" data-filter="profetas">Profetas</button>
+                  <button class="btn btn-soft btn-sm" type="button" data-filter="evangelios">Evangelios</button>
+                  <button class="btn btn-soft btn-sm" type="button" data-filter="cartas">Cartas</button>
+                  <button class="btn btn-soft btn-sm" type="button" data-filter="todo">Todo</button>
+                </div>
+              </div>
             </div>
             <div class="form-text">Los filtros ajustan los resultados por corpus según el idioma detectado.</div>
           </div>
-          <div class="col-12 col-lg-3" id="occurrenceDonutMount"></div>
+         <div class="col-12 col-lg-7" id="occurrenceDonutMount"></div>
         </div>
       </div>
     </section>
