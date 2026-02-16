@@ -150,6 +150,18 @@
       font-size:1.08rem;
     }
     .search-row{ gap:.75rem; }
+     .search-row > [class*="col-"]{
+      display:flex;
+      flex-direction:column;
+    }
+    #occurrenceDonutMount .occurrence-donut.card-like{
+      margin-top:0;
+      height:100%;
+    }
+    #occurrenceDonutMount .occurrence-donut-layout{ grid-template-columns:1fr; }
+    #occurrenceDonutMount .donut-svg{ width:170px; height:170px; }
+    #occurrenceDonutMount .donut-total{ font-size:1.6rem; }
+    #occurrenceDonutMount .legend-row{ font-size:.8rem; }
     .helper-list li{ margin-bottom:.35rem; }
     .loading-indicator{
       display:inline-flex;
@@ -328,7 +340,7 @@
       <div class="panel-header">Buscador y criterio</div>
       <div class="panel-body">
         <div class="row search-row g-2">
-          <div class="col-12 col-lg-6">
+          <div class="col-12 col-lg-5">
             <label for="queryInput" class="form-label fw-semibold">Buscar palabra, lema o frase compuesta</label>
             <div class="input-group">
               <input id="queryInput" class="form-control" placeholder="Ej: אָב, πατήρ, origen, fuente" value="πατήρ"/>
@@ -336,9 +348,10 @@
             </div>
             <div class="form-text">Se aceptan términos en hebreo, griego o español. El sistema prioriza el lema y las variantes morfológicas.</div>
           </div>
-          <div class="col-12 col-lg-6">
-         <label class="form-label fw-semibold">Filtros rápidos</label>
- <button class="btn btn-soft btn-sm" type="button" data-filter="torah">Torah</button>
+          <div class="col-12 col-lg-4">
+            <label class="form-label fw-semibold">Filtros rápidos</label>
+            <div class="d-flex flex-wrap gap-2">
+              <button class="btn btn-soft btn-sm" type="button" data-filter="torah">Torah</button>
               <button class="btn btn-soft btn-sm" type="button" data-filter="profetas">Profetas</button>
               <button class="btn btn-soft btn-sm" type="button" data-filter="evangelios">Evangelios</button>
               <button class="btn btn-soft btn-sm" type="button" data-filter="cartas">Cartas</button>
@@ -346,7 +359,7 @@
             </div>
             <div class="form-text">Los filtros ajustan los resultados por corpus según el idioma detectado.</div>
           </div>
-        <div id="occurrenceDonutMount"></div>
+          <div class="col-12 col-lg-3" id="occurrenceDonutMount"></div>
         </div>
       </div>
     </section>
