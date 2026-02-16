@@ -151,8 +151,8 @@
     }
      .search-row{
       display:grid;
-      grid-template-columns:minmax(0, 1.2fr) minmax(360px, .9fr);
-      gap:.75rem;
+      grid-template-columns:minmax(0, 1.28fr) minmax(320px, .82fr);
+      gap:.65rem;
       align-items:stretch;
     }
     .search-column,
@@ -165,8 +165,12 @@
       margin-top:0;
       height:100%;
     }
-    #occurrenceDonutMount .occurrence-donut-layout{ grid-template-columns:1fr; }
-#occurrenceDonutMount .donut-svg{ width:clamp(132px, 15vw, 170px); height:clamp(132px, 15vw, 170px); }
+ #occurrenceDonutMount .occurrence-donut-layout{
+      grid-template-columns:minmax(150px, .8fr) minmax(145px, .92fr);
+      gap:.5rem;
+      align-items:start;
+    }
+    #occurrenceDonutMount .donut-svg{ width:clamp(132px, 15vw, 170px); height:clamp(132px, 15vw, 170px); }
     #occurrenceDonutMount .donut-total{ font-size:1.6rem; }
     #occurrenceDonutMount .legend-row{ font-size:.8rem; }
     .helper-list li{ margin-bottom:.35rem; }
