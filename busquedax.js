@@ -1124,8 +1124,8 @@ function mapLxxRefsToHebrewRefs(refs) {
         <div class="small muted">${totalCount} ocurrencia(s) en total.</div>
       `;
       const button = document.createElement('button');
-      button.className = 'btn btn-soft btn-sm';
-      button.type = 'button';
+      button.className = `btn btn-sm result-toggle-btn${corpus.expanded ? ' is-open' : ''}`;
+    button.type = 'button';
       button.textContent = corpus.expanded ? 'Ocultar resultados' : 'Ver resultados';
       info.appendChild(meta);
       info.appendChild(button);
@@ -1154,8 +1154,8 @@ function mapLxxRefsToHebrewRefs(refs) {
           bookHeadText.appendChild(bookHeader);
           bookHeadText.appendChild(bookMeta);
           const toggleBookBtn = document.createElement('button');
-          toggleBookBtn.className = 'btn btn-outline-primary btn-sm';
-          toggleBookBtn.type = 'button';
+          toggleBookBtn.className = `btn btn-sm result-toggle-btn${group.expanded ? ' is-open' : ''}`;
+         toggleBookBtn.type = 'button';
           toggleBookBtn.textContent = group.expanded ? 'Ocultar resultados' : 'Ver resultados';
           bookTop.appendChild(bookHeadText);
           bookTop.appendChild(toggleBookBtn);
