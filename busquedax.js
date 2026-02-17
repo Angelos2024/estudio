@@ -1095,8 +1095,11 @@ function mapLxxRefsToHebrewRefs(refs) {
       if (corpus.expanded) {
         filteredGroups.forEach((group) => {
           const bookBlock = document.createElement('div');
-          bookBlock.className = 'mb-2';
-          const bookHeader = document.createElement('div');
+ bookBlock.className = 'book-result-card';
+          const bookTop = document.createElement('div');
+          bookTop.className = 'd-flex flex-wrap justify-content-between align-items-center gap-2';
+         
+         const bookHeader = document.createElement('div');
           bookHeader.className = 'fw-semibold';
           bookHeader.textContent = group.label;
           const bookMeta = document.createElement('div');
@@ -1106,20 +1109,51 @@ function mapLxxRefsToHebrewRefs(refs) {
           } else {
             bookMeta.textContent = `${group.count} ocurrencia(s).`;
           }
-          bookBlock.appendChild(bookHeader);
-          bookBlock.appendChild(bookMeta);
+         const bookHeadText = document.createElement('div');
+          bookHeadText.appendChild(bookHeader);
+          bookHeadText.appendChild(bookMeta);
+          const toggleBookBtn = document.createElement('button');
+          toggleBookBtn.className = 'btn btn-outline-primary btn-sm';
+          toggleBookBtn.type = 'button';
+          toggleBookBtn.textContent = group.expanded ? 'Ocultar resultados' : 'Ver resultados';
+          bookTop.appendChild(bookHeadText);
+          bookTop.appendChild(toggleBookBtn);
+          bookBlock.appendChild(bookTop);
+         
           const bookList = document.createElement('div');
-          bookList.className = 'mt-1 d-grid gap-1';
+bookList.className = 'mt-2 d-grid gap-1';
          const highlightQuery = highlightQueries[lang] || '';
-          group.items.forEach((item) => {
-            const row = document.createElement('div');
-            row.className = classForLang(lang);
-            row.innerHTML = `${escapeHtml(item.ref)} · ${highlightText(item.text, highlightQuery, lang)}`;
-            bookList.appendChild(row);
-          });
-          bookBlock.appendChild(bookList);
-         if (lang === 'es' && group.hasMore) {
-            const loadMoreWrapper = document.createElement('div');
+          if (group.expanded) {
+            group.items.forEach((item) => {
+              const row = document.createElement('div');
+              row.className = 'verse-row';
+              const textWrap = document.createElement('div');
+              textWrap.className = `${classForLang(lang)} mb-2`;
+              textWrap.innerHTML = `<span class="verse-ref">${escapeHtml(item.ref)}</span> · ${highlightText(item.text, highlightQuery, lang)}`;
+              const actions = document.createElement('div');
+              actions.className = 'd-flex justify-content-end';
+              const openBtn = document.createElement('button');
+              openBtn.className = 'btn btn-primary btn-sm';
+              openBtn.type = 'button';
+              openBtn.textContent = 'Abrir';
+              openBtn.addEventListener('click', () => {
+                const p = new URLSearchParams();
+                p.set('book', item.book);
+                p.set('name', group.label);
+                p.set('search', `${item.chapter}:${item.verse}`);
+                p.set('version', 'RVR1960');
+                p.set('orig', '1');
+                location.href = `./index.html?${p.toString()}`;
+              });
+              actions.appendChild(openBtn);
+              row.appendChild(textWrap);
+              row.appendChild(actions);
+              bookList.appendChild(row);
+            });
+            bookBlock.appendChild(bookList);
+          }
+         if (group.expanded && lang === 'es' && group.hasMore) {
+           const loadMoreWrapper = document.createElement('div');
             loadMoreWrapper.className = 'mt-2';
             const loadMoreButton = document.createElement('button');
             loadMoreButton.className = 'btn btn-soft btn-sm';
@@ -1139,6 +1173,10 @@ function mapLxxRefsToHebrewRefs(refs) {
             loadMoreWrapper.appendChild(loadMoreButton);
             bookBlock.appendChild(loadMoreWrapper);
           }
+          toggleBookBtn.addEventListener('click', () => {
+            group.expanded = !group.expanded;
+            renderResults(groupsByCorpus);
+          });
           list.appendChild(bookBlock);
         });
        }
@@ -1190,6 +1228,9 @@ function mapLxxRefsToHebrewRefs(refs) {
           const verseText = preloadedTexts?.get?.(ref);
            if (!verseText) throw new Error('no preloaded');
            group.items.push({
+             book: bookName,
+              chapter,
+              verse,
              ref: formatRef(bookName, chapter, verse),
              text: verseText
            });
@@ -1198,11 +1239,17 @@ function mapLxxRefsToHebrewRefs(refs) {
              const verses = await loadChapterText(lang, bookName, chapter);
              const verseText = verses?.[verse - 1] || '';
              group.items.push({
+               book: bookName,
+               chapter,
+               verse,
                ref: formatRef(bookName, chapter, verse),
                text: verseText
              });
            } catch (innerError) {
              group.items.push({
+                  book: bookName,
+               chapter,
+               verse,
                ref: formatRef(bookName, chapter, verse),
                text: 'Texto no disponible.'
              });
@@ -1225,11 +1272,17 @@ function mapLxxRefsToHebrewRefs(refs) {
         const verses = await loadChapterText('es', book, chapter);
         const verseText = verses?.[verse - 1] || '';
         group.items.push({
+          book,
+          chapter,
+          verse,
           ref: formatRef(book, chapter, verse),
           text: verseText
         });
       } catch (error) {
         group.items.push({
+          book,
+          chapter,
+          verse,
           ref: formatRef(book, chapter, verse),
           text: 'Texto no disponible.'
         });
