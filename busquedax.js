@@ -684,10 +684,11 @@ async function loadLxxBookData(bookCode) {
   }
 
   async function buildLxxMatches(normalizedGreek, maxRefs = 40) {
-    if (!normalizedGreek) return { refs: [], texts: new Map() };
-    if (state.lxxSearchCache.has(normalizedGreek)) return state.lxxSearchCache.get(normalizedGreek);
+    if (!normalizedGreek) return { refs: [], texts: new Map(), highlightTerms: [] };
+   if (state.lxxSearchCache.has(normalizedGreek)) return state.lxxSearchCache.get(normalizedGreek);
     const refs = [];
     const texts = new Map();
+       const highlightTerms = new Set();
     for (const file of LXX_FILES) {
       if (refs.length >= maxRefs) break;
       try {
@@ -699,7 +700,10 @@ async function loadLxxBookData(bookCode) {
               const hit = (tokens || []).some((token) => {
                 const lemmaKey = normalizeGreek(token?.lemma || '');
                 const wordKey = normalizeGreek(token?.w || '');
-                return lemmaKey === normalizedGreek || wordKey === normalizedGreek;
+if (lemmaKey === normalizedGreek || wordKey === normalizedGreek) {
+                  if (token?.w) highlightTerms.add(token.w);
+                  return true;
+                }
               });
               if (!hit) continue;
               const ref = `${book}|${chapter}|${verse}`;
@@ -718,8 +722,8 @@ async function loadLxxBookData(bookCode) {
         continue;
       }
     }
-    const payload = { refs, texts };
-    state.lxxSearchCache.set(normalizedGreek, payload);
+    const payload = { refs, texts, highlightTerms: [...highlightTerms] };
+   state.lxxSearchCache.set(normalizedGreek, payload);
     return payload;
   }
 
@@ -1531,8 +1535,8 @@ const greekTranslit = greekEntry?.['Forma lexica'] || (greekTerm ? transliterate
       ? (lang === 'gr' && greekTerm === normalized
           ? Promise.resolve(initialLxxMatches)
           : buildLxxMatches(greekTerm, 70))
-      : Promise.resolve({ refs: [], texts: new Map() });
-    const lxxMatches = await lxxMatchesPromise;
+      : Promise.resolve({ refs: [], texts: new Map(), highlightTerms: [] });
+       const lxxMatches = await lxxMatchesPromise;
 
     let hebrewCandidate = null;
     if (lang === 'he') {
@@ -1568,10 +1572,14 @@ const posTag = lang === 'gr' ? extractPos(entry) : '—';
       `Hebreo: ${heRefs.length}`,
       `RVR1960: ${esRefs.length}`
     ]);
+        const lxxHighlightQuery = lxxMatches.highlightTerms?.length
+      ? lxxMatches.highlightTerms.join(' ')
+      : (greekLemma !== '—' ? greekLemma : (lang === 'gr' ? term : ''));
+       
        const highlightQueries = {
       gr: greekLemma !== '—' ? greekLemma : (lang === 'gr' ? term : ''),
-      lxx: greekLemma !== '—' ? greekLemma : (lang === 'gr' ? term : ''),
-      he: hebrewCandidate?.word || (lang === 'he' ? term : ''),
+      lxx: lxxHighlightQuery,
+        he: hebrewCandidate?.word || (lang === 'he' ? term : ''),
       es: esDisplayWord
     };
     const cards = [];
