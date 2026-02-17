@@ -216,8 +216,10 @@ const HEBREO_BOOK_BASE = params.get('heBase') || './IdiomaORIGEN/';
 const ORIGINAL_ENABLED_DEFAULT = (params.get('orig') ?? '1') !== '0';
 
 // Estado actual (se puede cambiar desde el buscador)
-let currentBookSlug = (params.get('book') || '1_corintios').trim();
-let currentBookName = (params.get('name') || prettyBookName(currentBookSlug));
+const initialBookParam = (params.get('book') || '').trim();
+const initialNameParam = (params.get('name') || '').trim();
+let currentBookSlug = initialBookParam || '1_corintios';
+let currentBookName = initialNameParam || prettyBookName(currentBookSlug);
 
 /***********************
  * Canon + aliases (Genesis -> Apocalipsis)
@@ -834,6 +836,32 @@ function resolveBookSlug(bookRaw){
 
   return slugifyBookName(bookRaw);
 }
+    function normalizeBookSlugInput(bookRaw, fallbackName=''){
+  const raw = String(bookRaw || '').trim();
+  if(raw){
+    if(/^\d+$/.test(raw)){
+      const idx = Number(raw) - 1;
+      if(idx >= 0 && idx < BOOK_ORDER.length) return BOOK_ORDER[idx];
+    }
+
+    const resolved = resolveBookSlug(raw);
+    if(BOOK_ORDER.includes(resolved)) return resolved;
+  }
+
+  const fallback = String(fallbackName || '').trim();
+  if(fallback){
+    const resolvedFallback = resolveBookSlug(fallback);
+    if(BOOK_ORDER.includes(resolvedFallback)) return resolvedFallback;
+  }
+
+  return '';
+}
+
+currentBookSlug = normalizeBookSlugInput(initialBookParam, initialNameParam) || '1_corintios';
+if(!initialNameParam){
+  currentBookName = prettyBookName(currentBookSlug);
+}
+
 
 /***********************
  * Mapeos para Original (book_name dentro de los JSON grandes)
@@ -1214,13 +1242,26 @@ async function ensureBookLoaded(slug, displayName){
 function parseSearch(raw){
   const q = normalizeSpaces(raw);
   if(!q) return null;
+ // ✅ Permite "cap" o "cap:verso" usando el libro actual (ej: enlaces desde búsquedas)
+  const chapterOnlyMatch = q.match(/^(\d+)(?::(\d+)(?:\s*-\s*(\d+))?)?\s*$/);
+  if(chapterOnlyMatch){
+    const chapter = parseInt(chapterOnlyMatch[1], 10);
+    const verseStart = chapterOnlyMatch[2] ? parseInt(chapterOnlyMatch[2], 10) : null;
+    const verseEnd = chapterOnlyMatch[3] ? parseInt(chapterOnlyMatch[3], 10) : (verseStart ? verseStart : null);
+    return {
+      slug: currentBookSlug,
+      bookDisplay: currentBookName || prettyBookName(currentBookSlug),
+      chapter,
+      verseStart,
+      verseEnd
+    };
+  }
 
-  // ✅ Solo acepta búsquedas que incluyan libro
-   const m = q.match(/^(.+?)(?:\s+)?(\d+)(?::(\d+)(?:\s*-\s*(\d+))?)?\s*$/);
+  const m = q.match(/^(.+?)(?:\s+)?(\d+)(?::(\d+)(?:\s*-\s*(\d+))?)?\s*$/);
   if(!m) return null;
 
   const bookRaw = m[1];
-  const slug = resolveBookSlug(bookRaw);
+  const slug = normalizeBookSlugInput(bookRaw, bookRaw) || resolveBookSlug(bookRaw);
   const chapter = parseInt(m[2],10);
   const verseStart = m[3] ? parseInt(m[3],10) : null;
   const verseEnd = m[4] ? parseInt(m[4],10) : (verseStart ? verseStart : null);
@@ -1482,7 +1523,7 @@ function setFromUrl(){
   const nm = p.get('name');
   const view = p.get('view');
 
-  if(bk) currentBookSlug = bk.trim();
+  if(bk) currentBookSlug = normalizeBookSlugInput(bk, nm || currentBookName) || currentBookSlug;
   if(view === 'interlinear') viewMode = 'interlinear';
   if(nm) currentBookName = nm.trim();
   if(q) searchInput.value = q;
