@@ -56,8 +56,8 @@
     
     .muted{ color: var(--muted); }
     
-    .search-row{ display:grid; grid-template-columns:minmax(0, 1.28fr) minmax(320px, .82fr); gap:.65rem; align-items:stretch; }
-    .search-column, .donut-column{ display:flex; flex-direction:column; min-width:0; }
+.search-row{ display:grid; grid-template-columns:minmax(0, 1fr); gap:.65rem; align-items:stretch; }
+     .search-column{ display:flex; flex-direction:column; min-width:0; }
     .loading-indicator{ display:inline-flex; align-items:center; gap:.5rem; font-size:.85rem; color:var(--muted); }
     .loading-indicator .spinner{ width:1rem; height:1rem; border:2px solid #cbd5f5; border-top-color:var(--primary); border-radius:50%; animation:spin .8s linear infinite; }
     .results-loading-stage{ min-height:320px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.85rem; color:var(--muted); background:color-mix(in srgb, var(--soft-bg) 55%, #ffffff); border:1px dashed var(--bd); border-radius:12px; margin-bottom:1rem; }
@@ -65,9 +65,10 @@
     .form-control,.form-select{ background:#ffffff; border-color:color-mix(in srgb, var(--text) 55%, #ffffff); color:var(--text); }
     .btn-primary{ background:var(--primary); border-color:var(--primary); color:var(--primary-contrast); }
     .btn-outline-primary{ color:var(--primary); border-color:var(--primary); }
-    .example-card{ border:1px dashed var(--outline); background:var(--soft-bg); border-radius:10px; padding:.65rem .75rem; font-size:.9rem; }
-    .greek{ font-family:'Gentium Plus','SBL Greek','Times New Roman',serif; font-size:1.05rem; }
-    .hebrew{ direction:rtl; unicode-bidi:plaintext; font-family:'SBL Hebrew','Ezra SIL','Times New Roman',serif; font-size:1.08rem; }
+   .search-inline{ width:100%; }
+    @media (min-width: 992px){
+      .search-inline{ max-width: 820px; margin-left:auto; }
+    }
     @keyframes spin{ to{ transform:rotate(360deg);} }
   </style>
 </head>
@@ -75,52 +76,32 @@
   <header class="topbar">
     <div class="container sitewrap py-2 d-flex flex-wrap gap-2 align-items-center">
         <button id="backToReader" class="btn btn-outline-primary" type="button">← Volver al lector</button>
-      <div class="fw-semibold">Búsqueda por corpus</div>
+      <div class="search-inline">
+        <div class="input-group">
+          <input id="bxQueryInput" class="form-control" placeholder="Ej: אָב, πατήρ, origen, fuente" value=""/>
+          <button id="bxAnalyzeBtn" class="btn btn-primary" type="button">Buscar</button>
+        </div>
+      </div>
       </div>
   </header>
     
  <main class="container sitewrap my-3 my-lg-4">
     <section class="panel mb-3">
-      <div class="panel-header">Buscador y criterio</div>
-            <div class="panel-body">
-              
-      <div class="search-row">
-          <div class="search-column">
-            <label for="bxQueryInput" class="form-label fw-semibold">Buscar palabra, lema o frase compuesta</label>
-            <div class="input-group">
-              <input id="bxQueryInput" class="form-control" placeholder="Ej: אָב, πατήρ, origen, fuente" value="πατήρ"/>
-              <button id="bxAnalyzeBtn" class="btn btn-primary" type="button">Analizar</button>
-            </div>
-            <div class="form-text">Se aceptan términos en hebreo, griego o español. El sistema prioriza el lema y variantes.</div>
-            <div class="mt-2 d-flex flex-wrap gap-2">
-              <button class="btn btn-soft btn-sm" type="button" data-filter="torah">Torah</button>
-              <button class="btn btn-soft btn-sm" type="button" data-filter="profetas">Profetas</button>
-              <button class="btn btn-soft btn-sm" type="button" data-filter="evangelios">Evangelios</button>
-              <button class="btn btn-soft btn-sm" type="button" data-filter="cartas">Cartas</button>
-              <button class="btn btn-soft btn-sm" type="button" data-filter="todo">Todo</button>
-            </div>
-          </div>
-          <div class="donut-column" id="bxOccurrenceDonutMount"></div>
+        <div class="panel-header">Buscador de palabras</div>
+      <div class="panel-body">
+        <div class="form-text mb-2">Se aceptan términos en hebreo, griego o español. El sistema prioriza el lema y variantes.</div>
+        <div class="mt-2 d-flex flex-wrap gap-2">
+          <button class="btn btn-soft btn-sm" type="button" data-filter="torah">Torah</button>
+          <button class="btn btn-soft btn-sm" type="button" data-filter="profetas">Profetas</button>
+          <button class="btn btn-soft btn-sm" type="button" data-filter="evangelios">Evangelios</button>
+          <button class="btn btn-soft btn-sm" type="button" data-filter="cartas">Cartas</button>
+          <button class="btn btn-soft btn-sm" type="button" data-filter="todo">Todo</button>
         </div>
       </div>
     </section>
 
     <div id="bxAnalysisResultsSection" class="row g-3">
-      <div class="col-12 col-lg-4">
-        <section id="bxLemmaSummaryPanel" class="panel h-100">
-          <div class="panel-header">Resumen del lema</div>
-          <div class="panel-body">
-            <div id="bxLemmaTags" class="d-flex flex-wrap gap-2"></div>
-            <p id="bxLemmaSummary" class="mb-2 small muted">Escribe un término para generar el resumen del lema.</p>
-            <div>
-              <div class="fw-semibold">Correspondencia multilingüe</div>
-              <div id="bxLemmaCorrespondence" class="d-grid gap-2 mt-2"></div>
-            </div>
-            <div id="bxLemmaExamples" class="d-grid gap-2"></div>
-          </div>
-        </section>
-      </div>
-      <div class="col-12 col-lg-8">
+            <div class="col-12">
         <section class="panel">
           <div class="panel-header d-flex flex-wrap justify-content-between align-items-center gap-2">
             <span>Resultados por corpus</span>
@@ -139,7 +120,7 @@
     </div>
   </main>
 
-   <script src="./analisis-donut.js"></script>
+ 
   <script src="./busquedax.js"></script>
   <script>
   document.getElementById('backToReader')?.addEventListener('click', () => {
