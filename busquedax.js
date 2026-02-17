@@ -176,7 +176,7 @@
     lxxBookStatsCache: new Map(),
     lxxSearchCache: new Map(),
      filter: 'todo',
-      languageScope: 'all',
+      languageScope: 'es',
     last: null,
      isLoading: false
     };
@@ -1421,9 +1421,13 @@ bookList.className = 'mt-2 d-grid gap-1';
     await nextFrame();
       try {
     const lang = detectLang(term);
+        if (state.languageScope !== 'all') {
+      state.languageScope = lang;
+      if (languageScopeSelect) languageScopeSelect.value = lang;
+    }
            const selectedScope = getLanguageScope();
-    const effectiveScope = selectedScope === 'all' ? lang : selectedScope;
-    const enabledCorpora = new Set(getCorporaForScope(effectiveScope));
+    const effectiveScope = selectedScope;
+       const enabledCorpora = new Set(getCorporaForScope(effectiveScope));
     const normalized = normalizeByLang(term, lang);
  
      let entry = null;
