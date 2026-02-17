@@ -34,7 +34,11 @@ let HIGHLIGHT_QUERY = '';
 // cache de packs: key = `${lang}|${slug}|${ch}` -> array de versos
 const packCache = new Map();
 const CORPUS_LABELS = { es: 'RVR1960', gr: 'RKANT', he: 'Hebreo' };
-
+const NT_BOOK_SLUGS = new Set([
+  'mateo','marcos','lucas','juan','hechos','romanos','1_corintios','2_corintios','galatas','efesios',
+  'filipenses','colosenses','1_tesalonicenses','2_tesalonicenses','1_timoteo','2_timoteo','tito','filemon',
+  'hebreos','santiago','1_pedro','2_pedro','1_juan','2_juan','3_juan','judas','apocalipsis'
+]);
 /***********************
  * Helpers
  ***********************/
@@ -664,6 +668,42 @@ function parseRef(ref){
   const [slug, chS, vS] = String(ref).split('|');
   return { slug, ch: Number(chS), v: Number(vS) };
 }
+function isSpanishLikeQuery(q){
+  if(!q) return false;
+  if(hasGreekChars(q)) return false;
+  if(/[\u0590-\u05FF]/.test(q)) return false;
+  return /[a-záéíóúñü]/i.test(q);
+}
+
+function mergeUniqueItems(...groups){
+  const out = [];
+  const seen = new Set();
+  for(const group of groups){
+    for(const item of (group || [])){
+      const key = `${item.lang}|${item.ref}`;
+      if(seen.has(key)) continue;
+      seen.add(key);
+      out.push(item);
+    }
+  }
+  return out;
+}
+
+function buildCrossCorpusByReference(esItems){
+  const gr = [];
+  const he = [];
+  for(const item of esItems){
+    const { slug, ch, v } = parseRef(item.ref);
+    if(!slug || !ch || !v) continue;
+    const ref = `${slug}|${ch}|${v}`;
+    if(NT_BOOK_SLUGS.has(slug)){
+      gr.push({ lang:'gr', ref });
+    }else{
+      he.push({ lang:'he', ref });
+    }
+  }
+  return { gr, he };
+}
 
 async function getChapterPack(lang, slug, ch){
   const key = `${lang}|${slug}|${ch}`;
@@ -716,26 +756,43 @@ const occurrences = books.reduce((sum, book) => sum + book.verses.length, 0);
 
     const summary = document.createElement('div');
     summary.className = 'mb-2';
-    summary.innerHTML = `
-      <div class="fw-semibold">${esc(title)}</div>
-      <div class="small text-muted">Resultados en ${corpus.books.length} libro(s)</div>
-      <div class="small text-muted">${corpus.occurrences} ocurrencia(s) en total.</div>
-    `;
-     section.appendChild(summary);
+   summary.innerHTML = `<div class="fw-semibold">${esc(title)}</div>`;
+    section.appendChild(summary);
 
+    const corpusInfo = document.createElement('div');
+    corpusInfo.className = 'd-flex justify-content-between align-items-center mb-2 gap-2';
+    corpusInfo.innerHTML = `
+      <div>
+        <div class="small text-muted">Resultados en ${corpus.books.length} libro(s)</div>
+        <div class="small text-muted">${corpus.occurrences} ocurrencia(s) en total.</div>
+      </div>
+    `;
+const corpusToggle = document.createElement('button');
+    corpusToggle.type = 'button';
+    corpusToggle.className = 'btn btn-sm btn-outline-secondary';
+    corpusToggle.textContent = 'Ver resultados';
+    corpusInfo.appendChild(corpusToggle);
+    section.appendChild(corpusInfo);
+    
     const booksContainer = document.createElement('div');
     booksContainer.className = 'd-grid gap-2';
     for(const book of corpus.books){
-      const bookDetails = document.createElement('details');
-      bookDetails.className = 'border rounded p-2';
+      const bookBlock = document.createElement('div');
+      bookBlock.className = 'border rounded p-2';
 
-      const bookSummary = document.createElement('summary');
-      bookSummary.className = 'fw-semibold';
-      bookSummary.textContent = `${book.label} (${book.verses.length})`;
-      bookDetails.appendChild(bookSummary);
+      const bookHeader = document.createElement('div');
+      bookHeader.className = 'd-flex justify-content-between align-items-center gap-2';
+      bookHeader.innerHTML = `<div class="fw-semibold">${esc(book.label)} (${book.verses.length})</div>`;
+      const bookToggle = document.createElement('button');
+      bookToggle.type = 'button';
+      bookToggle.className = 'btn btn-sm btn-outline-secondary';
+      bookToggle.textContent = 'Desplegar';
+      bookHeader.appendChild(bookToggle);
+      bookBlock.appendChild(bookHeader);
 
       const verseList = document.createElement('div');
       verseList.className = 'd-grid gap-2 mt-2';
+            verseList.hidden = true;
       for(const verseInfo of book.verses){
         const verseRow = document.createElement('div');
         verseRow.className = 'border rounded p-2';
@@ -761,10 +818,22 @@ const occurrences = books.reduce((sum, book) => sum + book.verses.length, 0);
           if(box) box.textContent = 'No se pudo cargar el texto del verso.';
         });
       }
-    bookDetails.appendChild(verseList);
-      booksContainer.appendChild(bookDetails);
+ bookBlock.appendChild(verseList);
+      booksContainer.appendChild(bookBlock);
+
+      bookToggle.addEventListener('click', () => {
+        const show = verseList.hidden;
+        verseList.hidden = !show;
+        bookToggle.textContent = show ? 'Ocultar' : 'Desplegar';
+      });
     }
+     booksContainer.hidden = true;
     section.appendChild(booksContainer);
+    corpusToggle.addEventListener('click', () => {
+      const show = booksContainer.hidden;
+      booksContainer.hidden = !show;
+      corpusToggle.textContent = show ? 'Ocultar resultados' : 'Ver resultados';
+    });
     resultsEl.appendChild(section);
   }
 }
@@ -828,9 +897,15 @@ const refItems = getReferenceMatches(mode, q);
     statusEl.textContent = 'Buscando...';
     const items = await searchWithWorker(mode, q);
 
+       let mergedItems = items;
+    if(mode === 'all' && isSpanishLikeQuery(q)){
+      const esItems = items.filter((item) => item.lang === 'es');
+      const mirrored = buildCrossCorpusByReference(esItems);
+      mergedItems = mergeUniqueItems(items, mirrored.gr, mirrored.he);
+    }
     // items: [{lang, ref}]
-     RAW_RESULTS = items;
-       statusEl.textContent = `Listo. ${RAW_RESULTS.length} resultado(s).`;
+     RAW_RESULTS = mergedItems;
+    statusEl.textContent = `Listo. ${RAW_RESULTS.length} resultado(s).`;
     renderResultsByCorpus(RAW_RESULTS, q);
   }catch(err){
     statusEl.textContent = `Error: ${String(err?.message || err)}`;
