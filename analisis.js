@@ -188,7 +188,7 @@
    const lemmaSummary = document.getElementById('lemmaSummary');
   const lemmaCorrespondence = document.getElementById('lemmaCorrespondence');
    const lemmaExamples = document.getElementById('lemmaExamples');
-  const resultsByCorpus = document.getElementById('resultsByCorpus');
+  const deepLexicalAnalysis = document.getElementById('deepLexicalAnalysis');
   const resultsLoadingIndicator = document.getElementById('resultsLoadingIndicator');
   const resultsLoadingStage = document.getElementById('resultsLoadingStage');
   const analysisResultsSection = document.getElementById('analysisResultsSection');
@@ -213,8 +213,8 @@ const occurrenceDonutMount = document.getElementById('occurrenceDonutMount');
   
    if (resultsLoadingIndicator) resultsLoadingIndicator.hidden = !isLoading;
     if (resultsLoadingStage) resultsLoadingStage.hidden = !isLoading;
-    if (resultsByCorpus) resultsByCorpus.hidden = isLoading;
-    if (analyzeBtn) analyzeBtn.disabled = isLoading;
+    if (deepLexicalAnalysis) deepLexicalAnalysis.hidden = isLoading;
+   if (analyzeBtn) analyzeBtn.disabled = isLoading;
   }
  
 function normalizeGreek(text) {
@@ -1033,209 +1033,244 @@ function mapLxxRefsToHebrewRefs(refs) {
     `;
   }
 
- function renderResults(groupsByCorpus, highlightQueries = state.last?.highlightQueries || {}) {
-    resultsByCorpus.innerHTML = '';
-    if (!groupsByCorpus.length) {
-      resultsByCorpus.innerHTML = '<div class="col-12"><div class="muted small">Sin resultados en el corpus.</div></div>';
-       return;
-     }
+  function cleanHebrewToken(token) {
+    return String(token || '').replace(/[׃.,;:!?"“”(){}\[\]<>«»]/g, '');
+  }
 
-   groupsByCorpus.forEach((corpus) => {
-      const { lang, groups } = corpus;
-      const wrapper = document.createElement('div');
-      wrapper.className = 'col-12';
-       const header = document.createElement('div');
-      header.className = 'fw-semibold mb-2';
-      header.textContent = langLabels[lang] || lang;
-      wrapper.appendChild(header);
+   function tokenizeGreekText(text) {
+    return String(text || '')
+      .split(/\s+/)
+      .map((token) => cleanGreekToken(token))
+      .filter(Boolean);
+  }
 
-    if (corpus.loading) {
-        const loading = document.createElement('div');
-        loading.className = 'muted small';
-        loading.textContent = 'Cargando resultados...';
-        wrapper.appendChild(loading);
-        resultsByCorpus.appendChild(wrapper);
-        return;
+   function tokenizeHebrewText(text) {
+    return String(text || '')
+      .split(/\s+/)
+      .map((token) => cleanHebrewToken(token))
+      .filter(Boolean);
+  }
+ 
+
+    function toPercent(part, total) {
+    if (!total) return '0.0%';
+    return `${((part / total) * 100).toFixed(1)}%`;
+  }
+
+  function buildGreekLexicalRoot(normalizedLemma) {
+    const endings = ['ων','ους','ουσ','οις','αις','ειν','εις','ας','ης','ος','οι','αι','ον','ην','ου','ω'];
+    for (const ending of endings) {
+      if (normalizedLemma.endsWith(ending) && normalizedLemma.length - ending.length >= 3) {
+        return normalizedLemma.slice(0, -ending.length);
       }
-      const filteredGroups = groups.filter((group) => {
-        if (state.filter === 'todo') return true;
-        return group.category === state.filter;
-       });
- 
+    }
+    return normalizedLemma.slice(0, Math.min(4, normalizedLemma.length));
+  }
 
-      if (!filteredGroups.length) {
-        const empty = document.createElement('div');
-        empty.className = 'muted small';
-        empty.textContent = 'No hay resultados para el filtro seleccionado.';
-        wrapper.appendChild(empty);
-        resultsByCorpus.appendChild(wrapper);
-        return;
+          function buildHebrewLexicalRoot(baseLemma) {
+    const consonants = normalizeHebrew(baseLemma || '');
+    return consonants.slice(0, Math.min(3, consonants.length || 0));
+  }
+
+      function getContextCategoryRules(lang) {
+    if (lang === 'he') {
+      return [
+        { key: 'Uso biológico', words: ['בן', 'אב', 'אם'] },
+        { key: 'Uso divino', words: ['שמים', 'אלהים', 'יהוה'] },
+        { key: 'Uso genealógico', words: ['דוד', 'אברהם', 'יצחק', 'יעקב'] }
+      ];
+    }
+    return [
+      { key: 'Uso biológico', words: ['υιος', 'μητηρ', 'πατηρ'] },
+      { key: 'Uso divino', words: ['ουρανος', 'θεος', 'κυριος'] },
+      { key: 'Uso genealógico', words: ['δαβιδ', 'αβρααμ', 'ισαακ', 'ιακωβ'] }
+    ];
+  }
+           
+   function classifyContextByRules(windowTokens, lang) {
+    const normalizedTokens = windowTokens
+      .map((token) => (lang === 'he' ? normalizeHebrew(token) : normalizeGreek(token)))
+      .filter(Boolean);
+    const rules = getContextCategoryRules(lang);
+    for (const rule of rules) {
+      if (rule.words.some((word) => normalizedTokens.includes(word))) {
+        return rule.key;
       }
-
-            const totalCount = filteredGroups.reduce((sum, group) => sum + group.count, 0);
-      const info = document.createElement('div');
-      info.className = 'd-flex align-items-center justify-content-between mb-2';
-      const meta = document.createElement('div');
-      meta.innerHTML = `
-        <div class="fw-semibold">Resultados en ${filteredGroups.length} libro(s)</div>
-        <div class="small muted">${totalCount} ocurrencia(s) en total.</div>
-      `;
-      const button = document.createElement('button');
-      button.className = 'btn btn-soft btn-sm';
-      button.type = 'button';
-      button.textContent = corpus.expanded ? 'Ocultar resultados' : 'Ver resultados';
-      info.appendChild(meta);
-      info.appendChild(button);
-      wrapper.appendChild(info);
-
-      const list = document.createElement('div');
-      list.className = 'd-grid gap-2';
-      if (corpus.expanded) {
-        filteredGroups.forEach((group) => {
-          const bookBlock = document.createElement('div');
-          bookBlock.className = 'mb-2';
-          const bookHeader = document.createElement('div');
-          bookHeader.className = 'fw-semibold';
-          bookHeader.textContent = group.label;
-          const bookMeta = document.createElement('div');
-          bookMeta.className = 'small muted';
-         if (lang === 'es' && group.limit) {
-            bookMeta.textContent = `${group.loadedCount} de ${group.count} ocurrencia(s).`;
-          } else {
-            bookMeta.textContent = `${group.count} ocurrencia(s).`;
-          }
-          bookBlock.appendChild(bookHeader);
-          bookBlock.appendChild(bookMeta);
-          const bookList = document.createElement('div');
-          bookList.className = 'mt-1 d-grid gap-1';
-         const highlightQuery = highlightQueries[lang] || '';
-          group.items.forEach((item) => {
-            const row = document.createElement('div');
-            row.className = classForLang(lang);
-            row.innerHTML = `${escapeHtml(item.ref)} · ${highlightText(item.text, highlightQuery, lang)}`;
-            bookList.appendChild(row);
-          });
-          bookBlock.appendChild(bookList);
-         if (lang === 'es' && group.hasMore) {
-            const loadMoreWrapper = document.createElement('div');
-            loadMoreWrapper.className = 'mt-2';
-            const loadMoreButton = document.createElement('button');
-            loadMoreButton.className = 'btn btn-soft btn-sm';
-            loadMoreButton.type = 'button';
-            loadMoreButton.disabled = group.loadingMore;
-            loadMoreButton.textContent = group.loadingMore
-              ? 'Cargando...'
-              : 'Cargar más en RVR1960';
-            loadMoreButton.addEventListener('click', async () => {
-              if (group.loadingMore) return;
-              group.loadingMore = true;
-              renderResults(groupsByCorpus);
-              await loadMoreRvr1960(group);
-              group.loadingMore = false;
-              renderResults(groupsByCorpus);
-            });
-            loadMoreWrapper.appendChild(loadMoreButton);
-            bookBlock.appendChild(loadMoreWrapper);
-          }
-          list.appendChild(bookBlock);
-        });
-       }
-      wrapper.appendChild(list);
-    
-       button.addEventListener('click', () => {
-        corpus.expanded = !corpus.expanded;
-        renderResults(groupsByCorpus);
-      });
+    }
+    return 'Uso no determinado';
+  }
  
 
-      resultsByCorpus.appendChild(wrapper);
-     });
-   }
- 
+ async function buildDeepLexicalModules({ lang, normalizedLemma, displayLemma, grRefs, heRefs, lxxRefs }) {
+    const formStats = new Map();
+    const contextStats = new Map();
+    const lexicalCandidates = new Map();
+    let totalOccurrences = 0;
 
-  async function buildBookGroups(refs, lang, preloadedTexts = null) {
-     const grouped = new Map();
-     refs.forEach((ref) => {
-       const [book] = ref.split('|');
-       if (!grouped.has(book)) grouped.set(book, []);
-       grouped.get(book).push(ref);
-     });
-     
-        const limit = lang === 'es' ? 20 : 12;
-     const groups = [];
-     for (const [book, bookRefs] of grouped.entries()) {
-       const { key, label } = groupForBook(book);
-       const group = {
-         label: book.replace(/_/g, ' ').replace(/\b\w/g, (m) => m.toUpperCase()),
-         items: [],
-         count: bookRefs.length,
-         expanded: false,
-         category: key,
-         categoryLabel: label,
-         refs: bookRefs,
-         limit,
-         loadedCount: 0,
-         hasMore: false,
-         loadingMore: false
-       };
-       const refsToLoad = bookRefs.slice(0, limit);
-       for (const ref of refsToLoad) {
-         const [bookName, chapterRaw, verseRaw] = ref.split('|');
-         const chapter = Number(chapterRaw);
-         const verse = Number(verseRaw);
-         try {
+  
+        const pushForm = (form, source, morph = '') => {
+      const key = `${source}::${form}::${morph}`;
+      const current = formStats.get(key) || { form, source, morph, count: 0 };
+      current.count += 1;
+      formStats.set(key, current);
+      totalOccurrences += 1;
+    };
 
-          const verseText = preloadedTexts?.get?.(ref);
-           if (!verseText) throw new Error('no preloaded');
-           group.items.push({
-             ref: formatRef(bookName, chapter, verse),
-             text: verseText
-           });
-         } catch (error) {
-          try {
-             const verses = await loadChapterText(lang, bookName, chapter);
-             const verseText = verses?.[verse - 1] || '';
-             group.items.push({
-               ref: formatRef(bookName, chapter, verse),
-               text: verseText
-             });
-           } catch (innerError) {
-             group.items.push({
-               ref: formatRef(bookName, chapter, verse),
-               text: 'Texto no disponible.'
-             });
-           }
-         }
-       }
-      group.loadedCount = group.items.length;
-       group.hasMore = lang === 'es' && group.loadedCount < group.count;
-       groups.push(group);
-       }
-    return groups.sort((a, b) => b.count - a.count);
-   }
- async function loadMoreRvr1960(group) {
-    const refsToLoad = group.refs.slice(group.loadedCount);
-    for (const ref of refsToLoad) {
+    const pushContext = (tokens, hitIndex, analysisLang) => {
+      const start = Math.max(0, hitIndex - 3);
+      const end = Math.min(tokens.length, hitIndex + 4);
+      const window = tokens.slice(start, end);
+      const category = classifyContextByRules(window, analysisLang);
+      contextStats.set(category, (contextStats.get(category) || 0) + 1);
+    };
+
+    for (const ref of grRefs) {
       const [book, chapterRaw, verseRaw] = ref.split('|');
       const chapter = Number(chapterRaw);
       const verse = Number(verseRaw);
       try {
-        const verses = await loadChapterText('es', book, chapter);
-        const verseText = verses?.[verse - 1] || '';
-        group.items.push({
-          ref: formatRef(book, chapter, verse),
-          text: verseText
+        const verses = await loadChapterText('gr', book, chapter);
+        const tokens = tokenizeGreekText(verses?.[verse - 1] || '');
+        tokens.forEach((token, index) => {
+          if (normalizeGreek(token) !== normalizedLemma) return;
+          pushForm(token, 'RKANT');
+          pushContext(tokens, index, 'gr');
         });
       } catch (error) {
-        group.items.push({
-          ref: formatRef(book, chapter, verse),
-          text: 'Texto no disponible.'
-        });
+         continue;
       }
     }
-    group.loadedCount = group.items.length;
-    group.hasMore = false;
+
+    for (const ref of lxxRefs) {
+      const [book, chapterRaw, verseRaw] = ref.split('|');
+      const chapter = Number(chapterRaw);
+      const verse = Number(verseRaw);
+      const tokens = await loadLxxVerseTokens(book, chapter, verse);
+      if (!tokens) continue;
+      const words = tokens.map((token) => token?.w || '').filter(Boolean);
+      tokens.forEach((token, index) => {
+        if (normalizeGreek(token?.lemma || '') !== normalizedLemma) return;
+        pushForm(token?.w || token?.lemma || '', 'LXX', token?.morph || '');
+        pushContext(words, index, 'gr');
+      });
+    }
+
+    for (const ref of heRefs) {
+      const [book, chapterRaw, verseRaw] = ref.split('|');
+      const chapter = Number(chapterRaw);
+      const verse = Number(verseRaw);
+      try {
+        const verses = await loadChapterText('he', book, chapter);
+        const tokens = tokenizeHebrewText(verses?.[verse - 1] || '');
+        tokens.forEach((token, index) => {
+          if (normalizeHebrew(token) !== normalizedLemma) return;
+          pushForm(token, 'Hebreo');
+          pushContext(tokens, index, 'he');
+        });
+        } catch (error) {
+        continue;
+      }
+    }
+ const networkLang = lang === 'he' ? 'he' : 'gr';
+    if (networkLang === 'gr') {
+      await loadDictionary();
+      const grIndex = await loadIndex('gr');
+      const root = buildGreekLexicalRoot(normalizedLemma);
+      state.dict.forEach((item) => {
+        const lemmaNorm = normalizeGreek(item?.lemma || '');
+        if (!lemmaNorm || lemmaNorm === normalizedLemma || lemmaNorm.length < 3) return;
+        if (!lemmaNorm.startsWith(root) && !lemmaNorm.includes(root)) return;
+        const total = (grIndex.tokens?.[lemmaNorm] || []).length;
+        if (!total) return;
+        if (!lexicalCandidates.has(lemmaNorm)) {
+          lexicalCandidates.set(lemmaNorm, { lemma: item.lemma || lemmaNorm, count: total });
+        }
+      });
+    } else {
+      await loadHebrewDictionary();
+      const heIndex = await loadIndex('he');
+      const root = buildHebrewLexicalRoot(displayLemma);
+      state.hebrewDict.forEach((item) => {
+        const lemma = item?.strong_detail?.lemma || item?.hebreo || '';
+        const normalized = normalizeHebrew(lemma);
+        if (!normalized || normalized === normalizedLemma) return;
+        if (!normalized.startsWith(root) && !normalized.includes(root)) return;
+        const total = (heIndex.tokens?.[normalized] || []).length || Number(item?.stats?.tokens || 0);
+        if (!total) return;
+        if (!lexicalCandidates.has(normalized)) {
+          lexicalCandidates.set(normalized, { lemma, count: total });
+        }
+      });
+    }
+
+    const forms = [...formStats.values()].sort((a, b) => b.count - a.count);
+    const network = [...lexicalCandidates.values()].sort((a, b) => b.count - a.count).slice(0, 20);
+    const contexts = [...contextStats.entries()]
+      .map(([category, count]) => ({ category, count, percent: toPercent(count, totalOccurrences) }))
+      .sort((a, b) => b.count - a.count);
+
+    return { forms, network, contexts, totalOccurrences };
   }
+   function renderDeepLexicalAnalysis(modules) {
+    deepLexicalAnalysis.innerHTML = '';
+    const wrapper = document.createElement('div');
+    wrapper.className = 'col-12';
+
+    if (!modules || !modules.totalOccurrences) {
+      wrapper.innerHTML = '<div class="small muted">No hay datos suficientes para generar el análisis léxico profundo.</div>';
+      deepLexicalAnalysis.appendChild(wrapper);
+      return;
+    }
+
+    const formsRows = modules.forms.map((item) => `
+      <tr>
+        <td>${escapeHtml(item.form)}</td>
+        <td>${escapeHtml(item.source)}</td>
+        <td>${item.count}</td>
+        <td>${escapeHtml(item.morph || '—')}</td>
+      </tr>
+    `).join('');
+
+    const networkRows = modules.network.length
+      ? modules.network.map((item) => `<li><span class="fw-semibold">${escapeHtml(item.lemma)}</span> <span class="small muted">(${item.count} ocurrencias)</span></li>`).join('')
+      : '<li class="small muted">No se detectaron lemas relacionados desde la base local.</li>';
+
+    const contextRows = modules.contexts.map((item) => `
+      <tr>
+        <td>${escapeHtml(item.category)}</td>
+        <td>${item.count}</td>
+        <td>${item.percent}</td>
+      </tr>
+    `).join('');
+
+    wrapper.innerHTML = `
+      <details open>
+        <summary class="fw-semibold mb-2">Mostrar / ocultar análisis</summary>
+        <div class="small muted mb-2">Total de ocurrencias evaluadas: ${modules.totalOccurrences}</div>
+        <div class="table-responsive mb-3">
+          <div class="fw-semibold mb-2">1) Formas flexionadas encontradas en la base</div>
+          <table class="table table-sm align-middle">
+            <thead><tr><th>Forma</th><th>Corpus</th><th>Frecuencia</th><th>Morfología</th></tr></thead>
+            <tbody>${formsRows || '<tr><td colspan="4" class="small muted">Sin coincidencias.</td></tr>'}</tbody>
+          </table>
+        </div>
+        <div class="mb-3">
+          <div class="fw-semibold mb-2">2) Red léxica derivada desde la base</div>
+          <ul class="mb-0">${networkRows}</ul>
+        </div>
+        <div class="table-responsive">
+          <div class="fw-semibold mb-2">3) Distribución contextual automática</div>
+          <table class="table table-sm align-middle">
+            <thead><tr><th>Categoría</th><th>Cantidad</th><th>Porcentaje</th></tr></thead>
+            <tbody>${contextRows || '<tr><td colspan="3" class="small muted">Sin contexto.</td></tr>'}</tbody>
+          </table>
+        </div>
+      </details>
+    `;
+
+    deepLexicalAnalysis.appendChild(wrapper);
+  }
+
   async function buildSummary(term, lang, entry, hebrewEntry, refs, highlightQueries = {}) {
      const lemma = entry?.lemma || term;
      const transliteration = entry?.['Forma lexica'] || '—';
@@ -1341,8 +1376,9 @@ function mapLxxRefsToHebrewRefs(refs) {
       renderCorrespondence([]);
        lemmaExamples.innerHTML = '';
       occurrenceDonut?.setData({ es: [], he: [], gr: [] });
-      state.last = { term, lang, refs: [], groupsByCorpus: [] };
-      return;
+      deepLexicalAnalysis.innerHTML = '<div class="col-12"><div class="small muted">No hay ocurrencias para construir el análisis léxico profundo.</div></div>';
+      state.last = { term, lang, refs: [], lexicalModules: null };
+     return;
      }
  
    
@@ -1557,26 +1593,17 @@ samplesTasks.push(
     }
        await Promise.all(samplesTasks);
     renderCorrespondence(cards);
-const corpusConfigs = [
-      { lang: 'gr', refs: grRefs, preloaded: null },
-      { lang: 'lxx', refs: lxxMatches.refs, preloaded: lxxMatches.texts },
-      { lang: 'he', refs: heRefs, preloaded: null },
-      { lang: 'es', refs: esRefs, preloaded: null }
-    ];
-       const groupsByCorpus = corpusConfigs.map((config) => ({
-      lang: config.lang,
-      groups: [],
-      expanded: false,
-      loading: true
-    }));
-       renderResults(groupsByCorpus, highlightQueries);
-    state.last = { term, lang, refs, groupsByCorpus, highlightQueries };
-       await Promise.all(corpusConfigs.map(async (config, index) => {
-      const groups = await buildBookGroups(config.refs, config.lang, config.preloaded);
-      groupsByCorpus[index].groups = groups;
-      groupsByCorpus[index].loading = false;
-       renderResults(groupsByCorpus, highlightQueries);
-    }));
+deepLexicalAnalysis.innerHTML = '<div class="col-12"><div class="small muted">Construyendo módulos de análisis...</div></div>';
+    const lexicalModules = await buildDeepLexicalModules({
+      lang,
+      normalizedLemma: lang === 'he' ? normalizeHebrew(term) : normalizeGreek(greekLemma !== '—' ? greekLemma : term),
+      displayLemma: lang === 'he' ? term : (greekLemma !== '—' ? greekLemma : term),
+      grRefs,
+      heRefs,
+      lxxRefs: lxxMatches.refs
+    });
+    renderDeepLexicalAnalysis(lexicalModules);
+    state.last = { term, lang, refs, lexicalModules };
         } catch (error) {
       console.error('Error en el análisis:', error);
     } finally {
@@ -1598,9 +1625,7 @@ const corpusConfigs = [
        }
      });
 
-  if (state.last?.groupsByCorpus) {
-      renderResults(state.last.groupsByCorpus || []);
-     }
+  // Los filtros rápidos no alteran el módulo léxico profundo actual.
    }
  
 
