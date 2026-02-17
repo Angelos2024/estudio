@@ -1321,13 +1321,30 @@ function mapLxxRefsToHebrewRefs(refs) {
     }
 
     const forms = [...formStats.values()].sort((a, b) => b.count - a.count);
+    const sourceOrder = ['LXX (base completa)', 'Hebreo (base completa)', 'RKANT (base completa)', 'Español (base completa)'];
+    const sourceLabels = {
+      'LXX (base completa)': 'LXX',
+      'Hebreo (base completa)': 'Hebreo',
+      'RKANT (base completa)': 'RKANT',
+      'Español (base completa)': 'RVR1960'
+    };
+    const formsBySource = sourceOrder.map((source) => {
+      const rows = forms.filter((item) => item.source === source);
+      const total = rows.reduce((acc, row) => acc + row.count, 0);
+      return {
+        source,
+        label: sourceLabels[source] || source,
+        rows,
+        total
+      };
+    }).filter((item) => item.rows.length);
     const network = [...lexicalCandidates.values()].sort((a, b) => b.count - a.count).slice(0, 20);
     const contexts = [...contextStats.entries()]
       .map(([category, count]) => ({ category, count, percent: toPercent(count, totalOccurrences) }))
       .sort((a, b) => b.count - a.count);
 
-    return { forms, network, contexts, totalOccurrences };
-  }
+    return { forms, formsBySource, network, contexts, totalOccurrences };
+ }
    function renderDeepLexicalAnalysis(modules) {
     deepLexicalAnalysis.innerHTML = '';
     const wrapper = document.createElement('div');
@@ -1339,14 +1356,26 @@ function mapLxxRefsToHebrewRefs(refs) {
       return;
     }
 
-    const formsRows = modules.forms.map((item) => `
-      <tr>
-        <td>${escapeHtml(item.form)}</td>
-        <td>${escapeHtml(item.source)}</td>
-        <td>${item.count}</td>
-        <td>${escapeHtml(describeMorphTag(item.morph || ''))}</td>
+   const formsByBookRows = (modules.formsBySource || []).map((group) => {
+      const formsRows = group.rows.map((item) => `
+        <tr>
+          <td>${escapeHtml(item.form)}</td>
+          <td>${item.count}</td>
+          <td>${escapeHtml(describeMorphTag(item.morph || ''))}</td>
         </tr>
-    `).join('');
+   `).join('');
+      return `
+        <details class="mb-2">
+          <summary class="fw-semibold">${escapeHtml(group.label)} <span class="small muted">(${group.total} coincidencias)</span></summary>
+          <div class="table-responsive mt-2">
+            <table class="table table-sm align-middle">
+              <thead><tr><th>Forma</th><th>Frecuencia</th><th>Morfología</th></tr></thead>
+              <tbody>${formsRows || '<tr><td colspan="3" class="small muted">Sin coincidencias.</td></tr>'}</tbody>
+            </table>
+          </div>
+        </details>
+      `;
+    }).join('');
 
     const networkRows = modules.network.length
       ? modules.network.map((item) => `<li><span class="fw-semibold">${escapeHtml(item.lemma)}</span> <span class="small muted">(${item.count} ocurrencias)</span></li>`).join('')
@@ -1365,11 +1394,8 @@ function mapLxxRefsToHebrewRefs(refs) {
         <summary class="fw-semibold mb-2">Mostrar / ocultar análisis</summary>
         <div class="small muted mb-2">Total de ocurrencias evaluadas para contexto: ${modules.totalOccurrences}</div>
         <div class="table-responsive mb-3">
-          <div class="fw-semibold mb-2">1) Formas flexionadas encontradas en la base</div>
-          <table class="table table-sm align-middle">
-            <thead><tr><th>Forma</th><th>Corpus</th><th>Frecuencia</th><th>Morfología</th></tr></thead>
-            <tbody>${formsRows || '<tr><td colspan="4" class="small muted">Sin coincidencias.</td></tr>'}</tbody>
-          </table>
+    <div class="fw-semibold mb-2">1) Formas flexionadas encontradas en la base (por libro)</div>
+          ${formsByBookRows || '<div class="small muted">Sin coincidencias.</div>'}
         </div>
         <div class="mb-3">
           <div class="fw-semibold mb-2">2) Red léxica derivada desde la base</div>
