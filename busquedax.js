@@ -165,6 +165,7 @@
  const state = {
     dict: null,
     dictMap: new Map(),
+      dictSpanishMap: new Map(),
     hebrewDict: null,
     hebrewDictMap: new Map(),
      indexes: {},
@@ -417,6 +418,7 @@ const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
     state.dict = data;
     const map = new Map();
     const translitMap = new Map();
+       const spanishMap = new Map();
     (data.items || []).forEach((item) => {
       const lemmaKey = normalizeGreek(item.lemma);
       const formKey = normalizeGreek(item['Forma flexionada del texto']);
@@ -430,9 +432,15 @@ const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
         if (!key || translitMap.has(key)) return;
         translitMap.set(key, item);
       });
+      extractSpanishTokensFromDefinition(item?.definicion || '').forEach((token) => {
+        if (!token) return;
+        if (!spanishMap.has(token)) spanishMap.set(token, []);
+        spanishMap.get(token).push(item);
+      });
     });
     state.dictMap = map;
     state.dictTranslitMap = translitMap;
+       state.dictSpanishMap = spanishMap;
     return data;
   }
   async function findGreekEntryFromSpanish(term) {
@@ -445,6 +453,28 @@ const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
       if (!key) continue;
       const entry = state.dictTranslitMap.get(key);
       if (entry) return entry;
+    }
+    for (const candidate of candidates) {
+      const key = normalizeSpanish(candidate);
+      if (!key) continue;
+      const spanishMatches = state.dictSpanishMap.get(key) || [];
+      if (!spanishMatches.length) continue;
+      const ranked = [...spanishMatches].sort((a, b) => {
+        const score = (item) => {
+          const def = normalizeSpanish(item?.definicion || '');
+          const rawDef = String(item?.definicion || '').toLowerCase();
+          let value = 0;
+          const headDef = rawDef.replace(/nombre\s+prop\.?\s*/g, '').trim();
+          if (rawDef.includes('nombre prop')) value += 4;
+          if (normalizeSpanish(headDef).startsWith(key)) value += 4;
+          if (def.startsWith(key)) value += 3;
+          if (def.includes(key)) value += 2;
+          if (normalizeTransliteration(item?.['Forma flexionada del texto']).includes(key)) value += 1;
+          return value;
+        };
+        return score(b) - score(a);
+      });
+      if (ranked[0]) return ranked[0];
     }
     return null;
   }
