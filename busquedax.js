@@ -173,9 +173,10 @@
     lxxFileCache: new Map(),
     lxxBookCache: new Map(),
     lxxVerseCache: new Map(),
-  lxxBookStatsCache: new Map(),
+    lxxBookStatsCache: new Map(),
     lxxSearchCache: new Map(),
      filter: 'todo',
+      languageScope: 'all',
     last: null,
      isLoading: false
     };
@@ -194,6 +195,7 @@
   const resultsLoadingStage = document.getElementById('bxResultsLoadingStage');
   const analysisResultsSection = document.getElementById('bxAnalysisResultsSection');
   const lemmaSummaryPanel = document.getElementById('bxLemmaSummaryPanel');
+    const languageScopeSelect = document.getElementById('bxLanguageScope');
 
   
   const nextFrame = () => new Promise((resolve) => requestAnimationFrame(resolve));
@@ -367,6 +369,18 @@ function detectLang(text) {
     return 'es';
   }
 
+   function getLanguageScope() {
+    const scope = String(state.languageScope || 'all');
+    if (scope === 'es' || scope === 'gr' || scope === 'he') return scope;
+    return 'all';
+  }
+
+  function getCorporaForScope(scope) {
+    if (scope === 'es') return ['es'];
+    if (scope === 'gr') return ['gr', 'lxx'];
+    if (scope === 'he') return ['he', 'lxx'];
+    return ['gr', 'lxx', 'he', 'es'];
+  }
   function normalizeByLang(text, lang) {
     if (lang === 'gr') return normalizeGreek(text);
     if (lang === 'he') return normalizeHebrew(text);
@@ -1407,10 +1421,13 @@ bookList.className = 'mt-2 d-grid gap-1';
     await nextFrame();
       try {
     const lang = detectLang(term);
+           const selectedScope = getLanguageScope();
+    const effectiveScope = selectedScope === 'all' ? lang : selectedScope;
+    const enabledCorpora = new Set(getCorporaForScope(effectiveScope));
     const normalized = normalizeByLang(term, lang);
  
      let entry = null;
-       let hebrewEntry = null;
+     let hebrewEntry = null;
     if (lang === 'gr') {
       await loadDictionary();
       entry = state.dictMap.get(normalized) || null;
@@ -1418,12 +1435,11 @@ bookList.className = 'mt-2 d-grid gap-1';
       await loadHebrewDictionary();
       hebrewEntry = state.hebrewDictMap.get(normalized) || null;
     }
- 
     const indexPromise = loadIndex(lang);
     const index = await indexPromise;
    const refs = lang === 'gr' ? getGreekRefs(normalized, index) : (index.tokens?.[normalized] || []);
- 
-   const initialLxxMatches = lang === 'gr' && normalized
+
+    const initialLxxMatches = lang === 'gr' && normalized && enabledCorpora.has('lxx')
       ? await buildLxxMatches(normalized, 70)
       : { refs: [], texts: new Map() };
     const hasInitialGreekMatches = refs.length || initialLxxMatches.refs.length;
@@ -1445,26 +1461,28 @@ bookList.className = 'mt-2 d-grid gap-1';
      }
  
    
-    const esIndexPromise = loadIndex('es');
-    const grIndexPromise = loadIndex('gr');
-    const heIndexPromise = loadIndex('he');
+   const esIndexPromise = enabledCorpora.has('es') ? loadIndex('es') : Promise.resolve(null);
+    const grIndexPromise = enabledCorpora.has('gr') ? loadIndex('gr') : Promise.resolve(null);
+    const heIndexPromise = enabledCorpora.has('he') ? loadIndex('he') : Promise.resolve(null);
     const esIndex = await esIndexPromise;
    let esSearchTokens = [];
-    if (lang === 'es') {
-      esSearchTokens = [normalized].filter(Boolean);
-    } else if (entry?.definicion) {
-      esSearchTokens = extractSpanishTokensFromDefinition(entry.definicion);
- } else if (lang === 'he' && getHebrewDefinition(hebrewEntry)) {
-      esSearchTokens = extractSpanishTokensFromDefinition(getHebrewDefinition(hebrewEntry));
-    } else {
-      esSearchTokens = [normalizeSpanish(term)].filter(Boolean);
+   if (enabledCorpora.has('es')) {
+      if (lang === 'es') {
+        esSearchTokens = [normalized].filter(Boolean);
+      } else if (entry?.definicion) {
+        esSearchTokens = extractSpanishTokensFromDefinition(entry.definicion);
+      } else if (lang === 'he' && getHebrewDefinition(hebrewEntry)) {
+        esSearchTokens = extractSpanishTokensFromDefinition(getHebrewDefinition(hebrewEntry));
+      } else {
+        esSearchTokens = [normalizeSpanish(term)].filter(Boolean);
+      }
     }
-     const esDisplayWord = lang === 'es' ? term : (esSearchTokens[0] || term);
+    const esDisplayWord = lang === 'es' ? term : (esSearchTokens[0] || term);
     let greekEntry = entry;
     let greekTerm = null;
     let greekCandidate = null;
-    if (lang === 'es') {
-      greekEntry = await findGreekEntryFromSpanish(term);
+    if (lang === 'es' && (enabledCorpora.has('gr') || enabledCorpora.has('lxx'))) {
+     greekEntry = await findGreekEntryFromSpanish(term);
       if (greekEntry?.lemma) {
         greekTerm = normalizeGreek(greekEntry.lemma);
       }
@@ -1477,27 +1495,29 @@ const summaryRefs = lang === 'gr' && !refs.length ? initialLxxMatches.refs : ref
     await buildSummary(term, lang, entry || greekEntry, hebrewEntry, summaryRefs, summaryHighlightQueries);
     const esRefs = [];
     const esSeen = new Set();
-        const directEsRefs = [];
-    if (lang === 'gr') {
-      refs.forEach((ref) => directEsRefs.push(ref));
-      mapLxxRefsToHebrewRefs(initialLxxMatches.refs).forEach((ref) => directEsRefs.push(ref));
-    } else if (lang === 'he') {
-      refs.forEach((ref) => directEsRefs.push(ref));
-    }
-    directEsRefs.forEach((ref) => {
-      if (esSeen.has(ref)) return;
-      esSeen.add(ref);
-      esRefs.push(ref);
-    });
-    esSearchTokens.forEach((token) => {
-      const matches = esIndex.tokens?.[token] || [];
-      matches.forEach((ref) => {
+       if (enabledCorpora.has('es') && esIndex) {
+      const directEsRefs = [];
+      if (lang === 'gr') {
+        refs.forEach((ref) => directEsRefs.push(ref));
+        mapLxxRefsToHebrewRefs(initialLxxMatches.refs).forEach((ref) => directEsRefs.push(ref));
+      } else if (lang === 'he') {
+        refs.forEach((ref) => directEsRefs.push(ref));
+      }
+      directEsRefs.forEach((ref) => {
         if (esSeen.has(ref)) return;
         esSeen.add(ref);
         esRefs.push(ref);
       });
-    });
-    const { ot: esOtRefs, nt: esNtRefs } = splitRefsByTestament(esRefs);
+esSearchTokens.forEach((token) => {
+        const matches = esIndex.tokens?.[token] || [];
+        matches.forEach((ref) => {
+          if (esSeen.has(ref)) return;
+          esSeen.add(ref);
+          esRefs.push(ref);
+        });
+      });
+    }
+        const { ot: esOtRefs, nt: esNtRefs } = splitRefsByTestament(esRefs);
 
     if (lang === 'gr') {
       greekTerm = normalized;
@@ -1530,8 +1550,8 @@ const summaryRefs = lang === 'gr' && !refs.length ? initialLxxMatches.refs : ref
     const greekLemma = greekEntry?.lemma || greekCandidate?.lemma || (lang === 'gr' ? term : '—');
 const greekTranslit = greekEntry?.['Forma lexica'] || (greekTerm ? transliterateGreek(greekLemma || term) : '—');
      const grIndex = await grIndexPromise;
-   const grRefs = greekTerm ? getGreekRefs(greekTerm, grIndex) : [];
-   const lxxMatchesPromise = greekTerm
+ const grRefs = (enabledCorpora.has('gr') && grIndex && greekTerm) ? getGreekRefs(greekTerm, grIndex) : [];
+   const lxxMatchesPromise = (enabledCorpora.has('lxx') && greekTerm)
       ? (lang === 'gr' && greekTerm === normalized
           ? Promise.resolve(initialLxxMatches)
           : buildLxxMatches(greekTerm, 70))
@@ -1556,8 +1576,7 @@ const greekTranslit = greekEntry?.['Forma lexica'] || (greekTerm ? transliterate
       hebrewCandidate = await buildHebrewCandidateFromLxxRefs(lxxMatches.refs);
     }
     const heIndex = await heIndexPromise;
-    const heRefs = hebrewCandidate ? (heIndex.tokens?.[hebrewCandidate.normalized] || []) : [];
-       
+ const heRefs = (enabledCorpora.has('he') && heIndex && hebrewCandidate) ? (heIndex.tokens?.[hebrewCandidate.normalized] || []) : [];       
 const posTag = lang === 'gr' ? extractPos(entry) : '—';
     const lemmaLabel = lang === 'gr' ? (entry?.lemma || term) : term;
     const translitLabel = lang === 'he'
@@ -1567,10 +1586,10 @@ const posTag = lang === 'gr' ? extractPos(entry) : '—';
       `Lema: <span class="fw-semibold">${lemmaLabel}</span>`,
       `Transliteración: ${translitLabel}`,
       `POS: ${posTag}`,
-      `RKANT: ${grRefs.length}`,
-      `LXX: ${lxxMatches.refs.length}`,
-      `Hebreo: ${heRefs.length}`,
-      `RVR1960: ${esRefs.length}`
+           `RKANT: ${enabledCorpora.has('gr') ? grRefs.length : '—'}`,
+      `LXX: ${enabledCorpora.has('lxx') ? lxxMatches.refs.length : '—'}`,
+      `Hebreo: ${enabledCorpora.has('he') ? heRefs.length : '—'}`,
+      `RVR1960: ${enabledCorpora.has('es') ? esRefs.length : '—'}`
     ]);
         const lxxHighlightQuery = lxxMatches.highlightTerms?.length
       ? lxxMatches.highlightTerms.join(' ')
@@ -1661,7 +1680,7 @@ const corpusConfigs = [
       { lang: 'lxx', refs: lxxMatches.refs, preloaded: lxxMatches.texts },
       { lang: 'he', refs: heRefs, preloaded: null },
       { lang: 'es', refs: esRefs, preloaded: null }
-    ];
+ ].filter((config) => enabledCorpora.has(config.lang));
        const groupsByCorpus = corpusConfigs.map((config) => ({
       lang: config.lang,
       groups: [],
@@ -1702,7 +1721,13 @@ const corpusConfigs = [
      }
    }
  
-
+function handleLanguageScopeChange(event) {
+    const value = String(event?.target?.value || 'all');
+    state.languageScope = (value === 'es' || value === 'gr' || value === 'he') ? value : 'all';
+    if (queryInput?.value.trim()) {
+      analyze();
+    }
+   }
  
    analyzeBtn?.addEventListener('click', analyze);
    queryInput?.addEventListener('keydown', (event) => {
@@ -1713,8 +1738,16 @@ const corpusConfigs = [
    });
  
    document.body.addEventListener('click', handleFilterClick);
+    languageScopeSelect?.addEventListener('change', handleLanguageScopeChange);
   function applyQueryFromUrl() {
     const params = new URLSearchParams(window.location.search);
+   const scopeParam = String(params.get('scope') || '').trim();
+    if (scopeParam === 'es' || scopeParam === 'gr' || scopeParam === 'he' || scopeParam === 'all') {
+      state.languageScope = scopeParam;
+      if (languageScopeSelect) languageScopeSelect.value = scopeParam;
+    } else if (languageScopeSelect) {
+      languageScopeSelect.value = state.languageScope;
+    }
     const q = String(params.get('q') || '').trim();
     if (!q || !queryInput) return;
     queryInput.value = q;
