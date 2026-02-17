@@ -205,30 +205,14 @@
         <span id="status" class="muted smallish">—</span>
       </div>
       <div class="panel-body">
-        <div class="d-flex justify-content-end mb-3">
-        <label for="scopeFilter" class="me-2 small text-muted align-self-center">Ámbito:</label>
-        <select id="scopeFilter" class="form-select form-select-sm" style="max-width:220px">
-          <option value="all" selected>Torah + Evangelios</option>
-          <option value="torah">Solo Torah (Génesis–Malaquías)</option>
-          <option value="evangelios">Solo Evangelios (Mateo–Apocalipsis)</option>
-        </select>
-      </div>
+       <div class="small muted mb-3">Los resultados se agrupan por corpus, luego por libro y finalmente por versículo.</div>
       <div id="results" class="d-grid gap-2"></div>
-
-<div class="d-flex justify-content-between align-items-center mt-3">
-  <button id="prevBtn" class="btn btn-outline-secondary btn-sm" type="button" disabled>Anterior</button>
-  <div class="muted smallish">
-    Página <span id="pageNow">1</span> de <span id="pageTotal">1</span>
-    · Mostrando <span id="showingCount">0</span> de <span id="totalCount">0</span>
-  </div>
-  <button id="nextBtn" class="btn btn-outline-secondary btn-sm" type="button" disabled>Siguiente</button>
-</div>
 
       </div>
     </section>
   </main>
 
-  <script src="./busqueda.js?v=2"></script>
+  <script src="./busqueda.js?v=3"></script>
   <script>
   document.getElementById('backToReader')?.addEventListener('click', () => {
 let target = './index.html';
