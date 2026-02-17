@@ -193,8 +193,7 @@
   const resultsLoadingStage = document.getElementById('bxResultsLoadingStage');
   const analysisResultsSection = document.getElementById('bxAnalysisResultsSection');
   const lemmaSummaryPanel = document.getElementById('bxLemmaSummaryPanel');
-const occurrenceDonutMount = document.getElementById('bxOccurrenceDonutMount');
-  const occurrenceDonut = window.AnalisisOccurrenceDonut?.create(occurrenceDonutMount)
+
   
   const nextFrame = () => new Promise((resolve) => requestAnimationFrame(resolve));
   function scrollToLemmaSummary() {
@@ -959,6 +958,7 @@ function mapLxxRefsToHebrewRefs(refs) {
    }
  
    function renderTags(tags) {
+     if (!lemmaTags) return;
      lemmaTags.innerHTML = '';
      tags.forEach((tag) => {
        const span = document.createElement('span');
@@ -969,6 +969,7 @@ function mapLxxRefsToHebrewRefs(refs) {
    }
  
    function renderExamples(cards) {
+     if (!lemmaExamples) return;
      lemmaExamples.innerHTML = '';
      cards.forEach((card) => {
        const div = document.createElement('div');
@@ -979,6 +980,7 @@ function mapLxxRefsToHebrewRefs(refs) {
    }
  
   function renderCorrespondence(cards) {
+       if (!lemmaCorrespondence) return;
     lemmaCorrespondence.innerHTML = '';
     if (!cards.length) {
       lemmaCorrespondence.innerHTML = '<div class="small muted">Sin correspondencias disponibles.</div>';
@@ -1270,8 +1272,9 @@ function mapLxxRefsToHebrewRefs(refs) {
     }
     if (!summaryParts.length) summaryParts.push('No se encontró definición directa, se usa la concordancia del corpus para contexto.');
     const summaryQuery = highlightQueries.es || (lang === 'es' ? term : '');
-    lemmaSummary.innerHTML = highlightText(summaryParts.join(' '), summaryQuery, 'es');
-     const cards = [];
+ if (lemmaSummary) {
+      lemmaSummary.innerHTML = highlightText(summaryParts.join(' '), summaryQuery, 'es');
+    }     const cards = [];
      const primaryQuery = highlightQueries[lang] || term;
     const spanishQuery = highlightQueries.es || '';
     if (sampleRef && sampleText) {
@@ -1337,10 +1340,12 @@ function mapLxxRefsToHebrewRefs(refs) {
         'Transliteración: —',
          'POS: —'
        ]);
-      lemmaSummary.textContent = 'No se encontraron ocurrencias en los índices disponibles.';
-      renderCorrespondence([]);
-       lemmaExamples.innerHTML = '';
-      occurrenceDonut?.setData({ es: [], he: [], gr: [] });
+ if (lemmaSummary) {
+        lemmaSummary.textContent = 'No se encontraron ocurrencias en los índices disponibles.';
+      }      renderCorrespondence([]);
+       if (lemmaExamples) {
+        lemmaExamples.innerHTML = '';
+      }
       state.last = { term, lang, refs: [], groupsByCorpus: [] };
       return;
      }
@@ -1458,11 +1463,7 @@ const greekTranslit = greekEntry?.['Forma lexica'] || (greekTerm ? transliterate
     }
     const heIndex = await heIndexPromise;
     const heRefs = hebrewCandidate ? (heIndex.tokens?.[hebrewCandidate.normalized] || []) : [];
-        occurrenceDonut?.setData({
-      es: buildBookCountRows(esRefs),
-      he: buildBookCountRows(heRefs),
-      gr: buildBookCountRows([...grRefs, ...lxxMatches.refs])
-    });
+       
 const posTag = lang === 'gr' ? extractPos(entry) : '—';
     const lemmaLabel = lang === 'gr' ? (entry?.lemma || term) : term;
     const translitLabel = lang === 'he'
@@ -1614,4 +1615,13 @@ const corpusConfigs = [
    });
  
    document.body.addEventListener('click', handleFilterClick);
+  function applyQueryFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const q = String(params.get('q') || '').trim();
+    if (!q || !queryInput) return;
+    queryInput.value = q;
+    analyze();
+  }
+
+  applyQueryFromUrl();
 })();
