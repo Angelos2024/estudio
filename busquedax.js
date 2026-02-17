@@ -343,8 +343,11 @@ function normalizeSpanish(text) {
     if (!raw || !normalizedQuery) return escapeHtml(raw);
 
     const safe = escapeHtml(raw);
-    const normalized = getNormalizedQuery(lang, normalizedQuery);
-    const tokens = normalized.split(' ').map((token) => token.trim()).filter((token) => token.length >= 2);
+   const tokens = normalizedQuery
+      .split(/\s+/)
+      .map((part) => getNormalizedQuery(lang, part))
+      .map((token) => token.trim())
+      .filter((token) => token.length >= 2);
     if (!tokens.length) return safe;
 
     let output = safe;
