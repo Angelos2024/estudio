@@ -18,21 +18,12 @@ const qEl = document.getElementById('q');
 const modeEl = document.getElementById('mode');
 const statusEl = document.getElementById('status');
 const resultsEl = document.getElementById('results');
-const scopeFilterEl = document.getElementById('scopeFilter');
 
-const prevBtn = document.getElementById('prevBtn');
-const nextBtn = document.getElementById('nextBtn');
-const pageNowEl = document.getElementById('pageNow');
-const pageTotalEl = document.getElementById('pageTotal');
-const showingCountEl = document.getElementById('showingCount');
-const totalCountEl = document.getElementById('totalCount');
 
 /***********************
  * Estado
  ***********************/
-const PAGE_SIZE = 10;
-let PAGE = 1;
-let ALL_RESULTS = [];
+
 let RAW_RESULTS = [];
 let manifest = null;
 let worker = null;
@@ -42,20 +33,7 @@ let HIGHLIGHT_QUERY = '';
 
 // cache de packs: key = `${lang}|${slug}|${ch}` -> array de versos
 const packCache = new Map();
-const ES_TORAH_BOOKS = new Set([
-  'genesis','exodo','levitico','numeros','deuteronomio','josue','jueces','rut',
-  '1_samuel','2_samuel','1_reyes','2_reyes','1_cronicas','2_cronicas','esdras',
-  'nehemias','ester','job','salmos','proverbios','eclesiastes','cantares','isaias',
-  'jeremias','lamentaciones','ezequiel','daniel','oseas','joel','amos','abdias',
-  'jonas','miqueas','nahum','habacuc','sofonias','hageo','zacarias','malaquias'
-]);
-
-const ES_EVANGELIOS_BOOKS = new Set([
-  'mateo','marcos','lucas','juan','hechos','romanos','1_corintios','2_corintios',
-  'galatas','efesios','filipenses','colosenses','1_tesalonicenses','2_tesalonicenses',
-  '1_timoteo','2_timoteo','tito','filemon','hebreos','santiago','1_pedro','2_pedro',
-  '1_juan','2_juan','3_juan','judas','apocalipsis'
-]);
+const CORPUS_LABELS = { es: 'RVR1960', gr: 'RKANT', he: 'Hebreo' };
 
 /***********************
  * Helpers
@@ -686,24 +664,7 @@ function parseRef(ref){
   const [slug, chS, vS] = String(ref).split('|');
   return { slug, ch: Number(chS), v: Number(vS) };
 }
-function getScopeBySlug(slug){
-  if(ES_TORAH_BOOKS.has(slug)) return 'torah';
-  if(ES_EVANGELIOS_BOOKS.has(slug)) return 'evangelios';
-  return null;
-}
 
-function applyScopeFilter(){
-  const scope = scopeFilterEl?.value || 'all';
-  if(scope === 'all'){
-    ALL_RESULTS = [...RAW_RESULTS];
-    return;
-  }
-
-  ALL_RESULTS = RAW_RESULTS.filter(item => {
-    const { slug } = parseRef(item.ref);
-    return getScopeBySlug(slug) === scope;
-  });
-}
 async function getChapterPack(lang, slug, ch){
   const key = `${lang}|${slug}|${ch}`;
   if(packCache.has(key)) return packCache.get(key);
@@ -715,71 +676,99 @@ async function getChapterPack(lang, slug, ch){
   return verses;
 }
 
-function renderPage(q){
+function groupResultsByCorpus(items){
+  const byCorpus = new Map();
+  for(const item of items){
+    const lang = item.lang;
+    if(!byCorpus.has(lang)) byCorpus.set(lang, new Map());
+    const byBook = byCorpus.get(lang);
+    const { slug, ch, v } = parseRef(item.ref);
+    if(!byBook.has(slug)) byBook.set(slug, []);
+    byBook.get(slug).push({ slug, ch, v, lang });
+  }
+
+ return Array.from(byCorpus.entries()).map(([lang, byBook]) => {
+    const books = Array.from(byBook.entries()).map(([slug, verses]) => ({
+      slug,
+      label: prettyBookName(slug),
+      verses: verses.sort((a, b) => (a.ch - b.ch) || (a.v - b.v))
+    })).sort((a, b) => b.verses.length - a.verses.length);
+
+const occurrences = books.reduce((sum, book) => sum + book.verses.length, 0);
+    return { lang, books, occurrences };
+  });
+}
+
+  function renderResultsByCorpus(items, query){
   resultsEl.innerHTML = '';
-
-  const total = ALL_RESULTS.length;
-  const pageTotal = Math.max(1, Math.ceil(total / PAGE_SIZE));
-  PAGE = Math.min(Math.max(1, PAGE), pageTotal);
-
-  const start = (PAGE - 1) * PAGE_SIZE;
-  const end = Math.min(total, start + PAGE_SIZE);
-  const slice = ALL_RESULTS.slice(start, end);
-
-  pageNowEl.textContent = String(PAGE);
-  pageTotalEl.textContent = String(pageTotal);
-  showingCountEl.textContent = String(slice.length);
-  totalCountEl.textContent = String(total);
-
-  prevBtn.disabled = (PAGE <= 1);
-  nextBtn.disabled = (PAGE >= pageTotal);
-
-  if(total === 0){
-    resultsEl.innerHTML = `<div class="text-muted">Sin resultados.</div>`;
+  if(!items.length){
+    resultsEl.innerHTML = '<div class="text-muted">Sin resultados.</div>';
     return;
   }
 
-  // Render “skeleton” primero (rápido) y luego llenamos textos async
-  for(const item of slice){
-    const { lang, ref } = item;
-    const { slug, ch, v } = parseRef(ref);
-    const bookName = prettyBookName(slug);
+  const corpora = groupResultsByCorpus(items).sort((a, b) => b.occurrences - a.occurrences);
 
-    const card = document.createElement('div');
-    card.className = `hit lang-${lang}`;
+  for(const corpus of corpora){
+    const lang = corpus.lang;
+    const title = CORPUS_LABELS[lang] || lang.toUpperCase();
+    const section = document.createElement('div');
+    section.className = `hit lang-${lang}`;
 
-    card.innerHTML = `
-      <div class="d-flex justify-content-between align-items-start gap-2">
-        <div>
-          <div class="fw-semibold">${esc(bookName)} <span class="text-muted">${esc(lang.toUpperCase())}</span></div>
-          <div class="small text-muted">${esc(slug)} · cap ${ch} · v ${v}</div>
-        </div>
-        <a class="btn btn-sm btn-outline-primary" href="${esc(buildReaderLink(slug, bookName, ch, v))}">Abrir</a>
-      </div>
-      <div class="mt-2 smallish mono" data-text="1">Cargando...</div>
+    const summary = document.createElement('div');
+    summary.className = 'mb-2';
+    summary.innerHTML = `
+      <div class="fw-semibold">${esc(title)}</div>
+      <div class="small text-muted">Resultados en ${corpus.books.length} libro(s)</div>
+      <div class="small text-muted">${corpus.occurrences} ocurrencia(s) en total.</div>
     `;
-    resultsEl.appendChild(card);
+     section.appendChild(summary);
 
-    // cargar texto del verso desde pack
-    (async () => {
-      const verses = await getChapterPack(lang, slug, ch);
-      const text = String(verses[v-1] ?? '');
-      const box = card.querySelector('[data-text="1"]');
-      if(box){
-       box.innerHTML = highlight(text, HIGHLIGHT_QUERY || qEl.value, lang);
+    const booksContainer = document.createElement('div');
+    booksContainer.className = 'd-grid gap-2';
+    for(const book of corpus.books){
+      const bookDetails = document.createElement('details');
+      bookDetails.className = 'border rounded p-2';
+
+      const bookSummary = document.createElement('summary');
+      bookSummary.className = 'fw-semibold';
+      bookSummary.textContent = `${book.label} (${book.verses.length})`;
+      bookDetails.appendChild(bookSummary);
+
+      const verseList = document.createElement('div');
+      verseList.className = 'd-grid gap-2 mt-2';
+      for(const verseInfo of book.verses){
+        const verseRow = document.createElement('div');
+        verseRow.className = 'border rounded p-2';
+        const refLabel = `${book.label} ${verseInfo.ch}:${verseInfo.v}`;
+        const readerLink = buildReaderLink(book.slug, book.label, verseInfo.ch, verseInfo.v);
+
+        verseRow.innerHTML = `
+          <div class="d-flex justify-content-between align-items-start gap-2">
+            <div class="small fw-semibold">${esc(refLabel)}</div>
+            <a class="btn btn-sm btn-outline-primary" href="${esc(readerLink)}">Abrir</a>
+          </div>
+          <div class="mt-1 smallish mono" data-text="1">Cargando...</div>
+        `;
+        verseList.appendChild(verseRow);
+
+        (async () => {
+          const verses = await getChapterPack(lang, book.slug, verseInfo.ch);
+          const text = String(verses[verseInfo.v - 1] ?? '');
+          const box = verseRow.querySelector('[data-text="1"]');
+          if(box) box.innerHTML = highlight(text, query, lang);
+        })().catch(() => {
+          const box = verseRow.querySelector('[data-text="1"]');
+          if(box) box.textContent = 'No se pudo cargar el texto del verso.';
+        });
       }
-    })().catch(() => {
-      const box = card.querySelector('[data-text="1"]');
-      if(box) box.textContent = 'No se pudo cargar el texto del verso.';
-    });
+    bookDetails.appendChild(verseList);
+      booksContainer.appendChild(bookDetails);
+    }
+    section.appendChild(booksContainer);
+    resultsEl.appendChild(section);
   }
 }
-function refreshResultsForCurrentScope(){
-  applyScopeFilter();
-  PAGE = 1;
-  statusEl.textContent = `Listo. ${ALL_RESULTS.length} resultado(s) en ${scopeFilterEl?.selectedOptions?.[0]?.textContent || 'ámbito actual'}.`;
-  renderPage(HIGHLIGHT_QUERY || qEl.value);
-}
+
 /***********************
  * Eventos
  ***********************/
@@ -790,10 +779,8 @@ async function runSearch(){
   if(!q){
     statusEl.textContent = 'Escribe una palabra o frase.';
     resultsEl.innerHTML = '';
-    ALL_RESULTS = [];
     RAW_RESULTS = [];
-    PAGE = 1;
-    renderPage('');
+    renderResultsByCorpus([], '');
     return;
   }
 
@@ -822,11 +809,9 @@ async function runSearch(){
           }
         }
         RAW_RESULTS = merged;
-        applyScopeFilter();
-        PAGE = 1;
         HIGHLIGHT_QUERY = spanishTokens.join(' ');
-        statusEl.textContent = `Listo. ${ALL_RESULTS.length} resultado(s).`;
-        renderPage(HIGHLIGHT_QUERY);
+        statusEl.textContent = `Listo. ${RAW_RESULTS.length} resultado(s).`;
+        renderResultsByCorpus(RAW_RESULTS, HIGHLIGHT_QUERY);
         return;
       }
     }
@@ -836,10 +821,8 @@ async function runSearch(){
 const refItems = getReferenceMatches(mode, q);
     if(refItems.length){
       RAW_RESULTS = refItems;
-      applyScopeFilter();
-      PAGE = 1;
-      statusEl.textContent = `Listo. ${ALL_RESULTS.length} pasaje(s) encontrado(s).`;
-      renderPage(q);
+     statusEl.textContent = `Listo. ${RAW_RESULTS.length} pasaje(s) encontrado(s).`;
+      renderResultsByCorpus(RAW_RESULTS, q);
       return;
     }
     statusEl.textContent = 'Buscando...';
@@ -847,10 +830,8 @@ const refItems = getReferenceMatches(mode, q);
 
     // items: [{lang, ref}]
      RAW_RESULTS = items;
-    applyScopeFilter();
-    PAGE = 1;
-    statusEl.textContent = `Listo. ${ALL_RESULTS.length} resultado(s).`;
-    renderPage(q);
+       statusEl.textContent = `Listo. ${RAW_RESULTS.length} resultado(s).`;
+    renderResultsByCorpus(RAW_RESULTS, q);
   }catch(err){
     statusEl.textContent = `Error: ${String(err?.message || err)}`;
   }
@@ -861,17 +842,7 @@ form.addEventListener('submit', async (e) => {
   await runSearch();
 });
 
-prevBtn.addEventListener('click', () => {
-  PAGE--;
-  renderPage(qEl.value);
-});
-nextBtn.addEventListener('click', () => {
-  PAGE++;
-  renderPage(qEl.value);
-});
-scopeFilterEl?.addEventListener('change', () => {
-  refreshResultsForCurrentScope();
-});
+
 // Inicial
 (async () => {
   try{
