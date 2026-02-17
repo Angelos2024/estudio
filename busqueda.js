@@ -738,7 +738,11 @@ const occurrences = books.reduce((sum, book) => sum + book.verses.length, 0);
     return { lang, books, occurrences };
   });
 }
-
+function setCollapsedState(button, container, { expandLabel, collapseLabel }, expanded){
+  container.hidden = !expanded;
+  button.textContent = expanded ? collapseLabel : expandLabel;
+  button.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+}
   function renderResultsByCorpus(items, query){
   resultsEl.innerHTML = '';
   if(!items.length){
@@ -770,6 +774,7 @@ const occurrences = books.reduce((sum, book) => sum + book.verses.length, 0);
 const corpusToggle = document.createElement('button');
     corpusToggle.type = 'button';
     corpusToggle.className = 'btn btn-sm btn-outline-secondary';
+        corpusToggle.setAttribute('aria-expanded', 'false');
     corpusToggle.textContent = 'Ver resultados';
     corpusInfo.appendChild(corpusToggle);
     section.appendChild(corpusInfo);
@@ -781,11 +786,14 @@ const corpusToggle = document.createElement('button');
       bookBlock.className = 'border rounded p-2';
 
       const bookHeader = document.createElement('div');
-      bookHeader.className = 'd-flex justify-content-between align-items-center gap-2';
+ bookHeader.className = 'd-flex justify-content-between align-items-center gap-2 result-book-header';
+      bookHeader.role = 'button';
+      bookHeader.tabIndex = 0;
+      bookHeader.setAttribute('aria-expanded', 'false');
       bookHeader.innerHTML = `<div class="fw-semibold">${esc(book.label)} (${book.verses.length})</div>`;
       const bookToggle = document.createElement('button');
       bookToggle.type = 'button';
-      bookToggle.className = 'btn btn-sm btn-outline-secondary';
+      bookToggle.setAttribute('aria-expanded', 'false');
       bookToggle.textContent = 'Desplegar';
       bookHeader.appendChild(bookToggle);
       bookBlock.appendChild(bookHeader);
@@ -821,18 +829,39 @@ const corpusToggle = document.createElement('button');
  bookBlock.appendChild(verseList);
       booksContainer.appendChild(bookBlock);
 
-      bookToggle.addEventListener('click', () => {
+      const toggleBookVerses = () => {
         const show = verseList.hidden;
-        verseList.hidden = !show;
-        bookToggle.textContent = show ? 'Ocultar' : 'Desplegar';
+        setCollapsedState(bookToggle, verseList, {
+          expandLabel: 'Desplegar',
+          collapseLabel: 'Ocultar'
+        }, show);
+        bookHeader.setAttribute('aria-expanded', show ? 'true' : 'false');
+      };
+
+      bookToggle.addEventListener('click', (event) => {
+        event.stopPropagation();
+        toggleBookVerses();
+      });
+
+      bookHeader.addEventListener('click', (event) => {
+        if(event.target.closest('button,a')) return;
+        toggleBookVerses();
+      });
+
+      bookHeader.addEventListener('keydown', (event) => {
+        if(event.key !== 'Enter' && event.key !== ' ') return;
+        event.preventDefault();
+        toggleBookVerses();
       });
     }
      booksContainer.hidden = true;
     section.appendChild(booksContainer);
     corpusToggle.addEventListener('click', () => {
       const show = booksContainer.hidden;
-      booksContainer.hidden = !show;
-      corpusToggle.textContent = show ? 'Ocultar resultados' : 'Ver resultados';
+      setCollapsedState(corpusToggle, booksContainer, {
+        expandLabel: 'Ver resultados',
+        collapseLabel: 'Ocultar resultados'
+      }, show);
     });
     resultsEl.appendChild(section);
   }
