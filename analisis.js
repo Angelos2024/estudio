@@ -1057,6 +1057,57 @@ function mapLxxRefsToHebrewRefs(refs) {
     return `${((part / total) * 100).toFixed(1)}%`;
   }
 
+  function describeMorphTag(tag) {
+    const raw = String(tag || '').trim();
+    if (!raw) return '—';
+    const posMap = {
+      N: 'Sustantivo',
+      V: 'Verbo',
+      A: 'Adjetivo',
+      D: 'Adverbio',
+      P: 'Preposición',
+      C: 'Conjunción',
+      T: 'Artículo',
+      I: 'Interjección',
+      X: 'Partícula',
+      M: 'Numeral',
+      RP: 'Pronombre personal',
+      RA: 'Pronombre/artículo',
+      RD: 'Pronombre demostrativo',
+      RI: 'Pronombre interrogativo',
+      RR: 'Pronombre relativo'
+    };
+    const caseMap = { N: 'Nominativo', G: 'Genitivo', D: 'Dativo', A: 'Acusativo', V: 'Vocativo' };
+    const numMap = { S: 'Singular', P: 'Plural', D: 'Dual' };
+    const genMap = { M: 'Masculino', F: 'Femenino', N: 'Neutro' };
+    const tenseMap = { P: 'Presente', I: 'Imperfecto', F: 'Futuro', A: 'Aoristo', X: 'Perfecto', Y: 'Pluscuamperfecto' };
+    const voiceMap = { A: 'Activa', M: 'Media', P: 'Pasiva' };
+    const moodMap = { I: 'Indicativo', S: 'Subjuntivo', O: 'Optativo', M: 'Imperativo', N: 'Infinitivo', P: 'Participio' };
+
+    const nounMatch = raw.match(/^([A-Z]{1,2})\.([NGDAV])([SPD])([MFN])$/);
+    if (nounMatch) {
+      const [, posCode, caseCode, numCode, genCode] = nounMatch;
+      const parts = [posMap[posCode] || posCode, caseMap[caseCode], numMap[numCode], genMap[genCode]].filter(Boolean);
+      return `${parts.join(' · ')} (${raw})`;
+    }
+
+    const pronounMatch = raw.match(/^([A-Z]{1,2})\.([NGDAV])([SP])([MFN]?)$/);
+    if (pronounMatch) {
+      const [, posCode, caseCode, numCode, genCode] = pronounMatch;
+      const parts = [posMap[posCode] || posCode, caseMap[caseCode], numMap[numCode], genMap[genCode]].filter(Boolean);
+      return `${parts.join(' · ')} (${raw})`;
+    }
+
+    const verbMatch = raw.match(/^V\.([PIFAXY])([AMP])([ISOMNP])([123]?)([SPD]?)$/);
+    if (verbMatch) {
+      const [, tenseCode, voiceCode, moodCode, personCode, numCode] = verbMatch;
+      const person = personCode ? `${personCode}ª persona` : '';
+      const parts = ['Verbo', tenseMap[tenseCode], voiceMap[voiceCode], moodMap[moodCode], person, numMap[numCode]].filter(Boolean);
+      return `${parts.join(' · ')} (${raw})`;
+    }
+
+    return posMap[raw] ? `${posMap[raw]} (${raw})` : raw;
+  }
   function buildGreekLexicalRoot(normalizedLemma) {
     const endings = ['ων','ους','ουσ','οις','αις','ειν','εις','ας','ης','ος','οι','αι','ον','ην','ου','ω'];
     for (const ending of endings) {
@@ -1113,7 +1164,6 @@ function mapLxxRefsToHebrewRefs(refs) {
       const current = formStats.get(key) || { form, source, morph, count: 0 };
       current.count += 1;
       formStats.set(key, current);
-      totalOccurrences += 1;
     };
 
     const pushContext = (tokens, hitIndex, analysisLang) => {
@@ -1122,6 +1172,7 @@ function mapLxxRefsToHebrewRefs(refs) {
       const window = tokens.slice(start, end);
       const category = classifyContextByRules(window, analysisLang);
       contextStats.set(category, (contextStats.get(category) || 0) + 1);
+           totalOccurrences += 1;
     };
 
     for (const ref of grRefs) {
@@ -1133,7 +1184,6 @@ function mapLxxRefsToHebrewRefs(refs) {
         const tokens = tokenizeGreekText(verses?.[verse - 1] || '');
         tokens.forEach((token, index) => {
           if (normalizeGreek(token) !== normalizedLemma) return;
-          pushForm(token, 'RKANT');
           pushContext(tokens, index, 'gr');
         });
       } catch (error) {
@@ -1150,7 +1200,6 @@ function mapLxxRefsToHebrewRefs(refs) {
       const words = tokens.map((token) => token?.w || '').filter(Boolean);
       tokens.forEach((token, index) => {
         if (normalizeGreek(token?.lemma || '') !== normalizedLemma) return;
-        pushForm(token?.w || token?.lemma || '', 'LXX', token?.morph || '');
         pushContext(words, index, 'gr');
       });
     }
@@ -1164,11 +1213,75 @@ function mapLxxRefsToHebrewRefs(refs) {
         const tokens = tokenizeHebrewText(verses?.[verse - 1] || '');
         tokens.forEach((token, index) => {
           if (normalizeHebrew(token) !== normalizedLemma) return;
-          pushForm(token, 'Hebreo');
           pushContext(tokens, index, 'he');
         });
         } catch (error) {
         continue;
+      }
+    }
+
+   if (lang === 'gr' || lxxRefs.length) {
+      const grIndex = await loadIndex('gr');
+      await loadDictionary();
+      const greekEntries = Array.isArray(state.dict?.items) ? state.dict.items : [];
+      greekEntries.forEach((item) => {
+        if (normalizeGreek(item?.lemma || '') !== normalizedLemma) return;
+        const form = item?.['Forma flexionada del texto'] || item?.lemma || '';
+        const normalizedForm = normalizeGreek(form);
+        if (!normalizedForm) return;
+        const count = (grIndex.tokens?.[normalizedForm] || []).length;
+        if (!count) return;
+        pushForm(form, 'RKANT (base completa)', '');
+        formStats.get(`RKANT (base completa)::${form}::`).count = count;
+      });
+
+      for (const file of LXX_FILES) {
+        try {
+          const data = await loadLxxFile(file);
+          Object.values(data?.text || {}).forEach((chapters) => {
+            Object.values(chapters || {}).forEach((verses) => {
+              Object.values(verses || {}).forEach((tokens) => {
+                (tokens || []).forEach((token) => {
+                  if (normalizeGreek(token?.lemma || '') !== normalizedLemma) return;
+                  pushForm(token?.w || token?.lemma || '', 'LXX (base completa)', token?.morph || '');
+                });
+              });
+            });
+          });
+        } catch (error) {
+          continue;
+        }
+      }
+    }
+
+    if (lang === 'he') {
+      await loadHebrewDictionary();
+      const heIndex = await loadIndex('he');
+      const formSet = new Set([
+        hebrewStopwords.has(displayLemma) ? '' : displayLemma,
+        ...(state.hebrewDictMap.get(normalizedLemma)?.forms || []),
+        ...(state.hebrewDictMap.get(normalizedLemma)?.formas || [])
+      ].filter(Boolean));
+      formSet.forEach((form) => {
+        const normalizedForm = normalizeHebrew(form);
+        const count = (heIndex.tokens?.[normalizedForm] || []).length;
+        if (!count) return;
+        const key = `Hebreo (base completa)::${form}::`;
+        formStats.set(key, { form, source: 'Hebreo (base completa)', morph: '', count });
+      });
+    }
+
+    if (lang === 'es') {
+      const esIndex = await loadIndex('es');
+      const normalizedEs = normalizeSpanish(displayLemma);
+      const count = (esIndex.tokens?.[normalizedEs] || []).length;
+      if (count) {
+        formStats.set(`Español (base completa)::${displayLemma}::`, {
+          form: displayLemma,
+          source: 'Español (base completa)',
+          morph: '',
+          count
+        });
       }
     }
  const networkLang = lang === 'he' ? 'he' : 'gr';
@@ -1220,8 +1333,8 @@ function mapLxxRefsToHebrewRefs(refs) {
     const wrapper = document.createElement('div');
     wrapper.className = 'col-12';
 
-    if (!modules || !modules.totalOccurrences) {
-      wrapper.innerHTML = '<div class="small muted">No hay datos suficientes para generar el análisis léxico profundo.</div>';
+    if (!modules || (!modules.totalOccurrences && !(modules.forms || []).length)) {
+     wrapper.innerHTML = '<div class="small muted">No hay datos suficientes para generar el análisis léxico profundo.</div>';
       deepLexicalAnalysis.appendChild(wrapper);
       return;
     }
@@ -1231,8 +1344,8 @@ function mapLxxRefsToHebrewRefs(refs) {
         <td>${escapeHtml(item.form)}</td>
         <td>${escapeHtml(item.source)}</td>
         <td>${item.count}</td>
-        <td>${escapeHtml(item.morph || '—')}</td>
-      </tr>
+        <td>${escapeHtml(describeMorphTag(item.morph || ''))}</td>
+        </tr>
     `).join('');
 
     const networkRows = modules.network.length
@@ -1250,7 +1363,7 @@ function mapLxxRefsToHebrewRefs(refs) {
     wrapper.innerHTML = `
       <details open>
         <summary class="fw-semibold mb-2">Mostrar / ocultar análisis</summary>
-        <div class="small muted mb-2">Total de ocurrencias evaluadas: ${modules.totalOccurrences}</div>
+        <div class="small muted mb-2">Total de ocurrencias evaluadas para contexto: ${modules.totalOccurrences}</div>
         <div class="table-responsive mb-3">
           <div class="fw-semibold mb-2">1) Formas flexionadas encontradas en la base</div>
           <table class="table table-sm align-middle">
