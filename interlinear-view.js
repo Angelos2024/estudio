@@ -4,7 +4,7 @@
 
   let dictionariesPromise = null;
 
-  function normalizeToken(token, isHebrew, isGreek = false){
+  function normalizeToken(token, isHebrew, isGreek = false, preserveHebrewPoints = false){
     let clean = String(token || '').trim();
      // Quita primero marcas invisibles para que no bloqueen la limpieza de puntuación final/inicial.
     clean = clean.replace(/[\u200c-\u200f\u202a-\u202e\u2066-\u2069\ufeff]/g, '');
@@ -13,7 +13,10 @@
     clean = clean.replace(/[\u200c-\u200f\u202a-\u202e\u2066-\u2069\ufeff]/g, '');    
     
     if(isHebrew){
-      clean = clean.replace(/[\u0591-\u05AF\u05B0-\u05BC\u05BD\u05BF\u05C1-\u05C2\u05C7]/g, '');
+clean = clean.replace(/[\u0591-\u05AF]/g, '');
+      if(!preserveHebrewPoints){
+        clean = clean.replace(/[\u05B0-\u05BC\u05BD\u05BF\u05C1-\u05C2\u05C7]/g, '');
+      }
       clean = clean.replace(/[\u05BE\u05C0\u05C3\u05C6\u05F3\u05F4]/g, '');
     }
 
@@ -23,6 +26,10 @@
     
     return clean.toLowerCase();
   }
+  function hasHebrewNikkud(token){
+    return /[\u05B0-\u05BC\u05BD\u05BF\u05C1-\u05C2\u05C7]/.test(String(token || ''));
+  }
+
 
   function takeFirstGloss(value){
     if(!value) return '-';
@@ -62,8 +69,9 @@ function setGlossCandidate(map, key, gloss, score, usage, exactLemmaMatch = fals
     }
   }
   function buildHebrewMap(rows){
-    const map = new Map();
-
+ const pointedMap = new Map();
+    const unpointedMap = new Map();
+    
     for(const row of rows || []){
       const usage = Number(row?.stats?.tokens) || 0;
       const fallbackGloss = takeFirstGloss(row?.glosas || row?.glosa || row?.strong_detail?.def_rv);
@@ -72,28 +80,51 @@ function setGlossCandidate(map, key, gloss, score, usage, exactLemmaMatch = fals
         const limit = Math.min(row.formas.length, row.glosas.length);
         for(let i = 0; i < limit; i++){
           const formKey = normalizeToken(row.formas[i], true);
-          setGlossCandidate(map, formKey, row.glosas[i], 4, usage, formKey === normalizedLemma);
+const formPointedKey = normalizeToken(row.formas[i], true, false, true);
+          setGlossCandidate(unpointedMap, formKey, row.glosas[i], 4, usage, formKey === normalizedLemma);
+          if(hasHebrewNikkud(row.formas[i])){
+            setGlossCandidate(pointedMap, formPointedKey, row.glosas[i], 6, usage, formKey === normalizedLemma);
+          }
         }
       }
 
     const primaryFormKey = normalizeToken(row?.forma, true);
-     setGlossCandidate(map, primaryFormKey, row?.glosa || fallbackGloss, 3, usage, primaryFormKey === normalizedLemma);
-      setGlossCandidate(map, normalizedLemma, fallbackGloss, 2, usage, true);
+    const primaryFormPointedKey = normalizeToken(row?.forma, true, false, true);
+     setGlossCandidate(unpointedMap, primaryFormKey, row?.glosa || fallbackGloss, 3, usage, primaryFormKey === normalizedLemma);
+      setGlossCandidate(unpointedMap, normalizedLemma, fallbackGloss, 2, usage, true);
+      if(hasHebrewNikkud(row?.forma)){
+        setGlossCandidate(pointedMap, primaryFormPointedKey, row?.glosa || fallbackGloss, 5, usage, primaryFormKey === normalizedLemma);
+      }
 
+      const pointedLemma = normalizeToken(row?.strong_detail?.lemma || row?.lemma, true, false, true);
+      if(hasHebrewNikkud(row?.strong_detail?.lemma || row?.lemma)){
+        setGlossCandidate(pointedMap, pointedLemma, fallbackGloss, 4.5, usage, true);
+      }
       if(Array.isArray(row?.formas)){
         for(const form of row.formas){
           const formKey = normalizeToken(form, true);
-          setGlossCandidate(map, formKey, fallbackGloss, 1, usage, formKey === normalizedLemma);
+ const formPointedKey = normalizeToken(form, true, false, true);
+          setGlossCandidate(unpointedMap, formKey, fallbackGloss, 1, usage, formKey === normalizedLemma);
+          if(hasHebrewNikkud(form)){
+            setGlossCandidate(pointedMap, formPointedKey, fallbackGloss, 2.5, usage, formKey === normalizedLemma);
+          }
         }
       }
     }
 
-    const plainMap = new Map();
-    for(const [key, value] of map.entries()){
-      plainMap.set(key, value.gloss);
-    }
+   const toPlainMap = (rankedMap) => {
+      const plain = new Map();
+      for(const [key, value] of rankedMap.entries()){
+        plain.set(key, value.gloss);
+      }
+      return plain;
+    };
 
-    return plainMap;
+
+return {
+      pointedMap: toPlainMap(pointedMap),
+      unpointedMap: toPlainMap(unpointedMap)
+    };
   }
 
   function buildGreekMap(rows){
@@ -198,7 +229,7 @@ const head = remaining.match(/^([\u05D0-\u05EA][\u0591-\u05AF\u05B0-\u05BC\u05BD
       loadJson(HEBREW_DICT_PATH),
       loadJson(GREEK_DICT_PATH)
     ]).then(([hebrewRows, greekRows]) => ({
-      hebrewMap: buildHebrewMap(hebrewRows),
+      hebrewMaps: buildHebrewMap(hebrewRows),
       greekMap: buildGreekMap(greekRows)
     }));
 
@@ -207,18 +238,26 @@ const head = remaining.match(/^([\u05D0-\u05EA][\u0591-\u05AF\u05B0-\u05BC\u05BD
 
 
   function mapTokenToSpanish(token, map, isHebrew, isGreek = false){
-    const key = normalizeToken(token, isHebrew, isGreek);
+    if(isHebrew){
+      const pointedKey = normalizeToken(token, true, false, true);
+      const plainKey = normalizeToken(token, true);
+      if(pointedKey && map.pointedMap?.has(pointedKey)) return map.pointedMap.get(pointedKey);
+      if(plainKey && map.unpointedMap?.has(plainKey)) return map.unpointedMap.get(plainKey);
+      return '-';
+    }
+
+    const key = normalizeToken(token, false, isGreek);
     if(!key) return '-';
     return map.get(key) || '-';
   }
 
 async function buildInterlinearRows(originalText, options = {}){
     const { isGreek = false } = options;
-    const { hebrewMap, greekMap } = await getDictionaries();
-    const targetMap = isGreek ? greekMap : hebrewMap;
+  const { hebrewMaps, greekMap } = await getDictionaries();
+    const targetMap = isGreek ? greekMap : hebrewMaps;
     const tokens = splitTokens(originalText)
-     .flatMap((token) => (isGreek ? [token] : expandTokenForLookup(token, hebrewMap)));
-const spanish = tokens.map((token) => mapTokenToSpanish(token, targetMap, !isGreek, isGreek));
+ .flatMap((token) => (isGreek ? [token] : expandTokenForLookup(token, hebrewMaps.unpointedMap)));
+  const spanish = tokens.map((token) => mapTokenToSpanish(token, targetMap, !isGreek, isGreek));
     return {
       tokens,
       spanishTokens: spanish,
