@@ -1176,8 +1176,12 @@ function mapLxxRefsToHebrewRefs(refs) {
       await loadDictionary();
       const grIndex = await loadIndex('gr');
       const root = buildGreekLexicalRoot(normalizedLemma);
-      state.dict.forEach((item) => {
-        const lemmaNorm = normalizeGreek(item?.lemma || '');
+ const greekEntries = Array.isArray(state.dict)
+        ? state.dict
+        : Array.isArray(state.dict?.items)
+          ? state.dict.items
+          : [];
+      greekEntries.forEach((item) => {        const lemmaNorm = normalizeGreek(item?.lemma || '');
         if (!lemmaNorm || lemmaNorm === normalizedLemma || lemmaNorm.length < 3) return;
         if (!lemmaNorm.startsWith(root) && !lemmaNorm.includes(root)) return;
         const total = (grIndex.tokens?.[lemmaNorm] || []).length;
