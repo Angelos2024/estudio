@@ -49,6 +49,8 @@
     .panel-body{ padding:1rem; background:var(--surface); }
     .muted{ color: var(--muted); }
     .hit{ border:1px solid var(--bd); border-radius:12px; padding:.75rem; background:var(--surface); color:var(--text); }
+     .result-book-header{ cursor:pointer; }
+    .result-book-header:focus-visible{ outline:2px solid var(--primary); outline-offset:2px; border-radius:.4rem; }
     .hit.lang-es mark{ background:#fff3bf; color:#1f2937; }
     .hit.lang-gr mark{ background:#dbeafe; color:#1e3a8a; }
     .hit.lang-he mark{ background:#dcfce7; color:#065f46; }
@@ -205,14 +207,14 @@
         <span id="status" class="muted smallish">—</span>
       </div>
       <div class="panel-body">
-       <div class="small muted mb-3">Los resultados se agrupan por corpus, luego por libro y finalmente por versículo.</div>
-      <div id="results" class="d-grid gap-2"></div>
+       <div class="small muted mb-3">Los resultados inician contraídos: usa <strong>Ver resultados</strong> para mostrar libros y haz clic en cada libro para desplegar sus versículos.</div>
+        <div id="results" class="d-grid gap-2"></div>
 
       </div>
     </section>
   </main>
 
-  <script src="./busqueda.js?v=3"></script>
+  <script src="./busqueda.js?v=4"></script>
   <script>
   document.getElementById('backToReader')?.addEventListener('click', () => {
 let target = './index.html';
