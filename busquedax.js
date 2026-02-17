@@ -327,7 +327,7 @@ function normalizeSpanish(text) {
     const letters = [];
     for (const ch of escaped) {
       if (ch === '\\') continue;
-      if (lang === 'gr' && ch === 'σ') {
+       if ((lang === 'gr' || lang === 'lxx') && ch === 'σ') {
         letters.push('[σς]');
       } else {
         letters.push(ch);
