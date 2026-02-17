@@ -343,6 +343,9 @@ function normalizeSpanish(text) {
     if (!raw || !normalizedQuery) return escapeHtml(raw);
 
     const safe = escapeHtml(raw);
+     const highlightSource = (lang === 'gr' || lang === 'lxx' || lang === 'he')
+      ? safe.normalize('NFD')
+      : safe;
    const tokens = normalizedQuery
       .split(/\s+/)
       .map((part) => getNormalizedQuery(lang, part))
@@ -350,8 +353,8 @@ function normalizeSpanish(text) {
       .filter((token) => token.length >= 2);
     if (!tokens.length) return safe;
 
-    let output = safe;
-    for (const token of tokens) {
+    let output = highlightSource;
+   for (const token of tokens) {
       const re = buildTokenRegex(token, lang);
       output = output.replace(re, (match) => `<mark>${match}</mark>`);
     }
