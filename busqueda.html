@@ -133,6 +133,12 @@
       <div class="search-inline">
         <div class="input-group">
           <input id="bxQueryInput" class="form-control" placeholder="Ej: אָב, πατήρ, origen, fuente" value=""/>
+          <select id="bxLanguageScope" class="form-select" style="max-width: 180px;">
+            <option value="all">Auto (idioma detectado)</option>
+            <option value="es">Español (RVR1960)</option>
+            <option value="gr">Griego (LXX + RKANT)</option>
+            <option value="he">Hebreo (LXX + Hebreo)</option>
+          </select>
           <button id="bxAnalyzeBtn" class="btn btn-primary" type="button">Buscar</button>
         </div>
       </div>
@@ -143,7 +149,7 @@
     <section class="panel mb-3">
         <div class="panel-header">Buscador de palabras</div>
       <div class="panel-body">
-        <div class="form-text mb-2">Se aceptan términos en hebreo, griego o español. El sistema prioriza el lema y variantes.</div>
+        <div class="form-text mb-2">Se aceptan términos en hebreo, griego o español.</div>
         <div class="mt-2 d-flex flex-wrap gap-2">
           <button class="btn btn-soft btn-sm" type="button" data-filter="torah">Torah</button>
           <button class="btn btn-soft btn-sm" type="button" data-filter="profetas">Profetas</button>
