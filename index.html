@@ -1481,8 +1481,8 @@ async function runSearch(){
     if(q){
       const p = new URLSearchParams();
       p.set('q', q);
- p.set('scope', 'all');    // all | es | gr | he (busqueda.html)
-      p.set('mode', 'all');     // compatibilidad retroactiva
+      p.set('scope', 'auto');   // auto | all | es | gr | he (busqueda.html)
+      p.set('mode', 'auto');    // compatibilidad retroactiva
       p.set('exact', '0');      // 1 si quieres exacta por defecto
       // Puedes pasar también la versión si luego la usas en busqueda.html
       p.set('version', versionSelect.value || 'RVR1960');
