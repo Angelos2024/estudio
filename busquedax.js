@@ -1661,8 +1661,8 @@ bookList.className = 'mt-2 d-grid gap-1';
       const heIndex = await heIndexPromise;
       throwIfAborted(options.signal);
       const heRefs = (enabledCorpora.has('he') && heIndex && hebrewCandidate)
-        ? (heIndex.tokens?.[hebrewCandidate.normalized] || [])
-        : [];
+        ? getHebrewRefs(hebrewCandidate.normalized, heIndex)
+       : [];
 
       const posTag = lang === 'gr' ? extractPos(entry) : '—';
       const lemmaLabel = lang === 'gr' ? (entry?.lemma || term) : term;
