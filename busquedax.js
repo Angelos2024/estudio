@@ -736,12 +736,21 @@ async function loadLxxBookData(bookCode) {
 
   async function getLxxMatchesFromIndex(query, options = {}) {
     const maxRefs = Number.isFinite(options.maxRefs) ? options.maxRefs : 40;
-    const includeLemma = options.includeLemma !== false;
     const key = normalizeGreekKey(query);
     if (!key) return { refs: [], texts: new Map(), highlightTerms: [] };
 
-    const lookupTerms = new Set([key.replace(/\s+/g, '')]);
-    if (includeLemma) lookupTerms.add(`#${key.replace(/\s+/g, '')}`);
+    const qRaw = String(query || '').trim();
+    const keyNoSpaces = key.replace(/\s+/g, '');
+
+    const lookupTerms = new Set([keyNoSpaces]);
+
+    if (/^lemma:/i.test(qRaw)) {
+      lookupTerms.clear();
+      lookupTerms.add(`#${normalizeGreekKey(qRaw.slice(6)).replace(/\s+/g, '')}`);
+    } else if (qRaw.startsWith('#')) {
+      lookupTerms.clear();
+      lookupTerms.add(`#${normalizeGreekKey(qRaw.slice(1)).replace(/\s+/g, '')}`);
+    }
     const refs = [];
     const texts = new Map();
     const highlightTerms = new Set();
@@ -931,7 +940,7 @@ async function loadLxxBookData(bookCode) {
   async function buildLxxMatches(normalizedGreek, maxRefs = 40) {
     if (!normalizedGreek) return { refs: [], texts: new Map(), highlightTerms: [] };
    if (state.lxxSearchCache.has(normalizedGreek)) return state.lxxSearchCache.get(normalizedGreek);
-    const payload = await getLxxMatchesFromIndex(normalizedGreek, { maxRefs, includeLemma: true });
+    const payload = await getLxxMatchesFromIndex(normalizedGreek, { maxRefs });
    state.lxxSearchCache.set(normalizedGreek, payload);
     return payload;
   }
