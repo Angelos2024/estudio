@@ -2,12 +2,13 @@
  (() => {
    const DICT_URL = './diccionario/masterdiccionario.json';
    const HEBREW_DICT_URL = './diccionario/diccionario_unificado.min.json';
-   const SEARCH_INDEX = {
+  const SEARCH_INDEX = {
      es: './search/index-es.json',
      gr: './search/index-gr.json',
      he: './search/index-he.json'
    };
-   const TEXT_BASE = './search/texts';
+  const LXX_SHARD_BASE_PATHS = ['./index', './search/index'];
+  const TEXT_BASE = './search/texts';
   const LXX_FILES = [
     'lxx_rahlfs_1935_1Chr.json',
     'lxx_rahlfs_1935_1Esdr.json',
@@ -154,6 +155,19 @@
    ];
    const APOCALYPSE = ['apocalipsis'];
   const NT_BOOKS = new Set([...GOSPELS, ...ACTS, ...LETTERS, ...APOCALYPSE]);
+  const LXX_BOOKS = [
+    '1Chr', '1Esdr', '1Kgs', '1Macc', '1Sam', '2Chr', '2Esdr', '2Kgs', '2Macc', '2Sam',
+    '3Macc', '4Macc', 'Amos', 'Bar', 'BelOG', 'BelTh', 'DanOG', 'DanTh', 'Deut', 'Eccl',
+    'EpJer', 'Esth', 'Exod', 'Ezek', 'Gen', 'Hab', 'Hag', 'Hos', 'Isa', 'Jdt', 'Jer', 'Job',
+    'Joel', 'Jonah', 'JoshA', 'JoshB', 'JudgA', 'JudgB', 'Lam', 'Lev', 'Mal', 'Mic', 'Nah',
+    'Num', 'Obad', 'Odes', 'Prov', 'Ps', 'PsSol', 'Ruth', 'Sir', 'Song', 'SusOG', 'SusTh',
+    'TobBA', 'TobS', 'Wis', 'Zech', 'Zeph'
+  ];
+  const LXX_FILE_BY_BOOK = LXX_FILES.reduce((acc, file) => {
+    const match = file.match(/^lxx_rahlfs_1935_(.+)\.json$/);
+    if (match?.[1]) acc[match[1]] = file;
+    return acc;
+  }, {});
  
    const langLabels = {
      es: 'RVR1960',
@@ -183,6 +197,8 @@
      textCache: new Map(),
     lxxFileCache: new Map(),
     lxxBookCache: new Map(),
+    lxxShardCache: new Map(),
+    lxxShardBaseByBook: new Map(),
     lxxVerseCache: new Map(),
     lxxBookStatsCache: new Map(),
     lxxSearchCache: new Map(),
@@ -266,6 +282,16 @@ function normalizeGreek(text) {
       .replace(/[\u0300-\u036f]/g, '')
            .replace(/ς/g, 'σ')
       .toLowerCase();
+  }
+  function normalizeGreekKey(text) {
+    return String(text || '')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/ς/g, 'σ')
+      .replace(/[··.,;:!?\'"“”‘’()\[\]{}]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
   }
   
   function transliterateGreek(text) {
@@ -665,20 +691,107 @@ const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
   }
 async function loadLxxBookData(bookCode) {
     if (state.lxxBookCache.has(bookCode)) return state.lxxBookCache.get(bookCode);
-    for (const file of LXX_FILES) {
-      try {
-        const data = await loadLxxFile(file);
-        if (data?.text?.[bookCode]) {
-          state.lxxBookCache.set(bookCode, data);
-          return data;
-        }
-      } catch (error) {
+    const file = LXX_FILE_BY_BOOK[bookCode];
+    if (!file) {
+      state.lxxBookCache.set(bookCode, null);
+      return null;
+    }
+    try {
+      const data = await loadLxxFile(file);
+      state.lxxBookCache.set(bookCode, data);
+      return data;
+    } catch (error) {
       if (isAbortError(error)) throw error;
-        continue;
-      }
     }
     state.lxxBookCache.set(bookCode, null);
     return null;
+  }
+
+  async function loadLxxShard(bookId, shardKey) {
+    const cacheKey = `${bookId}|${shardKey}`;
+    if (state.lxxShardCache.has(cacheKey)) return state.lxxShardCache.get(cacheKey);
+    const knownBase = state.lxxShardBaseByBook.get(bookId);
+    const baseCandidates = knownBase
+      ? [knownBase, ...LXX_SHARD_BASE_PATHS.filter((base) => base !== knownBase)]
+      : LXX_SHARD_BASE_PATHS;
+    for (const basePath of baseCandidates) {
+      try {
+        const res = await fetch(`${basePath}/${bookId}/index_${shardKey}.json`);
+        if (!res.ok) {
+          if (res.status === 404) continue;
+          throw new Error(`No se pudo cargar shard LXX ${bookId}/${shardKey}`);
+        }
+        const data = await res.json();
+        const tokens = data?.tokens || {};
+        state.lxxShardBaseByBook.set(bookId, basePath);
+        state.lxxShardCache.set(cacheKey, tokens);
+        return tokens;
+      } catch (error) {
+        if (isAbortError(error)) throw error;
+      }
+    }
+    state.lxxShardCache.set(cacheKey, {});
+    return {};
+  }
+
+  async function getLxxMatchesFromIndex(query, options = {}) {
+    const maxRefs = Number.isFinite(options.maxRefs) ? options.maxRefs : 40;
+    const includeLemma = options.includeLemma !== false;
+    const key = normalizeGreekKey(query);
+    if (!key) return { refs: [], texts: new Map(), highlightTerms: [] };
+
+    const lookupTerms = new Set([key.replace(/\s+/g, '')]);
+    if (includeLemma) lookupTerms.add(`#${key.replace(/\s+/g, '')}`);
+    const refs = [];
+    const texts = new Map();
+    const highlightTerms = new Set();
+    const seenRefs = new Set();
+
+    for (const term of lookupTerms) {
+      const shardKey = term.slice(0, 2);
+      if (!shardKey) continue;
+      const bookBatches = [];
+      const batchSize = 8;
+      for (let index = 0; index < LXX_BOOKS.length; index += batchSize) {
+        bookBatches.push(LXX_BOOKS.slice(index, index + batchSize));
+      }
+      for (const batch of bookBatches) {
+        if (refs.length >= maxRefs) break;
+        const batchResults = await Promise.all(batch.map((bookId) => loadLxxShard(bookId, shardKey)));
+        for (let i = 0; i < batch.length; i += 1) {
+          if (refs.length >= maxRefs) break;
+          const bookId = batch[i];
+          const tokens = batchResults[i] || {};
+          const hits = tokens[term] || [];
+          for (const hit of hits) {
+            if (refs.length >= maxRefs) break;
+            const hitBook = hit?.book || bookId;
+            const chapter = String(hit?.ch || '');
+            const verse = String(hit?.v || '');
+            if (!hitBook || !chapter || !verse) continue;
+            const ref = `${hitBook}|${chapter}|${verse}`;
+            if (!seenRefs.has(ref)) {
+              seenRefs.add(ref);
+              refs.push(ref);
+            }
+            if (hit?.w) highlightTerms.add(hit.w);
+          }
+        }
+      }
+    }
+
+    for (const ref of refs) {
+      const [book, chapterRaw, verseRaw] = ref.split('|');
+      const chapter = Number(chapterRaw);
+      const verse = Number(verseRaw);
+      const tokens = await loadLxxVerseTokens(book, chapter, verse);
+      const verseText = Array.isArray(tokens)
+        ? tokens.map((token) => token?.w).filter(Boolean).join(' ')
+        : '';
+      texts.set(ref, verseText || 'Texto no disponible.');
+    }
+
+    return { refs, texts, highlightTerms: [...highlightTerms] };
   }
 
   async function loadLxxVerseTokens(bookCode, chapter, verse) {
@@ -818,44 +931,7 @@ async function loadLxxBookData(bookCode) {
   async function buildLxxMatches(normalizedGreek, maxRefs = 40) {
     if (!normalizedGreek) return { refs: [], texts: new Map(), highlightTerms: [] };
    if (state.lxxSearchCache.has(normalizedGreek)) return state.lxxSearchCache.get(normalizedGreek);
-    const refs = [];
-    const texts = new Map();
-       const highlightTerms = new Set();
-    for (const file of LXX_FILES) {
-      if (refs.length >= maxRefs) break;
-      try {
-        const data = await loadLxxFile(file);
-        const text = data?.text || {};
-        for (const [book, chapters] of Object.entries(text)) {
-          for (const [chapter, verses] of Object.entries(chapters || {})) {
-            for (const [verse, tokens] of Object.entries(verses || {})) {
-              const hit = (tokens || []).some((token) => {
-                const lemmaKey = normalizeGreek(token?.lemma || '');
-                const wordKey = normalizeGreek(token?.w || '');
-if (lemmaKey === normalizedGreek || wordKey === normalizedGreek) {
-                  if (token?.w) highlightTerms.add(token.w);
-                  return true;
-                }
-              });
-              if (!hit) continue;
-              const ref = `${book}|${chapter}|${verse}`;
-              if (!texts.has(ref)) {
-                const verseText = (tokens || []).map((token) => token.w).join(' ');
-                refs.push(ref);
-                texts.set(ref, verseText);
-              }
-              if (refs.length >= maxRefs) break;
-            }
-            if (refs.length >= maxRefs) break;
-          }
-          if (refs.length >= maxRefs) break;
-        }
-      } catch (error) {
-               if (isAbortError(error)) throw error;
-        continue;
-      }
-    }
-    const payload = { refs, texts, highlightTerms: [...highlightTerms] };
+    const payload = await getLxxMatchesFromIndex(normalizedGreek, { maxRefs, includeLemma: true });
    state.lxxSearchCache.set(normalizedGreek, payload);
     return payload;
   }
