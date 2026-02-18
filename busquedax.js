@@ -1421,10 +1421,7 @@ bookList.className = 'mt-2 d-grid gap-1';
     await nextFrame();
       try {
     const lang = detectLang(term);
-        if (state.languageScope !== 'all') {
-      state.languageScope = lang;
-      if (languageScopeSelect) languageScopeSelect.value = lang;
-    }
+   
            const selectedScope = getLanguageScope();
     const effectiveScope = selectedScope;
        const enabledCorpora = new Set(getCorporaForScope(effectiveScope));
