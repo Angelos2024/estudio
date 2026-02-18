@@ -161,7 +161,16 @@
     he: 'Hebreo',
     lxx: 'LXX'
    };
- 
+ const CROSS_LANGUAGE_ALIASES = {
+    jesus: {
+      gr: ['Ἰησοῦς'],
+      he: ['יֵשׁוּעַ', 'ישוע']
+    },
+    josue: {
+      gr: ['Ἰησοῦς'],
+      he: ['יְהוֹשֻׁעַ', 'ישוע', 'יהושע']
+    }
+  };
  const state = {
     dict: null,
     dictMap: new Map(),
@@ -409,6 +418,26 @@ function detectLang(text) {
     return detectLang(term);
   }
 
+  function getAliasCandidates(term) {
+    const tokens = String(term || '')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/\p{M}/gu, '')
+      .split(/\s+/)
+      .filter(Boolean);
+    const gr = new Set();
+    const he = new Set();
+    tokens.forEach((token) => {
+      const alias = CROSS_LANGUAGE_ALIASES[token];
+      if (!alias) return;
+      (alias.gr || []).forEach((value) => gr.add(normalizeGreek(value)));
+      (alias.he || []).forEach((value) => he.add(normalizeHebrew(value)));
+    });
+    return {
+      gr: [...gr].filter(Boolean),
+      he: [...he].filter(Boolean)
+    };
+  }
   function getCorporaForScope(scope) {
     if (scope === 'es') return ['es'];
     if (scope === 'gr') return ['gr', 'lxx'];
@@ -1497,6 +1526,7 @@ bookList.className = 'mt-2 d-grid gap-1';
       const lang = detectLang(term);
       const selectedScope = getLanguageScope(term);
      const enabledCorpora = new Set(getCorporaForScope(selectedScope));
+           const aliasCandidates = lang === 'es' ? getAliasCandidates(term) : { gr: [], he: [] };
       const normalized = normalizeByLang(term, lang);
 
       let entry = null;
@@ -1568,6 +1598,9 @@ bookList.className = 'mt-2 d-grid gap-1';
         greekEntry = await findGreekEntryFromSpanish(term, options);
         if (greekEntry?.lemma) {
           greekTerm = normalizeGreek(greekEntry.lemma);
+        }
+         if (!greekTerm && aliasCandidates.gr.length) {
+          greekTerm = aliasCandidates.gr[0];
         }
       }
 
@@ -1661,8 +1694,16 @@ bookList.className = 'mt-2 d-grid gap-1';
           transliteration: transliterateHebrew(term)
         };
       } else if (lang === 'es') {
-        if (greekTerm && lxxMatches.refs.length) {
-          hebrewCandidate = await buildHebrewCandidateFromLxxRefs(lxxMatches.refs, options);
+  if (aliasCandidates.he.length) {
+          const preferredWord = aliasCandidates.he.find((item) => item === 'ישוע') || aliasCandidates.he[0];
+          hebrewCandidate = {
+            normalized: preferredWord,
+            word: preferredWord,
+            transliteration: transliterateHebrew(preferredWord)
+          };
+        }
+        if (!hebrewCandidate && greekTerm && lxxMatches.refs.length) {
+         hebrewCandidate = await buildHebrewCandidateFromLxxRefs(lxxMatches.refs, options);
         }
         if (!hebrewCandidate && esOtRefs.length) {
           hebrewCandidate = await buildHebrewCandidateFromRefs(esOtRefs, options);
