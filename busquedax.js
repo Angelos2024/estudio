@@ -302,8 +302,10 @@ function normalizeGreek(text) {
   }
    function normalizeHebrew(text) {
      return String(text || '')
+        .replace(/[\u200C-\u200F\u202A-\u202E]/g, '')
        .replace(/[\u0591-\u05BD\u05BF\u05C1-\u05C2\u05C4-\u05C7]/g, '')
-       .replace(/[\s\u05BE]/g, '');
+.replace(/[\s\u05BE\-\u2010-\u2015\u2212]/g, '')
+       .replace(/[׃.,;:!?()"“”'׳״]/g, '');
    }
  
 function normalizeSpanish(text) {
@@ -438,10 +440,10 @@ function getGreekRefs(normalized, index) {
     const seen = new Set();
     Object.entries(index.tokens || {}).forEach(([token, matches]) => {
       if (!token || token === normalized) return;
-      if (!token.endsWith(normalized)) return;
-      const prefixLen = token.length - normalized.length;
-      if (prefixLen < 0 || prefixLen > 2) return;
-      (matches || []).forEach((ref) => {
+      if (!token.endsWith(normalized) && !token.includes(normalized)) return;
+     const prefixLen = token.length - normalized.length;
+      if (prefixLen < 0 || prefixLen > 3) return;
+     (matches || []).forEach((ref) => {
         if (seen.has(ref)) return;
         seen.add(ref);
         refs.push(ref);
