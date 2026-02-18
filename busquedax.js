@@ -429,6 +429,26 @@ function getGreekRefs(normalized, index) {
     });
     return refs;
   }
+   function getHebrewRefs(normalized, index) {
+    if (!normalized) return [];
+    const direct = index.tokens?.[normalized] || [];
+    if (direct.length) return direct;
+
+    const refs = [];
+    const seen = new Set();
+    Object.entries(index.tokens || {}).forEach(([token, matches]) => {
+      if (!token || token === normalized) return;
+      if (!token.endsWith(normalized)) return;
+      const prefixLen = token.length - normalized.length;
+      if (prefixLen < 0 || prefixLen > 2) return;
+      (matches || []).forEach((ref) => {
+        if (seen.has(ref)) return;
+        seen.add(ref);
+        refs.push(ref);
+      });
+    });
+    return refs;
+  }
 async function loadJson(url, options = {}) {
    const { signal } = options;
  const failedRequest = failedJsonRequests.get(url);
@@ -1487,8 +1507,9 @@ bookList.className = 'mt-2 d-grid gap-1';
 
       const index = await loadIndex(lang, options);
       throwIfAborted(options.signal);
-      const refs = lang === 'gr' ? getGreekRefs(normalized, index) : (index.tokens?.[normalized] || []);
-
+ const refs = lang === 'gr'
+        ? getGreekRefs(normalized, index)
+        : (lang === 'he' ? getHebrewRefs(normalized, index) : (index.tokens?.[normalized] || []));
       const initialLxxMatches = lang === 'gr' && normalized && enabledCorpora.has('lxx')
         ? await buildLxxMatches(normalized, 70)
         : { refs: [], texts: new Map() };
