@@ -183,6 +183,10 @@
   const jsonCache = new Map();
   const failedJsonRequests = new Map();
   const JSON_RETRY_COOLDOWN_MS = 15000;
+  const DEBOUNCE_DELAY_MS = 250;
+  const MAX_REFS_PER_CORPUS = 800;
+  let activeSearchController = null;
+  let activeSearchRunId = 0;
  
    const queryInput = document.getElementById('bxQueryInput');
    const analyzeBtn = document.getElementById('bxAnalyzeBtn');
@@ -199,6 +203,30 @@
 
   
   const nextFrame = () => new Promise((resolve) => requestAnimationFrame(resolve));
+  const isAbortError = (error) => error?.name === 'AbortError';
+  function debounce(fn, delayMs = 250) {
+    let timerId = null;
+    return (...args) => {
+      if (timerId) clearTimeout(timerId);
+      timerId = setTimeout(() => {
+        timerId = null;
+        fn(...args);
+      }, delayMs);
+    };
+  }
+
+  function hasTokenWithMinLength(query, minLength = 2) {
+    return String(query || '')
+      .split(/\s+/)
+      .map((token) => token.trim())
+      .some((token) => token.length >= minLength);
+  }
+
+  function throwIfAborted(signal) {
+    if (signal?.aborted) {
+      throw new DOMException('Aborted', 'AbortError');
+    }
+  }
   function scrollToLemmaSummary() {
     if (!lemmaSummaryPanel) {
       analysisResultsSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -401,15 +429,16 @@ function getGreekRefs(normalized, index) {
     });
     return refs;
   }
-  async function loadJson(url) {
-   const failedRequest = failedJsonRequests.get(url);
+async function loadJson(url, options = {}) {
+   const { signal } = options;
+ const failedRequest = failedJsonRequests.get(url);
     if (failedRequest && (Date.now() - failedRequest.timestamp) < JSON_RETRY_COOLDOWN_MS) {
       throw failedRequest.error;
     }
 
    if (jsonCache.has(url)) return jsonCache.get(url);
-    const promise = fetch(url, { cache: 'force-cache' }).then((res) => {
-      if (!res.ok) throw new Error(`No se pudo cargar ${url}`);
+    const promise = fetch(url, { cache: 'force-cache', signal }).then((res) => {
+     if (!res.ok) throw new Error(`No se pudo cargar ${url}`);
       return res.json();
     });
     jsonCache.set(url, promise);
@@ -418,6 +447,9 @@ function getGreekRefs(normalized, index) {
       return await promise;
     } catch (error) {
       jsonCache.delete(url);
+      if (isAbortError(error)) {
+        throw error;
+      }
 const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
       const isNetworkError = offline || error instanceof TypeError;
       const normalizedError = isNetworkError
@@ -432,10 +464,10 @@ const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
     }
   }
 
-  async function loadDictionary() {
-    if (state.dict) return state.dict;
-    const data = await loadJson(DICT_URL);
-    state.dict = data;
+  async function loadDictionary(options = {}) {
+   if (state.dict) return state.dict;
+    const data = await loadJson(DICT_URL, options);
+   state.dict = data;
     const map = new Map();
     const translitMap = new Map();
        const spanishMap = new Map();
@@ -463,10 +495,10 @@ const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
        state.dictSpanishMap = spanishMap;
     return data;
   }
-  async function findGreekEntryFromSpanish(term) {
-    if (!term) return null;
-    await loadDictionary();
-    const tokens = String(term || '').split(/\s+/).filter(Boolean);
+  async function findGreekEntryFromSpanish(term, options = {}) {
+   if (!term) return null;
+    await loadDictionary(options);
+   const tokens = String(term || '').split(/\s+/).filter(Boolean);
     const candidates = [term, ...tokens];
     for (const candidate of candidates) {
       const key = normalizeTransliteration(candidate);
@@ -498,10 +530,10 @@ const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
     }
     return null;
   }
- async function loadHebrewDictionary() {
-    if (state.hebrewDict) return state.hebrewDict;
-    const data = await loadJson(HEBREW_DICT_URL);
-    state.hebrewDict = data;
+ async function loadHebrewDictionary(options = {}) {
+  if (state.hebrewDict) return state.hebrewDict;
+    const data = await loadJson(HEBREW_DICT_URL, options);
+  state.hebrewDict = data;
     const map = new Map();
     (data || []).forEach((item) => {
      const keys = [
@@ -522,19 +554,19 @@ const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
     state.hebrewDictMap = map;
     return data;
   }
-   async function loadIndex(lang) {
-     if (state.indexes[lang]) return state.indexes[lang];
-     const data = await loadJson(SEARCH_INDEX[lang]);
-     state.indexes[lang] = data;
+   async function loadIndex(lang, options = {}) {
+    if (state.indexes[lang]) return state.indexes[lang];
+     const data = await loadJson(SEARCH_INDEX[lang], options);
+    state.indexes[lang] = data;
      return data;
    }
  
-   async function loadChapterText(lang, book, chapter) {
-     const key = `${lang}/${book}/${chapter}`;
+   async function loadChapterText(lang, book, chapter, options = {}) {
+    const key = `${lang}/${book}/${chapter}`;
      if (state.textCache.has(key)) return state.textCache.get(key);
      const url = `${TEXT_BASE}/${lang}/${book}/${chapter}.json`;
-     const data = await loadJson(url);
-     state.textCache.set(key, data);
+     const data = await loadJson(url, options);
+    state.textCache.set(key, data);
      return data;
    }
  
@@ -556,6 +588,7 @@ async function loadLxxBookData(bookCode) {
           return data;
         }
       } catch (error) {
+      if (isAbortError(error)) throw error;
         continue;
       }
     }
@@ -733,6 +766,7 @@ if (lemmaKey === normalizedGreek || wordKey === normalizedGreek) {
           if (refs.length >= maxRefs) break;
         }
       } catch (error) {
+               if (isAbortError(error)) throw error;
         continue;
       }
     }
@@ -786,8 +820,8 @@ if (lemmaKey === normalizedGreek || wordKey === normalizedGreek) {
    return rankGreekCandidatesByLxxStats(counts, samples, usedBooks);
   }
 
-  async function buildGreekCandidateFromGreekRefs(refs) {
-    if (!refs.length) return null;
+  async function buildGreekCandidateFromGreekRefs(refs, options = {}) {
+   if (!refs.length) return null;
     const counts = new Map();
     const samples = new Map();
    const usedBooks = new Set();
@@ -796,8 +830,8 @@ if (lemmaKey === normalizedGreek || wordKey === normalizedGreek) {
       const chapter = Number(chapterRaw);
       const verse = Number(verseRaw);
       try {
-        const verses = await loadChapterText('gr', book, chapter);
-        const verseText = verses?.[verse - 1] || '';
+        const verses = await loadChapterText('gr', book, chapter, options);
+       const verseText = verses?.[verse - 1] || '';
         const tokens = verseText.split(/\s+/).filter(Boolean);
         tokens.forEach((token) => {
           const cleaned = cleanGreekToken(token);
@@ -807,6 +841,7 @@ if (lemmaKey === normalizedGreek || wordKey === normalizedGreek) {
           if (!samples.has(normalized)) samples.set(normalized, cleaned);
         });
       } catch (error) {
+               if (isAbortError(error)) throw error;
         continue;
       }
     }
