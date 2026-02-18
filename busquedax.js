@@ -161,16 +161,18 @@
     he: 'Hebreo',
     lxx: 'LXX'
    };
- const CROSS_LANGUAGE_ALIASES = {
-    jesus: {
+ const SEARCH_EQUIVALENCE_GROUPS = [
+    {
+      id: 'jesus-josue',
+      es: ['jesus', 'jesús', 'josue', 'josué'],
       gr: ['Ἰησοῦς'],
-      he: ['יֵשׁוּעַ', 'ישוע']
-    },
-    josue: {
-      gr: ['Ἰησοῦς'],
-      he: ['יְהוֹשֻׁעַ', 'ישוע', 'יהושע']
+      he: ['יֵשׁוּעַ', 'ישוע', 'יְהוֹשֻׁעַ', 'יהושע'],
+      relatedLabels: {
+        es: ['Josué'],
+        he: ['יְהוֹשֻׁעַ']
+      }
     }
-  };
+  ];
  const state = {
     dict: null,
     dictMap: new Map(),
@@ -418,24 +420,46 @@ function detectLang(text) {
     return detectLang(term);
   }
 
-  function getAliasCandidates(term) {
-    const tokens = String(term || '')
+  function getAliasCandidates(term, langHint = detectLang(term)) {
+    const esTokens = String(term || '')
       .toLowerCase()
       .normalize('NFD')
       .replace(/\p{M}/gu, '')
       .split(/\s+/)
       .filter(Boolean);
+    const sourceTokens = langHint === 'he'
+      ? esTokens.map((token) => normalizeHebrew(token))
+      : (langHint === 'gr' ? esTokens.map((token) => normalizeGreek(token)) : esTokens);
+
     const gr = new Set();
     const he = new Set();
-    tokens.forEach((token) => {
-      const alias = CROSS_LANGUAGE_ALIASES[token];
-      if (!alias) return;
-      (alias.gr || []).forEach((value) => gr.add(normalizeGreek(value)));
-      (alias.he || []).forEach((value) => he.add(normalizeHebrew(value)));
+    const es = new Set();
+    const relatedLabels = { es: new Set(), he: new Set() };
+
+    SEARCH_EQUIVALENCE_GROUPS.forEach((group) => {
+      const normalizedGroup = {
+        es: new Set((group.es || []).map((value) => normalizeSpanish(value)).filter(Boolean)),
+        gr: new Set((group.gr || []).map((value) => normalizeGreek(value)).filter(Boolean)),
+        he: new Set((group.he || []).map((value) => normalizeHebrew(value)).filter(Boolean))
+      };
+      const matched = sourceTokens.some((token) => normalizedGroup[langHint]?.has(token));
+      if (!matched) return;
+
+      normalizedGroup.gr.forEach((value) => gr.add(value));
+      normalizedGroup.he.forEach((value) => he.add(value));
+      normalizedGroup.es.forEach((value) => es.add(value));
+      (group.relatedLabels?.es || []).forEach((value) => relatedLabels.es.add(value));
+      (group.relatedLabels?.he || []).forEach((value) => relatedLabels.he.add(value));
     });
+
     return {
-      gr: [...gr].filter(Boolean),
-      he: [...he].filter(Boolean)
+      gr: [...gr],
+      he: [...he],
+      es: [...es],
+      relatedLabels: {
+        es: [...relatedLabels.es],
+        he: [...relatedLabels.he]
+      }
     };
   }
   function pickPreferredHebrewAlias(candidates = []) {
@@ -1188,7 +1212,7 @@ function mapLxxRefsToHebrewRefs(refs) {
     `;
   }
 
- function renderResults(groupsByCorpus, highlightQueries = state.last?.highlightQueries || {}) {
+ function renderResults(groupsByCorpus, highlightQueries = state.last?.highlightQueries || {}, relatedTerms = state.last?.relatedTerms || {}) {
     resultsByCorpus.innerHTML = '';
     if (!groupsByCorpus.length) {
       resultsByCorpus.innerHTML = '<div class="col-12"><div class="muted small">Sin resultados en el corpus.</div></div>';
@@ -1276,13 +1300,17 @@ function mapLxxRefsToHebrewRefs(refs) {
           const bookList = document.createElement('div');
 bookList.className = 'mt-2 d-grid gap-1';
          const highlightQuery = highlightQueries[lang] || '';
+         const relatedLabels = relatedTerms[lang] || [];
           if (group.expanded) {
             group.items.forEach((item) => {
               const row = document.createElement('div');
               row.className = 'verse-row';
               const textWrap = document.createElement('div');
               textWrap.className = `${classForLang(lang)} mb-2`;
-              textWrap.innerHTML = `<span class="verse-ref">${escapeHtml(item.ref)}</span> · ${highlightText(item.text, highlightQuery, lang)}`;
+              const relatedBadge = (lang === 'es' && relatedLabels.length && relatedLabels.some((label) => normalizeSpanish(item.text).includes(normalizeSpanish(label))))
+                ? `<span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle ms-1">Coincidencia relacionada: ${escapeHtml(relatedLabels.join(', '))}</span>`
+                : '';
+              textWrap.innerHTML = `<span class="verse-ref">${escapeHtml(item.ref)}</span>${relatedBadge} · ${highlightText(item.text, highlightQuery, lang)}`;
               const actions = document.createElement('div');
               actions.className = 'd-flex justify-content-end';
               const openBtn = document.createElement('button');
@@ -1532,7 +1560,7 @@ bookList.className = 'mt-2 d-grid gap-1';
       const lang = detectLang(term);
       const selectedScope = getLanguageScope(term);
      const enabledCorpora = new Set(getCorporaForScope(selectedScope));
-           const aliasCandidates = lang === 'es' ? getAliasCandidates(term) : { gr: [], he: [] };
+           const aliasCandidates = getAliasCandidates(term, lang);
       const normalized = normalizeByLang(term, lang);
 
       let entry = null;
@@ -1585,7 +1613,8 @@ bookList.className = 'mt-2 d-grid gap-1';
       let esSearchTokens = [];
       if (enabledCorpora.has('es') || needsSpanishBridge) {
        if (lang === 'es') {
-          esSearchTokens = [normalized].filter(Boolean);
+          const relatedEsTokens = aliasCandidates.es.filter((token) => token && token !== normalized);
+          esSearchTokens = [...relatedEsTokens, normalized].filter(Boolean);
         } else if (entry?.definicion) {
           esSearchTokens = extractSpanishTokensFromDefinition(entry.definicion);
         } else if (lang === 'he' && getHebrewDefinition(hebrewEntry)) {
@@ -1699,7 +1728,8 @@ bookList.className = 'mt-2 d-grid gap-1';
           word: term,
           transliteration: transliterateHebrew(term)
         };
-               hebrewSearchTerms.add(normalized);
+        hebrewSearchTerms.add(normalized);
+        aliasCandidates.he.forEach((item) => hebrewSearchTerms.add(item));
       } else if (lang === 'es') {
  if (aliasCandidates.he.length) {
           aliasCandidates.he.forEach((item) => hebrewSearchTerms.add(item));
@@ -1756,11 +1786,16 @@ if (hebrewCandidate?.normalized) {
         ? lxxMatches.highlightTerms.join(' ')
         : (greekLemma !== '—' ? greekLemma : (lang === 'gr' ? term : ''));
 
+      const relatedTerms = {
+        es: aliasCandidates.relatedLabels?.es || [],
+        he: aliasCandidates.relatedLabels?.he || []
+      };
+
       const highlightQueries = {
         gr: greekLemma !== '—' ? greekLemma : (lang === 'gr' ? term : ''),
         lxx: lxxHighlightQuery,
         he: hebrewCandidate?.word || (lang === 'he' ? term : ''),
-        es: esDisplayWord
+        es: [esDisplayWord, ...relatedTerms.es].join(' ').trim()
       };
 
       const cards = [];
@@ -1857,15 +1892,15 @@ if (hebrewCandidate?.normalized) {
         loading: true
       }));
 
-      renderResults(groupsByCorpus, highlightQueries);
-      state.last = { term, lang, refs, groupsByCorpus, highlightQueries };
+      renderResults(groupsByCorpus, highlightQueries, relatedTerms);
+      state.last = { term, lang, refs, groupsByCorpus, highlightQueries, relatedTerms };
 
       await Promise.all(corpusConfigs.map(async (config, index) => {
         throwIfAborted(options.signal);
         const groups = await buildBookGroups(config.safeRefs, config.lang, config.preloaded, options);
         groupsByCorpus[index].groups = groups;
         groupsByCorpus[index].loading = false;
-        renderResults(groupsByCorpus, highlightQueries);
+        renderResults(groupsByCorpus, highlightQueries, relatedTerms);
       }));
     } catch (error) {
       if (!isAbortError(error)) {
@@ -1897,7 +1932,7 @@ if (hebrewCandidate?.normalized) {
      });
 
   if (state.last?.groupsByCorpus) {
-      renderResults(state.last.groupsByCorpus || []);
+      renderResults(state.last.groupsByCorpus || [], state.last.highlightQueries || {}, state.last.relatedTerms || {});
      }
    }
  
