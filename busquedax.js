@@ -333,6 +333,10 @@ function normalizeSpanish(text) {
     variants.add(base.replace(/i/g, 'y'));
     variants.add(base.replace(/au/g, 'av'));
     variants.add(base.replace(/ou/g, 'ov'));
+    variants.add(base.replace(/k/g, 'c'));
+    variants.add(base.replace(/c/g, 'k'));
+    variants.add(base.replace(/ck/g, 'k'));
+    variants.add(base.replace(/qu/g, 'k'));
     return [...variants].filter(Boolean);
   }
   function getNormalizedQuery(lang, query) {
