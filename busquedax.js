@@ -438,6 +438,12 @@ function detectLang(text) {
       he: [...he].filter(Boolean)
     };
   }
+  function pickPreferredHebrewAlias(candidates = []) {
+    if (!Array.isArray(candidates) || !candidates.length) return null;
+    return candidates.find((item) => item === 'יהושע')
+      || candidates.find((item) => item === 'ישוע')
+      || candidates[0];
+  }
   function getCorporaForScope(scope) {
     if (scope === 'es') return ['es'];
     if (scope === 'gr') return ['gr', 'lxx'];
@@ -1693,9 +1699,11 @@ bookList.className = 'mt-2 d-grid gap-1';
           word: term,
           transliteration: transliterateHebrew(term)
         };
+               hebrewSearchTerms.add(normalized);
       } else if (lang === 'es') {
-  if (aliasCandidates.he.length) {
-          const preferredWord = aliasCandidates.he.find((item) => item === 'ישוע') || aliasCandidates.he[0];
+ if (aliasCandidates.he.length) {
+          aliasCandidates.he.forEach((item) => hebrewSearchTerms.add(item));
+          const preferredWord = pickPreferredHebrewAlias(aliasCandidates.he);
           hebrewCandidate = {
             normalized: preferredWord,
             word: preferredWord,
@@ -1711,12 +1719,22 @@ bookList.className = 'mt-2 d-grid gap-1';
       } else if (lxxMatches.refs.length) {
         hebrewCandidate = await buildHebrewCandidateFromLxxRefs(lxxMatches.refs, options);
       }
-
+if (hebrewCandidate?.normalized) {
+        hebrewSearchTerms.add(hebrewCandidate.normalized);
+      }
       const heIndex = await heIndexPromise;
       throwIfAborted(options.signal);
-      const heRefs = (enabledCorpora.has('he') && heIndex && hebrewCandidate)
-        ? getHebrewRefs(hebrewCandidate.normalized, heIndex)
-       : [];
+      const heRefs = [];
+      if (enabledCorpora.has('he') && heIndex && hebrewSearchTerms.size) {
+        const seen = new Set();
+        hebrewSearchTerms.forEach((token) => {
+          getHebrewRefs(token, heIndex).forEach((ref) => {
+            if (seen.has(ref)) return;
+            seen.add(ref);
+            heRefs.push(ref);
+          });
+        });
+      }
 
       const posTag = lang === 'gr' ? extractPos(entry) : '—';
       const lemmaLabel = lang === 'gr' ? (entry?.lemma || term) : term;
