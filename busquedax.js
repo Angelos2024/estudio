@@ -962,7 +962,7 @@ function mapLxxRefsToHebrewRefs(refs) {
       .filter(Boolean);
   }
 
-  async function buildHebrewCandidateFromRefs(refs) {
+  async function buildHebrewCandidateFromRefs(refs, options = {}) {
     const counts = new Map();
     const samples = new Map();
     const limitedRefs = refs.slice(0, 40);
@@ -971,7 +971,7 @@ function mapLxxRefsToHebrewRefs(refs) {
       const chapter = Number(chapterRaw);
       const verse = Number(verseRaw);
       try {
-        const verses = await loadChapterText('he', book, chapter);
+        const verses = await loadChapterText('he', book, chapter, options);
         const verseText = verses?.[verse - 1] || '';
         const tokens = verseText.split(/\s/).filter(Boolean);
         tokens.forEach((token) => {
@@ -982,6 +982,7 @@ function mapLxxRefsToHebrewRefs(refs) {
           if (!samples.has(normalized)) samples.set(normalized, cleaned);
         });
       } catch (error) {
+        if (isAbortError(error)) throw error;
         continue;
       }
     }
@@ -996,7 +997,7 @@ function mapLxxRefsToHebrewRefs(refs) {
     };
   }
 
-   async function buildHebrewCandidateFromLxxRefs(refs) {
+   async function buildHebrewCandidateFromLxxRefs(refs, options = {}) {
     const mappedRefs = refs
       .map((ref) => {
         const [book, chapter, verse] = ref.split('|');
@@ -1005,7 +1006,7 @@ function mapLxxRefsToHebrewRefs(refs) {
         return `${slug}|${chapter}|${verse}`;
       })
       .filter(Boolean);
-    return buildHebrewCandidateFromRefs(mappedRefs);
+    return buildHebrewCandidateFromRefs(mappedRefs, options);
   }
 
   function groupForBook(book) {
@@ -1084,7 +1085,7 @@ function mapLxxRefsToHebrewRefs(refs) {
      });
    }
  
-  async function buildSamplesForRefs(refs, lang, max = 3, preloadedTexts = null) {
+  async function buildSamplesForRefs(refs, lang, max = 3, preloadedTexts = null, options = {}) {
     const samples = [];
     for (const ref of refs.slice(0, max)) {
       const [book, chapterRaw, verseRaw] = ref.split('|');
@@ -1095,9 +1096,10 @@ function mapLxxRefsToHebrewRefs(refs) {
         verseText = preloadedTexts.get(ref) || '';
       } else {
         try {
-          const verses = await loadChapterText(lang, book, chapter);
+          const verses = await loadChapterText(lang, book, chapter, options);
           verseText = verses?.[verse - 1] || '';
         } catch (error) {
+          if (isAbortError(error)) throw error;
           verseText = 'Texto no disponible.';
         }
       }
@@ -1256,7 +1258,7 @@ bookList.className = 'mt-2 d-grid gap-1';
               if (group.loadingMore) return;
               group.loadingMore = true;
               renderResults(groupsByCorpus);
-              await loadMoreRvr1960(group);
+              await loadMoreRvr1960(group, {});
               group.loadingMore = false;
               renderResults(groupsByCorpus);
             });
@@ -1283,7 +1285,7 @@ bookList.className = 'mt-2 d-grid gap-1';
    }
  
 
-  async function buildBookGroups(refs, lang, preloadedTexts = null) {
+  async function buildBookGroups(refs, lang, preloadedTexts = null, options = {}) {
      const grouped = new Map();
      refs.forEach((ref) => {
        const [book] = ref.split('|');
@@ -1326,7 +1328,7 @@ bookList.className = 'mt-2 d-grid gap-1';
            });
          } catch (error) {
           try {
-             const verses = await loadChapterText(lang, bookName, chapter);
+             const verses = await loadChapterText(lang, bookName, chapter, options);
              const verseText = verses?.[verse - 1] || '';
              group.items.push({
                book: bookName,
@@ -1336,6 +1338,7 @@ bookList.className = 'mt-2 d-grid gap-1';
                text: verseText
              });
            } catch (innerError) {
+             if (isAbortError(innerError)) throw innerError;
              group.items.push({
                   book: bookName,
                chapter,
@@ -1352,14 +1355,14 @@ bookList.className = 'mt-2 d-grid gap-1';
        }
     return groups.sort((a, b) => b.count - a.count);
    }
- async function loadMoreRvr1960(group) {
+ async function loadMoreRvr1960(group, options = {}) {
     const refsToLoad = group.refs.slice(group.loadedCount);
     for (const ref of refsToLoad) {
       const [book, chapterRaw, verseRaw] = ref.split('|');
       const chapter = Number(chapterRaw);
       const verse = Number(verseRaw);
       try {
-        const verses = await loadChapterText('es', book, chapter);
+        const verses = await loadChapterText('es', book, chapter, options);
         const verseText = verses?.[verse - 1] || '';
         group.items.push({
           book,
@@ -1369,6 +1372,7 @@ bookList.className = 'mt-2 d-grid gap-1';
           text: verseText
         });
       } catch (error) {
+        if (isAbortError(error)) throw error;
         group.items.push({
           book,
           chapter,
@@ -1381,7 +1385,7 @@ bookList.className = 'mt-2 d-grid gap-1';
     group.loadedCount = group.items.length;
     group.hasMore = false;
   }
-  async function buildSummary(term, lang, entry, hebrewEntry, refs, highlightQueries = {}) {
+  async function buildSummary(term, lang, entry, hebrewEntry, refs, highlightQueries = {}, options = {}) {
      const lemma = entry?.lemma || term;
      const transliteration = entry?.['Forma lexica'] || '—';
      const pos = extractPos(entry);
@@ -1402,13 +1406,14 @@ bookList.className = 'mt-2 d-grid gap-1';
       const verse = Number(verseRaw);
       sampleRef = formatRef(book, chapter, verse);
       try {
-        const verses = await loadChapterText(lang, book, chapter);
+        const verses = await loadChapterText(lang, book, chapter, options);
         sampleText = verses?.[verse - 1] || '';
         if (lang !== 'es') {
-          const versesEs = await loadChapterText('es', book, chapter);
+          const versesEs = await loadChapterText('es', book, chapter, options);
           sampleEs = versesEs?.[verse - 1] || '';
         }
       } catch (error) {
+        if (isAbortError(error)) throw error;
         sampleText = '';
         sampleEs = '';
       }
@@ -1446,297 +1451,341 @@ bookList.className = 'mt-2 d-grid gap-1';
    }
  
   async function analyze() {
-    if (state.isLoading) return;
     const term = queryInput.value.trim();
-    if (!term) {
-      return;
+    if (!term) return;
+
+    if (activeSearchController) {
+      activeSearchController.abort();
     }
+    const controller = new AbortController();
+    activeSearchController = controller;
+    const options = { signal: controller.signal };
+    const runId = ++activeSearchRunId;
+
     scrollToLemmaSummary();
-   setLoading(true);
+    setLoading(true);
     await nextFrame();
-      try {
-    const lang = detectLang(term);
-   
-           const selectedScope = getLanguageScope();
-    const effectiveScope = selectedScope;
-       const enabledCorpora = new Set(getCorporaForScope(effectiveScope));
-    const normalized = normalizeByLang(term, lang);
- 
-     let entry = null;
-     let hebrewEntry = null;
-    if (lang === 'gr') {
-      await loadDictionary();
-      entry = state.dictMap.get(normalized) || null;
-      } else if (lang === 'he') {
-      await loadHebrewDictionary();
-      hebrewEntry = state.hebrewDictMap.get(normalized) || null;
-    }
-    const indexPromise = loadIndex(lang);
-    const index = await indexPromise;
-   const refs = lang === 'gr' ? getGreekRefs(normalized, index) : (index.tokens?.[normalized] || []);
+    try {
+      throwIfAborted(options.signal);
 
-    const initialLxxMatches = lang === 'gr' && normalized && enabledCorpora.has('lxx')
-      ? await buildLxxMatches(normalized, 70)
-      : { refs: [], texts: new Map() };
-    const hasInitialGreekMatches = refs.length || initialLxxMatches.refs.length;
+      const lang = detectLang(term);
+      const selectedScope = getLanguageScope();
+      const enabledCorpora = new Set(getCorporaForScope(selectedScope));
+      const normalized = normalizeByLang(term, lang);
 
-    if (!refs.length && !(lang === 'gr' && hasInitialGreekMatches)) {
-      renderTags([
-        `Lema: <span class="fw-semibold">${term}</span>`,
-        'Transliteración: —',
-         'POS: —'
-       ]);
- if (lemmaSummary) {
-        lemmaSummary.textContent = 'No se encontraron ocurrencias en los índices disponibles.';
-      }      renderCorrespondence([]);
-       if (lemmaExamples) {
-        lemmaExamples.innerHTML = '';
-      }
-      state.last = { term, lang, refs: [], groupsByCorpus: [] };
-      return;
-     }
- 
-   
-   const esIndexPromise = enabledCorpora.has('es') ? loadIndex('es') : Promise.resolve(null);
-    const grIndexPromise = enabledCorpora.has('gr') ? loadIndex('gr') : Promise.resolve(null);
-    const heIndexPromise = enabledCorpora.has('he') ? loadIndex('he') : Promise.resolve(null);
-    const esIndex = await esIndexPromise;
-   let esSearchTokens = [];
-   if (enabledCorpora.has('es')) {
-      if (lang === 'es') {
-        esSearchTokens = [normalized].filter(Boolean);
-      } else if (entry?.definicion) {
-        esSearchTokens = extractSpanishTokensFromDefinition(entry.definicion);
-      } else if (lang === 'he' && getHebrewDefinition(hebrewEntry)) {
-        esSearchTokens = extractSpanishTokensFromDefinition(getHebrewDefinition(hebrewEntry));
-      } else {
-        esSearchTokens = [normalizeSpanish(term)].filter(Boolean);
-      }
-    }
-    const esDisplayWord = lang === 'es' ? term : (esSearchTokens[0] || term);
-    let greekEntry = entry;
-    let greekTerm = null;
-    let greekCandidate = null;
-    if (lang === 'es' && (enabledCorpora.has('gr') || enabledCorpora.has('lxx'))) {
-     greekEntry = await findGreekEntryFromSpanish(term);
-      if (greekEntry?.lemma) {
-        greekTerm = normalizeGreek(greekEntry.lemma);
-      }
-    }
-    const summaryHighlightQueries = {
-      es: esDisplayWord,
-      [lang]: lang === 'gr' ? (entry?.lemma || term) : term
-    };
-const summaryRefs = lang === 'gr' && !refs.length ? initialLxxMatches.refs : refs;
-    await buildSummary(term, lang, entry || greekEntry, hebrewEntry, summaryRefs, summaryHighlightQueries);
-    const esRefs = [];
-    const esSeen = new Set();
-       if (enabledCorpora.has('es') && esIndex) {
-      const directEsRefs = [];
+      let entry = null;
+      let hebrewEntry = null;
       if (lang === 'gr') {
-        refs.forEach((ref) => directEsRefs.push(ref));
-        mapLxxRefsToHebrewRefs(initialLxxMatches.refs).forEach((ref) => directEsRefs.push(ref));
+        await loadDictionary(options);
+        throwIfAborted(options.signal);
+        entry = state.dictMap.get(normalized) || null;
       } else if (lang === 'he') {
-        refs.forEach((ref) => directEsRefs.push(ref));
+        await loadHebrewDictionary(options);
+        throwIfAborted(options.signal);
+        hebrewEntry = state.hebrewDictMap.get(normalized) || null;
       }
-      directEsRefs.forEach((ref) => {
-        if (esSeen.has(ref)) return;
-        esSeen.add(ref);
-        esRefs.push(ref);
-      });
-esSearchTokens.forEach((token) => {
-        const matches = esIndex.tokens?.[token] || [];
-        matches.forEach((ref) => {
+
+      const index = await loadIndex(lang, options);
+      throwIfAborted(options.signal);
+      const refs = lang === 'gr' ? getGreekRefs(normalized, index) : (index.tokens?.[normalized] || []);
+
+      const initialLxxMatches = lang === 'gr' && normalized && enabledCorpora.has('lxx')
+        ? await buildLxxMatches(normalized, 70)
+        : { refs: [], texts: new Map() };
+      const hasInitialGreekMatches = refs.length || initialLxxMatches.refs.length;
+
+      if (!refs.length && !(lang === 'gr' && hasInitialGreekMatches)) {
+        renderTags([
+          `Lema: <span class="fw-semibold">${term}</span>`,
+          'Transliteración: —',
+          'POS: —'
+        ]);
+        if (lemmaSummary) {
+          lemmaSummary.textContent = 'No se encontraron ocurrencias en los índices disponibles.';
+        }
+        renderCorrespondence([]);
+        if (lemmaExamples) {
+          lemmaExamples.innerHTML = '';
+        }
+        state.last = { term, lang, refs: [], groupsByCorpus: [] };
+        return;
+      }
+
+      const esIndexPromise = enabledCorpora.has('es') ? loadIndex('es', options) : Promise.resolve(null);
+      const grIndexPromise = enabledCorpora.has('gr') ? loadIndex('gr', options) : Promise.resolve(null);
+      const heIndexPromise = enabledCorpora.has('he') ? loadIndex('he', options) : Promise.resolve(null);
+      const esIndex = await esIndexPromise;
+      throwIfAborted(options.signal);
+
+      let esSearchTokens = [];
+      if (enabledCorpora.has('es')) {
+        if (lang === 'es') {
+          esSearchTokens = [normalized].filter(Boolean);
+        } else if (entry?.definicion) {
+          esSearchTokens = extractSpanishTokensFromDefinition(entry.definicion);
+        } else if (lang === 'he' && getHebrewDefinition(hebrewEntry)) {
+          esSearchTokens = extractSpanishTokensFromDefinition(getHebrewDefinition(hebrewEntry));
+        } else {
+          esSearchTokens = [normalizeSpanish(term)].filter(Boolean);
+        }
+      }
+
+      const esDisplayWord = lang === 'es' ? term : (esSearchTokens[0] || term);
+      let greekEntry = entry;
+      let greekTerm = null;
+      let greekCandidate = null;
+
+      if (lang === 'es' && (enabledCorpora.has('gr') || enabledCorpora.has('lxx'))) {
+        greekEntry = await findGreekEntryFromSpanish(term, options);
+        if (greekEntry?.lemma) {
+          greekTerm = normalizeGreek(greekEntry.lemma);
+        }
+      }
+
+      const summaryHighlightQueries = {
+        es: esDisplayWord,
+        [lang]: lang === 'gr' ? (entry?.lemma || term) : term
+      };
+      const summaryRefs = lang === 'gr' && !refs.length ? initialLxxMatches.refs : refs;
+      await buildSummary(term, lang, entry || greekEntry, hebrewEntry, summaryRefs, summaryHighlightQueries, options);
+      throwIfAborted(options.signal);
+
+      const esRefs = [];
+      const esSeen = new Set();
+      if (enabledCorpora.has('es') && esIndex) {
+        const directEsRefs = [];
+        if (lang === 'gr') {
+          refs.forEach((ref) => directEsRefs.push(ref));
+          mapLxxRefsToHebrewRefs(initialLxxMatches.refs).forEach((ref) => directEsRefs.push(ref));
+        } else if (lang === 'he') {
+          refs.forEach((ref) => directEsRefs.push(ref));
+        }
+        directEsRefs.forEach((ref) => {
           if (esSeen.has(ref)) return;
           esSeen.add(ref);
           esRefs.push(ref);
         });
-      });
-    }
-        const { ot: esOtRefs, nt: esNtRefs } = splitRefsByTestament(esRefs);
+        esSearchTokens.forEach((token) => {
+          const matches = esIndex.tokens?.[token] || [];
+          matches.forEach((ref) => {
+            if (esSeen.has(ref)) return;
+            esSeen.add(ref);
+            esRefs.push(ref);
+          });
+        });
+      }
 
-    if (lang === 'gr') {
-      greekTerm = normalized;
-    } else if (lang === 'es') {
-      if (!greekTerm) {
-        const ntCandidate = esNtRefs.length ? await buildGreekCandidateFromGreekRefs(esNtRefs) : null;
-        const otLxxRefs = esOtRefs.length ? mapOtRefsToLxxRefs(esOtRefs) : [];
-        const otCandidate = otLxxRefs.length ? await buildGreekCandidateFromLxxRefs(otLxxRefs) : null;
-        if (ntCandidate && otCandidate) {
-          greekCandidate = ntCandidate.count >= otCandidate.count ? ntCandidate : otCandidate;
-        } else {
-          greekCandidate = ntCandidate || otCandidate;
+      const { ot: esOtRefs, nt: esNtRefs } = splitRefsByTestament(esRefs);
+
+      if (lang === 'gr') {
+        greekTerm = normalized;
+      } else if (lang === 'es') {
+        if (!greekTerm) {
+          const ntCandidate = esNtRefs.length ? await buildGreekCandidateFromGreekRefs(esNtRefs, options) : null;
+          const otLxxRefs = esOtRefs.length ? mapOtRefsToLxxRefs(esOtRefs) : [];
+          const otCandidate = otLxxRefs.length ? await buildGreekCandidateFromLxxRefs(otLxxRefs) : null;
+          if (ntCandidate && otCandidate) {
+            greekCandidate = ntCandidate.count >= otCandidate.count ? ntCandidate : otCandidate;
+          } else {
+            greekCandidate = ntCandidate || otCandidate;
+          }
+          if (greekCandidate) {
+            greekTerm = greekCandidate.normalized;
+            await loadDictionary(options);
+            greekEntry = state.dictMap.get(greekTerm) || greekEntry;
+          }
         }
+      } else if (lang === 'he') {
+        greekCandidate = await buildGreekCandidateFromHebrewRefs(refs);
         if (greekCandidate) {
           greekTerm = greekCandidate.normalized;
-          await loadDictionary();
+          await loadDictionary(options);
           greekEntry = state.dictMap.get(greekTerm) || greekEntry;
         }
       }
-    } else if (lang === 'he') {
-      greekCandidate = await buildGreekCandidateFromHebrewRefs(refs);
-      if (greekCandidate) {
-        greekTerm = greekCandidate.normalized;
-        await loadDictionary();
-        greekEntry = state.dictMap.get(greekTerm) || greekEntry;
-      }
-    }
 
+      const greekLemma = greekEntry?.lemma || greekCandidate?.lemma || (lang === 'gr' ? term : '—');
+      const greekTranslit = greekEntry?.['Forma lexica'] || (greekTerm ? transliterateGreek(greekLemma || term) : '—');
 
-    const greekLemma = greekEntry?.lemma || greekCandidate?.lemma || (lang === 'gr' ? term : '—');
-const greekTranslit = greekEntry?.['Forma lexica'] || (greekTerm ? transliterateGreek(greekLemma || term) : '—');
-     const grIndex = await grIndexPromise;
- const grRefs = (enabledCorpora.has('gr') && grIndex && greekTerm) ? getGreekRefs(greekTerm, grIndex) : [];
-   const lxxMatchesPromise = (enabledCorpora.has('lxx') && greekTerm)
-      ? (lang === 'gr' && greekTerm === normalized
-          ? Promise.resolve(initialLxxMatches)
-          : buildLxxMatches(greekTerm, 70))
-      : Promise.resolve({ refs: [], texts: new Map(), highlightTerms: [] });
-       const lxxMatches = await lxxMatchesPromise;
+      const grIndex = await grIndexPromise;
+      throwIfAborted(options.signal);
+      const grRefs = (enabledCorpora.has('gr') && grIndex && greekTerm) ? getGreekRefs(greekTerm, grIndex) : [];
 
-    let hebrewCandidate = null;
-    if (lang === 'he') {
-      hebrewCandidate = {
-        normalized,
-        word: term,
-        transliteration: transliterateHebrew(term)
-      };
-     } else if (lang === 'es') {
-     if (greekTerm && lxxMatches.refs.length) {
-        hebrewCandidate = await buildHebrewCandidateFromLxxRefs(lxxMatches.refs);
+      const lxxMatches = (enabledCorpora.has('lxx') && greekTerm)
+        ? await (lang === 'gr' && greekTerm === normalized
+            ? Promise.resolve(initialLxxMatches)
+            : buildLxxMatches(greekTerm, 70))
+        : { refs: [], texts: new Map(), highlightTerms: [] };
+
+      let hebrewCandidate = null;
+      if (lang === 'he') {
+        hebrewCandidate = {
+          normalized,
+          word: term,
+          transliteration: transliterateHebrew(term)
+        };
+      } else if (lang === 'es') {
+        if (greekTerm && lxxMatches.refs.length) {
+          hebrewCandidate = await buildHebrewCandidateFromLxxRefs(lxxMatches.refs, options);
+        }
+        if (!hebrewCandidate && esOtRefs.length) {
+          hebrewCandidate = await buildHebrewCandidateFromRefs(esOtRefs, options);
+        }
+      } else if (lxxMatches.refs.length) {
+        hebrewCandidate = await buildHebrewCandidateFromLxxRefs(lxxMatches.refs, options);
       }
-      if (!hebrewCandidate && esOtRefs.length) {
-        hebrewCandidate = await buildHebrewCandidateFromRefs(esOtRefs);
-      }
-    } else if (lxxMatches.refs.length) {
-      hebrewCandidate = await buildHebrewCandidateFromLxxRefs(lxxMatches.refs);
-    }
-    const heIndex = await heIndexPromise;
- const heRefs = (enabledCorpora.has('he') && heIndex && hebrewCandidate) ? (heIndex.tokens?.[hebrewCandidate.normalized] || []) : [];       
-const posTag = lang === 'gr' ? extractPos(entry) : '—';
-    const lemmaLabel = lang === 'gr' ? (entry?.lemma || term) : term;
-    const translitLabel = lang === 'he'
-      ? transliterateHebrew(term)
-       : (entry?.['Forma lexica'] || (lang === 'gr' ? transliterateGreek(term) : '—'));
-    renderTags([
-      `Lema: <span class="fw-semibold">${lemmaLabel}</span>`,
-      `Transliteración: ${translitLabel}`,
-      `POS: ${posTag}`,
-           `RKANT: ${enabledCorpora.has('gr') ? grRefs.length : '—'}`,
-      `LXX: ${enabledCorpora.has('lxx') ? lxxMatches.refs.length : '—'}`,
-      `Hebreo: ${enabledCorpora.has('he') ? heRefs.length : '—'}`,
-      `RVR1960: ${enabledCorpora.has('es') ? esRefs.length : '—'}`
-    ]);
-        const lxxHighlightQuery = lxxMatches.highlightTerms?.length
-      ? lxxMatches.highlightTerms.join(' ')
-      : (greekLemma !== '—' ? greekLemma : (lang === 'gr' ? term : ''));
-       
-       const highlightQueries = {
-      gr: greekLemma !== '—' ? greekLemma : (lang === 'gr' ? term : ''),
-      lxx: lxxHighlightQuery,
+
+      const heIndex = await heIndexPromise;
+      throwIfAborted(options.signal);
+      const heRefs = (enabledCorpora.has('he') && heIndex && hebrewCandidate)
+        ? (heIndex.tokens?.[hebrewCandidate.normalized] || [])
+        : [];
+
+      const posTag = lang === 'gr' ? extractPos(entry) : '—';
+      const lemmaLabel = lang === 'gr' ? (entry?.lemma || term) : term;
+      const translitLabel = lang === 'he'
+        ? transliterateHebrew(term)
+        : (entry?.['Forma lexica'] || (lang === 'gr' ? transliterateGreek(term) : '—'));
+
+      renderTags([
+        `Lema: <span class="fw-semibold">${lemmaLabel}</span>`,
+        `Transliteración: ${translitLabel}`,
+        `POS: ${posTag}`,
+        `RKANT: ${enabledCorpora.has('gr') ? grRefs.length : '—'}`,
+        `LXX: ${enabledCorpora.has('lxx') ? lxxMatches.refs.length : '—'}`,
+        `Hebreo: ${enabledCorpora.has('he') ? heRefs.length : '—'}`,
+        `RVR1960: ${enabledCorpora.has('es') ? esRefs.length : '—'}`
+      ]);
+
+      const lxxHighlightQuery = lxxMatches.highlightTerms?.length
+        ? lxxMatches.highlightTerms.join(' ')
+        : (greekLemma !== '—' ? greekLemma : (lang === 'gr' ? term : ''));
+
+      const highlightQueries = {
+        gr: greekLemma !== '—' ? greekLemma : (lang === 'gr' ? term : ''),
+        lxx: lxxHighlightQuery,
         he: hebrewCandidate?.word || (lang === 'he' ? term : ''),
-      es: esDisplayWord
-    };
-    const cards = [];
-        const samplesTasks = [];
-   if (greekTerm && grRefs.length) {
-samplesTasks.push(
-        buildSamplesForRefs(grRefs, 'gr', 3).then((grSamples) => {
-          cards.push(buildCorrespondenceCard({
-            title: 'RKANT (NT)',
-            word: greekLemma,
-            transliteration: greekTranslit,
-            samples: grSamples,
-            lang: 'gr',
-           highlightQuery: highlightQueries.gr
-          }));
-        })
-      );
-     }
-    if (greekTerm && lxxMatches.refs.length) {
-      samplesTasks.push(
-        buildSamplesForRefs(lxxMatches.refs, 'lxx', 3, lxxMatches.texts).then((lxxSamples) => {
-          cards.push(buildCorrespondenceCard({
-            title: 'LXX (AT)',
-            word: greekLemma,
-            transliteration: greekTranslit,
-            samples: lxxSamples,
-            lang: 'lxx',
-           highlightQuery: highlightQueries.lxx
-          }));
-        })
-      );
-    }
-   if (hebrewCandidate && heRefs.length) {
-    samplesTasks.push(
-        buildSamplesForRefs(heRefs, 'he', 3).then((heSamples) => {
-          cards.push(buildCorrespondenceCard({
-            title: 'Hebreo (AT)',
-            word: hebrewCandidate.word,
-            transliteration: hebrewCandidate.transliteration,
-            samples: heSamples,
-            lang: 'he',
-           highlightQuery: highlightQueries.he
-          }));
-        })
-      );
-    }
-    if (esOtRefs.length) {
-      samplesTasks.push(
-        buildSamplesForRefs(esOtRefs, 'es', 3).then((esOtSamples) => {
-          cards.push(buildCorrespondenceCard({
-            title: 'RVR1960 (AT)',
-            word: esDisplayWord,
-            transliteration: '',
-            samples: esOtSamples,
-            lang: 'es',
-           highlightQuery: highlightQueries.es
-          }));
-        })
-      );
-    }
-    if (esNtRefs.length) {
-     samplesTasks.push(
-        buildSamplesForRefs(esNtRefs, 'es', 3).then((esNtSamples) => {
-          cards.push(buildCorrespondenceCard({
-            title: 'RVR1960 (NT)',
-            word: esDisplayWord,
-            transliteration: '',
-            samples: esNtSamples,
-            lang: 'es',
-           highlightQuery: highlightQueries.es
-          }));
-        })
-      );
-    }
-       await Promise.all(samplesTasks);
-    renderCorrespondence(cards);
-const corpusConfigs = [
-      { lang: 'gr', refs: grRefs, preloaded: null },
-      { lang: 'lxx', refs: lxxMatches.refs, preloaded: lxxMatches.texts },
-      { lang: 'he', refs: heRefs, preloaded: null },
-      { lang: 'es', refs: esRefs, preloaded: null }
- ].filter((config) => enabledCorpora.has(config.lang));
-       const groupsByCorpus = corpusConfigs.map((config) => ({
-      lang: config.lang,
-      groups: [],
-      expanded: false,
-      loading: true
-    }));
-       renderResults(groupsByCorpus, highlightQueries);
-    state.last = { term, lang, refs, groupsByCorpus, highlightQueries };
-       await Promise.all(corpusConfigs.map(async (config, index) => {
-      const groups = await buildBookGroups(config.refs, config.lang, config.preloaded);
-      groupsByCorpus[index].groups = groups;
-      groupsByCorpus[index].loading = false;
-       renderResults(groupsByCorpus, highlightQueries);
-    }));
-        } catch (error) {
-      console.error('Error en el análisis:', error);
+        es: esDisplayWord
+      };
+
+      const cards = [];
+      const samplesTasks = [];
+
+      if (greekTerm && grRefs.length) {
+        samplesTasks.push(
+          buildSamplesForRefs(grRefs, 'gr', 3, null, options).then((grSamples) => {
+            cards.push(buildCorrespondenceCard({
+              title: 'RKANT (NT)',
+              word: greekLemma,
+              transliteration: greekTranslit,
+              samples: grSamples,
+              lang: 'gr',
+              highlightQuery: highlightQueries.gr
+            }));
+          })
+        );
+      }
+      if (greekTerm && lxxMatches.refs.length) {
+        samplesTasks.push(
+          buildSamplesForRefs(lxxMatches.refs, 'lxx', 3, lxxMatches.texts, options).then((lxxSamples) => {
+            cards.push(buildCorrespondenceCard({
+              title: 'LXX (AT)',
+              word: greekLemma,
+              transliteration: greekTranslit,
+              samples: lxxSamples,
+              lang: 'lxx',
+              highlightQuery: highlightQueries.lxx
+            }));
+          })
+        );
+      }
+      if (hebrewCandidate && heRefs.length) {
+        samplesTasks.push(
+          buildSamplesForRefs(heRefs, 'he', 3, null, options).then((heSamples) => {
+            cards.push(buildCorrespondenceCard({
+              title: 'Hebreo (AT)',
+              word: hebrewCandidate.word,
+              transliteration: hebrewCandidate.transliteration,
+              samples: heSamples,
+              lang: 'he',
+              highlightQuery: highlightQueries.he
+            }));
+          })
+        );
+      }
+      if (esOtRefs.length) {
+        samplesTasks.push(
+          buildSamplesForRefs(esOtRefs, 'es', 3, null, options).then((esOtSamples) => {
+            cards.push(buildCorrespondenceCard({
+              title: 'RVR1960 (AT)',
+              word: esDisplayWord,
+              transliteration: '',
+              samples: esOtSamples,
+              lang: 'es',
+              highlightQuery: highlightQueries.es
+            }));
+          })
+        );
+      }
+      if (esNtRefs.length) {
+        samplesTasks.push(
+          buildSamplesForRefs(esNtRefs, 'es', 3, null, options).then((esNtSamples) => {
+            cards.push(buildCorrespondenceCard({
+              title: 'RVR1960 (NT)',
+              word: esDisplayWord,
+              transliteration: '',
+              samples: esNtSamples,
+              lang: 'es',
+              highlightQuery: highlightQueries.es
+            }));
+          })
+        );
+      }
+
+      await Promise.all(samplesTasks);
+      throwIfAborted(options.signal);
+      renderCorrespondence(cards);
+
+      const corpusConfigs = [
+        { lang: 'gr', refs: grRefs, preloaded: null },
+        { lang: 'lxx', refs: lxxMatches.refs, preloaded: lxxMatches.texts },
+        { lang: 'he', refs: heRefs, preloaded: null },
+        { lang: 'es', refs: esRefs, preloaded: null }
+      ]
+        .filter((config) => enabledCorpora.has(config.lang))
+        .map((config) => ({ ...config, safeRefs: config.refs.slice(0, MAX_REFS_PER_CORPUS) }));
+
+      const groupsByCorpus = corpusConfigs.map((config) => ({
+        lang: config.lang,
+        groups: [],
+        expanded: false,
+        loading: true
+      }));
+
+      renderResults(groupsByCorpus, highlightQueries);
+      state.last = { term, lang, refs, groupsByCorpus, highlightQueries };
+
+      await Promise.all(corpusConfigs.map(async (config, index) => {
+        throwIfAborted(options.signal);
+        const groups = await buildBookGroups(config.safeRefs, config.lang, config.preloaded, options);
+        groupsByCorpus[index].groups = groups;
+        groupsByCorpus[index].loading = false;
+        renderResults(groupsByCorpus, highlightQueries);
+      }));
+    } catch (error) {
+      if (!isAbortError(error)) {
+        console.error('Error en el análisis:', error);
+      }
     } finally {
-      setLoading(false);
+      if (runId === activeSearchRunId) {
+        setLoading(false);
+        if (activeSearchController === controller) {
+          activeSearchController = null;
+        }
+      }
     }
-   }
+  }
+
  
    function handleFilterClick(event) {
      const button = event.target.closest('button[data-filter]');
@@ -1765,7 +1814,16 @@ function handleLanguageScopeChange(event) {
     }
    }
  
-   analyzeBtn?.addEventListener('click', analyze);
+   
+   const debouncedAnalyzeInput = debounce(() => {
+     if (!hasTokenWithMinLength(queryInput?.value || '', 2)) return;
+     analyze();
+   }, DEBOUNCE_DELAY_MS);
+
+analyzeBtn?.addEventListener('click', analyze);
+   queryInput?.addEventListener('input', () => {
+     debouncedAnalyzeInput();
+   });
    queryInput?.addEventListener('keydown', (event) => {
      if (event.key === 'Enter') {
        event.preventDefault();
