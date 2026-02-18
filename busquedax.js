@@ -1638,8 +1638,15 @@ bookList.className = 'mt-2 d-grid gap-1';
 
       const grIndex = await grIndexPromise;
       throwIfAborted(options.signal);
-      const grRefs = (enabledCorpora.has('gr') && grIndex && greekTerm) ? getGreekRefs(greekTerm, grIndex) : [];
-
+  let grRefs = (enabledCorpora.has('gr') && grIndex && greekTerm) ? getGreekRefs(greekTerm, grIndex) : [];
+      if (lang === 'es' && enabledCorpora.has('gr') && esNtRefs.length) {
+        const seenRefs = new Set(grRefs);
+        esNtRefs.forEach((ref) => {
+          if (seenRefs.has(ref)) return;
+          seenRefs.add(ref);
+          grRefs.push(ref);
+        });
+      }
       const lxxMatches = (enabledCorpora.has('lxx') && greekTerm)
         ? await (lang === 'gr' && greekTerm === normalized
             ? Promise.resolve(initialLxxMatches)
