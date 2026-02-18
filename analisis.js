@@ -1659,8 +1659,8 @@ const greekTranslit = greekEntry?.['Forma lexica'] || (greekTerm ? transliterate
       hebrewCandidate = await buildHebrewCandidateFromLxxRefs(lxxMatches.refs);
     }
     const heIndex = await heIndexPromise;
-    const heRefs = hebrewCandidate ? (heIndex.tokens?.[hebrewCandidate.normalized] || []) : [];
-        occurrenceDonut?.setData({
+    const heRefs = hebrewCandidate ? getHebrewRefs(hebrewCandidate.normalized, heIndex) : [];
+       occurrenceDonut?.setData({
       es: buildBookCountRows(esRefs),
       he: buildBookCountRows(heRefs),
       gr: buildBookCountRows([...grRefs, ...lxxMatches.refs])
