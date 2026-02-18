@@ -1533,16 +1533,18 @@ bookList.className = 'mt-2 d-grid gap-1';
         state.last = { term, lang, refs: [], groupsByCorpus: [] };
         return;
       }
-
-      const esIndexPromise = enabledCorpora.has('es') ? loadIndex('es', options) : Promise.resolve(null);
+ const needsSpanishBridge = lang === 'es' && (enabledCorpora.has('gr') || enabledCorpora.has('lxx') || enabledCorpora.has('he'));
+      const esIndexPromise = (enabledCorpora.has('es') || needsSpanishBridge)
+        ? loadIndex('es', options)
+        : Promise.resolve(null);
       const grIndexPromise = enabledCorpora.has('gr') ? loadIndex('gr', options) : Promise.resolve(null);
       const heIndexPromise = enabledCorpora.has('he') ? loadIndex('he', options) : Promise.resolve(null);
       const esIndex = await esIndexPromise;
       throwIfAborted(options.signal);
 
       let esSearchTokens = [];
-      if (enabledCorpora.has('es')) {
-        if (lang === 'es') {
+      if (enabledCorpora.has('es') || needsSpanishBridge) {
+       if (lang === 'es') {
           esSearchTokens = [normalized].filter(Boolean);
         } else if (entry?.definicion) {
           esSearchTokens = extractSpanishTokensFromDefinition(entry.definicion);
@@ -1575,8 +1577,8 @@ bookList.className = 'mt-2 d-grid gap-1';
 
       const esRefs = [];
       const esSeen = new Set();
-      if (enabledCorpora.has('es') && esIndex) {
-        const directEsRefs = [];
+      if ((enabledCorpora.has('es') || needsSpanishBridge) && esIndex) {
+       const directEsRefs = [];
         if (lang === 'gr') {
           refs.forEach((ref) => directEsRefs.push(ref));
           mapLxxRefsToHebrewRefs(initialLxxMatches.refs).forEach((ref) => directEsRefs.push(ref));
