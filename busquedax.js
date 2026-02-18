@@ -176,8 +176,8 @@
     lxxBookStatsCache: new Map(),
     lxxSearchCache: new Map(),
      filter: 'todo',
-      languageScope: 'es',
-    last: null,
+      languageScope: 'auto',
+  last: null,
      isLoading: false
     };
   const jsonCache = new Map();
@@ -399,17 +399,17 @@ function detectLang(text) {
     return 'es';
   }
 
-   function getLanguageScope() {
-    const scope = String(state.languageScope || 'all');
-    if (scope === 'es' || scope === 'gr' || scope === 'he') return scope;
-    return 'all';
+  function getLanguageScope(term = '') {
+    const scope = String(state.languageScope || 'auto');
+    if (scope === 'es' || scope === 'gr' || scope === 'he' || scope === 'all') return scope;
+    return detectLang(term);
   }
 
   function getCorporaForScope(scope) {
     if (scope === 'es') return ['es'];
     if (scope === 'gr') return ['gr', 'lxx'];
-    if (scope === 'he') return ['he', 'lxx'];
-    return ['gr', 'lxx', 'he', 'es'];
+    if (scope === 'he') return ['he'];
+   return ['gr', 'lxx', 'he', 'es'];
   }
   function normalizeByLang(text, lang) {
     if (lang === 'gr') return normalizeGreek(text);
@@ -1491,8 +1491,8 @@ bookList.className = 'mt-2 d-grid gap-1';
       throwIfAborted(options.signal);
 
       const lang = detectLang(term);
-      const selectedScope = getLanguageScope();
-      const enabledCorpora = new Set(getCorporaForScope(selectedScope));
+      const selectedScope = getLanguageScope(term);
+     const enabledCorpora = new Set(getCorporaForScope(selectedScope));
       const normalized = normalizeByLang(term, lang);
 
       let entry = null;
@@ -1580,8 +1580,8 @@ bookList.className = 'mt-2 d-grid gap-1';
         if (lang === 'gr') {
           refs.forEach((ref) => directEsRefs.push(ref));
           mapLxxRefsToHebrewRefs(initialLxxMatches.refs).forEach((ref) => directEsRefs.push(ref));
-        } else if (lang === 'he') {
-          refs.forEach((ref) => directEsRefs.push(ref));
+      } else if (lang === 'he' && (enabledCorpora.has('gr') || enabledCorpora.has('lxx'))) {
+         refs.forEach((ref) => directEsRefs.push(ref));
         }
         directEsRefs.forEach((ref) => {
           if (esSeen.has(ref)) return;
@@ -1830,8 +1830,8 @@ bookList.className = 'mt-2 d-grid gap-1';
    }
  
 function handleLanguageScopeChange(event) {
-    const value = String(event?.target?.value || 'all');
-    state.languageScope = (value === 'es' || value === 'gr' || value === 'he') ? value : 'all';
+    const value = String(event?.target?.value || 'auto');
+    state.languageScope = (value === 'es' || value === 'gr' || value === 'he' || value === 'all') ? value : 'auto';
     if (queryInput?.value.trim()) {
       analyze();
     }
@@ -1860,8 +1860,8 @@ analyzeBtn?.addEventListener('click', analyze);
     const params = new URLSearchParams(window.location.search);
 const rawScope = String(params.get('scope') || params.get('mode') || '').trim();
     const scopeParam = rawScope.toLowerCase();
-   if (scopeParam === 'es' || scopeParam === 'gr' || scopeParam === 'he' || scopeParam === 'all') {
-      state.languageScope = scopeParam;
+   if (scopeParam === 'es' || scopeParam === 'gr' || scopeParam === 'he' || scopeParam === 'all' || scopeParam === 'auto') {
+    state.languageScope = scopeParam;
       if (languageScopeSelect) languageScopeSelect.value = scopeParam;
     } else if (languageScopeSelect) {
       languageScopeSelect.value = state.languageScope;
