@@ -1674,7 +1674,7 @@ bookList.className = 'mt-2 d-grid gap-1';
 
       const greekLemma = greekEntry?.lemma || greekCandidate?.lemma || (lang === 'gr' ? term : '—');
       const greekTranslit = greekEntry?.['Forma lexica'] || (greekTerm ? transliterateGreek(greekLemma || term) : '—');
-
+      const hebrewSearchTerms = new Set();
       const grIndex = await grIndexPromise;
       throwIfAborted(options.signal);
   let grRefs = (enabledCorpora.has('gr') && grIndex && greekTerm) ? getGreekRefs(greekTerm, grIndex) : [];
