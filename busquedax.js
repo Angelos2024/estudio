@@ -1835,8 +1835,9 @@ analyzeBtn?.addEventListener('click', analyze);
     languageScopeSelect?.addEventListener('change', handleLanguageScopeChange);
   function applyQueryFromUrl() {
     const params = new URLSearchParams(window.location.search);
-   const scopeParam = String(params.get('scope') || '').trim();
-    if (scopeParam === 'es' || scopeParam === 'gr' || scopeParam === 'he' || scopeParam === 'all') {
+const rawScope = String(params.get('scope') || params.get('mode') || '').trim();
+    const scopeParam = rawScope.toLowerCase();
+   if (scopeParam === 'es' || scopeParam === 'gr' || scopeParam === 'he' || scopeParam === 'all') {
       state.languageScope = scopeParam;
       if (languageScopeSelect) languageScopeSelect.value = scopeParam;
     } else if (languageScopeSelect) {
