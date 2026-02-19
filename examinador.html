@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Examinador interlineal hebreo</title>
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;margin:20px;max-width:1100px}
+    textarea,input{width:100%;padding:8px}
+    button{padding:10px 14px;border:0;border-radius:8px;background:#111;color:#fff;cursor:pointer}
+    .muted{color:#666;font-size:12px}.row{display:grid;gap:10px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px solid #ddd;padding:6px;text-align:left;vertical-align:top}
+    code{background:#f4f4f4;padding:2px 4px;border-radius:4px}
+  </style>
+</head>
+<body>
+  <h1>Examinador de vacíos del interlineal hebreo</h1>
+  <p class="muted">Busca palabras que hoy quedarían en <code>-</code> contra <code>diccionario/diccionario_unificado.min.json</code>.</p>
+
+  <div class="row">
+    <label>Libros (slug + nombre de archivo en <code>IdiomaORIGEN</code>, separados por coma):</label>
+    <textarea id="books" rows="3">salmos:salmos.json,genesis:genesis.json,exodo:exodo.json,isaias:isaias.json</textarea>
+
+    <label>Ruta base de textos hebreos</label>
+    <input id="base" value="./IdiomaORIGEN" />
+
+    <div>
+      <button id="run">Examinar</button>
+      <button id="download" disabled>Descargar JSON</button>
+    </div>
+  </div>
+
+  <p id="summary" class="muted"></p>
+  <div class="grid">
+    <div>
+      <h3>Top faltantes por palabra</h3>
+      <table id="topTable"><thead><tr><th>Palabra</th><th>Veces</th><th>Libros</th></tr></thead><tbody></tbody></table>
+    </div>
+    <div>
+      <h3>Ejemplos detallados</h3>
+      <table id="detailTable"><thead><tr><th>Ref</th><th>Palabra</th><th>Normalizada</th><th>Verso</th></tr></thead><tbody></tbody></table>
+    </div>
+  </div>
+
+<script>
+const HEBREW_DICT_PATH = './diccionario/diccionario_unificado.min.json';
+
+function normalizeToken(token, preserveHebrewPoints = false){
+  let clean = String(token || '').trim();
+  clean = clean.replace(/[\u200c-\u200f\u202a-\u202e\u2066-\u2069\ufeff]/g, '');
+  clean = clean.replace(/^[\s.,;:!?¡¿()\[\]{}"'“”‘’«»··;᾽᾿ʼʹʽ\-‐‑‒–—―]+|[\s.,;:!?¡¿()\[\]{}"'“”‘’«»··;᾽᾿ʼʹʽ\-‐‑‒–—―]+$/g, '');
+  clean = clean.replace(/[\u0591-\u05AF]/g, '');
+  if(!preserveHebrewPoints){
+    clean = clean.replace(/[\u05B0-\u05BC\u05BD\u05BF\u05C1-\u05C2\u05C7]/g, '');
+  }
+  clean = clean.replace(/[\u05BE\u05C0\u05C3\u05C6\u05F3\u05F4]/g, '');
+  return clean.toLowerCase();
+}
+
+function hasHebrewNikkud(token){
+  return /[\u05B0-\u05BC\u05BD\u05BF\u05C1-\u05C2\u05C7]/.test(String(token || ''));
+}
+
+function takeFirstGloss(value){
+  if(!value) return '-';
+  if(Array.isArray(value)){
+    const first = value.find((item) => String(item || '').trim() && String(item).trim() !== '-');
+    return first ? String(first).trim() : '-';
+  }
+  const v = String(value).trim();
+  return v || '-';
+}
+
+function setGlossCandidate(map, key, gloss, score, usage){
+  if(!key) return;
+  const g = String(gloss || '').trim();
+  if(!g || g === '-') return;
+  const prev = map.get(key);
+  if(!prev || score > prev.score || (score === prev.score && usage > prev.usage)){
+    map.set(key, { gloss: g, score, usage });
+  }
+}
+
+function buildHebrewMap(rows){
+  const pointedMap = new Map();
+  const unpointedMap = new Map();
+  for(const row of rows || []){
+    const usage = Number(row?.stats?.tokens) || 0;
+    const fallbackGloss = takeFirstGloss(row?.glosas || row?.glosa || row?.strong_detail?.def_rv);
+    if(Array.isArray(row?.formas) && Array.isArray(row?.glosas)){
+      const limit = Math.min(row.formas.length, row.glosas.length);
+      for(let i=0;i<limit;i++){
+        const form = row.formas[i];
+        setGlossCandidate(unpointedMap, normalizeToken(form), row.glosas[i], 4, usage);
+        if(hasHebrewNikkud(form)) setGlossCandidate(pointedMap, normalizeToken(form, true), row.glosas[i], 6, usage);
+      }
+    }
+    const primary = row?.forma;
+    const lemma = row?.hebreo;
+    setGlossCandidate(unpointedMap, normalizeToken(primary), row?.glosa || fallbackGloss, 3, usage);
+    setGlossCandidate(unpointedMap, normalizeToken(lemma), fallbackGloss, 2, usage);
+    if(hasHebrewNikkud(primary)) setGlossCandidate(pointedMap, normalizeToken(primary, true), row?.glosa || fallbackGloss, 5, usage);
+  }
+  return {
+    pointedMap: new Map([...pointedMap.entries()].map(([k,v]) => [k,v.gloss])),
+    unpointedMap: new Map([...unpointedMap.entries()].map(([k,v]) => [k,v.gloss]))
+  };
+}
+
+function splitTokens(text){
+  return String(text || '').replace(/[\u05BE]/g, ' ').replace(/\s+/g, ' ').trim().split(' ').filter(Boolean);
+}
+
+function mapTokenToSpanish(token, map){
+  const pointed = normalizeToken(token, true);
+  const plain = normalizeToken(token);
+  if(pointed && map.pointedMap.has(pointed)) return map.pointedMap.get(pointed);
+  if(plain && map.unpointedMap.has(plain)) return map.unpointedMap.get(plain);
+  return '-';
+}
+
+function parseBooks(raw){
+  return raw.split(',').map(s => s.trim()).filter(Boolean).map((pair) => {
+    const [slug, file] = pair.split(':').map(s => s.trim());
+    return { slug, file: file || `${slug}.json` };
+  });
+}
+
+async function run(){
+  const dictRows = await fetch(HEBREW_DICT_PATH).then(r => r.json());
+  const map = buildHebrewMap(dictRows);
+  const books = parseBooks(document.getElementById('books').value);
+  const base = document.getElementById('base').value.replace(/\/$/, '');
+  const misses = [];
+
+  for(const book of books){
+    try {
+      const data = await fetch(`${base}/${book.file}`).then(r => r.json());
+      const chapters = Array.isArray(data?.text) ? data.text : [];
+      chapters.forEach((verses, chIdx) => {
+        if(!Array.isArray(verses)) return;
+        verses.forEach((verse, vIdx) => {
+          splitTokens(verse).forEach((tok) => {
+            const gloss = mapTokenToSpanish(tok, map);
+            if(gloss === '-'){
+              misses.push({
+                book: book.slug,
+                chapter: chIdx + 1,
+                verse: vIdx + 1,
+                token: tok,
+                normalized: normalizeToken(tok),
+                verseText: verse
+              });
+            }
+          });
+        });
+      });
+    } catch(err){
+      console.error('No se pudo cargar', book, err);
+    }
+  }
+
+  const byWord = new Map();
+  for(const m of misses){
+    const key = m.normalized || m.token;
+    if(!byWord.has(key)) byWord.set(key, { word: key, count: 0, books: new Set() });
+    const item = byWord.get(key);
+    item.count += 1;
+    item.books.add(m.book);
+  }
+
+  const top = [...byWord.values()].sort((a,b) => b.count - a.count).slice(0, 200);
+  renderTop(top);
+  renderDetails(misses.slice(0, 300));
+  document.getElementById('summary').textContent = `Total vacíos: ${misses.length} | Palabras únicas: ${byWord.size}`;
+
+  window.__lastMisses = misses;
+  document.getElementById('download').disabled = !misses.length;
+}
+
+function renderTop(rows){
+  const tb = document.querySelector('#topTable tbody');
+  tb.innerHTML = rows.map((r) => `<tr><td>${r.word}</td><td>${r.count}</td><td>${[...r.books].join(', ')}</td></tr>`).join('');
+}
+
+function renderDetails(rows){
+  const tb = document.querySelector('#detailTable tbody');
+  tb.innerHTML = rows.map((r) => `<tr><td>${r.book} ${r.chapter}:${r.verse}</td><td>${r.token}</td><td>${r.normalized}</td><td>${r.verseText}</td></tr>`).join('');
+}
+
+document.getElementById('run').addEventListener('click', () => run().catch(err => {
+  console.error(err);
+  document.getElementById('summary').textContent = `Error: ${err.message}`;
+}));
+
+document.getElementById('download').addEventListener('click', () => {
+  const data = window.__lastMisses || [];
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'interlineal-vacios-hebreo.json';
+  a.click();
+  URL.revokeObjectURL(url);
+});
+</script>
+</body>
+</html>
