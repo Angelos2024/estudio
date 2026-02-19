@@ -19,11 +19,13 @@
     bookSelect: document.getElementById('bookSelect'),
     scanBookBtn: document.getElementById('scanBookBtn'),
     scanAllBtn: document.getElementById('scanAllBtn'),
+        exportAllBtn: document.getElementById('exportAllBtn'),
     filterInput: document.getElementById('filterInput'),
     summary: document.getElementById('summary'),
     resultsBody: document.getElementById('resultsBody')
   };
-
+const BOOK_INDEX = new Map(OT_BOOKS.map((book, index) => [book, index]));
+  
   function normalizeToken(token, preserveHebrewPoints = false){
     let clean = String(token || '').trim();
     clean = clean.replace(/[\u200c-\u200f\u202a-\u202e\u2066-\u2069\ufeff]/g, '');
@@ -184,6 +186,37 @@
     return out;
   }
 
+
+  async function scanAllBooks(){
+    const acc = [];
+    for(const book of OT_BOOKS){
+      const rows = await scanBook(book);
+      acc.push(...rows);
+    }
+    return acc;
+  }
+
+  function sortRows(rows){
+    return [...rows].sort((a, b) => {
+      const bookDiff = (BOOK_INDEX.get(a.book) ?? Number.MAX_SAFE_INTEGER) - (BOOK_INDEX.get(b.book) ?? Number.MAX_SAFE_INTEGER);
+      if(bookDiff !== 0) return bookDiff;
+      if(a.chapter !== b.chapter) return a.chapter - b.chapter;
+      if(a.verse !== b.verse) return a.verse - b.verse;
+      return a.normalized.localeCompare(b.normalized, 'he');
+    });
+  }
+
+  function downloadJson(filename, data){
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = filename;
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    URL.revokeObjectURL(url);
+  }
   function renderRows(){
     const filter = normalizeToken(els.filterInput.value || '');
     const rows = filter
@@ -218,13 +251,16 @@
     });
 
     els.scanAllBtn.addEventListener('click', async () => {
-      const acc = [];
-      for(const b of OT_BOOKS){
-        const rows = await scanBook(b);
-        acc.push(...rows);
-      }
-      state.rows = acc;
+    state.rows = await scanAllBooks();
       renderRows();
+    });
+
+    els.exportAllBtn.addEventListener('click', async () => {
+      const allRows = sortRows(await scanAllBooks());
+      state.rows = allRows;
+      renderRows();
+       downloadJson('examinador-huecos-at.json', allRows);
+      els.summary.textContent = `${allRows.length} huecos detectados. JSON generado y descargado.`;
     });
 
     els.filterInput.addEventListener('input', renderRows);
