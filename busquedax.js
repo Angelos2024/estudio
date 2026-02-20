@@ -599,28 +599,46 @@ return getSpanishRefs(token, index);
     const normalized = normalizeByLang(term, lang);
     if (!normalized) return [];
 
-    const tokens = getNormalizedQueryTokens(term, lang, 3);
-    if (!tokens.length) return getRefsForTokenByLang(lang, normalized, index);
+    
+  const tokens = getNormalizedQueryTokens(term, lang, 3);
+  if (!tokens.length) return getRefsForTokenByLang(lang, normalized, index);
 
-    const uniqueTokens = [...new Set(tokens)];
-    const tokenRefLists = uniqueTokens
-      .map((token) => getRefsForTokenByLang(lang, token, index))
-      .filter((list) => Array.isArray(list) && list.length);
+  const uniqueTokens = [...new Set(tokens)];
+  const tokenRefLists = uniqueTokens
+    .map((token) => getRefsForTokenByLang(lang, token, index))
+    .filter((list) => Array.isArray(list) && list.length);
 
-    if (!tokenRefLists.length) return [];
+  if (!tokenRefLists.length) return [];
 
-    let refs = tokenRefLists[0].slice();
-    for (let i = 1; i < tokenRefLists.length; i += 1) {
-      const lookup = new Set(tokenRefLists[i]);
-      refs = refs.filter((ref) => lookup.has(ref));
-      if (!refs.length) break;
-    }
-
-    if (uniqueTokens.length >= 2 && refs.length) {
-      refs = await filterRefsByPhrase(refs, lang, term, options);
-    }
-    return refs;
+  // Intersección por tokens (comportamiento anterior)
+  let refs = tokenRefLists[0].slice();
+  for (let i = 1; i < tokenRefLists.length; i += 1) {
+    const lookup = new Set(tokenRefLists[i]);
+    refs = refs.filter((ref) => lookup.has(ref));
+    if (!refs.length) break;
   }
+
+  // ✅ Hebreo: si el usuario escribe la frase separada por espacios (בן אדם),
+  // pero el texto viene unido por maqaf (בן־אדם), el índice suele tener el token unido.
+  // Entonces agregamos (UNION) el match del "token compuesto" normalizado (sin espacios/maqaf)
+  // y luego filtramos por frase exacta para evitar falsos positivos.
+  if (lang === 'he' && uniqueTokens.length >= 2) {
+    const compoundRefs = getRefsForTokenByLang('he', normalized, index) || [];
+    if (compoundRefs.length) {
+      const seen = new Set(refs);
+      compoundRefs.forEach((ref) => {
+        if (seen.has(ref)) return;
+        seen.add(ref);
+        refs.push(ref);
+      });
+    }
+  }
+
+  if (uniqueTokens.length >= 2 && refs.length) {
+    refs = await filterRefsByPhrase(refs, lang, term, options);
+  }
+  return refs;
+}
 function getGreekRefs(normalized, index) {
     if (!normalized) return [];
     const keys = buildGreekSearchKeys(normalized);
@@ -1104,6 +1122,24 @@ async function loadLxxBookData(bookCode) {
     return String(token || '').replace(/[··.,;:!?“”"(){}\[\]<>«»]/g, '');
   }
 
+
+// Limpia tokens hebreos: quita puntuación y trata el maqaf (־) y guiones como separador (espacio).
+function cleanHebrewToken(token) {
+  return String(token || '')
+    .replace(/[׃.,;:!?"“”(){}\[\]<>«»׳״]/g, '')
+    .replace(/[\u05BE\-\u2010-\u2015\u2212]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+// Tokeniza hebreo separando por espacios y también por maqaf (־) para evitar falsos negativos.
+function tokenizeHebrewText(text) {
+  return String(text || '')
+    .split(/\s+/)
+    .flatMap((token) => cleanHebrewToken(token).split(/\s+/))
+    .filter(Boolean);
+}
+
   async function buildGreekCandidateFromHebrewRefs(refs) {
     if (!refs.length) return null;
     const counts = new Map();
@@ -1288,7 +1324,7 @@ function mapLxxRefsToHebrewRefs(refs) {
       try {
         const verses = await loadChapterText('he', book, chapter, options);
         const verseText = verses?.[verse - 1] || '';
-        const tokens = verseText.split(/\s/).filter(Boolean);
+        const tokens = tokenizeHebrewText(verseText);
         tokens.forEach((token) => {
           const cleaned = token.replace(/[׃,:;.!?()"“”]/g, '');
           const normalized = normalizeHebrew(cleaned);
@@ -1813,8 +1849,6 @@ bookList.className = 'mt-2 d-grid gap-1';
      const aliasCandidates = getAliasCandidates(term, lang);
       const normalized = normalizeByLang(term, lang);
 
-      const isSpanishMultiWordQuery = lang === 'es' && String(term || '').trim().split(/\s+/).filter(Boolean).length > 1;
-
       let entry = null;
       let hebrewEntry = null;
       if (lang === 'gr') {
@@ -1864,7 +1898,7 @@ bookList.className = 'mt-2 d-grid gap-1';
       let esSearchTokens = [];
       if (enabledCorpora.has('es') || needsSpanishBridge) {
        if (lang === 'es') {
-          const relatedEsTokens = isSpanishMultiWordQuery ? [] : aliasCandidates.es.filter((token) => token && token !== normalized);
+          const relatedEsTokens = aliasCandidates.es.filter((token) => token && token !== normalized);
  esSearchTokens = [term, ...relatedEsTokens]
             .map((value) => String(value || '').trim())
             .filter(Boolean)
@@ -1926,11 +1960,7 @@ for (const token of esSearchTokens) {
         }
       }
 
-      const esRefsForBridge = isSpanishMultiWordQuery && esRefs.length
-        ? await filterRefsByPhrase(esRefs, 'es', term, options)
-        : esRefs;
-
-      const { ot: esOtRefs, nt: esNtRefs } = splitRefsByTestament(esRefsForBridge);
+      const { ot: esOtRefs, nt: esNtRefs } = splitRefsByTestament(esRefs);
       const scopedLxxRefsFromSpanish = enforceSpanishReferenceCorrespondence ? mapOtRefsToLxxRefs(esOtRefs) : [];
 
       if (lang === 'gr') {
