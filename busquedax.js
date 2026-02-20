@@ -1755,9 +1755,10 @@ bookList.className = 'mt-2 d-grid gap-1';
       const index = await loadIndex(lang, options);
       throwIfAborted(options.signal);
  const refs = await getRefsForQuery(term, lang, index, options);
-    const initialLxxMatches = lang === 'gr' && normalized && enabledCorpora.has('lxx')
-        ? await buildLxxMatches(normalized, 70)
-        : { refs: [], texts: new Map() };
+   let initialLxxMatches = { refs: [], texts: new Map() };
+      if (lang === 'gr' && normalized && enabledCorpora.has('lxx')) {
+        initialLxxMatches = await buildLxxMatches(normalized, 70);
+      }
       const hasInitialGreekMatches = refs.length || initialLxxMatches.refs.length;
 
       if (!refs.length && !(lang === 'gr' && hasInitialGreekMatches)) {
