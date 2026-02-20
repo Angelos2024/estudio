@@ -1809,7 +1809,8 @@ bookList.className = 'mt-2 d-grid gap-1';
       const lang = detectLang(term);
       const selectedScope = getLanguageScope(term);
      const enabledCorpora = new Set(getCorporaForScope(selectedScope));
-           const aliasCandidates = getAliasCandidates(term, lang);
+     const enforceSpanishReferenceCorrespondence = lang === 'es' && (selectedScope === 'gr' || selectedScope === 'he');
+     const aliasCandidates = getAliasCandidates(term, lang);
       const normalized = normalizeByLang(term, lang);
 
       let entry = null;
@@ -1924,6 +1925,7 @@ for (const token of esSearchTokens) {
       }
 
       const { ot: esOtRefs, nt: esNtRefs } = splitRefsByTestament(esRefs);
+      const scopedLxxRefsFromSpanish = enforceSpanishReferenceCorrespondence ? mapOtRefsToLxxRefs(esOtRefs) : [];
 
       if (lang === 'gr') {
         greekTerm = normalized;
@@ -1960,6 +1962,9 @@ for (const token of esSearchTokens) {
  let grRefs = (enabledCorpora.has('gr') && grIndex && greekTerm)
         ? await getRefsForQuery(greekTerm, 'gr', grIndex, options)
         : [];
+     if (enforceSpanishReferenceCorrespondence && enabledCorpora.has('gr')) {
+        grRefs = esNtRefs.slice();
+      }
      if (lang === 'es' && enabledCorpora.has('gr') && esNtRefs.length) {
         const seenRefs = new Set(grRefs);
         esNtRefs.forEach((ref) => {
@@ -1973,6 +1978,11 @@ for (const token of esSearchTokens) {
             ? Promise.resolve(initialLxxMatches)
             : buildLxxMatches(greekTerm, 70))
         : { refs: [], texts: new Map(), highlightTerms: [] };
+      if (enforceSpanishReferenceCorrespondence && enabledCorpora.has('lxx')) {
+        lxxMatches.refs = scopedLxxRefsFromSpanish.slice();
+        lxxMatches.texts = new Map();
+        lxxMatches.highlightTerms = greekTerm ? [greekTerm] : [];
+      }
 
       let hebrewCandidate = null;
       if (lang === 'he') {
@@ -2008,8 +2018,10 @@ if (hebrewCandidate?.normalized) {
       const heIndex = await heIndexPromise;
       throwIfAborted(options.signal);
       const heRefs = [];
-      if (enabledCorpora.has('he') && heIndex && hebrewSearchTerms.size) {
-        const seen = new Set();
+if (enforceSpanishReferenceCorrespondence && enabledCorpora.has('he')) {
+        esOtRefs.forEach((ref) => heRefs.push(ref));
+      } else if (enabledCorpora.has('he') && heIndex && hebrewSearchTerms.size) {
+ const seen = new Set();
           for (const token of hebrewSearchTerms) {
           const matches = await getRefsForQuery(token, 'he', heIndex, options);
           matches.forEach((ref) => {
