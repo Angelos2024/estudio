@@ -362,6 +362,27 @@ function normalizeSpanish(text) {
       .replace(/\s+/g, ' ')
       .trim();
   }
+
+  // --- Frase flexible en español (ignora artículos/preposiciones comunes) ---
+  const SPANISH_PHRASE_STOPWORDS = new Set(['de','del','el','la','los','las','al','un','una','unos','unas','y','o']);
+  function tokenizeSpanishPhraseLoose(text) {
+    return normalizeSpanishPhrase(text)
+      .split(/\s+/)
+      .map((t) => t.trim())
+      .filter((t) => t && !SPANISH_PHRASE_STOPWORDS.has(t));
+  }
+  function hasTokenSequence(tokens, queryTokens) {
+    if (!Array.isArray(tokens) || !Array.isArray(queryTokens)) return false;
+    if (!queryTokens.length || queryTokens.length > tokens.length) return false;
+    for (let i = 0; i <= tokens.length - queryTokens.length; i += 1) {
+      let ok = true;
+      for (let j = 0; j < queryTokens.length; j += 1) {
+        if (tokens[i + j] !== queryTokens[j]) { ok = false; break; }
+      }
+      if (ok) return true;
+    }
+    return false;
+  }
   function getHebrewDefinition(entry) {
     return entry?.definitions?.short || entry?.strong_detail?.definicion || entry?.descripcion || '';
   }
@@ -618,7 +639,15 @@ return getSpanishRefs(token, index);
         const verses = await loadChapterText(lang, book, chapter, options);
         const verseText = getVerseTextFromChapter('he', book, chapter, verse, verses);
         const normalizedVerse = normalizePhraseByLang(verseText, lang);
-        if (normalizedVerse.includes(phrase)) {
+        if (lang === 'es' && options.looseStopwords) {
+          const queryTokens = tokenizeSpanishPhraseLoose(term);
+          if (queryTokens.length < 2) {
+            if (normalizedVerse.includes(phrase)) filtered.push(ref);
+          } else {
+            const verseTokens = tokenizeSpanishPhraseLoose(verseText);
+            if (hasTokenSequence(verseTokens, queryTokens)) filtered.push(ref);
+          }
+        } else if (normalizedVerse.includes(phrase)) {
           filtered.push(ref);
         }
       } catch (error) {
@@ -667,7 +696,7 @@ return getSpanishRefs(token, index);
   }
 
   if (uniqueTokens.length >= 2 && refs.length) {
-    refs = await filterRefsByPhrase(refs, lang, term, options);
+    refs = await filterRefsByPhrase(refs, lang, term, { ...options, looseStopwords: lang === 'es' });
   }
   return refs;
 }
