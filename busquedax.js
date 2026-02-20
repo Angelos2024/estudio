@@ -1813,6 +1813,8 @@ bookList.className = 'mt-2 d-grid gap-1';
      const aliasCandidates = getAliasCandidates(term, lang);
       const normalized = normalizeByLang(term, lang);
 
+      const isSpanishMultiWordQuery = lang === 'es' && String(term || '').trim().split(/\s+/).filter(Boolean).length > 1;
+
       let entry = null;
       let hebrewEntry = null;
       if (lang === 'gr') {
@@ -1862,7 +1864,7 @@ bookList.className = 'mt-2 d-grid gap-1';
       let esSearchTokens = [];
       if (enabledCorpora.has('es') || needsSpanishBridge) {
        if (lang === 'es') {
-          const relatedEsTokens = aliasCandidates.es.filter((token) => token && token !== normalized);
+          const relatedEsTokens = isSpanishMultiWordQuery ? [] : aliasCandidates.es.filter((token) => token && token !== normalized);
  esSearchTokens = [term, ...relatedEsTokens]
             .map((value) => String(value || '').trim())
             .filter(Boolean)
@@ -1924,7 +1926,11 @@ for (const token of esSearchTokens) {
         }
       }
 
-      const { ot: esOtRefs, nt: esNtRefs } = splitRefsByTestament(esRefs);
+      const esRefsForBridge = isSpanishMultiWordQuery && esRefs.length
+        ? await filterRefsByPhrase(esRefs, 'es', term, options)
+        : esRefs;
+
+      const { ot: esOtRefs, nt: esNtRefs } = splitRefsByTestament(esRefsForBridge);
       const scopedLxxRefsFromSpanish = enforceSpanishReferenceCorrespondence ? mapOtRefsToLxxRefs(esOtRefs) : [];
 
       if (lang === 'gr') {
