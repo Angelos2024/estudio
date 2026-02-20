@@ -285,6 +285,70 @@ function normalizeSpanish(text) {
       .replace(/[\u0300-\u036f]/g, '')
       .replace(/[^a-z0-9ñ]/g, '');
   }
+
+  function normalizeSpanishWord(text) {
+    return normalizeSpanish(text);
+  }
+  function tokenizeSpanishWords(text) {
+    return String(text || '')
+      .split(/[^\p{L}\p{N}ñÑ]+/u)
+      .map((token) => normalizeSpanishWord(token))
+      .filter(Boolean);
+  }
+  function tokenizeGreekWords(text) {
+    return String(text || '')
+      .split(/[^\p{Script=Greek}\p{N}]+/u)
+      .map((token) => normalizeGreek(token))
+      .filter(Boolean);
+  }
+  function tokenizeHebrewWords(text) {
+    return String(text || '')
+      .replace(/[\u05BE\-\u2010-\u2015\u2212]/g, ' ')
+      .split(/\s+/)
+      .map((token) => normalizeHebrew(token))
+      .filter(Boolean);
+  }
+  function hasTokenSequence(tokens, queryTokens) {
+    if (!queryTokens.length || queryTokens.length > tokens.length) return false;
+    for (let i = 0; i <= tokens.length - queryTokens.length; i += 1) {
+      let matches = true;
+      for (let j = 0; j < queryTokens.length; j += 1) {
+        if (tokens[i + j] !== queryTokens[j]) {
+          matches = false;
+          break;
+        }
+      }
+      if (matches) return true;
+    }
+    return false;
+  }
+  function tokenizeQueryForExactSearch(rawQuery, lang) {
+    if (lang === 'gr' || lang === 'lxx') return tokenizeGreekWords(rawQuery);
+    if (lang === 'he') return tokenizeHebrewWords(rawQuery);
+    return tokenizeSpanishWords(rawQuery);
+  }
+  function tokenizeVerseForExactSearch(verseText, lang) {
+    if (lang === 'gr' || lang === 'lxx') return tokenizeGreekWords(verseText);
+    if (lang === 'he') return tokenizeHebrewWords(verseText);
+    return tokenizeSpanishWords(verseText);
+  }
+  async function filterRefsByExactSequence(refs, lang, rawQuery) {
+    const queryTokens = tokenizeQueryForExactSearch(rawQuery, lang);
+    if (queryTokens.length < 2) return refs;
+    const output = [];
+    for (const ref of refs) {
+      const [book, chapterRaw, verseRaw] = String(ref || '').split('|');
+      const chapter = Number(chapterRaw);
+      const verse = Number(verseRaw);
+      if (!book || !Number.isFinite(chapter) || !Number.isFinite(verse)) continue;
+      const verses = await loadChapterText(lang, book, chapter);
+      const verseText = verses?.[verse - 1] || '';
+      const verseTokens = tokenizeVerseForExactSearch(verseText, lang);
+      if (hasTokenSequence(verseTokens, queryTokens)) output.push(ref);
+    }
+    return output;
+  }
+  
   function getHebrewDefinition(entry) {
     return entry?.definitions?.short || entry?.strong_detail?.definicion || entry?.descripcion || '';
   }
@@ -461,8 +525,8 @@ const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
     if (!term) return null;
     await loadDictionary();
     const tokens = String(term || '').split(/\s+/).filter(Boolean);
-    const candidates = [term, ...tokens];
-    for (const candidate of candidates) {
+    const candidates = tokens.length > 1 ? [term] : [term, ...tokens];
+   for (const candidate of candidates) {
       const key = normalizeTransliteration(candidate);
       if (!key) continue;
       const entry = state.dictTranslitMap.get(key);
@@ -1056,7 +1120,9 @@ function mapLxxRefsToHebrewRefs(refs) {
   }
 
   function cleanHebrewToken(token) {
-    return String(token || '').replace(/[׃.,;:!?"“”(){}\[\]<>«»]/g, '');
+    return String(token || '')
+      .replace(/[׃.,;:!?"“”(){}\[\]<>«»]/g, '')
+      .replace(/[\u05BE\-\u2010-\u2015\u2212]/g, ' ');
   }
 
    function tokenizeGreekText(text) {
@@ -1066,11 +1132,11 @@ function mapLxxRefsToHebrewRefs(refs) {
       .filter(Boolean);
   }
 
-   function tokenizeHebrewText(text) {
+    function tokenizeHebrewText(text) {
     return String(text || '')
       .split(/\s+/)
-      .map((token) => cleanHebrewToken(token))
-      .filter(Boolean);
+      .flatMap((token) => cleanHebrewToken(token).split(/\s+/))
+     .filter(Boolean);
   }
  
 
@@ -1524,9 +1590,15 @@ function mapLxxRefsToHebrewRefs(refs) {
  
     const indexPromise = loadIndex(lang);
     const index = await indexPromise;
- const refs = lang === 'gr'
-      ? getGreekRefs(normalized, index)
+const queryTokens = tokenizeQueryForExactSearch(term, lang);
+    const isMultiWordQuery = queryTokens.length > 1;
+    let refs = lang === 'gr'
+     ? getGreekRefs(normalized, index)
       : (lang === 'he' ? getHebrewRefs(normalized, index) : (index.tokens?.[normalized] || []));
+       if (isMultiWordQuery) {
+      const seed = index.tokens?.[queryTokens[0]] || [];
+      refs = await filterRefsByExactSequence(seed, lang, term);
+    }
    const initialLxxMatches = lang === 'gr' && normalized
       ? await buildLxxMatches(normalized, 70)
       : { refs: [], texts: new Map() };
@@ -1554,7 +1626,7 @@ function mapLxxRefsToHebrewRefs(refs) {
     const esIndex = await esIndexPromise;
    let esSearchTokens = [];
     if (lang === 'es') {
-      esSearchTokens = [normalized].filter(Boolean);
+      esSearchTokens = isMultiWordQuery ? [] : [normalized].filter(Boolean);
     } else if (entry?.definicion) {
       esSearchTokens = extractSpanishTokensFromDefinition(entry.definicion);
  } else if (lang === 'he' && getHebrewDefinition(hebrewEntry)) {
@@ -1600,6 +1672,14 @@ const summaryRefs = lang === 'gr' && !refs.length ? initialLxxMatches.refs : ref
         esRefs.push(ref);
       });
     });
+       if (lang === 'es' && isMultiWordQuery) {
+      const phraseRefs = await filterRefsByExactSequence(index.tokens?.[queryTokens[0]] || [], 'es', term);
+      phraseRefs.forEach((ref) => {
+        if (esSeen.has(ref)) return;
+        esSeen.add(ref);
+        esRefs.push(ref);
+      });
+    }
     const { ot: esOtRefs, nt: esNtRefs } = splitRefsByTestament(esRefs);
 
     if (lang === 'gr') {
