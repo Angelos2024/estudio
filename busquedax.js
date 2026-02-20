@@ -353,6 +353,15 @@ function normalizeSpanish(text) {
       .replace(/[\u0300-\u036f]/g, '')
       .replace(/[^a-z0-9ñ]/g, '');
   }
+   function normalizeSpanishPhrase(text) {
+    return String(text || '')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9ñ\s]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
   function getHebrewDefinition(entry) {
     return entry?.definitions?.short || entry?.strong_detail?.definicion || entry?.descripcion || '';
   }
@@ -688,8 +697,9 @@ const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
    state.dict = data;
     const map = new Map();
     const translitMap = new Map();
-       const spanishMap = new Map();
-    (data.items || []).forEach((item) => {
+   const spanishMap = new Map();
+    const definitionEntries = [];
+   (data.items || []).forEach((item) => {
       const lemmaKey = normalizeGreek(item.lemma);
       const formKey = normalizeGreek(item['Forma flexionada del texto']);
       if (lemmaKey && !map.has(lemmaKey)) map.set(lemmaKey, item);
@@ -707,27 +717,55 @@ const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
         if (!spanishMap.has(token)) spanishMap.set(token, []);
         spanishMap.get(token).push(item);
       });
+      definitionEntries.push({
+        item,
+        definitionPhrase: normalizeSpanishPhrase(item?.definicion || '')
+      }); 
     });
     state.dictMap = map;
     state.dictTranslitMap = translitMap;
-       state.dictSpanishMap = spanishMap;
-    return data;
+state.dictSpanishMap = spanishMap;
+    state.dictDefinitionEntries = definitionEntries;
+   return data;
   }
   async function findGreekEntryFromSpanish(term, options = {}) {
    if (!term) return null;
     await loadDictionary(options);
-   const tokens = String(term || '').split(/\s+/).filter(Boolean);
-    const candidates = [term, ...tokens];
+const tokens = String(term || '').split(/\s+/).filter(Boolean);
+    const isMultiWord = tokens.length > 1;
+    const stopwords = new Set(['el', 'la', 'los', 'las', 'de', 'del', 'y', 'o', 'en', 'un', 'una', 'al']);
+    const normalizedPhrase = normalizeSpanishPhrase(term);
+    const searchableTokens = tokens
+      .map((token) => normalizeSpanish(token))
+      .filter((token) => token && token.length >= 3 && !stopwords.has(token));
+   const candidates = [term, ...tokens];
     for (const candidate of candidates) {
       const key = normalizeTransliteration(candidate);
       if (!key) continue;
       const entry = state.dictTranslitMap.get(key);
       if (entry) return entry;
     }
+   if (isMultiWord && normalizedPhrase.length >= 5) {
+      const ranked = (state.dictDefinitionEntries || [])
+        .map(({ item, definitionPhrase }) => {
+          if (!definitionPhrase) return null;
+          let score = 0;
+          if (definitionPhrase.includes(normalizedPhrase)) score += 8;
+          if (definitionPhrase.startsWith(normalizedPhrase)) score += 2;
+          searchableTokens.forEach((token) => {
+            if (definitionPhrase.includes(token)) score += 1;
+          });
+          return score > 0 ? { item, score } : null;
+        })
+        .filter(Boolean)
+        .sort((a, b) => b.score - a.score);
+      if (ranked[0]?.score >= 8) return ranked[0].item;
+      return null;
+    }
     for (const candidate of candidates) {
       const key = normalizeSpanish(candidate);
-      if (!key) continue;
-      const spanishMatches = state.dictSpanishMap.get(key) || [];
+      if (!key || stopwords.has(key) || key.length < 3) continue;
+     const spanishMatches = state.dictSpanishMap.get(key) || [];
       if (!spanishMatches.length) continue;
       const ranked = [...spanishMatches].sort((a, b) => {
         const score = (item) => {
@@ -735,8 +773,8 @@ const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
           const rawDef = String(item?.definicion || '').toLowerCase();
           let value = 0;
           const headDef = rawDef.replace(/nombre\s+prop\.?\s*/g, '').trim();
-          if (rawDef.includes('nombre prop')) value += 4;
-          if (normalizeSpanish(headDef).startsWith(key)) value += 4;
+          if (rawDef.includes('nombre prop')) value -= 2;
+         if (normalizeSpanish(headDef).startsWith(key)) value += 4;
           if (def.startsWith(key)) value += 3;
           if (def.includes(key)) value += 2;
           if (normalizeTransliteration(item?.['Forma flexionada del texto']).includes(key)) value += 1;
