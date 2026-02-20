@@ -413,6 +413,11 @@ function normalizeSpanish(text) {
     if (!tokens.length) return safe;
 
     let output = safe;
+   if (tokens.length > 1) {
+      const phrasePattern = tokens.map((token) => buildTokenRegex(token, lang).source).join('\\s+');
+      const phraseRe = new RegExp(phrasePattern, 'giu');
+      return output.replace(phraseRe, (match) => `<mark>${match}</mark>`);
+    }
     for (const token of tokens) {
       const re = buildTokenRegex(token, lang);
       output = output.replace(re, (match) => `<mark>${match}</mark>`);
