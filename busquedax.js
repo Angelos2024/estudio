@@ -1492,10 +1492,12 @@ bookList.className = 'mt-2 d-grid gap-1';
               openBtn.className = 'btn btn-primary btn-sm';
               openBtn.type = 'button';
               openBtn.textContent = 'Abrir';
-              openBtn.addEventListener('click', () => {
+              openBtn.addEventListener('click', () => 
+                const targetBook = LXX_TO_HEBREW_SLUG[item.book] || item.book;
+                const targetName = prettyBookLabel(targetBook);
                 const p = new URLSearchParams();
-                p.set('book', item.book);
-                p.set('name', group.label);
+                p.set('book', targetBook);
+                p.set('name', targetName);
                 p.set('search', `${item.chapter}:${item.verse}`);
                 p.set('version', 'RVR1960');
                 p.set('orig', '1');
