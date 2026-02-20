@@ -542,7 +542,39 @@ function detectLang(text) {
       .replace(/\s+/g, ' ')
       .trim();
   }
-  function getNormalizedQueryTokens(term, lang, minLength = 3) {
+  
+
+function looksLikePsalmTitle(text, lang) {
+  const norm = normalizePhraseByLang(text || '', lang);
+  if (!norm) return false;
+  if (lang === 'he') {
+    return norm.startsWith('למנצח') || norm.startsWith('מזמור') || norm.startsWith('שיר') || norm.startsWith('לשלמה');
+  }
+  if (lang === 'lxx') {
+    return norm.startsWith('ψαλμοσ') || norm.startsWith('εις το τελος') || norm.startsWith('αλληλουια') || norm.startsWith('ωδη');
+  }
+  return false;
+}
+
+function getVerseIndexForLang(book, lang, verseNumber, verses) {
+  let idx = verseNumber - 1;
+  if (!Array.isArray(verses) || !verses.length) return idx;
+  if ((lang === 'he' || lang === 'lxx') && book === 'salmos') {
+    // Many Hebrew/LXX Psalm files include a superscription as verse 1 (array index 0).
+    // RVR1960 typically does not count that as verse 1, so we shift by +1 when detected.
+    if (looksLikePsalmTitle(verses[0], lang) && verseNumber < verses.length) {
+      idx = verseNumber;
+    }
+  }
+  return idx;
+}
+
+function getVerseTextFromChapter(lang, book, chapter, verseNumber, verses) {
+  const idx = getVerseIndexForLang(book, lang, verseNumber, verses);
+  return verses?.[idx] || '';
+}
+
+function getNormalizedQueryTokens(term, lang, minLength = 3) {
     return String(term || '')
       .split(/\s+/)
       .map((token) => normalizeByLang(token, lang).trim())
@@ -584,7 +616,7 @@ return getSpanishRefs(token, index);
       if (!book || !Number.isFinite(chapter) || !Number.isFinite(verse)) continue;
       try {
         const verses = await loadChapterText(lang, book, chapter, options);
-        const verseText = verses?.[verse - 1] || '';
+        const verseText = getVerseTextFromChapter('he', book, chapter, verse, verses);
         const normalizedVerse = normalizePhraseByLang(verseText, lang);
         if (normalizedVerse.includes(phrase)) {
           filtered.push(ref);
@@ -1182,7 +1214,7 @@ function tokenizeHebrewText(text) {
       const verse = Number(verseRaw);
       try {
         const verses = await loadChapterText('gr', book, chapter, options);
-       const verseText = verses?.[verse - 1] || '';
+       const verseText = getVerseTextFromChapter('he', book, chapter, verse, verses);
         const tokens = verseText.split(/\s+/).filter(Boolean);
         tokens.forEach((token) => {
           const cleaned = cleanGreekToken(token);
@@ -1323,7 +1355,7 @@ function mapLxxRefsToHebrewRefs(refs) {
       const verse = Number(verseRaw);
       try {
         const verses = await loadChapterText('he', book, chapter, options);
-        const verseText = verses?.[verse - 1] || '';
+        const verseText = getVerseTextFromChapter('he', book, chapter, verse, verses);
         const tokens = tokenizeHebrewText(verseText);
         tokens.forEach((token) => {
           const cleaned = token.replace(/[׃,:;.!?()"“”]/g, '');
@@ -1455,7 +1487,7 @@ function mapLxxRefsToHebrewRefs(refs) {
               : '';
           } else {
             const verses = await loadChapterText(lang, book, chapter, options);
-            verseText = verses?.[verse - 1] || '';
+            verseText = getVerseTextFromChapter(lang, book, chapter, verse, verses);
           }
         } catch (error) {
           if (isAbortError(error)) throw error;
@@ -1702,7 +1734,7 @@ bookList.className = 'mt-2 d-grid gap-1';
                  : '';
              } else {
                const verses = await loadChapterText(lang, bookName, chapter, options);
-               resolvedText = verses?.[verse - 1] || '';
+               resolvedText = getVerseTextFromChapter(lang, bookName, chapter, verse, verses);
              }
              group.items.push({
                book: bookName,
@@ -1737,7 +1769,7 @@ bookList.className = 'mt-2 d-grid gap-1';
       const verse = Number(verseRaw);
       try {
         const verses = await loadChapterText('es', book, chapter, options);
-        const verseText = verses?.[verse - 1] || '';
+        const verseText = getVerseTextFromChapter('he', book, chapter, verse, verses);
         group.items.push({
           book,
           chapter,
@@ -1781,7 +1813,7 @@ bookList.className = 'mt-2 d-grid gap-1';
       sampleRef = formatRef(book, chapter, verse);
       try {
         const verses = await loadChapterText(lang, book, chapter, options);
-        sampleText = verses?.[verse - 1] || '';
+        sampleText = getVerseTextFromChapter(lang, book, chapter, verse, verses);
         if (lang !== 'es') {
           const versesEs = await loadChapterText('es', book, chapter, options);
           sampleEs = versesEs?.[verse - 1] || '';
@@ -1843,6 +1875,7 @@ bookList.className = 'mt-2 d-grid gap-1';
       throwIfAborted(options.signal);
 
       const lang = detectLang(term);
+      const isSpanishPhraseQuery = lang === 'es' && /\s+/.test(term.trim());
       const selectedScope = getLanguageScope(term);
      const enabledCorpora = new Set(getCorporaForScope(selectedScope));
      const enforceSpanishReferenceCorrespondence = lang === 'es' && (selectedScope === 'gr' || selectedScope === 'he');
@@ -2039,11 +2072,13 @@ for (const token of esSearchTokens) {
             transliteration: transliterateHebrew(preferredWord)
           };
         }
-        if (!hebrewCandidate && greekTerm && lxxMatches.refs.length) {
-         hebrewCandidate = await buildHebrewCandidateFromLxxRefs(lxxMatches.refs, options);
-        }
-        if (!hebrewCandidate && esOtRefs.length) {
-          hebrewCandidate = await buildHebrewCandidateFromRefs(esOtRefs, options);
+        if (!isSpanishPhraseQuery) {
+          if (!hebrewCandidate && greekTerm && lxxMatches.refs.length) {
+            hebrewCandidate = await buildHebrewCandidateFromLxxRefs(lxxMatches.refs, options);
+          }
+          if (!hebrewCandidate && esOtRefs.length) {
+            hebrewCandidate = await buildHebrewCandidateFromRefs(esOtRefs, options);
+          }
         }
       } else if (lxxMatches.refs.length) {
         hebrewCandidate = await buildHebrewCandidateFromLxxRefs(lxxMatches.refs, options);
@@ -2096,7 +2131,7 @@ if (enforceSpanishReferenceCorrespondence && enabledCorpora.has('he')) {
       const highlightQueries = {
         gr: greekLemma !== '—' ? greekLemma : (lang === 'gr' ? term : ''),
         lxx: lxxHighlightQuery,
-        he: hebrewCandidate?.word || (lang === 'he' ? term : ''),
+        he: (isSpanishPhraseQuery ? (hebrewCandidate?.word || '') : (hebrewCandidate?.word || (lang === 'he' ? term : ''))),
         es: [esDisplayWord, ...relatedTerms.es].join(' ').trim()
       };
 
