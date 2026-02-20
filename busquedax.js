@@ -242,7 +242,7 @@
     };
   }
 
-  function hasTokenWithMinLength(query, minLength = 2) {
+  function hasTokenWithMinLength(query, minLength = 3) {
     return String(query || '')
       .split(/\s+/)
       .map((token) => token.trim())
@@ -504,6 +504,96 @@ function detectLang(text) {
     if (lang === 'gr') return normalizeGreek(text);
     if (lang === 'he') return normalizeHebrew(text);
     return normalizeSpanish(text);
+  }
+  function normalizePhraseByLang(text, lang) {
+    if (lang === 'he') {
+      return String(text || '')
+        .replace(/[\u200C-\u200F\u202A-\u202E]/g, '')
+        .replace(/[\u0591-\u05BD\u05BF\u05C1-\u05C2\u05C4-\u05C7]/g, '')
+        .replace(/[׃.,;:!?()"“”'׳״]/g, ' ')
+        .replace(/[\u05BE\-\u2010-\u2015\u2212]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+    if (lang === 'gr' || lang === 'lxx') {
+      return String(text || '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/\p{M}/gu, '')
+        .replace(/[··.,;:!?(){}\[\]<>«»]/g, ' ')
+        .replace(/ς/g, 'σ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+    return String(text || '')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9ñ\s]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+  function getNormalizedQueryTokens(term, lang, minLength = 3) {
+    return String(term || '')
+      .split(/\s+/)
+      .map((token) => normalizeByLang(token, lang).trim())
+      .filter((token) => token.length >= minLength);
+  }
+  function getRefsForTokenByLang(lang, token, index) {
+    if (!token) return [];
+    if (lang === 'gr') return getGreekRefs(token, index);
+    if (lang === 'he') return getHebrewRefs(token, index);
+    return index.tokens?.[token] || [];
+  }
+  async function filterRefsByPhrase(refs, lang, term, options = {}) {
+    const phrase = normalizePhraseByLang(term, lang);
+    if (!phrase || !refs.length) return refs;
+
+    const filtered = [];
+    for (const ref of refs) {
+      throwIfAborted(options.signal);
+      const [book, chapterRaw, verseRaw] = String(ref || '').split('|');
+      const chapter = Number(chapterRaw);
+      const verse = Number(verseRaw);
+      if (!book || !Number.isFinite(chapter) || !Number.isFinite(verse)) continue;
+      try {
+        const verses = await loadChapterText(lang, book, chapter, options);
+        const verseText = verses?.[verse - 1] || '';
+        const normalizedVerse = normalizePhraseByLang(verseText, lang);
+        if (normalizedVerse.includes(phrase)) {
+          filtered.push(ref);
+        }
+      } catch (error) {
+        if (isAbortError(error)) throw error;
+      }
+    }
+    return filtered;
+  }
+  async function getRefsForQuery(term, lang, index, options = {}) {
+    const normalized = normalizeByLang(term, lang);
+    if (!normalized) return [];
+
+    const tokens = getNormalizedQueryTokens(term, lang, 3);
+    if (!tokens.length) return getRefsForTokenByLang(lang, normalized, index);
+
+    const uniqueTokens = [...new Set(tokens)];
+    const tokenRefLists = uniqueTokens
+      .map((token) => getRefsForTokenByLang(lang, token, index))
+      .filter((list) => Array.isArray(list) && list.length);
+
+    if (!tokenRefLists.length) return [];
+
+    let refs = tokenRefLists[0].slice();
+    for (let i = 1; i < tokenRefLists.length; i += 1) {
+      const lookup = new Set(tokenRefLists[i]);
+      refs = refs.filter((ref) => lookup.has(ref));
+      if (!refs.length) break;
+    }
+
+    if (uniqueTokens.length >= 2 && refs.length) {
+      refs = await filterRefsByPhrase(refs, lang, term, options);
+    }
+    return refs;
   }
 function getGreekRefs(normalized, index) {
     if (!normalized) return [];
@@ -1662,10 +1752,7 @@ bookList.className = 'mt-2 d-grid gap-1';
 
       const index = await loadIndex(lang, options);
       throwIfAborted(options.signal);
- const refs = lang === 'gr'
-        ? getGreekRefs(normalized, index)
-        : (lang === 'he' ? getHebrewRefs(normalized, index) : (index.tokens?.[normalized] || []));
-      const initialLxxMatches = lang === 'gr' && normalized && enabledCorpora.has('lxx')
+ const refs = await getRefsForQuery(term, lang, index, options);
         ? await buildLxxMatches(normalized, 70)
         : { refs: [], texts: new Map() };
       const hasInitialGreekMatches = refs.length || initialLxxMatches.refs.length;
@@ -1747,14 +1834,14 @@ bookList.className = 'mt-2 d-grid gap-1';
           esSeen.add(ref);
           esRefs.push(ref);
         });
-        esSearchTokens.forEach((token) => {
-          const matches = esIndex.tokens?.[token] || [];
+for (const token of esSearchTokens) {
+          const matches = await getRefsForQuery(token, 'es', esIndex, options);
           matches.forEach((ref) => {
             if (esSeen.has(ref)) return;
             esSeen.add(ref);
             esRefs.push(ref);
           });
-        });
+        }
       }
 
       const { ot: esOtRefs, nt: esNtRefs } = splitRefsByTestament(esRefs);
@@ -1791,8 +1878,10 @@ bookList.className = 'mt-2 d-grid gap-1';
       const hebrewSearchTerms = new Set();
       const grIndex = await grIndexPromise;
       throwIfAborted(options.signal);
-  let grRefs = (enabledCorpora.has('gr') && grIndex && greekTerm) ? getGreekRefs(greekTerm, grIndex) : [];
-      if (lang === 'es' && enabledCorpora.has('gr') && esNtRefs.length) {
+ let grRefs = (enabledCorpora.has('gr') && grIndex && greekTerm)
+        ? await getRefsForQuery(greekTerm, 'gr', grIndex, options)
+        : [];
+     if (lang === 'es' && enabledCorpora.has('gr') && esNtRefs.length) {
         const seenRefs = new Set(grRefs);
         esNtRefs.forEach((ref) => {
           if (seenRefs.has(ref)) return;
@@ -1842,13 +1931,14 @@ if (hebrewCandidate?.normalized) {
       const heRefs = [];
       if (enabledCorpora.has('he') && heIndex && hebrewSearchTerms.size) {
         const seen = new Set();
-        hebrewSearchTerms.forEach((token) => {
-          getHebrewRefs(token, heIndex).forEach((ref) => {
+          for (const token of hebrewSearchTerms) {
+          const matches = await getRefsForQuery(token, 'he', heIndex, options);
+          matches.forEach((ref) => {
             if (seen.has(ref)) return;
             seen.add(ref);
             heRefs.push(ref);
           });
-        });
+        }
       }
 
       const posTag = lang === 'gr' ? extractPos(entry) : '—';
@@ -2031,7 +2121,7 @@ function handleLanguageScopeChange(event) {
  
    
    const debouncedAnalyzeInput = debounce(() => {
-     if (!hasTokenWithMinLength(queryInput?.value || '', 2)) return;
+     if (!hasTokenWithMinLength(queryInput?.value || '', 3)) return;
      analyze();
    }, DEBOUNCE_DELAY_MS);
 
