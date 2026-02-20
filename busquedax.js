@@ -1352,12 +1352,20 @@ function mapLxxRefsToHebrewRefs(refs) {
       const chapter = Number(chapterRaw);
       const verse = Number(verseRaw);
       let verseText = '';
-      if (preloadedTexts?.has?.(ref)) {
-        verseText = preloadedTexts.get(ref) || '';
+     const canonicalRef = `${book}|${chapter}|${verse}`;
+      if (preloadedTexts?.has?.(ref) || preloadedTexts?.has?.(canonicalRef)) {
+        verseText = preloadedTexts.get(ref) || preloadedTexts.get(canonicalRef) || '';
       } else {
         try {
-          const verses = await loadChapterText(lang, book, chapter, options);
-          verseText = verses?.[verse - 1] || '';
+        if (lang === 'lxx') {
+            const tokens = await loadLxxVerseTokens(book, chapter, verse);
+            verseText = Array.isArray(tokens)
+              ? tokens.map((token) => token?.w).filter(Boolean).join(' ')
+              : '';
+          } else {
+            const verses = await loadChapterText(lang, book, chapter, options);
+            verseText = verses?.[verse - 1] || '';
+          }
         } catch (error) {
           if (isAbortError(error)) throw error;
           verseText = 'Texto no disponible.';
@@ -1583,8 +1591,9 @@ bookList.className = 'mt-2 d-grid gap-1';
          const verse = Number(verseRaw);
          try {
 
-          const verseText = preloadedTexts?.get?.(ref);
-           if (!verseText) throw new Error('no preloaded');
+ const canonicalRef = `${bookName}|${chapter}|${verse}`;
+          const verseText = preloadedTexts?.get?.(ref) || preloadedTexts?.get?.(canonicalRef);
+          if (!verseText) throw new Error('no preloaded');
            group.items.push({
              book: bookName,
               chapter,
@@ -1594,14 +1603,22 @@ bookList.className = 'mt-2 d-grid gap-1';
            });
          } catch (error) {
           try {
-             const verses = await loadChapterText(lang, bookName, chapter, options);
-             const verseText = verses?.[verse - 1] || '';
+            let resolvedText = '';
+             if (lang === 'lxx') {
+               const tokens = await loadLxxVerseTokens(bookName, chapter, verse);
+               resolvedText = Array.isArray(tokens)
+                 ? tokens.map((token) => token?.w).filter(Boolean).join(' ')
+                 : '';
+             } else {
+               const verses = await loadChapterText(lang, bookName, chapter, options);
+               resolvedText = verses?.[verse - 1] || '';
+             }
              group.items.push({
                book: bookName,
                chapter,
                verse,
                ref: formatRef(bookName, chapter, verse),
-               text: verseText
+               text: resolvedText
              });
            } catch (innerError) {
              if (isAbortError(innerError)) throw innerError;
