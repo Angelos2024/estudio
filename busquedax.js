@@ -543,7 +543,24 @@ function detectLang(text) {
     if (!token) return [];
     if (lang === 'gr') return getGreekRefs(token, index);
     if (lang === 'he') return getHebrewRefs(token, index);
-    return index.tokens?.[token] || [];
+return getSpanishRefs(token, index);
+  }
+  function getSpanishRefs(normalized, index) {
+    if (!normalized) return [];
+    const direct = index.tokens?.[normalized] || [];
+    const refs = direct.slice();
+    const seen = new Set(refs);
+
+    Object.entries(index.tokens || {}).forEach(([token, matches]) => {
+      if (!token || token === normalized || !token.includes(normalized)) return;
+      (matches || []).forEach((ref) => {
+        if (seen.has(ref)) return;
+        seen.add(ref);
+        refs.push(ref);
+      });
+    });
+
+    return refs;
   }
   async function filterRefsByPhrase(refs, lang, term, options = {}) {
     const phrase = normalizePhraseByLang(term, lang);
