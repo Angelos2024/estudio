@@ -362,27 +362,6 @@ function normalizeSpanish(text) {
       .replace(/\s+/g, ' ')
       .trim();
   }
-
-  // --- Frase flexible en español (ignora artículos/preposiciones comunes) ---
-  const SPANISH_PHRASE_STOPWORDS = new Set(['de','del','el','la','los','las','al','un','una','unos','unas','y','o']);
-  function tokenizeSpanishPhraseLoose(text) {
-    return normalizeSpanishPhrase(text)
-      .split(/\s+/)
-      .map((t) => t.trim())
-      .filter((t) => t && !SPANISH_PHRASE_STOPWORDS.has(t));
-  }
-  function hasTokenSequence(tokens, queryTokens) {
-    if (!Array.isArray(tokens) || !Array.isArray(queryTokens)) return false;
-    if (!queryTokens.length || queryTokens.length > tokens.length) return false;
-    for (let i = 0; i <= tokens.length - queryTokens.length; i += 1) {
-      let ok = true;
-      for (let j = 0; j < queryTokens.length; j += 1) {
-        if (tokens[i + j] !== queryTokens[j]) { ok = false; break; }
-      }
-      if (ok) return true;
-    }
-    return false;
-  }
   function getHebrewDefinition(entry) {
     return entry?.definitions?.short || entry?.strong_detail?.definicion || entry?.descripcion || '';
   }
@@ -563,39 +542,7 @@ function detectLang(text) {
       .replace(/\s+/g, ' ')
       .trim();
   }
-  
-
-function looksLikePsalmTitle(text, lang) {
-  const norm = normalizePhraseByLang(text || '', lang);
-  if (!norm) return false;
-  if (lang === 'he') {
-    return norm.startsWith('למנצח') || norm.startsWith('מזמור') || norm.startsWith('שיר') || norm.startsWith('לשלמה');
-  }
-  if (lang === 'lxx') {
-    return norm.startsWith('ψαλμοσ') || norm.startsWith('εις το τελος') || norm.startsWith('αλληλουια') || norm.startsWith('ωδη');
-  }
-  return false;
-}
-
-function getVerseIndexForLang(book, lang, verseNumber, verses) {
-  let idx = verseNumber - 1;
-  if (!Array.isArray(verses) || !verses.length) return idx;
-  if ((lang === 'he' || lang === 'lxx') && book === 'salmos') {
-    // Many Hebrew/LXX Psalm files include a superscription as verse 1 (array index 0).
-    // RVR1960 typically does not count that as verse 1, so we shift by +1 when detected.
-    if (looksLikePsalmTitle(verses[0], lang) && verseNumber < verses.length) {
-      idx = verseNumber;
-    }
-  }
-  return idx;
-}
-
-function getVerseTextFromChapter(lang, book, chapter, verseNumber, verses) {
-  const idx = getVerseIndexForLang(book, lang, verseNumber, verses);
-  return verses?.[idx] || '';
-}
-
-function getNormalizedQueryTokens(term, lang, minLength = 3) {
+  function getNormalizedQueryTokens(term, lang, minLength = 3) {
     return String(term || '')
       .split(/\s+/)
       .map((token) => normalizeByLang(token, lang).trim())
@@ -637,17 +584,9 @@ return getSpanishRefs(token, index);
       if (!book || !Number.isFinite(chapter) || !Number.isFinite(verse)) continue;
       try {
         const verses = await loadChapterText(lang, book, chapter, options);
-        const verseText = getVerseTextFromChapter('gr', book, chapter, verse, verses);
+        const verseText = verses?.[verse - 1] || '';
         const normalizedVerse = normalizePhraseByLang(verseText, lang);
-        if (lang === 'es' && options.looseStopwords) {
-          const queryTokens = tokenizeSpanishPhraseLoose(term);
-          if (queryTokens.length < 2) {
-            if (normalizedVerse.includes(phrase)) filtered.push(ref);
-          } else {
-            const verseTokens = tokenizeSpanishPhraseLoose(verseText);
-            if (hasTokenSequence(verseTokens, queryTokens)) filtered.push(ref);
-          }
-        } else if (normalizedVerse.includes(phrase)) {
+        if (normalizedVerse.includes(phrase)) {
           filtered.push(ref);
         }
       } catch (error) {
@@ -660,46 +599,28 @@ return getSpanishRefs(token, index);
     const normalized = normalizeByLang(term, lang);
     if (!normalized) return [];
 
-    
-  const tokens = getNormalizedQueryTokens(term, lang, 3);
-  if (!tokens.length) return getRefsForTokenByLang(lang, normalized, index);
+    const tokens = getNormalizedQueryTokens(term, lang, 3);
+    if (!tokens.length) return getRefsForTokenByLang(lang, normalized, index);
 
-  const uniqueTokens = [...new Set(tokens)];
-  const tokenRefLists = uniqueTokens
-    .map((token) => getRefsForTokenByLang(lang, token, index))
-    .filter((list) => Array.isArray(list) && list.length);
+    const uniqueTokens = [...new Set(tokens)];
+    const tokenRefLists = uniqueTokens
+      .map((token) => getRefsForTokenByLang(lang, token, index))
+      .filter((list) => Array.isArray(list) && list.length);
 
-  if (!tokenRefLists.length) return [];
+    if (!tokenRefLists.length) return [];
 
-  // Intersección por tokens (comportamiento anterior)
-  let refs = tokenRefLists[0].slice();
-  for (let i = 1; i < tokenRefLists.length; i += 1) {
-    const lookup = new Set(tokenRefLists[i]);
-    refs = refs.filter((ref) => lookup.has(ref));
-    if (!refs.length) break;
-  }
-
-  // ✅ Hebreo: si el usuario escribe la frase separada por espacios (בן אדם),
-  // pero el texto viene unido por maqaf (בן־אדם), el índice suele tener el token unido.
-  // Entonces agregamos (UNION) el match del "token compuesto" normalizado (sin espacios/maqaf)
-  // y luego filtramos por frase exacta para evitar falsos positivos.
-  if (lang === 'he' && uniqueTokens.length >= 2) {
-    const compoundRefs = getRefsForTokenByLang('he', normalized, index) || [];
-    if (compoundRefs.length) {
-      const seen = new Set(refs);
-      compoundRefs.forEach((ref) => {
-        if (seen.has(ref)) return;
-        seen.add(ref);
-        refs.push(ref);
-      });
+    let refs = tokenRefLists[0].slice();
+    for (let i = 1; i < tokenRefLists.length; i += 1) {
+      const lookup = new Set(tokenRefLists[i]);
+      refs = refs.filter((ref) => lookup.has(ref));
+      if (!refs.length) break;
     }
-  }
 
-  if (uniqueTokens.length >= 2 && refs.length) {
-    refs = await filterRefsByPhrase(refs, lang, term, { ...options, looseStopwords: lang === 'es' });
+    if (uniqueTokens.length >= 2 && refs.length) {
+      refs = await filterRefsByPhrase(refs, lang, term, options);
+    }
+    return refs;
   }
-  return refs;
-}
 function getGreekRefs(normalized, index) {
     if (!normalized) return [];
     const keys = buildGreekSearchKeys(normalized);
@@ -1183,73 +1104,6 @@ async function loadLxxBookData(bookCode) {
     return String(token || '').replace(/[··.,;:!?“”"(){}\[\]<>«»]/g, '');
   }
 
-
-// Limpia tokens hebreos: quita puntuación y trata el maqaf (־) y guiones como separador (espacio).
-function cleanHebrewToken(token) {
-  return String(token || '')
-    .replace(/[׃.,;:!?"“”(){}\[\]<>«»׳״]/g, '')
-    .replace(/[\u05BE\-\u2010-\u2015\u2212]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
-// Tokeniza hebreo separando por espacios y también por maqaf (־) para evitar falsos negativos.
-function tokenizeHebrewText(text) {
-  return String(text || '')
-    .split(/\s+/)
-    .flatMap((token) => cleanHebrewToken(token).split(/\s+/))
-    .filter(Boolean);
-}
-
-// Construye una frase (n-grama) más frecuente desde refs para resaltar/mostrar expresiones completas
-// Útil cuando el término origen es una frase en español (p.ej. "hijo del hombre").
-async function buildMostCommonPhraseFromRefs(refs, lang, n = 2, options = {}) {
-  if (!Array.isArray(refs) || !refs.length) return null;
-  const counts = new Map();
-  const samples = new Map();
-
-  const stop = (lang === 'gr' || lang === 'lxx') ? (typeof greekStopwords !== 'undefined' ? greekStopwords : new Set()) : new Set();
-
-  for (const ref of refs.slice(0, 120)) {
-    const [book, chapterRaw, verseRaw] = String(ref).split('|');
-    const chapter = Number(chapterRaw);
-    const verse = Number(verseRaw);
-    let verseText = '';
-    try {
-      const verses = await loadChapterText(lang === 'lxx' ? 'gr' : lang, book, chapter, options);
-      verseText = getVerseTextFromChapter(lang, book, chapter, verse, verses);
-    } catch (error) {
-      if (isAbortError?.(error)) throw error;
-      continue;
-    }
-    if (!verseText) continue;
-
-    const rawTokens = (lang === 'he')
-      ? tokenizeHebrewText(verseText)
-      : tokenizeGreekText(verseText);
-
-    const normTokens = rawTokens
-      .map((t) => (lang === 'he' ? normalizeHebrew(t) : normalizeGreek(t)))
-      .map((t) => String(t || '').trim())
-      .filter((t) => t.length >= 2 && !(stop?.has?.(t)));
-
-    if (normTokens.length < n) continue;
-
-    for (let i = 0; i <= normTokens.length - n; i += 1) {
-      const key = normTokens.slice(i, i + n).join(' ');
-      counts.set(key, (counts.get(key) || 0) + 1);
-      if (!samples.has(key)) {
-        samples.set(key, rawTokens.slice(i, i + n).join(' '));
-      }
-    }
-  }
-
-  if (!counts.size) return null;
-  const [best, count] = [...counts.entries()].sort((a, b) => b[1] - a[1])[0];
-  return { normalized: best, phrase: samples.get(best) || best, count };
-}
-
-
   async function buildGreekCandidateFromHebrewRefs(refs) {
     if (!refs.length) return null;
     const counts = new Map();
@@ -1292,7 +1146,7 @@ async function buildMostCommonPhraseFromRefs(refs, lang, n = 2, options = {}) {
       const verse = Number(verseRaw);
       try {
         const verses = await loadChapterText('gr', book, chapter, options);
-       const verseText = getVerseTextFromChapter('gr', book, chapter, verse, verses);
+       const verseText = verses?.[verse - 1] || '';
         const tokens = verseText.split(/\s+/).filter(Boolean);
         tokens.forEach((token) => {
           const cleaned = cleanGreekToken(token);
@@ -1433,8 +1287,8 @@ function mapLxxRefsToHebrewRefs(refs) {
       const verse = Number(verseRaw);
       try {
         const verses = await loadChapterText('he', book, chapter, options);
-        const verseText = getVerseTextFromChapter('gr', book, chapter, verse, verses);
-        const tokens = tokenizeHebrewText(verseText);
+        const verseText = verses?.[verse - 1] || '';
+        const tokens = verseText.split(/\s/).filter(Boolean);
         tokens.forEach((token) => {
           const cleaned = token.replace(/[׃,:;.!?()"“”]/g, '');
           const normalized = normalizeHebrew(cleaned);
@@ -1565,7 +1419,7 @@ function mapLxxRefsToHebrewRefs(refs) {
               : '';
           } else {
             const verses = await loadChapterText(lang, book, chapter, options);
-            verseText = getVerseTextFromChapter(lang, book, chapter, verse, verses);
+            verseText = verses?.[verse - 1] || '';
           }
         } catch (error) {
           if (isAbortError(error)) throw error;
@@ -1812,7 +1666,7 @@ bookList.className = 'mt-2 d-grid gap-1';
                  : '';
              } else {
                const verses = await loadChapterText(lang, bookName, chapter, options);
-               resolvedText = getVerseTextFromChapter(lang, bookName, chapter, verse, verses);
+               resolvedText = verses?.[verse - 1] || '';
              }
              group.items.push({
                book: bookName,
@@ -1847,7 +1701,7 @@ bookList.className = 'mt-2 d-grid gap-1';
       const verse = Number(verseRaw);
       try {
         const verses = await loadChapterText('es', book, chapter, options);
-        const verseText = getVerseTextFromChapter('gr', book, chapter, verse, verses);
+        const verseText = verses?.[verse - 1] || '';
         group.items.push({
           book,
           chapter,
@@ -1891,7 +1745,7 @@ bookList.className = 'mt-2 d-grid gap-1';
       sampleRef = formatRef(book, chapter, verse);
       try {
         const verses = await loadChapterText(lang, book, chapter, options);
-        sampleText = getVerseTextFromChapter(lang, book, chapter, verse, verses);
+        sampleText = verses?.[verse - 1] || '';
         if (lang !== 'es') {
           const versesEs = await loadChapterText('es', book, chapter, options);
           sampleEs = versesEs?.[verse - 1] || '';
@@ -1953,7 +1807,6 @@ bookList.className = 'mt-2 d-grid gap-1';
       throwIfAborted(options.signal);
 
       const lang = detectLang(term);
-      const isSpanishPhraseQuery = lang === 'es' && /\s+/.test(term.trim());
       const selectedScope = getLanguageScope(term);
      const enabledCorpora = new Set(getCorporaForScope(selectedScope));
      const enforceSpanishReferenceCorrespondence = lang === 'es' && (selectedScope === 'gr' || selectedScope === 'he');
@@ -2074,21 +1927,6 @@ for (const token of esSearchTokens) {
       const { ot: esOtRefs, nt: esNtRefs } = splitRefsByTestament(esRefs);
       const scopedLxxRefsFromSpanish = enforceSpanishReferenceCorrespondence ? mapOtRefsToLxxRefs(esOtRefs) : [];
 
-      // Si la consulta en español es frase, construimos frases probables en GR/HE para resaltar correctamente
-      // (sin depender de un único lema como "ανθρωπου").
-      let greekPhraseCandidate = null;
-      let hebrewPhraseCandidate = null;
-      if (lang === 'es' && isSpanishPhraseQuery) {
-        try {
-          if (esNtRefs.length) greekPhraseCandidate = await buildMostCommonPhraseFromRefs(esNtRefs, 'gr', 2, options);
-          if (esOtRefs.length) hebrewPhraseCandidate = await buildMostCommonPhraseFromRefs(esOtRefs, 'he', 2, options);
-        } catch (error) {
-          if (isAbortError(error)) throw error;
-        }
-      }
-
-      const scopedLxxRefsFromSpanish = enforceSpanishReferenceCorrespondence ? mapOtRefsToLxxRefs(esOtRefs) : [];
-
       if (lang === 'gr') {
         greekTerm = normalized;
       } else if (lang === 'es') {
@@ -2116,7 +1954,7 @@ for (const token of esSearchTokens) {
         }
       }
 
-      const greekLemma = (greekPhraseCandidate?.phrase) || greekEntry?.lemma || greekCandidate?.lemma || (lang === 'gr' ? term : '—');
+      const greekLemma = greekEntry?.lemma || greekCandidate?.lemma || (lang === 'gr' ? term : '—');
       const greekTranslit = greekEntry?.['Forma lexica'] || (greekTerm ? transliterateGreek(greekLemma || term) : '—');
       const hebrewSearchTerms = new Set();
       const grIndex = await grIndexPromise;
@@ -2165,13 +2003,11 @@ for (const token of esSearchTokens) {
             transliteration: transliterateHebrew(preferredWord)
           };
         }
-        if (!isSpanishPhraseQuery) {
-          if (!hebrewCandidate && greekTerm && lxxMatches.refs.length) {
-            hebrewCandidate = await buildHebrewCandidateFromLxxRefs(lxxMatches.refs, options);
-          }
-          if (!hebrewCandidate && esOtRefs.length) {
-            hebrewCandidate = await buildHebrewCandidateFromRefs(esOtRefs, options);
-          }
+        if (!hebrewCandidate && greekTerm && lxxMatches.refs.length) {
+         hebrewCandidate = await buildHebrewCandidateFromLxxRefs(lxxMatches.refs, options);
+        }
+        if (!hebrewCandidate && esOtRefs.length) {
+          hebrewCandidate = await buildHebrewCandidateFromRefs(esOtRefs, options);
         }
       } else if (lxxMatches.refs.length) {
         hebrewCandidate = await buildHebrewCandidateFromLxxRefs(lxxMatches.refs, options);
@@ -2212,7 +2048,7 @@ if (enforceSpanishReferenceCorrespondence && enabledCorpora.has('he')) {
         `RVR1960: ${enabledCorpora.has('es') ? esRefs.length : '—'}`
       ]);
 
-      const lxxHighlightQuery = (greekPhraseCandidate?.phrase) || lxxMatches.highlightTerms?.length
+      const lxxHighlightQuery = lxxMatches.highlightTerms?.length
         ? lxxMatches.highlightTerms.join(' ')
         : (greekLemma !== '—' ? greekLemma : (lang === 'gr' ? term : ''));
 
@@ -2222,9 +2058,9 @@ if (enforceSpanishReferenceCorrespondence && enabledCorpora.has('he')) {
       };
 
       const highlightQueries = {
-        gr: (greekPhraseCandidate?.phrase) || (greekLemma !== '—' ? greekLemma : (lang === 'gr' ? term : '')),
+        gr: greekLemma !== '—' ? greekLemma : (lang === 'gr' ? term : ''),
         lxx: lxxHighlightQuery,
-        he: (hebrewPhraseCandidate?.phrase) || (isSpanishPhraseQuery ? (hebrewCandidate?.word || '') : (hebrewCandidate?.word || (lang === 'he' ? term : ''))),
+        he: hebrewCandidate?.word || (lang === 'he' ? term : ''),
         es: [esDisplayWord, ...relatedTerms.es].join(' ').trim()
       };
 
