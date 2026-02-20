@@ -1807,8 +1807,11 @@ bookList.className = 'mt-2 d-grid gap-1';
       if (enabledCorpora.has('es') || needsSpanishBridge) {
        if (lang === 'es') {
           const relatedEsTokens = aliasCandidates.es.filter((token) => token && token !== normalized);
-          esSearchTokens = [...relatedEsTokens, normalized].filter(Boolean);
-        } else if (entry?.definicion) {
+ esSearchTokens = [term, ...relatedEsTokens]
+            .map((value) => String(value || '').trim())
+            .filter(Boolean)
+            .filter((value, index, list) => list.indexOf(value) === index);
+       } else if (entry?.definicion) {
           esSearchTokens = extractSpanishTokensFromDefinition(entry.definicion);
         } else if (lang === 'he' && getHebrewDefinition(hebrewEntry)) {
           esSearchTokens = extractSpanishTokensFromDefinition(getHebrewDefinition(hebrewEntry));
