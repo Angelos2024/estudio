@@ -1492,8 +1492,8 @@ bookList.className = 'mt-2 d-grid gap-1';
               openBtn.className = 'btn btn-primary btn-sm';
               openBtn.type = 'button';
               openBtn.textContent = 'Abrir';
-              openBtn.addEventListener('click', () => 
-                const targetBook = LXX_TO_HEBREW_SLUG[item.book] || item.book;
+              openBtn.addEventListener('click', () => {
+               const targetBook = LXX_TO_HEBREW_SLUG[item.book] || item.book;
                 const targetName = prettyBookLabel(targetBook);
                 const p = new URLSearchParams();
                 p.set('book', targetBook);
