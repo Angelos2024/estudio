@@ -1978,8 +1978,8 @@ function mapLxxRefsToHebrewRefs(refs) {
         <div class="bx-result-item d-flex gap-2">
           <div class="flex-grow-1">
             <div class="bx-ref">${escapeHtml(it.ref)}</div>
-            <div class="bx-text">${highlightText(safeText, highlightQuery, agg.lang)}</div>
-            </div>
+            <div class="bx-text">${highlightText(escapeHtml(safeText), highlightQuery, agg.lang)}</div>
+          </div>
           <div class="bx-actions">
             <a class="btn btn-primary btn-sm" href="${openHref}">Abrir</a>
           </div>
@@ -2749,18 +2749,12 @@ if (enforceSpanishReferenceCorrespondence && enabledCorpora.has('he')) {
         es: aliasCandidates.relatedLabels?.es || [],
         he: aliasCandidates.relatedLabels?.he || []
       };
-const hebrewHighlightTokens = [...hebrewSearchTerms].filter(Boolean);
-      const hebrewHighlightQuery = hebrewPhraseQueries.length
-        ? hebrewPhraseQueries.join(' || ')
-        : (hebrewHighlightTokens.length
-          ? hebrewHighlightTokens.join(' ')
-          : ((lang === 'he' ? term : '') || hebrewCandidate?.word || ''));
-     
+
       const highlightQueries = {
         gr: greekLemma !== '—' ? greekLemma : (lang === 'gr' ? term : ''),
         lxx: lxxHighlightQuery,
-        he: hebrewHighlightQuery,
-       es: [esDisplayWord, ...relatedTerms.es].join(' ').trim()
+        he: (hebrewPhraseQueries.length ? hebrewPhraseQueries.join(' || ') : '') || (equivalenceTerms.he && equivalenceTerms.he[0] ? equivalenceTerms.he[0] : '') || hebrewCandidate?.word || (lang === 'he' ? term : ''),
+        es: [esDisplayWord, ...relatedTerms.es].join(' ').trim()
       };
 
       const cards = [];
