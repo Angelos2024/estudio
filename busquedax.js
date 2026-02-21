@@ -1820,10 +1820,10 @@ function mapLxxRefsToHebrewRefs(refs) {
 
     filtersPanel.innerHTML = `
       <div class="d-grid gap-2">
-        ${mkBtn('all', 'All', allCount, isAll)}
-        ${mkBtn('ot', 'Old Testament', otCount, isOT)}
+        ${mkBtn('all', 'Todos', allCount, isAll)}
+        ${mkBtn('ot', 'Toráh', otCount, isOT)}
         <div class="ps-1 d-grid gap-2">${otItems || '<div class="small muted ps-2">Sin resultados.</div>'}</div>
-        ${mkBtn('nt', 'New Testament', ntCount, isNT)}
+        ${mkBtn('nt', 'Evangelios', ntCount, isNT)}
         <div class="ps-1 d-grid gap-2">${ntItems || '<div class="small muted ps-2">Sin resultados.</div>'}</div>
       </div>
     `;
