@@ -2003,7 +2003,7 @@ function mapLxxRefsToHebrewRefs(refs) {
     }
   }
 
-  async async function renderSearchUI(groupsByCorpus, highlightQueries = {}, relatedTerms = {}, options = {}) {
+  async function renderSearchUI(groupsByCorpus, highlightQueries = {}, relatedTerms = {}, options = {}) {
     // Si el usuario pide "Todos", caemos al modo legacy (multi-corpus)
     const scope = state.languageScope || 'auto';
     const activeLang = getActiveLangForNewUI();
