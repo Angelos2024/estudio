@@ -132,6 +132,10 @@
     .bx-result-item{ border:1px solid var(--bd); background:color-mix(in srgb, var(--surface) 85%, #ffffff); border-radius:14px; padding:.75rem .85rem; }
     .bx-result-item .bx-ref{ font-weight:700; }
     .bx-result-item .bx-text{ margin-top:.35rem; }
+     /* Sidebar más angosta */
+  @media (min-width: 1200px){
+    .bx-sticky-filters{max-width: 280px;}
+  }
     </style>
 </head>
 <body>
@@ -172,7 +176,7 @@
     
     <div id="bxAnalysisResultsSection" class="row g-3">
       <!-- Centro: resultados + paginación -->
-      <div class="col-12 col-lg-8">
+<div class="col-12 col-lg-9 col-xl-10">
         <section class="panel">
           <div class="panel-header d-flex flex-wrap justify-content-between align-items-center gap-2">
             <span>Resultados</span>
@@ -196,8 +200,8 @@
       </div>
 
       <!-- Derecha: panel de filtros -->
-      <div class="col-12 col-lg-4">
-        <section class="panel bx-sticky-filters">
+<div class="col-12 col-lg-3 col-xl-2">
+  <section class="panel bx-sticky-filters">
           <div class="panel-header">Filtrar por</div>
           <div class="panel-body">
             <div id="bxFiltersPanel" class="d-grid gap-2"></div>
