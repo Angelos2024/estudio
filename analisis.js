@@ -1080,8 +1080,20 @@ function mapLxxRefsToHebrewRefs(refs) {
       div.className = 'example-card';
       div.innerHTML = card;
       lemmaCorrespondence.appendChild(div);
-     });
-   }
+   });
+  }
+
+  function renderSingleWordInputError(term) {
+    renderTags([
+      `Entrada: <span class="fw-semibold">${term}</span>`,
+      'Estado: <span class="fw-semibold text-danger">Error de validación</span>'
+    ]);
+    lemmaSummary.textContent = 'Solo se aceptan entradas de una sola palabra en el análisis textual.';
+    renderCorrespondence([]);
+    renderExamples([]);
+    occurrenceDonut?.setData({ es: [], he: [], gr: [] });
+    deepLexicalAnalysis.innerHTML = '<div class="col-12"><div class="small muted">Corrige la consulta: usa una sola palabra (sin frases).</div></div>';
+  }
  
   async function buildSamplesForRefs(refs, lang, max = 3, preloadedTexts = null) {
     const samples = [];
@@ -1576,6 +1588,11 @@ function mapLxxRefsToHebrewRefs(refs) {
     if (!term) {
       return;
     }
+   const queryTokens = tokenizeQueryForExactSearch(term, detectLang(term));
+    if (queryTokens.length > 1) {
+      renderSingleWordInputError(term);
+      return;
+    }
     scrollToLemmaSummary();
    setLoading(true);
     await nextFrame();
@@ -1595,7 +1612,6 @@ function mapLxxRefsToHebrewRefs(refs) {
  
     const indexPromise = loadIndex(lang);
     const index = await indexPromise;
-const queryTokens = tokenizeQueryForExactSearch(term, lang);
     const isMultiWordQuery = queryTokens.length > 1;
     let refs = lang === 'gr'
      ? getGreekRefs(normalized, index)
