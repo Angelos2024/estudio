@@ -155,6 +155,21 @@
      '2_pedro', '1_juan', '2_juan', '3_juan', 'judas'
    ];
    const APOCALYPSE = ['apocalipsis'];
+
+// Orden canónico (Génesis → Apocalipsis) por slugs internos
+const CANONICAL_BOOK_ORDER = [
+  ...TORAH,
+  ...HISTORICAL,
+  ...WISDOM,
+  ...PROPHETS,
+  ...GOSPELS,
+  ...LETTERS,
+  ...APOCALYPSE
+];
+const CANON_INDEX = new Map(CANONICAL_BOOK_ORDER.map((slug, i) => [slug, i]));
+const OT_SET = new Set([...TORAH, ...HISTORICAL, ...WISDOM, ...PROPHETS]);
+const NT_SET = new Set([...GOSPELS, ...LETTERS, ...APOCALYPSE]);
+
   const NT_BOOKS = new Set([...GOSPELS, ...ACTS, ...LETTERS, ...APOCALYPSE]);
   const LXX_BOOKS = [
     '1Chr', '1Esdr', '1Kgs', '1Macc', '1Sam', '2Chr', '2Esdr', '2Kgs', '2Macc', '2Sam',
@@ -189,7 +204,23 @@
     }
   ];
  const state = {
-    dict: null,
+    
+  // UI state para filtros + paginación
+  pagination: {
+    pageSize: 25,
+    page: 1,
+    selectedTestament: null, // 'ot' | 'nt' | null
+    selectedBook: null,      // slug del libro o null
+    activeLang: null
+  },
+  // Cache de textos por verso para evitar recargas
+  verseCache: {
+    es: new Map(),
+    gr: new Map(),
+    he: new Map(),
+    lxx: new Map()
+  },
+dict: null,
     dictMap: new Map(),
       dictSpanishMap: new Map(),
     hebrewDict: null,
@@ -227,6 +258,9 @@
   const lemmaCorrespondence = document.getElementById('bxLemmaCorrespondence');
    const lemmaExamples = document.getElementById('bxLemmaExamples');
   const resultsByCorpus = document.getElementById('bxResultsByCorpus');
+  const resultsList = document.getElementById('bxResultsList');
+  const paginationEl = document.getElementById('bxPagination');
+  const filtersPanel = document.getElementById('bxFiltersPanel');
   const resultsLoadingIndicator = document.getElementById('bxResultsLoadingIndicator');
   const resultsLoadingStage = document.getElementById('bxResultsLoadingStage');
   const analysisResultsSection = document.getElementById('bxAnalysisResultsSection');
@@ -487,7 +521,10 @@ if (lang === 'he') {
 }
 
 
-   const tokens = normalizedQuery
+   const cleanedQuery = (lang === 'gr' || lang === 'lxx')
+      ? normalizedQuery.replace(/[⸀··.,;:!?“”"(){}\[\]<>«»]/g, ' ')
+      : normalizedQuery;
+    const tokens = cleanedQuery
       .split(/\s+/)
       .map((part) => getNormalizedQuery(lang, part))
       .map((token) => token.trim())
@@ -760,22 +797,63 @@ return getSpanishRefs(token, index);
   }
   function getSpanishRefs(normalized, index) {
     if (!normalized) return [];
-    const direct = index.tokens?.[normalized] || [];
+    const tokensMap = index.tokens || {};
+    const direct = tokensMap[normalized] || [];
     const refs = direct.slice();
     const seen = new Set(refs);
 
-    Object.entries(index.tokens || {}).forEach(([token, matches]) => {
-      if (!token || token === normalized || !token.includes(normalized)) return;
-      (matches || []).forEach((ref) => {
-        if (seen.has(ref)) return;
+    // Rendimiento: buckets por prefijo (2 letras) construidos una sola vez.
+    if (!index.__tokenBucketsBuilt) {
+      const buckets = new Map();
+      Object.keys(tokensMap).forEach((tok) => {
+        const t = String(tok || '');
+        if (!t) return;
+        const key = t.slice(0, 2);
+        if (!buckets.has(key)) buckets.set(key, []);
+        buckets.get(key).push(t);
+      });
+      index.__tokenBuckets = buckets;
+      index.__tokenBucketsBuilt = true;
+    }
+
+    const buckets = index.__tokenBuckets || new Map();
+    const prefixKey = normalized.slice(0, 2);
+    const candidates = buckets.get(prefixKey) || [];
+
+    // Coincidencia parcial: token que contiene el término (mar => marcos, marítimo, etc.)
+    for (let i = 0; i < candidates.length; i += 1) {
+      const token = candidates[i];
+      if (!token || token === normalized) continue;
+      if (!token.includes(normalized)) continue;
+      const matches = tokensMap[token] || [];
+      for (let j = 0; j < matches.length; j += 1) {
+        const ref = matches[j];
+        if (seen.has(ref)) continue;
         seen.add(ref);
         refs.push(ref);
-      });
-    });
+      }
+    }
 
     return refs;
   }
-  function containsHebrewTokenPhrase(normalizedVerse, phrase) {
+
+  
+  function getVerseTextFromChapter(verses, verseNumber) {
+    if (!verses || !Number.isFinite(verseNumber)) return '';
+    if (Array.isArray(verses)) return String(verses[verseNumber - 1] || '');
+    if (typeof verses === 'object') {
+      return String(
+        verses[verseNumber] ??
+        verses[String(verseNumber)] ??
+        verses[verseNumber - 1] ??
+        verses[String(verseNumber - 1)] ??
+        ''
+      );
+    }
+    return '';
+  }
+
+function containsHebrewTokenPhrase(normalizedVerse, phrase) {
     const verseTokens = String(normalizedVerse || '').split(/\s+/).filter(Boolean);
     const phraseTokens = String(phrase || '').split(/\s+/).filter(Boolean);
     if (!verseTokens.length || !phraseTokens.length) return false;
@@ -802,7 +880,7 @@ return getSpanishRefs(token, index);
       if (!book || !Number.isFinite(chapter) || !Number.isFinite(verse)) continue;
       try {
         const verses = await loadChapterText(lang, book, chapter, options);
-        const verseText = verses?.[verse - 1] || '';
+        const verseText = getVerseTextFromChapter(verses, verse);
         const normalizedVerse = normalizePhraseByLang(verseText, lang);
         const phraseMatch = lang === 'he'
           ? containsHebrewTokenPhrase(normalizedVerse, phrase)
@@ -1368,7 +1446,7 @@ async function loadLxxBookData(bookCode) {
       const verse = Number(verseRaw);
       try {
         const verses = await loadChapterText('gr', book, chapter, options);
-       const verseText = verses?.[verse - 1] || '';
+       const verseText = getVerseTextFromChapter(verses, verse);
         const tokens = verseText.split(/\s+/).filter(Boolean);
         tokens.forEach((token) => {
           const cleaned = cleanGreekToken(token);
@@ -1509,7 +1587,7 @@ function mapLxxRefsToHebrewRefs(refs) {
       const verse = Number(verseRaw);
       try {
         const verses = await loadChapterText('he', book, chapter, options);
-        const verseText = verses?.[verse - 1] || '';
+        const verseText = getVerseTextFromChapter(verses, verse);
         const tokens = verseText.split(/\s/).filter(Boolean);
         tokens.forEach((token) => {
           const cleaned = token.replace(/[׃,:;.!?()"“”]/g, '');
@@ -1641,7 +1719,7 @@ function mapLxxRefsToHebrewRefs(refs) {
               : '';
           } else {
             const verses = await loadChapterText(lang, book, chapter, options);
-            verseText = verses?.[verse - 1] || '';
+            verseText = getVerseTextFromChapter(verses, verse) || '';
           }
         } catch (error) {
           if (isAbortError(error)) throw error;
@@ -1672,7 +1750,321 @@ function mapLxxRefsToHebrewRefs(refs) {
     `;
   }
 
- function renderResults(groupsByCorpus, highlightQueries = state.last?.highlightQueries || {}, relatedTerms = state.last?.relatedTerms || {}) {
+ 
+
+  function sortRefsCanonically(refs = []) {
+    return [...refs].sort((a, b) => {
+      const [ba, ca, va] = String(a).split('|');
+      const [bb, cb, vb] = String(b).split('|');
+      const sa = LXX_TO_HEBREW_SLUG[ba] || ba;
+      const sb = LXX_TO_HEBREW_SLUG[bb] || bb;
+      const ia = CANON_INDEX.has(sa) ? CANON_INDEX.get(sa) : 9999;
+      const ib = CANON_INDEX.has(sb) ? CANON_INDEX.get(sb) : 9999;
+      if (ia !== ib) return ia - ib;
+      const c1 = Number(ca) || 0, c2 = Number(cb) || 0;
+      if (c1 !== c2) return c1 - c2;
+      const v1 = Number(va) || 0, v2 = Number(vb) || 0;
+      return v1 - v2;
+    });
+  }
+
+  function getActiveLangForNewUI() {
+    // Priorizamos un solo idioma: el scope seleccionado o el detectado
+    const last = state.last;
+    if (!last) return null;
+    const scope = state.languageScope || 'auto';
+    if (scope && scope !== 'auto' && scope !== 'all') return scope;
+    return last.lang || null;
+  }
+
+  function pickCorpus(groupsByCorpus, lang) {
+    return (groupsByCorpus || []).find((c) => c.lang === lang) || null;
+  }
+
+  function buildFilterAggFromGroups(groups = [], lang = 'es') {
+    // groups: salida de buildBookGroups (por libro)
+    const byBook = new Map();
+    groups.forEach((g) => {
+      const bookSlug = LXX_TO_HEBREW_SLUG[g.items?.[0]?.book] || LXX_TO_HEBREW_SLUG[g.refs?.[0]?.split?.('|')?.[0]] || (g.refs?.[0]?.split?.('|')?.[0]) || g.book || g.slug || null;
+      const slug = LXX_TO_HEBREW_SLUG[bookSlug] || bookSlug;
+      if (!slug) return;
+      byBook.set(slug, {
+        slug,
+        label: prettyBookLabel(slug),
+        count: g.count || (g.refs?.length || 0),
+        refs: g.refs || [],
+        group: g
+      });
+    });
+
+    // orden canónico
+    const orderedBooks = CANONICAL_BOOK_ORDER
+      .filter((slug) => byBook.has(slug))
+      .map((slug) => byBook.get(slug));
+
+    // por si hay libros fuera de lista
+    const extras = [...byBook.values()].filter((b) => !CANON_INDEX.has(b.slug))
+      .sort((a, b) => a.label.localeCompare(b.label));
+    const books = [...orderedBooks, ...extras];
+
+    const ot = books.filter((b) => OT_SET.has(b.slug));
+    const nt = books.filter((b) => NT_SET.has(b.slug));
+    const otCount = ot.reduce((s, b) => s + (b.count || 0), 0);
+    const ntCount = nt.reduce((s, b) => s + (b.count || 0), 0);
+    const allCount = otCount + ntCount;
+
+    return { lang, books, ot, nt, otCount, ntCount, allCount };
+  }
+
+  function renderFiltersPanel(agg) {
+    if (!filtersPanel) return;
+    const { books, ot, nt, otCount, ntCount, allCount } = agg;
+
+    const mkBtn = (id, label, count, active) => {
+      return `
+        <button class="bx-filter-item ${active ? 'is-active' : ''}" type="button"
+          data-bx-filter="${id}">
+          <span>${escapeHtml(label)}</span>
+          <span class="bx-count">(${count})</span>
+        </button>
+      `;
+    };
+
+    const isAll = !state.pagination.selectedBook && !state.pagination.selectedTestament;
+    const isOT = state.pagination.selectedTestament === 'ot';
+    const isNT = state.pagination.selectedTestament === 'nt';
+
+    const otItems = ot.map((b) => mkBtn(`book:${b.slug}`, b.label, b.count, state.pagination.selectedBook === b.slug)).join('');
+    const ntItems = nt.map((b) => mkBtn(`book:${b.slug}`, b.label, b.count, state.pagination.selectedBook === b.slug)).join('');
+
+    filtersPanel.innerHTML = `
+      <div class="d-grid gap-2">
+        ${mkBtn('all', 'Todos', allCount, isAll)}
+        ${mkBtn('ot', 'Toráh', otCount, isOT)}
+        <div class="ps-1 d-grid gap-2">${otItems || '<div class="small muted ps-2">Sin resultados.</div>'}</div>
+        ${mkBtn('nt', 'Evangelios', ntCount, isNT)}
+        <div class="ps-1 d-grid gap-2">${ntItems || '<div class="small muted ps-2">Sin resultados.</div>'}</div>
+      </div>
+    `;
+  }
+
+  function flattenRefsForSelection(agg) {
+    const selBook = state.pagination.selectedBook;
+    const selTest = state.pagination.selectedTestament;
+
+    if (selBook) {
+      const b = agg.books.find((x) => x.slug === selBook);
+      return sortRefsCanonically(b?.refs || []);
+    }
+    const pool = selTest === 'ot'
+      ? agg.ot
+      : selTest === 'nt'
+        ? agg.nt
+        : agg.books;
+
+    const refs = [];
+    pool.forEach((b) => refs.push(...(b.refs || [])));
+    return sortRefsCanonically(refs);
+  }
+
+  async function resolveVerseTextsForRefs(refs, lang, options = {}) {
+    // Agrupa por libro+capítulo para minimizar lecturas.
+    const cache = state.verseCache?.[lang] || new Map();
+    const result = [];
+    const byChapter = new Map(); // key: book|chapter -> [verseNumbers]
+    const parsed = refs.map((ref) => {
+      const [book, cRaw, vRaw] = String(ref).split('|');
+      const chapter = Number(cRaw);
+      const verse = Number(vRaw);
+      const key = `${book}|${chapter}`;
+      return { ref, book, chapter, verse, key };
+    });
+
+    parsed.forEach((p) => {
+      const canonicalRef = `${p.book}|${p.chapter}|${p.verse}`;
+      if (cache.has(canonicalRef)) return;
+      if (!byChapter.has(p.key)) byChapter.set(p.key, []);
+      byChapter.get(p.key).push(p.verse);
+    });
+
+    for (const [key, versesNeeded] of byChapter.entries()) {
+      const [book, chapterRaw] = key.split('|');
+      const chapter = Number(chapterRaw);
+      try {
+        if (lang === 'lxx') {
+          // LXX se resuelve por tokens verso a verso
+          await Promise.all(versesNeeded.map(async (v) => {
+            const canonicalRef = `${book}|${chapter}|${v}`;
+            if (cache.has(canonicalRef)) return;
+            const tokens = await loadLxxVerseTokens(book, chapter, v);
+            const resolvedText = Array.isArray(tokens) ? tokens.map((t) => t?.w).filter(Boolean).join(' ') : '';
+            cache.set(canonicalRef, resolvedText);
+          }));
+        } else {
+          const verses = await loadChapterText(lang, book, chapter, options);
+          versesNeeded.forEach((v) => {
+            const canonicalRef = `${book}|${chapter}|${v}`;
+            let text = '';
+            if (Array.isArray(verses)) {
+              text = verses[v - 1] || '';
+            } else if (verses && typeof verses === 'object') {
+              text = verses[v] || verses[String(v)] || verses[String(v - 1)] || '';
+            }
+
+            cache.set(canonicalRef, text);
+          });
+        }
+      } catch (e) {
+        // Deja vacío si falla.
+        versesNeeded.forEach((v) => {
+          const canonicalRef = `${book}|${chapter}|${v}`;
+          if (!cache.has(canonicalRef)) cache.set(canonicalRef, '');
+        });
+      }
+    }
+
+    parsed.forEach((p) => {
+      const canonicalRef = `${p.book}|${p.chapter}|${p.verse}`;
+      result.push({
+        ref: formatRef(p.book, p.chapter, p.verse),
+        text: cache.get(canonicalRef) || '',
+        rawRef: canonicalRef,
+        book: p.book,
+        chapter: p.chapter,
+        verse: p.verse
+      });
+    });
+
+    state.verseCache[lang] = cache;
+    return result;
+  }
+
+  async function renderResultsPage(agg, highlightQueries = {}, options = {}) {
+    if (!resultsList || !paginationEl) return;
+    const allRefs = flattenRefsForSelection(agg);
+    const total = allRefs.length;
+
+    const pageSize = state.pagination.pageSize || 25;
+    const totalPages = Math.max(1, Math.ceil(total / pageSize));
+    state.pagination.page = Math.min(Math.max(1, state.pagination.page || 1), totalPages);
+
+    const start = (state.pagination.page - 1) * pageSize;
+    const slice = allRefs.slice(start, start + pageSize);
+
+    // UI loading
+    if (resultsLoadingStage) resultsLoadingStage.hidden = false;
+    resultsList.innerHTML = '';
+    paginationEl.innerHTML = '';
+
+    const items = await resolveVerseTextsForRefs(slice, agg.lang, options);
+
+    if (resultsLoadingStage) resultsLoadingStage.hidden = true;
+
+    const highlightQuery = highlightQueries?.[agg.lang] || state.last?.term || '';
+    resultsList.innerHTML = items.map((it) => {
+      const tBook = it.book;
+      const tName = prettyBookLabel(tBook);
+      const qs = new URLSearchParams();
+      qs.set('book', tBook);
+      qs.set('name', tName);
+      qs.set('search', `${it.chapter}:${it.verse}`);
+      qs.set('view', 'parallel');
+      if (state?.version) qs.set('version', String(state.version));
+      qs.set('orig', '1');
+      const openHref = `./index.html?${qs.toString()}`;
+      const safeText = it.text || '—';
+      return `
+        <div class="bx-result-item d-flex gap-2">
+          <div class="flex-grow-1">
+            <div class="bx-ref">${escapeHtml(it.ref)}</div>
+            <div class="bx-text">${highlightText(escapeHtml(safeText), highlightQuery, agg.lang)}</div>
+          </div>
+          <div class="bx-actions">
+            <a class="btn btn-primary btn-sm" href="${openHref}">Abrir</a>
+          </div>
+        </div>
+      `;
+    }).join('') || '<div class="muted small">Sin resultados.</div>';
+
+    // Paginación
+    const mkPageBtn = (label, page, disabled = false, active = false) => {
+      return `
+        <li class="page-item ${disabled ? 'disabled' : ''} ${active ? 'active' : ''}">
+          <button class="page-link" type="button" data-bx-page="${page}">${label}</button>
+        </li>
+      `;
+    };
+
+    if (total > pageSize) {
+      const prev = state.pagination.page - 1;
+      const next = state.pagination.page + 1;
+      let html = '';
+      html += mkPageBtn('«', prev, prev < 1);
+      // ventana simple
+      const windowSize = 5;
+      const half = Math.floor(windowSize / 2);
+      let from = Math.max(1, state.pagination.page - half);
+      let to = Math.min(totalPages, from + windowSize - 1);
+      from = Math.max(1, to - windowSize + 1);
+
+      if (from > 1) html += mkPageBtn('1', 1, false, state.pagination.page === 1);
+      if (from > 2) html += `<li class="page-item disabled"><span class="page-link">…</span></li>`;
+      for (let p = from; p <= to; p++) {
+        html += mkPageBtn(String(p), p, false, p === state.pagination.page);
+      }
+      if (to < totalPages - 1) html += `<li class="page-item disabled"><span class="page-link">…</span></li>`;
+      if (to < totalPages) html += mkPageBtn(String(totalPages), totalPages, false, state.pagination.page === totalPages);
+
+      html += mkPageBtn('»', next, next > totalPages);
+      paginationEl.innerHTML = html;
+    } else {
+      paginationEl.innerHTML = '';
+    }
+  }
+
+  async function renderSearchUI(groupsByCorpus, highlightQueries = {}, relatedTerms = {}, options = {}) {
+    // Si el usuario pide "Todos", caemos al modo legacy (multi-corpus)
+    const scope = state.languageScope || 'auto';
+    const activeLang = getActiveLangForNewUI();
+    state.pagination.activeLang = activeLang;
+
+    if (!activeLang || scope === 'all') {
+      // legacy
+      if (resultsByCorpus) resultsByCorpus.hidden = false;
+      if (filtersPanel) filtersPanel.innerHTML = '<div class="small muted">Selecciona un idioma específico para usar filtros por libro.</div>';
+      if (resultsList) resultsList.innerHTML = '';
+      if (paginationEl) paginationEl.innerHTML = '';
+      renderResults(groupsByCorpus, highlightQueries, relatedTerms);
+      return;
+    }
+
+    // Nuevo UI: un solo idioma
+    if (resultsByCorpus) resultsByCorpus.hidden = true;
+
+    const corpus = pickCorpus(groupsByCorpus, activeLang);
+    const groups = corpus?.groups || [];
+    const filteredGroups = groups.filter((g) => {
+      if (state.filter === 'todo') return true;
+      return g.category === state.filter;
+    });
+
+    const agg = buildFilterAggFromGroups(filteredGroups, activeLang);
+
+    // Si el filtro por categoría dejó vacío, reset
+    if (!agg.allCount) {
+      if (filtersPanel) filtersPanel.innerHTML = '<div class="small muted">Sin resultados para el filtro seleccionado.</div>';
+      if (resultsList) resultsList.innerHTML = '<div class="muted small">Sin resultados.</div>';
+      if (paginationEl) paginationEl.innerHTML = '';
+      return;
+    }
+
+    renderFiltersPanel(agg);
+    await renderResultsPage(agg, highlightQueries, options);
+  }
+
+
+
+function renderResults(groupsByCorpus, highlightQueries = state.last?.highlightQueries || {}, relatedTerms = state.last?.relatedTerms || {}) {
     resultsByCorpus.innerHTML = '';
     if (!groupsByCorpus.length) {
       resultsByCorpus.innerHTML = '<div class="col-12"><div class="muted small">Sin resultados en el corpus.</div></div>';
@@ -1786,6 +2178,7 @@ bookList.className = 'mt-2 d-grid gap-1';
                 p.set('search', `${item.chapter}:${item.verse}`);
                 p.set('version', 'RVR1960');
                 p.set('orig', '1');
+                p.set('view', 'parallel');
                 location.href = `./index.html?${p.toString()}`;
               });
               actions.appendChild(openBtn);
@@ -1888,7 +2281,7 @@ bookList.className = 'mt-2 d-grid gap-1';
                  : '';
              } else {
                const verses = await loadChapterText(lang, bookName, chapter, options);
-               resolvedText = verses?.[verse - 1] || '';
+               resolvedText = getVerseTextFromChapter(verses, verse) || '';
              }
              group.items.push({
                book: bookName,
@@ -1923,7 +2316,7 @@ bookList.className = 'mt-2 d-grid gap-1';
       const verse = Number(verseRaw);
       try {
         const verses = await loadChapterText('es', book, chapter, options);
-        const verseText = verses?.[verse - 1] || '';
+        const verseText = getVerseTextFromChapter(verses, verse);
         group.items.push({
           book,
           chapter,
@@ -1967,7 +2360,7 @@ bookList.className = 'mt-2 d-grid gap-1';
       sampleRef = formatRef(book, chapter, verse);
       try {
         const verses = await loadChapterText(lang, book, chapter, options);
-        sampleText = verses?.[verse - 1] || '';
+        sampleText = getVerseTextFromChapter(verses, verse) || '';
         if (lang !== 'es') {
           const versesEs = await loadChapterText('es', book, chapter, options);
           sampleEs = versesEs?.[verse - 1] || '';
@@ -2029,22 +2422,34 @@ bookList.className = 'mt-2 d-grid gap-1';
       throwIfAborted(options.signal);
 
       const lang = detectLang(term);
-      const selectedScope = getLanguageScope(term);
-     const enabledCorpora = new Set(getCorporaForScope(selectedScope));
+      const isCompoundQuery = /\s/.test(String(term || '').trim());
+      let selectedScope = getLanguageScope(term);
+
+      // Para aligerar carga: no permitimos búsquedas multi-idioma para frases (palabras compuestas).
+      // Si es una frase y el usuario eligió "all", forzamos al idioma detectado.
+      if (isCompoundQuery && selectedScope === 'all') {
+        selectedScope = lang;
+      }
+     // reset UI filters/paginación para nueva búsqueda
+     state.pagination.page = 1;
+     state.pagination.selectedBook = null;
+     state.pagination.selectedTestament = null;
+     state.pagination.activeLang = null;
+     const enabledCorpora = isCompoundQuery ? new Set([selectedScope]) : new Set(getCorporaForScope(selectedScope));
      const enforceSpanishReferenceCorrespondence = lang === 'es' && (selectedScope === 'gr' || selectedScope === 'he')
         && !/\s/.test(String(term || '').trim());
-      await loadTrilingualEquivalences(options);
-     const aliasCandidates = getAliasCandidates(term, lang);
-      const equivalenceTerms = getEquivalenceSearchTerms(term, lang);
+      if (!isCompoundQuery) { await loadTrilingualEquivalences(options); }
+     const aliasCandidates = isCompoundQuery ? { es: [], gr: [], he: [], lxx: [] } : getAliasCandidates(term, lang);
+      const equivalenceTerms = isCompoundQuery ? { es: [], gr: [], he: [], lxx: [] } : getEquivalenceSearchTerms(term, lang);
       const normalized = normalizeByLang(term, lang);
 
       let entry = null;
       let hebrewEntry = null;
-      if (lang === 'gr') {
+      if (lang === 'gr' && !isCompoundQuery) {
         await loadDictionary(options);
         throwIfAborted(options.signal);
         entry = state.dictMap.get(normalized) || null;
-      } else if (lang === 'he') {
+      } else if (lang === 'he' && !isCompoundQuery) {
         await loadHebrewDictionary(options);
         throwIfAborted(options.signal);
         hebrewEntry = state.hebrewDictMap.get(normalized) || null;
@@ -2075,7 +2480,7 @@ bookList.className = 'mt-2 d-grid gap-1';
         state.last = { term, lang, refs: [], groupsByCorpus: [] };
         return;
       }
- const needsSpanishBridge = lang === 'es' && (enabledCorpora.has('gr') || enabledCorpora.has('lxx') || enabledCorpora.has('he'));
+ const needsSpanishBridge = !isCompoundQuery && lang === 'es' && (enabledCorpora.has('gr') || enabledCorpora.has('lxx') || enabledCorpora.has('he'));
       const esIndexPromise = (enabledCorpora.has('es') || needsSpanishBridge)
         ? loadIndex('es', options)
         : Promise.resolve(null);
@@ -2107,7 +2512,7 @@ bookList.className = 'mt-2 d-grid gap-1';
       let greekTerm = null;
       let greekCandidate = null;
 
-      if (lang === 'es' && (enabledCorpora.has('gr') || enabledCorpora.has('lxx'))) {
+      if (!isCompoundQuery && lang === 'es' && (enabledCorpora.has('gr') || enabledCorpora.has('lxx'))) {
         greekEntry = await findGreekEntryFromSpanish(term, options);
         if (greekEntry?.lemma) {
           greekTerm = normalizeGreek(greekEntry.lemma);
@@ -2340,10 +2745,7 @@ if (enforceSpanishReferenceCorrespondence && enabledCorpora.has('he')) {
       const highlightQueries = {
         gr: greekLemma !== '—' ? greekLemma : (lang === 'gr' ? term : ''),
         lxx: lxxHighlightQuery,
-        he: (hebrewPhraseQueries.length ? hebrewPhraseQueries.join(' ') : '')
-          || (equivalenceTerms?.he?.[0] || '')
-          || (lang === 'he' ? term : '')
-          || (hebrewCandidate?.word || ''),
+        he: (hebrewPhraseQueries.length ? hebrewPhraseQueries.join(' || ') : '') || (equivalenceTerms.he && equivalenceTerms.he[0] ? equivalenceTerms.he[0] : '') || hebrewCandidate?.word || (lang === 'he' ? term : ''),
         es: [esDisplayWord, ...relatedTerms.es].join(' ').trim()
       };
 
@@ -2441,7 +2843,7 @@ if (enforceSpanishReferenceCorrespondence && enabledCorpora.has('he')) {
         loading: true
       }));
 
-      renderResults(groupsByCorpus, highlightQueries, relatedTerms);
+      await renderSearchUI(groupsByCorpus, highlightQueries, relatedTerms, options);
       state.last = { term, lang, refs, groupsByCorpus, highlightQueries, relatedTerms };
 
       await Promise.all(corpusConfigs.map(async (config, index) => {
@@ -2449,7 +2851,7 @@ if (enforceSpanishReferenceCorrespondence && enabledCorpora.has('he')) {
         const groups = await buildBookGroups(config.safeRefs, config.lang, config.preloaded, options);
         groupsByCorpus[index].groups = groups;
         groupsByCorpus[index].loading = false;
-        renderResults(groupsByCorpus, highlightQueries, relatedTerms);
+        await renderSearchUI(groupsByCorpus, highlightQueries, relatedTerms, options);
       }));
     } catch (error) {
       if (!isAbortError(error)) {
@@ -2467,6 +2869,40 @@ if (enforceSpanishReferenceCorrespondence && enabledCorpora.has('he')) {
 
  
    function handleFilterClick(event) {
+     // Panel derecho: filtros (All / OT / NT / Libro)
+     const bxFilterBtn = event.target.closest('button[data-bx-filter]');
+     if (bxFilterBtn) {
+       const id = bxFilterBtn.dataset.bxFilter || 'all';
+       if (id === 'all') {
+         state.pagination.selectedTestament = null;
+         state.pagination.selectedBook = null;
+       } else if (id === 'ot' || id === 'nt') {
+         state.pagination.selectedTestament = id;
+         state.pagination.selectedBook = null;
+       } else if (id.startsWith('book:')) {
+         state.pagination.selectedBook = id.slice(5);
+         state.pagination.selectedTestament = null;
+       }
+       state.pagination.page = 1;
+       if (state.last?.groupsByCorpus) {
+         void renderSearchUI(state.last.groupsByCorpus || [], state.last.highlightQueries || {}, state.last.relatedTerms || {});
+       }
+       return;
+     }
+
+     // Paginación
+     const pageBtn = event.target.closest('button[data-bx-page]');
+     if (pageBtn) {
+       const nextPage = Number(pageBtn.dataset.bxPage);
+       if (!Number.isFinite(nextPage) || nextPage < 1) return;
+       state.pagination.page = nextPage;
+       if (state.last?.groupsByCorpus) {
+         void renderSearchUI(state.last.groupsByCorpus || [], state.last.highlightQueries || {}, state.last.relatedTerms || {});
+       }
+       return;
+     }
+
+     // Botones superiores por corpus (Torah/Profetas/Evangelios/etc.)
      const button = event.target.closest('button[data-filter]');
      if (!button) return;
      state.filter = button.dataset.filter || 'todo';
@@ -2480,11 +2916,16 @@ if (enforceSpanishReferenceCorrespondence && enabledCorpora.has('he')) {
        }
      });
 
-  if (state.last?.groupsByCorpus) {
-      renderResults(state.last.groupsByCorpus || [], state.last.highlightQueries || {}, state.last.relatedTerms || {});
+     // Al cambiar de categoría, volvemos a "All" (pero mantenemos el panel a la derecha)
+     state.pagination.page = 1;
+     state.pagination.selectedTestament = null;
+     state.pagination.selectedBook = null;
+
+     if (state.last?.groupsByCorpus) {
+       void renderSearchUI(state.last.groupsByCorpus || [], state.last.highlightQueries || {}, state.last.relatedTerms || {});
      }
    }
- 
+
 function handleLanguageScopeChange(event) {
     const value = String(event?.target?.value || 'auto');
     state.languageScope = (value === 'es' || value === 'gr' || value === 'he' || value === 'all') ? value : 'auto';
