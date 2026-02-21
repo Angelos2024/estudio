@@ -2,6 +2,7 @@
  (() => {
    const DICT_URL = './diccionario/masterdiccionario.json';
    const HEBREW_DICT_URL = './diccionario/diccionario_unificado.min.json';
+   const TRILINGUAL_EQUIV_URL = './diccionario/equivalencias_trilingue.min.json';
   const SEARCH_INDEX = {
      es: './search/index-es.json',
      gr: './search/index-gr.json',
@@ -193,6 +194,10 @@
       dictSpanishMap: new Map(),
     hebrewDict: null,
     hebrewDictMap: new Map(),
+    trilingualEquiv: null,
+    trilingualByEs: new Map(),
+    trilingualByGr: new Map(),
+    trilingualByHe: new Map(),
      indexes: {},
      textCache: new Map(),
     lxxFileCache: new Map(),
@@ -497,6 +502,99 @@ function detectLang(text) {
       }
     };
   }
+  
+async function loadTrilingualEquivalences(options = {}) {
+  if (state.trilingualEquiv) return state.trilingualEquiv;
+  const data = await loadJson(TRILINGUAL_EQUIV_URL, options);
+  state.trilingualEquiv = data;
+
+  const byEs = new Map();
+  Object.entries(data?.by_es || {}).forEach(([esWord, payload]) => {
+    const key = normalizeSpanishPhrase(esWord);
+    if (!key) return;
+    const gr = new Set((payload?.gr || []).map((item) => normalizeGreek(item)).filter(Boolean));
+    const he = new Set((payload?.he || []).map((item) => normalizeHebrew(item)).filter(Boolean));
+    byEs.set(key, { gr, he });
+  });
+
+  const byGr = new Map();
+  Object.entries(data?.by_gr || {}).forEach(([grWord, esWords]) => {
+    const key = normalizeGreek(grWord);
+    if (!key) return;
+    byGr.set(key, new Set((esWords || []).map((item) => normalizeSpanishPhrase(item)).filter(Boolean)));
+  });
+
+  const byHe = new Map();
+  Object.entries(data?.by_he || {}).forEach(([heWord, esWords]) => {
+    const key = normalizeHebrew(heWord);
+    if (!key) return;
+    byHe.set(key, new Set((esWords || []).map((item) => normalizeSpanishPhrase(item)).filter(Boolean)));
+  });
+
+  state.trilingualByEs = byEs;
+  state.trilingualByGr = byGr;
+  state.trilingualByHe = byHe;
+  return data;
+}
+
+function getPhraseTokensForLang(term, lang) {
+  if (lang === 'he') {
+    return String(term || '')
+      .replace(/[\u200C-\u200F\u202A-\u202E]/g, '')
+      .replace(/[\u0591-\u05BD\u05BF\u05C1-\u05C2\u05C4-\u05C7]/g, '')
+      .replace(/[׃.,;:!?()"“”'׳״]/g, ' ')
+      .split(/\s+/)
+      .map((token) => normalizeHebrew(token))
+      .filter(Boolean);
+  }
+  if (lang === 'gr') {
+    return String(term || '')
+      .split(/\s+/)
+      .map((token) => normalizeGreek(token))
+      .filter(Boolean);
+  }
+  return normalizeSpanishPhrase(term)
+    .split(/\s+/)
+    .map((token) => token.trim())
+    .filter(Boolean);
+}
+
+function getEquivalenceSearchTerms(term, langHint = detectLang(term)) {
+  const result = { es: new Set(), gr: new Set(), he: new Set() };
+  if (!state.trilingualEquiv) return result;
+
+  const normalizedPhrase = normalizePhraseByLang(term, langHint);
+  const tokens = getPhraseTokensForLang(term, langHint);
+  const sourceUnits = [...new Set([normalizedPhrase, ...tokens].filter(Boolean))];
+  if (!sourceUnits.length) return result;
+
+  if (langHint === 'es') {
+    sourceUnits.forEach((unit) => {
+      const match = state.trilingualByEs.get(unit);
+      if (!match) return;
+      match.gr.forEach((item) => result.gr.add(item));
+      match.he.forEach((item) => result.he.add(item));
+    });
+    return result;
+  }
+
+  const spanishBridge = new Set();
+  const sourceMap = langHint === 'he' ? state.trilingualByHe : state.trilingualByGr;
+  sourceUnits.forEach((unit) => {
+    const esWords = sourceMap.get(unit);
+    if (!esWords) return;
+    esWords.forEach((item) => spanishBridge.add(item));
+  });
+
+  spanishBridge.forEach((esWord) => {
+    result.es.add(esWord);
+    const match = state.trilingualByEs.get(esWord);
+    if (!match) return;
+    match.gr.forEach((item) => result.gr.add(item));
+    match.he.forEach((item) => result.he.add(item));
+  });
+  return result;
+}
   function pickPreferredHebrewAlias(candidates = []) {
     if (!Array.isArray(candidates) || !candidates.length) return null;
     return candidates.find((item) => item === 'יהושע')
@@ -586,7 +684,9 @@ return getSpanishRefs(token, index);
         const verses = await loadChapterText(lang, book, chapter, options);
         const verseText = verses?.[verse - 1] || '';
         const normalizedVerse = normalizePhraseByLang(verseText, lang);
-        if (normalizedVerse.includes(phrase)) {
+        const phraseMatch = normalizedVerse.includes(phrase)
+          || (lang === 'he' && normalizedVerse.replace(/\s+/g, '').includes(String(phrase || '').replace(/\s+/g, '')));
+        if (phraseMatch) {
           filtered.push(ref);
         }
       } catch (error) {
@@ -1810,7 +1910,9 @@ bookList.className = 'mt-2 d-grid gap-1';
       const selectedScope = getLanguageScope(term);
      const enabledCorpora = new Set(getCorporaForScope(selectedScope));
      const enforceSpanishReferenceCorrespondence = lang === 'es' && (selectedScope === 'gr' || selectedScope === 'he');
+      await loadTrilingualEquivalences(options);
      const aliasCandidates = getAliasCandidates(term, lang);
+      const equivalenceTerms = getEquivalenceSearchTerms(term, lang);
       const normalized = normalizeByLang(term, lang);
 
       let entry = null;
@@ -1863,7 +1965,8 @@ bookList.className = 'mt-2 d-grid gap-1';
       if (enabledCorpora.has('es') || needsSpanishBridge) {
        if (lang === 'es') {
           const relatedEsTokens = aliasCandidates.es.filter((token) => token && token !== normalized);
- esSearchTokens = [term, ...relatedEsTokens]
+ const equivalentEsTokens = [...(equivalenceTerms.es || [])];
+ esSearchTokens = [term, ...relatedEsTokens, ...equivalentEsTokens]
             .map((value) => String(value || '').trim())
             .filter(Boolean)
             .filter((value, index, list) => list.indexOf(value) === index);
@@ -1955,13 +2058,26 @@ for (const token of esSearchTokens) {
       }
 
       const greekLemma = greekEntry?.lemma || greekCandidate?.lemma || (lang === 'gr' ? term : '—');
+      const greekSearchTerms = new Set();
+      if (greekTerm) greekSearchTerms.add(greekTerm);
+      aliasCandidates.gr.forEach((item) => greekSearchTerms.add(item));
+      (equivalenceTerms.gr || []).forEach((item) => greekSearchTerms.add(item));
       const greekTranslit = greekEntry?.['Forma lexica'] || (greekTerm ? transliterateGreek(greekLemma || term) : '—');
       const hebrewSearchTerms = new Set();
       const grIndex = await grIndexPromise;
       throwIfAborted(options.signal);
- let grRefs = (enabledCorpora.has('gr') && grIndex && greekTerm)
-        ? await getRefsForQuery(greekTerm, 'gr', grIndex, options)
-        : [];
+ let grRefs = [];
+      if (enabledCorpora.has('gr') && grIndex && greekSearchTerms.size) {
+        const seen = new Set();
+        for (const token of greekSearchTerms) {
+          const matches = await getRefsForQuery(token, 'gr', grIndex, options);
+          matches.forEach((ref) => {
+            if (seen.has(ref)) return;
+            seen.add(ref);
+            grRefs.push(ref);
+          });
+        }
+      }
      if (enforceSpanishReferenceCorrespondence && enabledCorpora.has('gr')) {
         grRefs = esNtRefs.slice();
       }
@@ -1973,11 +2089,30 @@ for (const token of esSearchTokens) {
           grRefs.push(ref);
         });
       }
-      const lxxMatches = (enabledCorpora.has('lxx') && greekTerm)
-        ? await (lang === 'gr' && greekTerm === normalized
-            ? Promise.resolve(initialLxxMatches)
-            : buildLxxMatches(greekTerm, 70))
-        : { refs: [], texts: new Map(), highlightTerms: [] };
+      let lxxMatches = { refs: [], texts: new Map(), highlightTerms: [] };
+      if (enabledCorpora.has('lxx') && greekSearchTerms.size) {
+        const lxxSeenRefs = new Set();
+        const lxxTexts = new Map();
+        const lxxTerms = [];
+        for (const token of greekSearchTerms) {
+          const tokenMatches = (lang === 'gr' && token === normalized)
+            ? initialLxxMatches
+            : await buildLxxMatches(token, 70);
+          (tokenMatches.refs || []).forEach((ref) => {
+            if (lxxSeenRefs.has(ref)) return;
+            lxxSeenRefs.add(ref);
+            lxxMatches.refs.push(ref);
+          });
+          (tokenMatches.texts || new Map()).forEach((value, key) => {
+            if (!lxxTexts.has(key)) lxxTexts.set(key, value);
+          });
+          (tokenMatches.highlightTerms || []).forEach((termItem) => {
+            if (!lxxTerms.includes(termItem)) lxxTerms.push(termItem);
+          });
+        }
+        lxxMatches.texts = lxxTexts;
+        lxxMatches.highlightTerms = lxxTerms;
+      }
       if (enforceSpanishReferenceCorrespondence && enabledCorpora.has('lxx')) {
         lxxMatches.refs = scopedLxxRefsFromSpanish.slice();
         lxxMatches.texts = new Map();
@@ -2012,6 +2147,7 @@ for (const token of esSearchTokens) {
       } else if (lxxMatches.refs.length) {
         hebrewCandidate = await buildHebrewCandidateFromLxxRefs(lxxMatches.refs, options);
       }
+      (equivalenceTerms.he || []).forEach((item) => hebrewSearchTerms.add(item));
 if (hebrewCandidate?.normalized) {
         hebrewSearchTerms.add(hebrewCandidate.normalized);
       }
