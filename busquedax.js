@@ -430,140 +430,100 @@ function normalizeSpanish(text) {
     return normalizeSpanish(query);
   }
 
-  function buildTokenRegex(token, lang) {
+
+// --- Highlight helpers (Unicode-safe, no \p{} property escapes) ---
+const COMBINING_MARKS = '\\u0300-\\u036F\\u0591-\\u05BD\\u05BF\\u05C1-\\u05C2\\u05C4-\\u05C7';
+
+function buildTokenRegex(token, lang) {
+  const escaped = String(token || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  if (!escaped) return null;
+
+  if (lang === 'es') {
+    const accentMap = {
+      a: '[aáàâäãå]',
+      e: '[eéèêë]',
+      i: '[iíìîï]',
+      o: '[oóòôöõ]',
+      u: '[uúùûü]',
+      n: '[nñ]',
+      A: '[AÁÀÂÄÃÅ]',
+      E: '[EÉÈÊË]',
+      I: '[IÍÌÎÏ]',
+      O: '[OÓÒÔÖÕ]',
+      U: '[UÚÙÛÜ]',
+      N: '[NÑ]'
+    };
+    const pattern = escaped.split('').map((ch) => accentMap[ch] || ch).join('');
+    return new RegExp(pattern, 'giu');
+  }
+
+  const letters = [];
+  for (const ch of escaped) {
+    // skip the escape slash itself, keep the escaped char
+    if (ch === '\\') continue;
+    if ((lang === 'gr' || lang === 'lxx') && ch === 'σ') letters.push('[σς]');
+    else if ((lang === 'gr' || lang === 'lxx') && ch === 'Σ') letters.push('[ΣϹ]');
+    else letters.push(ch);
+  }
+
+  const pattern = letters.map((letter) => `${letter}[${COMBINING_MARKS}]*`).join('');
+  return new RegExp(pattern, 'giu');
+}
+
+function buildPhraseRegex(tokens, lang) {
+  const parts = (tokens || []).map((t) => String(t || '').trim()).filter(Boolean);
+  if (!parts.length) return null;
+
+  const joiner = (lang === 'he') ? '(?:\\s+|\\u05BE|-)+' : '(?:\\s+)+';
+
+  const tokenPatterns = parts.map((token) => {
     const escaped = String(token || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-
-    if (lang === 'es') {
-      const accentMap = {
-        a: '[aáàâäãå]',
-        e: '[eéèêë]',
-        i: '[iíìîï]',
-        o: '[oóòôöõ]',
-        u: '[uúùûü]',
-        n: '[nñ]'
-      };
-      const pattern = escaped.split('').map((ch) => accentMap[ch] || ch).join('');
-      return new RegExp(pattern, 'giu');
-    }
-
     const letters = [];
     for (const ch of escaped) {
       if (ch === '\\') continue;
       if ((lang === 'gr' || lang === 'lxx') && ch === 'σ') letters.push('[σς]');
+      else if ((lang === 'gr' || lang === 'lxx') && ch === 'Σ') letters.push('[ΣϹ]');
       else letters.push(ch);
     }
+    return letters.map((letter) => `${letter}[${COMBINING_MARKS}]*`).join('');
+  });
 
-    const pattern = letters.map((letter) => `${letter}[\\u0300-\\u036F\\u0591-\\u05BD\\u05BF\\u05C1-\\u05C2\\u05C4-\\u05C7]*`).join('');
-    return new RegExp(pattern, 'giu');
-  };
-      const pattern = escaped.split('').map((ch) => accentMap[ch] || ch).join('');
-      return new RegExp(pattern, 'giu');
-    }
-
-    const letters = [];
-    for (const ch of escaped) {
-      if (ch === '\\') continue;
-       if ((lang === 'gr' || lang === 'lxx') && ch === 'σ') {
-        letters.push('[σς]');
-      } else {
-        letters.push(ch);
-      }
-    }
-    const pattern = letters.map((letter) => `${letter}\[\\u0300-\\u036F\\u0591-\\u05BD\\u05BF\\u05C1-\\u05C2\\u05C4-\\u05C7]*`).join('');
-    return new RegExp(pattern, 'giu');
-  }
-
-  function buildPhraseRegex(tokens, lang) {
-    const parts = (tokens || []).map((t) => String(t || '').trim()).filter(Boolean);
-    if (!parts.length) return null;
-
-    const joiner = (lang === 'he') ? '(?:\\s+|\\u05BE|\\-)+' : '(?:\\s+)+';
-
-    const tokenPatterns = parts.map((token) => {
-      const escaped = String(token || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      const letters = [];
-      for (const ch of escaped) {
-        if (ch === '\\') continue;
-        if ((lang === 'gr' || lang === 'lxx') && ch === 'σ') letters.push('[σς]');
-        else letters.push(ch);
-      }
-      return letters.map((letter) => `${letter}[\\u0300-\\u036F\\u0591-\\u05BD\\u05BF\\u05C1-\\u05C2\\u05C4-\\u05C7]*`).join('');
-    });
-
-    const core = tokenPatterns.join(joiner);
-    return new RegExp(core, 'giu');
-  } else {
-          letters.push(ch);
-        }
-      }
-      return letters.map((letter) => `${letter}\[\\u0300-\\u036F\\u0591-\\u05BD\\u05BF\\u05C1-\\u05C2\\u05C4-\\u05C7]*`).join('');
-    });
-
-    const core = tokenPatterns.join(joiner);
-    return new RegExp(`(^|[^\[A-Za-z\u0370-\u03FF\u1F00-\u1FFF\u0590-\u05FF]\[\\u0300-\\u036F\\u0591-\\u05BD\\u05BF\\u05C1-\\u05C2\\u05C4-\\u05C7]])(${core})(?![\[A-Za-z\u0370-\u03FF\u1F00-\u1FFF\u0590-\u05FF]\[\\u0300-\\u036F\\u0591-\\u05BD\\u05BF\\u05C1-\\u05C2\\u05C4-\\u05C7]])`, 'giu');
-  }
-
-
-  function highlightText(text, query, lang) {
-    const raw = String(text ?? '');
-    const normalizedQuery = String(query ?? '').trim();
-    if (!raw || !normalizedQuery) return escapeHtml(raw);
-
-    const safe = escapeHtml(raw);
-     const highlightSource = (lang === 'gr' || lang === 'lxx' || lang === 'he')
-      ? safe.normalize('NFD')
-      : safe;    
-      // Hebrew: when searching a phrase (or multiple phrase variants separated by "||"),
-// highlight ONLY the full phrase, not each token separately.
-if (lang === 'he') {
-  const variants = String(normalizedQuery || '')
-    .split('||')
-    .map((part) => part.trim())
-    .filter(Boolean);
-
-  const phraseRegexes = [];
-  for (const variant of variants) {
-    const phrase = normalizePhraseByLang(variant, 'he');
-    const phraseTokens = phrase.split(/\s+/).filter(Boolean);
-    if (phraseTokens.length < 2) continue;
-    const re = buildPhraseRegex(phraseTokens, 'he');
-    if (re) phraseRegexes.push(re);
-  }
-
-  if (phraseRegexes.length) {
-    let output = highlightSource;
-    for (const re of phraseRegexes) {
-      output = output.replace(
-        re,
-        (match, lead, coreText) => `${lead}<mark class="phrase">${coreText}</mark>`
-      );
-    }
-    return output;
-  }
+  return new RegExp(tokenPatterns.join(joiner), 'giu');
 }
 
+function highlightText(text, query, lang) {
+  const raw = String(text ?? '');
+  const q = String(query ?? '').trim();
+  if (!raw || !q) return escapeHtml(raw);
 
-   const tokens = normalizedQuery
-      .split(/\s+/)
-      .map((part) => getNormalizedQuery(lang, part))
-      .map((token) => token.trim())
-      .filter((token) => token.length >= 2);
-    if (!tokens.length) return safe;
+  const isPhrase = /\s/.test(q);
+  const tokens = q.split(/\s+/).filter(Boolean);
 
-    let output = highlightSource;
-   for (const token of tokens) {
-      const re = buildTokenRegex(token, lang);
-      output = output.replace(re, (match) => `<mark>${match}</mark>`);
+  const regex = isPhrase ? buildPhraseRegex(tokens, lang) : buildTokenRegex(tokens[0], lang);
+  if (!regex) return escapeHtml(raw);
+
+  // Build escaped output with <mark> around matches (safe against HTML injection)
+  let out = '';
+  let last = 0;
+  regex.lastIndex = 0;
+
+  let m;
+  while ((m = regex.exec(raw)) !== null) {
+    const start = m.index;
+    const match = m[0] || '';
+    const end = start + match.length;
+    if (end <= last) {
+      // avoid infinite loops on zero-length matches
+      regex.lastIndex = last + 1;
+      continue;
     }
-    return output;
+    out += escapeHtml(raw.slice(last, start));
+    out += `<mark class="${isPhrase ? 'phrase' : 'token'}">${escapeHtml(match)}</mark>`;
+    last = end;
   }
-function detectLang(text) {
-    const sample = String(text || '');
-    if (/[\u0590-\u05FF]/.test(sample)) return 'he';
-    if (/[\u0370-\u03FF\u1F00-\u1FFF]/.test(sample)) return 'gr';
-    return 'es';
-  }
-
+  out += escapeHtml(raw.slice(last));
+  return out;
+}
   function getLanguageScope(term = '') {
     const scope = String(state.languageScope || 'auto');
     if (scope === 'es' || scope === 'gr' || scope === 'he' || scope === 'all') return scope;
