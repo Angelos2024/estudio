@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Generador masivo — ZIP por libros (verses + index) HE/LXX/ES</title>
+  <style>
+    :root{--bg:#fff;--ink:#111827;--muted:#6b7280;--line:#e5e7eb;--accent:#2563eb;--good:#16a34a;--bad:#dc2626;}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+    header{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    header h1{font-size:16px;margin:0;font-weight:800}
+    .wrap{max-width:1200px;margin:0 auto;padding:16px}
+    .grid{display:grid;grid-template-columns:1fr;gap:12px}
+    @media(min-width:980px){.grid{grid-template-columns:1fr 1fr 1fr}}
+    .card{border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:10px;min-height:190px}
+    .card h2{margin:0;font-size:13px;color:var(--muted);font-weight:800;display:flex;justify-content:space-between;align-items:center}
+    input[type="file"]{border:1px solid var(--line);border-radius:12px;padding:10px;font-size:14px;background:#fff}
+    button{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;font-weight:800;cursor:pointer}
+    button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+    button:disabled{opacity:.55;cursor:not-allowed}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin-top:12px}
+    .status{margin-top:12px;border:1px solid var(--line);border-radius:14px;padding:12px;font-size:13px;line-height:1.45}
+    .ok{color:var(--good);font-weight:800}
+    .err{color:var(--bad);font-weight:800}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    .hint{font-size:12px;color:var(--muted)}
+    table{width:100%;border-collapse:collapse;margin-top:10px}
+    th,td{border-bottom:1px solid var(--line);padding:8px 6px;font-size:12px;text-align:left;vertical-align:top}
+    th{color:var(--muted);font-weight:800}
+    .pill{font-size:11px;border:1px solid var(--line);padding:2px 8px;border-radius:999px;color:var(--muted)}
+    .small{font-size:12px}
+  </style>
+</head>
+<body>
+<header>
+  <h1>Generador masivo — crea ZIP por libros (HE/LXX/ES)</h1>
+  <span class="pill">Auto-identifica libro por nombre de archivo / claves LXX</span>
+</header>
+
+<div class="wrap">
+  <div class="grid">
+    <div class="card">
+      <h2>1) LXX / Griego <span class="pill">1 archivo con muchos libros o varios</span></h2>
+      <input id="lxxFiles" type="file" accept="application/json" multiple />
+      <div class="hint">
+        Se espera que cada JSON tenga <span class="mono">text</span> con claves de libro (ej. Gen, Exod...).
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>2) Hebreo (OT) <span class="pill">múltiples archivos</span></h2>
+      <input id="heFiles" type="file" accept="application/json" multiple />
+      <div class="hint">
+        Se espera: <span class="mono">{text:[[...]]}</span>. Para NT, puede quedar vacío (se exporta he=[]).
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>3) Español <span class="pill">múltiples archivos</span></h2>
+      <input id="esFiles" type="file" accept="application/json" multiple />
+      <div class="hint">
+        Se espera: <span class="mono">[[versos]]</span>.
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <button id="btnScan" class="primary" disabled>Analizar y emparejar</button>
+    <button id="btnBuildZip" disabled>Generar ZIP</button>
+  </div>
+
+  <div class="status" id="status">
+    <div class="hint">Carga tus archivos. Luego “Analizar y emparejar”.</div>
+    <div class="hint small">Nota: para crear ZIP se usa JSZip vía CDN (requiere internet).</div>
+  </div>
+
+  <div id="pairs"></div>
+</div>
+
+<!-- JSZip via CDN (necesita internet) -->
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+
+<script>
+(() => {
+  const $ = (id)=>document.getElementById(id);
+
+  const state = {
+    lxxFiles: [],
+    heFiles: [],
+    esFiles: [],
+    lxxBooks: new Map(), // bookId -> {key, bookObj} where bookObj is text[key]
+    heByBook: new Map(), // bookId -> heText (text[][])
+    esByBook: new Map(), // bookId -> esText ([][])
+    pairs: []            // [{bookId, lxxKey, hasHe, hasEs, refsCount}]
+  };
+
+  // Canonical book IDs + aliases (minúsculas, sin espacios/acentos)
+  const BOOK_ALIASES = (() => {
+    const m = new Map();
+    function add(id, ...aliases){
+      for(const a of aliases){
+        m.set(normName(a), id);
+      }
+    }
+    // Pentateuco
+    add("Gen","gen","genesis","génesis","bereshit","gn");
+    add("Exod","exod","exodo","éxodo","exodus","shemot","ex");
+    add("Lev","lev","levitico","levítico","leviticus","vayikra","lv");
+    add("Num","num","numeros","números","numbers","bemidbar","nm");
+    add("Deut","deut","deuteronomio","deuteronomy","devarim","dt");
+    // Históricos
+    add("Josh","josh","josue","josué","joshua","josha","joshb");
+    add("Judg","judg","jueces","judges","judga","judgb");
+    add("Ruth","ruth","rut");
+    add("1Sam","1sam","i samuel","1 samuel","primer samuel","1sm");
+    add("2Sam","2sam","ii samuel","2 samuel","segundo samuel","2sm");
+    add("1Kgs","1kgs","i reyes","1 reyes","primer reyes","1rs","1ki");
+    add("2Kgs","2kgs","ii reyes","2 reyes","segundo reyes","2rs","2ki");
+    add("1Chr","1chr","i cronicas","1 cronicas","primer cronicas","1cr","1ch");
+    add("2Chr","2chr","ii cronicas","2 cronicas","segundo cronicas","2cr","2ch");
+    add("Ezra","ezra","esdras");
+    add("Neh","neh","nehemias","nehemías");
+    add("Esth","esth","ester","esther");
+    // Poéticos/sapienciales
+    add("Job","job","job");
+    add("Ps","ps","salmos","psalms","psalm");
+    add("Prov","prov","proverbios","proverbs");
+    add("Eccl","eccl","eclesiastes","eclesiastés","ecclesiastes","qohelet");
+    add("Song","song","cantares","cantar","cantares de salomon","song of songs","cantico","cántico");
+    // Profetas mayores
+    add("Isa","isa","isaias","isaías","isaiah");
+    add("Jer","jer","jeremias","jeremías","jeremiah");
+    add("Lam","lam","lamentaciones","lamentations");
+    add("Ezek","ezek","ezequiel","ezekiel");
+    add("Dan","dan","daniel","danth","danog");
+    // Profetas menores
+    add("Hos","hos","oseas","hosea");
+    add("Joel","joel");
+    add("Amos","amos");
+    add("Obad","obad","abdias","abdías","obadiah");
+    add("Jonah","jonah","jonas","jonás");
+    add("Mic","mic","miqueas","micah");
+    add("Nah","nah","nahum","nahúm");
+    add("Hab","hab","habacuc","habacuc");
+    add("Zeph","zeph","sofonias","sofonías","zephaniah");
+    add("Hag","hag","hageo","haggai");
+    add("Zech","zech","zacarias","zacarías","zechariah");
+    add("Mal","mal","malaquias","malaquías","malachi");
+
+    // NT (sin hebreo normalmente)
+    add("Matt","matt","mateo","matthew","mt");
+    add("Mark","mark","marcos","mrk","mk");
+    add("Luke","luke","lucas","lk");
+    add("John","john","juan","jn");
+    add("Acts","acts","hechos");
+    add("Rom","rom","romanos");
+    add("1Cor","1cor","i corintios","1 corintios","primer corintios");
+    add("2Cor","2cor","ii corintios","2 corintios","segundo corintios");
+    add("Gal","gal","galatas","gálatas");
+    add("Eph","eph","efesios");
+    add("Phil","phil","filipenses");
+    add("Col","col","colosenses");
+    add("1Thess","1thess","i tesalonicenses","1 tesalonicenses","primer tesalonicenses");
+    add("2Thess","2thess","ii tesalonicenses","2 tesalonicenses","segundo tesalonicenses");
+    add("1Tim","1tim","i timoteo","1 timoteo");
+    add("2Tim","2tim","ii timoteo","2 timoteo");
+    add("Titus","titus","tito");
+    add("Phlm","phlm","filemon","filemón","philemon");
+    add("Heb","heb","hebreos");
+    add("James","james","santiago");
+    add("1Pet","1pet","i pedro","1 pedro");
+    add("2Pet","2pet","ii pedro","2 pedro");
+    add("1John","1john","i juan","1 juan");
+    add("2John","2john","ii juan","2 juan");
+    add("3John","3john","iii juan","3 juan");
+    add("Jude","jude","judas");
+    add("Rev","rev","apocalipsis","revelation","apocalypse");
+    return m;
+  })();
+
+  function normName(s){
+    return (s||"")
+      .toLowerCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+      .replace(/[^a-z0-9]+/g,"")
+      .trim();
+  }
+
+  function inferBookIdFromFilename(name){
+    const base = (name||"").toLowerCase();
+
+    // Normaliza el nombre del archivo para que '1_cronicas.json' == '1 cronicas' == '1Chr'
+    const nbase = normName(base);
+
+    // Match por inclusión usando el string normalizado (sin acentos, guiones, underscores, etc.)
+    for(const [alias,id] of BOOK_ALIASES.entries()){
+      if(nbase.includes(alias)) return id;
+    }
+
+    // fallback: intenta capturar prefijos comunes (por si el alias no cubre)
+    const m = nbase.match(/(^|[^a-z0-9])(gen|exod|lev|num|deut|josh|judg|ruth|isa|jer|ezek|dan|ps|prov|rev|1sam|2sam|1kgs|2kgs|1chr|2chr)([^a-z0-9]|$)/);
+    if(m){
+      const k = m[2];
+      return BOOK_ALIASES.get(normName(k)) || null;
+    }
+    return null;
+  }
+
+  async function readJsonFile(file){
+    const txt = await file.text();
+    return JSON.parse(txt);
+  }
+
+  function validateHe(obj){ return obj && typeof obj==="object" && Array.isArray(obj.text) && Array.isArray(obj.text[0]); }
+  function validateEs(obj){ return Array.isArray(obj) && Array.isArray(obj[0]); }
+  function validateLxx(obj){ return obj && typeof obj==="object" && obj.text && typeof obj.text==="object"; }
+
+  const RE_PUNCT = /[.,;:!?¿¡()"“”'«»\[\]{}<>]/g;
+  function stripDiacritics(s){ return (s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").normalize("NFC"); }
+  function normEs(t){ return (t||"").toLowerCase().replace(RE_PUNCT,"").trim(); }
+  function normGrc(t){ return stripDiacritics((t||"").toLowerCase()).replace(RE_PUNCT,"").trim(); }
+  function normHe(t){ return (t||"").replace(/\u05be/g," ").replace(/[׃׀]/g," ").trim(); }
+
+  function tokHe(s){
+    if(!s) return [];
+    s = s.replace(/\u05be/g," ").replace(/[׃׀]/g," ");
+    s = s.replace(/\s+/g," ").trim();
+    let arr = s ? s.split(" ").filter(Boolean) : [];
+    return arr.filter(t => t !== "]");
+  }
+  function tokSpace(s){
+    if(!s) return [];
+    s = String(s).replace(/\s+/g," ").trim();
+    return s ? s.split(" ").filter(Boolean) : [];
+  }
+  function tokGrc(verseArr){
+    if(!Array.isArray(verseArr)) return [];
+    const out=[];
+    for(const x of verseArr){
+      if(x && typeof x==="object" && x.w) out.push(String(x.w));
+      else if(typeof x==="string") out.push(x);
+    }
+    return out;
+  }
+
+  function refKeyToTuple(ref){
+    const [c,v] = ref.split(":").map(n=>parseInt(n,10));
+    return [c||0, v||0];
+  }
+  function collectRefsUnion(heText, esText, grcBook){
+    const set = new Set();
+
+    if(heText){
+      for(let c=1; c<=heText.length; c++){
+        const ch = heText[c-1] || [];
+        for(let v=1; v<=ch.length; v++) set.add(`${c}:${v}`);
+      }
+    }
+    if(esText){
+      for(let c=1; c<=esText.length; c++){
+        const ch = esText[c-1] || [];
+        for(let v=1; v<=ch.length; v++) set.add(`${c}:${v}`);
+      }
+    }
+    if(grcBook){
+      for(const cStr of Object.keys(grcBook || {})){
+        const ch = grcBook[cStr];
+        if(!ch || typeof ch !== "object") continue;
+        for(const vStr of Object.keys(ch)){
+          set.add(`${parseInt(cStr,10)}:${parseInt(vStr,10)}`);
+        }
+      }
+    }
+
+    const arr = Array.from(set);
+    arr.sort((a,b)=>{
+      const [ac,av] = refKeyToTuple(a);
+      const [bc,bv] = refKeyToTuple(b);
+      return (ac-bc) || (av-bv);
+    });
+    return arr;
+  }
+
+  function addPosting(map, term, ref){
+    if(!term) return;
+    let arr = map[term];
+    if(!arr){ map[term] = [ref]; return; }
+    if(arr[arr.length-1] !== ref) arr.push(ref);
+  }
+
+  function canEnableScan(){
+    const ok = state.lxxFiles.length>0 && state.esFiles.length>0; // hebreo opcional para NT
+    $("btnScan").disabled = !ok;
+  }
+
+  function setStatus(html){ $("status").innerHTML = html; }
+
+  function renderPairs(){
+    const el = $("pairs");
+    if(state.pairs.length === 0){
+      el.innerHTML = "";
+      return;
+    }
+    const rows = state.pairs.map(p => {
+      const he = p.hasHe ? "✔" : "—";
+      const es = p.hasEs ? "✔" : "—";
+      const lxx = p.hasLxx ? "✔" : "—";
+      const warn = (!p.hasEs || !p.hasLxx) ? `<span class="err">⚠ faltan archivos</span>` : `<span class="ok">OK</span>`;
+      return `<tr>
+        <td class="mono">${p.bookId}</td>
+        <td class="mono">${p.lxxKey||""}</td>
+        <td>${lxx}</td><td>${he}</td><td>${es}</td>
+        <td class="mono">${p.refsCount}</td>
+        <td>${warn}</td>
+      </tr>`;
+    }).join("");
+    el.innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>Libro</th><th>Clave LXX</th><th>LXX</th><th>HE</th><th>ES</th><th>Refs</th><th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <div class="hint small" style="margin-top:8px">
+        “Generar ZIP” crea carpetas por libro: <span class="mono">BookID/</span> con <span class="mono">*_equivalencias_ligero.json</span> y <span class="mono">*_index_postings.json</span>.
+      </div>
+    `;
+  }
+
+  $("lxxFiles").addEventListener("change", (ev)=>{
+    state.lxxFiles = Array.from(ev.target.files || []);
+    canEnableScan();
+    setStatus(`<div class="hint">LXX: ${state.lxxFiles.length} archivo(s) cargado(s). Falta analizar.</div>`);
+  });
+
+  $("heFiles").addEventListener("change", (ev)=>{
+    state.heFiles = Array.from(ev.target.files || []);
+    canEnableScan();
+    setStatus(`<div class="hint">Hebreo: ${state.heFiles.length} archivo(s) cargado(s). Falta analizar.</div>`);
+  });
+
+  $("esFiles").addEventListener("change", (ev)=>{
+    state.esFiles = Array.from(ev.target.files || []);
+    canEnableScan();
+    setStatus(`<div class="hint">Español: ${state.esFiles.length} archivo(s) cargado(s). Falta analizar.</div>`);
+  });
+
+  async function scanAndPair(){
+    state.lxxBooks.clear();
+    state.heByBook.clear();
+    state.esByBook.clear();
+    state.pairs = [];
+
+    // 1) cargar LXX y registrar libros por clave
+    let lxxErrors=0;
+    for(const f of state.lxxFiles){
+      try{
+        const obj = await readJsonFile(f);
+        if(!validateLxx(obj)) throw new Error("no parece LXX (falta text)");
+        const keys = Object.keys(obj.text || {});
+        for(const k of keys){
+          // infer canonical bookId from key
+          const bookId = BOOK_ALIASES.get(normName(k)) || k; // fallback: same key
+          // keep first occurrence
+          if(!state.lxxBooks.has(bookId)){
+            state.lxxBooks.set(bookId, { lxxKey: k, bookObj: obj.text[k] });
+          }
+        }
+      } catch(e){ lxxErrors++; }
+    }
+
+    // 2) cargar hebreo y mapear por filename
+    let heErrors=0;
+    for(const f of state.heFiles){
+      const bookId = inferBookIdFromFilename(f.name);
+      if(!bookId) continue;
+      try{
+        const obj = await readJsonFile(f);
+        if(!validateHe(obj)) throw new Error("no parece hebreo (text[][])");
+        state.heByBook.set(bookId, obj.text);
+      } catch(e){ heErrors++; }
+    }
+
+    // 3) cargar español y mapear por filename
+    let esErrors=0;
+    for(const f of state.esFiles){
+      const bookId = inferBookIdFromFilename(f.name);
+      if(!bookId) continue;
+      try{
+        const obj = await readJsonFile(f);
+        if(!validateEs(obj)) throw new Error("no parece español ([[..]])");
+        state.esByBook.set(bookId, obj);
+      } catch(e){ esErrors++; }
+    }
+
+    // 4) construir lista de libros (unión: LXX ∪ ES ∪ HE)
+    const all = new Set([
+      ...Array.from(state.lxxBooks.keys()),
+      ...Array.from(state.esByBook.keys()),
+      ...Array.from(state.heByBook.keys())
+    ]);
+
+    for(const bookId of Array.from(all).sort()){
+      const lxx = state.lxxBooks.get(bookId);
+      const he = state.heByBook.get(bookId) || null;
+      const es = state.esByBook.get(bookId) || null;
+
+      const hasLxx = !!lxx;
+      const hasHe = !!he;
+      const hasEs = !!es;
+
+      const refs = collectRefsUnion(he, es, lxx ? lxx.bookObj : null);
+
+      state.pairs.push({
+        bookId,
+        lxxKey: lxx ? lxx.lxxKey : "",
+        hasLxx, hasHe, hasEs,
+        refsCount: refs.length
+      });
+    }
+
+    const okCount = state.pairs.filter(p => p.hasLxx && p.hasEs).length;
+
+    $("btnBuildZip").disabled = okCount === 0;
+
+    setStatus([
+      `<div class="ok">✔ Análisis listo</div>`,
+      `<div class="hint">Libros detectados: ${state.pairs.length} | listos (LXX+ES): ${okCount}</div>`,
+      `<div class="hint">Errores de lectura: LXX=${lxxErrors} | HE=${heErrors} | ES=${esErrors} (solo cuentan archivos con formato distinto)</div>`,
+      `<div class="hint small">Auto-mapeo por nombre de archivo (HE/ES) y por clave (LXX). Si un libro no se empareja, renombra el archivo incluyendo el nombre del libro (ej: “exodo es.json”).</div>`
+    ].join(""));
+
+    renderPairs();
+  }
+
+  function buildBookOutputs(bookId){
+    const lxxRec = state.lxxBooks.get(bookId);
+    const heText = state.heByBook.get(bookId) || null;
+    const esText = state.esByBook.get(bookId) || null;
+
+    if(!lxxRec || !esText) return null; // mínimo LXX+ES
+
+    const grcBook = lxxRec.bookObj;
+    const refs = collectRefsUnion(heText, esText, grcBook);
+
+    const verses = {};
+    const postings = { es:{}, he:{}, lxx:{} };
+
+    let missingGrc=0, missingEs=0, missingHe=0;
+
+    for(const ref of refs){
+      const [c,v] = refKeyToTuple(ref);
+
+      const heV = (heText && heText[c-1] && heText[c-1][v-1]) ? heText[c-1][v-1] : "";
+      const esV = (esText && esText[c-1] && esText[c-1][v-1]) ? esText[c-1][v-1] : "";
+      const grcCh = grcBook[String(c)];
+      const grcV = (grcCh && grcCh[String(v)]) ? grcCh[String(v)] : null;
+
+      if(!heV) missingHe++;
+      if(!esV) missingEs++;
+      if(!grcV) missingGrc++;
+
+      const heTok = tokHe(heV);
+      const esTok = tokSpace(esV);
+      const grcTok = tokGrc(grcV || []);
+
+      verses[ref] = { he: heTok, lxx: grcTok, es: esTok };
+
+      const heNorm = heTok.map(normHe).filter(Boolean);
+      const esNorm = esTok.map(normEs).filter(Boolean);
+      const grcNorm = grcTok.map(normGrc).filter(Boolean);
+
+      const seenES = new Set();
+      for(const t of esNorm){ if(!seenES.has(t)){ addPosting(postings.es, t, ref); seenES.add(t);} }
+
+      const seenHE = new Set();
+      for(const t of heNorm){ if(!seenHE.has(t)){ addPosting(postings.he, t, ref); seenHE.add(t);} }
+
+      const seenGR = new Set();
+      for(const t of grcNorm){ if(!seenGR.has(t)){ addPosting(postings.lxx, t, ref); seenGR.add(t);} }
+    }
+
+    const outVerses = {
+      meta: { book: bookId, book_id: bookId, lxx_key: lxxRec.lxxKey, fields:{he:"he",lxx:"lxx",es:"es"}, missing:{he:missingHe, es:missingEs, lxx:missingGrc} },
+      verses
+    };
+    const outIndex = {
+      meta: {
+        book: bookId, book_id: bookId, lxx_key: lxxRec.lxxKey,
+        fields:{he:"he",lxx:"lxx",es:"es"},
+        normalize:{ es:"lower + strip_punct", he:"strip_maqaf/sofpasuq (+remove token ']')", lxx:"lower + strip_diacritics + strip_punct" }
+      },
+      postings
+    };
+    return { outVerses, outIndex };
+  }
+
+  async function generateZip(){
+    if(typeof JSZip === "undefined"){
+      setStatus(`<div class="err">✖ JSZip no cargó. Necesitas internet para el CDN.</div>`);
+      return;
+    }
+
+    const zip = new JSZip();
+    let built=0, skipped=0;
+
+    for(const p of state.pairs){
+      if(!(p.hasLxx && p.hasEs)) { skipped++; continue; }
+      const outputs = buildBookOutputs(p.bookId);
+      if(!outputs) { skipped++; continue; }
+
+      const folder = zip.folder(p.bookId);
+      folder.file(`${p.bookId}_equivalencias_ligero.json`, JSON.stringify(outputs.outVerses, null, 0));
+      folder.file(`${p.bookId}_index_postings.json`, JSON.stringify(outputs.outIndex, null, 0));
+      built++;
+    }
+
+    setStatus(`<div class="ok">✔ Construyendo ZIP… libros=${built} | omitidos=${skipped}</div>`);
+
+    const blob = await zip.generateAsync({type:"blob"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `equivalencias_por_libro.zip`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href), 1500);
+
+    setStatus(`<div class="ok">✔ ZIP descargado</div><div class="hint">Libros incluidos: ${built} | omitidos: ${skipped}</div>`);
+  }
+
+  $("btnScan").addEventListener("click", scanAndPair);
+  $("btnBuildZip").addEventListener("click", generateZip);
+
+  // initial
+  canEnableScan();
+})();
+</script>
+</body>
+</html>
