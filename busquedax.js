@@ -431,94 +431,98 @@ function normalizeSpanish(text) {
   }
 
 
-// --- Highlight helpers (Unicode-safe, no \p{} property escapes) ---
-const COMBINING_MARKS = '\\u0300-\\u036F\\u0591-\\u05BD\\u05BF\\u05C1-\\u05C2\\u05C4-\\u05C7';
+// --- Highlight helpers (Unicode-safe, ES5 compatible; no \p{} property escapes) ---
+var COMBINING_MARKS = '\\u0300-\\u036F\\u0591-\\u05BD\\u05BF\\u05C1-\\u05C2\\u05C4-\\u05C7';
 
 function buildTokenRegex(token, lang) {
-  const escaped = String(token || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  var escaped = String(token || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   if (!escaped) return null;
 
   if (lang === 'es') {
-    const accentMap = {
-      a: '[aáàâäãå]',
-      e: '[eéèêë]',
-      i: '[iíìîï]',
-      o: '[oóòôöõ]',
-      u: '[uúùûü]',
-      n: '[nñ]',
-      A: '[AÁÀÂÄÃÅ]',
-      E: '[EÉÈÊË]',
-      I: '[IÍÌÎÏ]',
-      O: '[OÓÒÔÖÕ]',
-      U: '[UÚÙÛÜ]',
-      N: '[NÑ]'
+    var accentMap = {
+      a: '[aáàâäãå]', e: '[eéèêë]', i: '[iíìîï]', o: '[oóòôöõ]', u: '[uúùûü]', n: '[nñ]',
+      A: '[AÁÀÂÄÃÅ]', E: '[EÉÈÊË]', I: '[IÍÌÎÏ]', O: '[OÓÒÔÖÕ]', U: '[UÚÙÛÜ]', N: '[NÑ]'
     };
-    const pattern = escaped.split('').map((ch) => accentMap[ch] || ch).join('');
-    return new RegExp(pattern, 'giu');
+    var chars = escaped.split('');
+    var pat = '';
+    for (var i = 0; i < chars.length; i++) pat += (accentMap[chars[i]] || chars[i]);
+    return new RegExp(pat, 'giu');
   }
 
-  const letters = [];
-  for (const ch of escaped) {
-    // skip the escape slash itself, keep the escaped char
+  // gr/he: allow combining marks after each letter; treat sigma variants
+  var letters = [];
+  for (var j = 0; j < escaped.length; j++) {
+    var ch = escaped.charAt(j);
+    // If escaped contains backslashes from escaping, skip the slash itself
     if (ch === '\\') continue;
     if ((lang === 'gr' || lang === 'lxx') && ch === 'σ') letters.push('[σς]');
     else if ((lang === 'gr' || lang === 'lxx') && ch === 'Σ') letters.push('[ΣϹ]');
     else letters.push(ch);
   }
 
-  const pattern = letters.map((letter) => `${letter}[${COMBINING_MARKS}]*`).join('');
+  var pattern = '';
+  for (var k = 0; k < letters.length; k++) {
+    pattern += letters[k] + '[' + COMBINING_MARKS + ']*';
+  }
   return new RegExp(pattern, 'giu');
 }
 
 function buildPhraseRegex(tokens, lang) {
-  const parts = (tokens || []).map((t) => String(t || '').trim()).filter(Boolean);
+  var parts = [];
+  for (var i = 0; i < (tokens || []).length; i++) {
+    var t = String(tokens[i] || '').trim();
+    if (t) parts.push(t);
+  }
   if (!parts.length) return null;
 
-  const joiner = (lang === 'he') ? '(?:\\s+|\\u05BE|-)+' : '(?:\\s+)+';
+  var joiner = (lang === 'he') ? '(?:\\s+|\\u05BE|-)+' : '(?:\\s+)+';
 
-  const tokenPatterns = parts.map((token) => {
-    const escaped = String(token || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const letters = [];
-    for (const ch of escaped) {
-      if (ch === '\\') continue;
-      if ((lang === 'gr' || lang === 'lxx') && ch === 'σ') letters.push('[σς]');
-      else if ((lang === 'gr' || lang === 'lxx') && ch === 'Σ') letters.push('[ΣϹ]');
-      else letters.push(ch);
+  var tokenPatterns = [];
+  for (var p = 0; p < parts.length; p++) {
+    var esc = String(parts[p] || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    var lets = [];
+    for (var j = 0; j < esc.length; j++) {
+      var c = esc.charAt(j);
+      if (c === '\\') continue;
+      if ((lang === 'gr' || lang === 'lxx') && c === 'σ') lets.push('[σς]');
+      else if ((lang === 'gr' || lang === 'lxx') && c === 'Σ') lets.push('[ΣϹ]');
+      else lets.push(c);
     }
-    return letters.map((letter) => `${letter}[${COMBINING_MARKS}]*`).join('');
-  });
+    var tp = '';
+    for (var k = 0; k < lets.length; k++) tp += lets[k] + '[' + COMBINING_MARKS + ']*';
+    tokenPatterns.push(tp);
+  }
 
   return new RegExp(tokenPatterns.join(joiner), 'giu');
 }
 
 function highlightText(text, query, lang) {
-  const raw = String(text ?? '');
-  const q = String(query ?? '').trim();
+  var raw = String((text === null || text === undefined) ? '' : text);
+  var q = String((query === null || query === undefined) ? '' : query).trim();
   if (!raw || !q) return escapeHtml(raw);
 
-  const isPhrase = /\s/.test(q);
-  const tokens = q.split(/\s+/).filter(Boolean);
+  var isPhrase = /\s/.test(q);
+  var tokens = q.split(/\s+/);
+  var cleaned = [];
+  for (var i = 0; i < tokens.length; i++) if (tokens[i]) cleaned.push(tokens[i]);
 
-  const regex = isPhrase ? buildPhraseRegex(tokens, lang) : buildTokenRegex(tokens[0], lang);
+  var regex = isPhrase ? buildPhraseRegex(cleaned, lang) : buildTokenRegex(cleaned[0], lang);
   if (!regex) return escapeHtml(raw);
 
-  // Build escaped output with <mark> around matches (safe against HTML injection)
-  let out = '';
-  let last = 0;
+  var out = '';
+  var last = 0;
   regex.lastIndex = 0;
-
-  let m;
+  var m;
   while ((m = regex.exec(raw)) !== null) {
-    const start = m.index;
-    const match = m[0] || '';
-    const end = start + match.length;
+    var start = m.index;
+    var match = m[0] || '';
+    var end = start + match.length;
     if (end <= last) {
-      // avoid infinite loops on zero-length matches
       regex.lastIndex = last + 1;
       continue;
     }
     out += escapeHtml(raw.slice(last, start));
-    out += `<mark class="${isPhrase ? 'phrase' : 'token'}">${escapeHtml(match)}</mark>`;
+    out += '<mark class="' + (isPhrase ? 'phrase' : 'token') + '">' + escapeHtml(match) + '</mark>';
     last = end;
   }
   out += escapeHtml(raw.slice(last));
