@@ -1368,9 +1368,15 @@ if (enforceSpanishReferenceCorrespondence && enabledCorpora.has('he')) {
       };
 
       const highlightQueries = {
-        gr: greekLemma !== '—' ? greekLemma : (lang === 'gr' ? term : ''),
+        // Para el resaltado, si la búsqueda original fue en ES pero el usuario está viendo GR/HE,
+        // usamos equivalencias (no el "candidato más frecuente" del verso) para evitar remarcar verbos comunes como ויאמר.
+        gr: (greekLemma !== '—' ? greekLemma : (greekTerm || (lang === 'gr' ? term : ''))),
         lxx: lxxHighlightQuery,
-        he: (hebrewPhraseQueries.length ? hebrewPhraseQueries.join(' || ') : '') || (equivalenceTerms.he && equivalenceTerms.he[0] ? equivalenceTerms.he[0] : '') || hebrewCandidate?.word || (lang === 'he' ? term : ''),
+        he: (hebrewPhraseQueries.length ? hebrewPhraseQueries.join(' || ') : '')
+          || (equivalenceTerms.he && equivalenceTerms.he[0] ? equivalenceTerms.he[0] : '')
+          || (aliasCandidates.he && aliasCandidates.he[0] ? aliasCandidates.he[0] : '')
+          || hebrewCandidate?.word
+          || (lang === 'he' ? term : ''),
         es: [esDisplayWord, ...relatedTerms.es].join(' ').trim()
       };
 
