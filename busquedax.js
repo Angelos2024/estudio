@@ -1966,7 +1966,8 @@ function mapLxxRefsToHebrewRefs(refs) {
       if (filtersPanel) filtersPanel.innerHTML = '<div class="small muted">Selecciona un idioma específico para usar filtros por libro.</div>';
       if (resultsList) resultsList.innerHTML = '';
       if (paginationEl) paginationEl.innerHTML = '';
-      return await renderSearchUI(groupsByCorpus, highlightQueries, relatedTerms, options);
+      renderResults(groupsByCorpus, highlightQueries, relatedTerms);
+      return;
     }
 
     // Nuevo UI: un solo idioma
