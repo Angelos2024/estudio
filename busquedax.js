@@ -456,39 +456,35 @@ function normalizeSpanish(text) {
     const safe = escapeHtml(raw);
      const highlightSource = (lang === 'gr' || lang === 'lxx' || lang === 'he')
       ? safe.normalize('NFD')
-      : safe;    if (lang === 'he') {
-      const variants = String(normalizedQuery || '')
-        .split('||')
-        .map((part) => part.trim())
-        .filter(Boolean);
+      : safe;    
+      // Hebrew: when searching a phrase (or multiple phrase variants separated by "||"),
+// highlight ONLY the full phrase, not each token separately.
+if (lang === 'he') {
+  const variants = String(normalizedQuery || '')
+    .split('||')
+    .map((part) => part.trim())
+    .filter(Boolean);
 
-      const cores = [];
-      const joiner = '(?:\s+|\u05BE|\-)+';
+  const phraseRegexes = [];
+  for (const variant of variants) {
+    const phrase = normalizePhraseByLang(variant, 'he');
+    const phraseTokens = phrase.split(/\s+/).filter(Boolean);
+    if (phraseTokens.length < 2) continue;
+    const re = buildPhraseRegex(phraseTokens, 'he');
+    if (re) phraseRegexes.push(re);
+  }
 
-      variants.forEach((variant) => {
-        const phrase = normalizePhraseByLang(variant, 'he');
-        const phraseTokens = phrase.split(/\s+/).filter(Boolean);
-        if (phraseTokens.length < 2) return;
-
-        const tokenPatterns = phraseTokens.map((token) => {
-          const escaped = token.replace(/[.*+?^${}()|[\]\\]/g, '\$&');
-          const letters = [];
-          for (const ch of escaped) {
-            if (ch === '\') continue;
-            letters.push(ch);
-          }
-          return letters.map((letter) => `${letter}\p{M}*`).join('');
-        });
-
-        cores.push(tokenPatterns.join(joiner));
-      });
-
-      if (cores.length) {
-        const core = cores.length === 1 ? cores[0] : `(?:${cores.join('|')})`;
-        const phraseRe = new RegExp(`(^|[^\p{L}\p{M}])(${core})(?![\p{L}\p{M}])`, 'giu');
-        return highlightSource.replace(phraseRe, (match, lead, coreText) => `${lead}<mark class="phrase">${coreText}</mark>`);
-      }
+  if (phraseRegexes.length) {
+    let output = highlightSource;
+    for (const re of phraseRegexes) {
+      output = output.replace(
+        re,
+        (match, lead, coreText) => `${lead}<mark class="phrase">${coreText}</mark>`
+      );
     }
+    return output;
+  }
+}
 
 
    const tokens = normalizedQuery
