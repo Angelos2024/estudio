@@ -834,7 +834,23 @@ return getSpanishRefs(token, index);
     return refs;
   }
 
-  function containsHebrewTokenPhrase(normalizedVerse, phrase) {
+  
+  function getVerseTextFromChapter(verses, verseNumber) {
+    if (!verses || !Number.isFinite(verseNumber)) return '';
+    if (Array.isArray(verses)) return String(verses[verseNumber - 1] || '');
+    if (typeof verses === 'object') {
+      return String(
+        verses[verseNumber] ??
+        verses[String(verseNumber)] ??
+        verses[verseNumber - 1] ??
+        verses[String(verseNumber - 1)] ??
+        ''
+      );
+    }
+    return '';
+  }
+
+function containsHebrewTokenPhrase(normalizedVerse, phrase) {
     const verseTokens = String(normalizedVerse || '').split(/\s+/).filter(Boolean);
     const phraseTokens = String(phrase || '').split(/\s+/).filter(Boolean);
     if (!verseTokens.length || !phraseTokens.length) return false;
@@ -861,7 +877,7 @@ return getSpanishRefs(token, index);
       if (!book || !Number.isFinite(chapter) || !Number.isFinite(verse)) continue;
       try {
         const verses = await loadChapterText(lang, book, chapter, options);
-        const verseText = verses?.[verse - 1] || '';
+        const verseText = getVerseTextFromChapter(verses, verse);
         const normalizedVerse = normalizePhraseByLang(verseText, lang);
         const phraseMatch = lang === 'he'
           ? containsHebrewTokenPhrase(normalizedVerse, phrase)
@@ -1427,7 +1443,7 @@ async function loadLxxBookData(bookCode) {
       const verse = Number(verseRaw);
       try {
         const verses = await loadChapterText('gr', book, chapter, options);
-       const verseText = verses?.[verse - 1] || '';
+       const verseText = getVerseTextFromChapter(verses, verse);
         const tokens = verseText.split(/\s+/).filter(Boolean);
         tokens.forEach((token) => {
           const cleaned = cleanGreekToken(token);
@@ -1568,7 +1584,7 @@ function mapLxxRefsToHebrewRefs(refs) {
       const verse = Number(verseRaw);
       try {
         const verses = await loadChapterText('he', book, chapter, options);
-        const verseText = verses?.[verse - 1] || '';
+        const verseText = getVerseTextFromChapter(verses, verse);
         const tokens = verseText.split(/\s/).filter(Boolean);
         tokens.forEach((token) => {
           const cleaned = token.replace(/[׃,:;.!?()"“”]/g, '');
@@ -1700,7 +1716,7 @@ function mapLxxRefsToHebrewRefs(refs) {
               : '';
           } else {
             const verses = await loadChapterText(lang, book, chapter, options);
-            verseText = verses?.[verse - 1] || '';
+            verseText = getVerseTextFromChapter(verses, verse) || '';
           }
         } catch (error) {
           if (isAbortError(error)) throw error;
@@ -2262,7 +2278,7 @@ bookList.className = 'mt-2 d-grid gap-1';
                  : '';
              } else {
                const verses = await loadChapterText(lang, bookName, chapter, options);
-               resolvedText = verses?.[verse - 1] || '';
+               resolvedText = getVerseTextFromChapter(verses, verse) || '';
              }
              group.items.push({
                book: bookName,
@@ -2297,7 +2313,7 @@ bookList.className = 'mt-2 d-grid gap-1';
       const verse = Number(verseRaw);
       try {
         const verses = await loadChapterText('es', book, chapter, options);
-        const verseText = verses?.[verse - 1] || '';
+        const verseText = getVerseTextFromChapter(verses, verse);
         group.items.push({
           book,
           chapter,
@@ -2341,7 +2357,7 @@ bookList.className = 'mt-2 d-grid gap-1';
       sampleRef = formatRef(book, chapter, verse);
       try {
         const verses = await loadChapterText(lang, book, chapter, options);
-        sampleText = verses?.[verse - 1] || '';
+        sampleText = getVerseTextFromChapter(verses, verse) || '';
         if (lang !== 'es') {
           const versesEs = await loadChapterText('es', book, chapter, options);
           sampleEs = versesEs?.[verse - 1] || '';
@@ -2403,27 +2419,34 @@ bookList.className = 'mt-2 d-grid gap-1';
       throwIfAborted(options.signal);
 
       const lang = detectLang(term);
-      const selectedScope = getLanguageScope(term);
+      const isCompoundQuery = /\s/.test(String(term || '').trim());
+      let selectedScope = getLanguageScope(term);
+
+      // Para aligerar carga: no permitimos búsquedas multi-idioma para frases (palabras compuestas).
+      // Si es una frase y el usuario eligió "all", forzamos al idioma detectado.
+      if (isCompoundQuery && selectedScope === 'all') {
+        selectedScope = lang;
+      }
      // reset UI filters/paginación para nueva búsqueda
      state.pagination.page = 1;
      state.pagination.selectedBook = null;
      state.pagination.selectedTestament = null;
      state.pagination.activeLang = null;
-     const enabledCorpora = new Set(getCorporaForScope(selectedScope));
+     const enabledCorpora = isCompoundQuery ? new Set([selectedScope]) : new Set(getCorporaForScope(selectedScope));
      const enforceSpanishReferenceCorrespondence = lang === 'es' && (selectedScope === 'gr' || selectedScope === 'he')
         && !/\s/.test(String(term || '').trim());
-      await loadTrilingualEquivalences(options);
-     const aliasCandidates = getAliasCandidates(term, lang);
-      const equivalenceTerms = getEquivalenceSearchTerms(term, lang);
+      if (!isCompoundQuery) { await loadTrilingualEquivalences(options); }
+     const aliasCandidates = isCompoundQuery ? { es: [], gr: [], he: [], lxx: [] } : getAliasCandidates(term, lang);
+      const equivalenceTerms = isCompoundQuery ? { es: [], gr: [], he: [], lxx: [] } : getEquivalenceSearchTerms(term, lang);
       const normalized = normalizeByLang(term, lang);
 
       let entry = null;
       let hebrewEntry = null;
-      if (lang === 'gr') {
+      if (lang === 'gr' && !isCompoundQuery) {
         await loadDictionary(options);
         throwIfAborted(options.signal);
         entry = state.dictMap.get(normalized) || null;
-      } else if (lang === 'he') {
+      } else if (lang === 'he' && !isCompoundQuery) {
         await loadHebrewDictionary(options);
         throwIfAborted(options.signal);
         hebrewEntry = state.hebrewDictMap.get(normalized) || null;
@@ -2454,7 +2477,7 @@ bookList.className = 'mt-2 d-grid gap-1';
         state.last = { term, lang, refs: [], groupsByCorpus: [] };
         return;
       }
- const needsSpanishBridge = lang === 'es' && (enabledCorpora.has('gr') || enabledCorpora.has('lxx') || enabledCorpora.has('he'));
+ const needsSpanishBridge = !isCompoundQuery && lang === 'es' && (enabledCorpora.has('gr') || enabledCorpora.has('lxx') || enabledCorpora.has('he'));
       const esIndexPromise = (enabledCorpora.has('es') || needsSpanishBridge)
         ? loadIndex('es', options)
         : Promise.resolve(null);
@@ -2486,7 +2509,7 @@ bookList.className = 'mt-2 d-grid gap-1';
       let greekTerm = null;
       let greekCandidate = null;
 
-      if (lang === 'es' && (enabledCorpora.has('gr') || enabledCorpora.has('lxx'))) {
+      if (!isCompoundQuery && lang === 'es' && (enabledCorpora.has('gr') || enabledCorpora.has('lxx'))) {
         greekEntry = await findGreekEntryFromSpanish(term, options);
         if (greekEntry?.lemma) {
           greekTerm = normalizeGreek(greekEntry.lemma);
