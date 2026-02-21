@@ -457,6 +457,7 @@ function detectLang(text) {
   function getLanguageScope(term = '') {
     const scope = String(state.languageScope || 'auto');
     if (scope === 'es' || scope === 'gr' || scope === 'he' || scope === 'all') return scope;
+     if (scope === 'lxx') return 'lxx';
     return detectLang(term);
   }
 
@@ -656,8 +657,9 @@ function getEquivalenceSearchTerms(term, langHint = detectLang(term)) {
   function getCorporaForScope(scope) {
     if (scope === 'es') return ['es'];
     if (scope === 'gr') return ['gr', 'lxx'];
+    if (scope === 'lxx') return ['lxx'];
     if (scope === 'he') return ['he'];
-   return ['gr', 'lxx', 'he', 'es'];
+    return ['gr', 'lxx', 'he', 'es'];
   }
   function normalizeByLang(text, lang) {
     if (lang === 'gr') return normalizeGreek(text);
@@ -1245,6 +1247,73 @@ async function loadLxxBookData(bookCode) {
    state.lxxSearchCache.set(normalizedGreek, payload);
     return payload;
   }
+
+  async function buildLxxMatchesForPhrases(phrases, options = {}, maxRefs = 2500) {
+    const list = (phrases || [])
+      .map((phrase) => String(phrase || '').trim())
+      .filter(Boolean);
+    if (!list.length) return { refs: [], texts: new Map(), highlightTerms: [] };
+
+    const normalizedPhrases = list
+      .map((phrase) => normalizePhraseByLang(phrase, 'lxx'))
+      .filter(Boolean);
+    if (!normalizedPhrases.length) return { refs: [], texts: new Map(), highlightTerms: [] };
+
+    // Usamos el 1er token de cada frase como "ancla" (p.ej. "υιε") para obtener candidatos desde el índice.
+    const anchorTokens = new Set();
+    normalizedPhrases.forEach((phrase) => {
+      const first = phrase.split(/\s+/)[0];
+      if (first) anchorTokens.add(first);
+    });
+
+    const mergedRefs = [];
+    const mergedTexts = new Map();
+    const mergedHighlight = new Set(list); // preferimos resaltar la(s) frase(s)
+
+    const seen = new Set();
+    for (const anchor of anchorTokens) {
+      throwIfAborted(options.signal);
+      const matches = await buildLxxMatches(anchor, maxRefs);
+      (matches.refs || []).forEach((ref) => {
+        if (seen.has(ref)) return;
+        seen.add(ref);
+        mergedRefs.push(ref);
+      });
+      (matches.texts || new Map()).forEach((value, key) => {
+        if (!mergedTexts.has(key)) mergedTexts.set(key, value);
+      });
+    }
+
+    const filteredRefs = [];
+    const filteredTexts = new Map();
+    for (const ref of mergedRefs) {
+      throwIfAborted(options.signal);
+      let verseText = mergedTexts.get(ref);
+      if (!verseText) {
+        const [book, chapterRaw, verseRaw] = ref.split('|');
+        const chapter = Number(chapterRaw);
+        const verse = Number(verseRaw);
+        try {
+          const tokens = await loadLxxVerseTokens(book, chapter, verse);
+          verseText = Array.isArray(tokens)
+            ? tokens.map((token) => token?.w).filter(Boolean).join(' ')
+            : '';
+        } catch (error) {
+          if (isAbortError(error)) throw error;
+          verseText = '';
+        }
+      }
+      const normalizedVerse = normalizePhraseByLang(verseText, 'lxx');
+      const match = normalizedPhrases.some((phrase) => normalizedVerse.includes(phrase));
+      if (match) {
+        filteredRefs.push(ref);
+        filteredTexts.set(ref, verseText);
+      }
+    }
+
+    return { refs: filteredRefs, texts: filteredTexts, highlightTerms: [...mergedHighlight] };
+  }
+
 
    function pickBestCandidate(counts, samples) {
     if (!counts.size) return null;
@@ -1981,6 +2050,7 @@ bookList.className = 'mt-2 d-grid gap-1';
       const esStop = new Set(['de', 'del', 'al', 'la', 'el', 'los', 'las', 'y', 'o', 'a', 'en', 'que', 'un', 'una', 'por', 'para', 'con']);
       const esContentTokens = isEsPhraseQuery ? esPhraseTokens.filter((t) => !esStop.has(t)) : [];
       let strictGreekPhrases = [];
+      let strictLxxPhrases = [];
       let strictHebrewPhrase = null;
 
       if (isEsPhraseQuery && esContentTokens.length >= 2 && state.trilingualByEs?.size) {
@@ -2024,6 +2094,15 @@ bookList.className = 'mt-2 d-grid gap-1';
             strictGreekPhrases = finalSons
               .map((son) => article ? `${son} ${article} ${man}` : `${son} ${man}`)
               .filter(Boolean);
+
+            // LXX: normalmente usa vocativo ("υιε ανθρωπου"), sin artículo.
+            const preferredLxxSons = ['υιε', 'υιοσ', 'υιον', 'υιου', 'υιω'];
+            const lxxSons = preferredLxxSons.filter((t) => grSonForms.includes(t));
+            const lxxFallback = grSonForms.find((t) => t === 'υιε') || grSonForms[0] || grFirstAll[0];
+            const finalLxxSons = lxxSons.length ? lxxSons : (lxxFallback ? [lxxFallback] : []);
+            strictLxxPhrases = finalLxxSons
+              .flatMap((son) => [`${son} ${man}`, `${son} του ${man}`])
+              .filter(Boolean);
           }
         }
       }
@@ -2032,6 +2111,16 @@ bookList.className = 'mt-2 d-grid gap-1';
         && (selectedScope === 'gr' || selectedScope === 'all')
         && enabledCorpora.has('gr')
         && strictGreekPhrases.length > 0;
+
+
+      const useStrictLxxPhrase = enabledCorpora.has('lxx') && (
+        (isEsPhraseQuery && (selectedScope === 'gr' || selectedScope === 'lxx' || selectedScope === 'all') && strictLxxPhrases.length > 0)
+        || (selectedScope === 'lxx' && String(term || '').trim().split(/\s+/).filter(Boolean).length >= 2)
+      );
+
+      const lxxPhraseFilters = useStrictLxxPhrase
+        ? (strictLxxPhrases.length ? strictLxxPhrases : [term])
+        : [];
 
       const useStrictHebrewPhrase = isEsPhraseQuery
         && (selectedScope === 'he' || selectedScope === 'all')
@@ -2060,11 +2149,11 @@ bookList.className = 'mt-2 d-grid gap-1';
       }
       const hasInitialGreekMatches = refs.length || initialLxxMatches.refs.length;
 
-      const hasAlternateScopeSearch = lang === 'es' && (
+      const hasAlternateScopeSearch = (lang === 'es' && (
         ((enabledCorpora.has('he')) && (equivalenceTerms.he?.size || aliasCandidates.he.length))
         || ((enabledCorpora.has('gr') || enabledCorpora.has('lxx')) && (equivalenceTerms.gr?.size || aliasCandidates.gr.length))
-      );
-      if (!refs.length && !(lang === 'gr' && hasInitialGreekMatches) && !hasAlternateScopeSearch) {
+      )) || (selectedScope === 'lxx' && enabledCorpora.has('lxx'));
+if (!refs.length && !(lang === 'gr' && hasInitialGreekMatches) && !hasAlternateScopeSearch) {
         renderTags([
           `Lema: <span class="fw-semibold">${term}</span>`,
           'Transliteración: —',
@@ -2229,30 +2318,35 @@ for (const token of esSearchTokens) {
         });
       }
       let lxxMatches = { refs: [], texts: new Map(), highlightTerms: [] };
-      if (enabledCorpora.has('lxx') && greekSearchTerms.size) {
-        const lxxSeenRefs = new Set();
-        const lxxTexts = new Map();
-        const lxxTerms = [];
-        for (const token of greekSearchTerms) {
-          const tokenMatches = (lang === 'gr' && token === normalized)
-            ? initialLxxMatches
-            : await buildLxxMatches(token, 70);
-          (tokenMatches.refs || []).forEach((ref) => {
-            if (lxxSeenRefs.has(ref)) return;
-            lxxSeenRefs.add(ref);
-            lxxMatches.refs.push(ref);
-          });
-          (tokenMatches.texts || new Map()).forEach((value, key) => {
-            if (!lxxTexts.has(key)) lxxTexts.set(key, value);
-          });
-          (tokenMatches.highlightTerms || []).forEach((termItem) => {
-            if (!lxxTerms.includes(termItem)) lxxTerms.push(termItem);
-          });
+      if (enabledCorpora.has('lxx')) {
+        if (lxxPhraseFilters.length) {
+          lxxMatches = await buildLxxMatchesForPhrases(lxxPhraseFilters, options, 3000);
+        } else if (greekSearchTerms.size) {
+          const lxxSeenRefs = new Set();
+          const lxxTexts = new Map();
+          const lxxTerms = [];
+          const maxLxxRefs = (selectedScope === 'lxx' || selectedScope === 'all') ? 600 : 70;
+          for (const token of greekSearchTerms) {
+            const tokenMatches = (lang === 'gr' && token === normalized)
+              ? initialLxxMatches
+              : await buildLxxMatches(token, maxLxxRefs);
+            (tokenMatches.refs || []).forEach((ref) => {
+              if (lxxSeenRefs.has(ref)) return;
+              lxxSeenRefs.add(ref);
+              lxxMatches.refs.push(ref);
+            });
+            (tokenMatches.texts || new Map()).forEach((value, key) => {
+              if (!lxxTexts.has(key)) lxxTexts.set(key, value);
+            });
+            (tokenMatches.highlightTerms || []).forEach((termItem) => {
+              if (!lxxTerms.includes(termItem)) lxxTerms.push(termItem);
+            });
+          }
+          lxxMatches.texts = lxxTexts;
+          lxxMatches.highlightTerms = lxxTerms;
         }
-        lxxMatches.texts = lxxTexts;
-        lxxMatches.highlightTerms = lxxTerms;
       }
-      if (enforceSpanishReferenceCorrespondence && enabledCorpora.has('lxx')) {
+if (enforceSpanishReferenceCorrespondence && enabledCorpora.has('lxx')) {
         lxxMatches.refs = scopedLxxRefsFromSpanish.slice();
         lxxMatches.texts = new Map();
         lxxMatches.highlightTerms = greekTerm ? [greekTerm] : [];
@@ -2489,7 +2583,7 @@ if (enforceSpanishReferenceCorrespondence && enabledCorpora.has('he')) {
  
 function handleLanguageScopeChange(event) {
     const value = String(event?.target?.value || 'auto');
-    state.languageScope = (value === 'es' || value === 'gr' || value === 'he' || value === 'all') ? value : 'auto';
+    state.languageScope = (value === 'es' || value === 'gr' || value === 'lxx' || value === 'he' || value === 'all') ? value : 'auto';
     if (queryInput?.value.trim()) {
       analyze();
     }
@@ -2518,7 +2612,7 @@ analyzeBtn?.addEventListener('click', analyze);
     const params = new URLSearchParams(window.location.search);
 const rawScope = String(params.get('scope') || params.get('mode') || '').trim();
     const scopeParam = rawScope.toLowerCase();
-   if (scopeParam === 'es' || scopeParam === 'gr' || scopeParam === 'he' || scopeParam === 'all' || scopeParam === 'auto') {
+   if (scopeParam === 'es' || scopeParam === 'gr' || scopeParam === 'lxx' || scopeParam === 'he' || scopeParam === 'all' || scopeParam === 'auto') {
     state.languageScope = scopeParam;
       if (languageScopeSelect) languageScopeSelect.value = scopeParam;
     } else if (languageScopeSelect) {
