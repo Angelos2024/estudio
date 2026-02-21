@@ -1,4 +1,9 @@
-/* Auto-generated split from busquedax.js (filter/scope) */
+function getNormalizedQuery(lang, query) {
+    if (lang === 'gr' || lang === 'lxx') return normalizeGreek(query);
+    if (lang === 'he') return normalizeHebrew(query);
+    return normalizeSpanish(query);
+  }
+
 function detectLang(text) {
     const sample = String(text || '');
     if (/[\u0590-\u05FF]/.test(sample)) return 'he';
@@ -6,13 +11,13 @@ function detectLang(text) {
     return 'es';
   }
 
-  function getLanguageScope(term = '') {
+function getLanguageScope(term = '') {
     const scope = String(state.languageScope || 'auto');
     if (scope === 'es' || scope === 'gr' || scope === 'he' || scope === 'all') return scope;
     return detectLang(term);
   }
 
-  function getAliasCandidates(term, langHint = detectLang(term)) {
+function getAliasCandidates(term, langHint = detectLang(term)) {
     const esTokens = String(term || '')
       .toLowerCase()
       .normalize('NFD')
@@ -54,39 +59,99 @@ function detectLang(text) {
       }
     };
   }
-  
+
 async function loadTrilingualEquivalences(options = {}) {
-  if (state.trilingualEquiv) return state.trilingualEquiv;
-  const data = await loadJson(TRILINGUAL_EQUIV_URL, options);
-  state.trilingualEquiv = data;
+  try {
+    const force = !!options.force;
+    if (state.trilingualEquiv && state.trilingualByEs?.size && !force) return state.trilingualEquiv;
 
-  const byEs = new Map();
-  Object.entries(data?.by_es || {}).forEach(([esWord, payload]) => {
-    const key = normalizeSpanishPhrase(esWord);
-    if (!key) return;
-    const gr = new Set((payload?.gr || []).map((item) => normalizeGreek(item)).filter(Boolean));
-    const he = new Set((payload?.he || []).map((item) => normalizeHebrew(item)).filter(Boolean));
-    byEs.set(key, { gr, he });
-  });
+    // Evita cargas paralelas
+    if (state._loadingTrilingualEquiv) return state._loadingTrilingualEquiv;
 
-  const byGr = new Map();
-  Object.entries(data?.by_gr || {}).forEach(([grWord, esWords]) => {
-    const key = normalizeGreek(grWord);
-    if (!key) return;
-    byGr.set(key, new Set((esWords || []).map((item) => normalizeSpanishPhrase(item)).filter(Boolean)));
-  });
+    state._loadingTrilingualEquiv = (async () => {
+      const res = await fetch(TRILINGUAL_EQUIV_URL, { cache: 'no-store' });
+      if (!res.ok) throw new Error(`No se pudo cargar equivalencias trilingües: ${res.status}`);
+      const data = await res.json();
 
-  const byHe = new Map();
-  Object.entries(data?.by_he || {}).forEach(([heWord, esWords]) => {
-    const key = normalizeHebrew(heWord);
-    if (!key) return;
-    byHe.set(key, new Set((esWords || []).map((item) => normalizeSpanishPhrase(item)).filter(Boolean)));
-  });
+      // Reset maps
+      state.trilingualEquiv = data;
+      state.trilingualByEs = new Map();
+      state.trilingualByGr = new Map();
+      state.trilingualByHe = new Map();
 
-  state.trilingualByEs = byEs;
-  state.trilingualByGr = byGr;
-  state.trilingualByHe = byHe;
-  return data;
+      const ensureSetMap = (map, key) => {
+        if (!key) return null;
+        let set = map.get(key);
+        if (!set) { set = new Set(); map.set(key, set); }
+        return set;
+      };
+
+      const toArray = (value) => {
+        if (!value) return [];
+        if (Array.isArray(value)) return value;
+        if (typeof value === 'string') return [value];
+        return [];
+      };
+
+      const entries = Array.isArray(data) ? data
+        : (Array.isArray(data?.entries) ? data.entries
+        : (Array.isArray(data?.data) ? data.data : []));
+
+      entries.forEach((entry) => {
+        const esList = toArray(entry.es || entry.spanish || entry.espanol || entry.ES);
+        const grList = toArray(entry.gr || entry.greek || entry.GR);
+        const heList = toArray(entry.he || entry.hebrew || entry.HE);
+
+        const esNorm = esList
+          .map((t) => normalizeSpanishPhrase(t))
+          .map((t) => String(t || '').trim())
+          .filter(Boolean);
+
+        const grNorm = grList
+          .map((t) => normalizeGreek(t))
+          .map((t) => String(t || '').trim())
+          .filter(Boolean);
+
+        const heNorm = heList
+          .map((t) => normalizeHebrew(t))
+          .map((t) => String(t || '').trim())
+          .filter(Boolean);
+
+        if (!esNorm.length) return;
+
+        esNorm.forEach((esKey) => {
+          // Map ES -> {gr:Set, he:Set}
+          let bucket = state.trilingualByEs.get(esKey);
+          if (!bucket) {
+            bucket = { gr: new Set(), he: new Set() };
+            state.trilingualByEs.set(esKey, bucket);
+          }
+          grNorm.forEach((g) => bucket.gr.add(g));
+          heNorm.forEach((h) => bucket.he.add(h));
+
+          // Reverse maps GR/HE -> Set(ES)
+          grNorm.forEach((g) => {
+            const s = ensureSetMap(state.trilingualByGr, g);
+            if (s) s.add(esKey);
+          });
+          heNorm.forEach((h) => {
+            const s = ensureSetMap(state.trilingualByHe, h);
+            if (s) s.add(esKey);
+          });
+        });
+      });
+
+      return state.trilingualEquiv;
+    })();
+
+    const result = await state._loadingTrilingualEquiv;
+    state._loadingTrilingualEquiv = null;
+    return result;
+  } catch (err) {
+    console.warn(err);
+    state._loadingTrilingualEquiv = null;
+    return null;
+  }
 }
 
 function getPhraseTokensForLang(term, lang) {
@@ -109,6 +174,33 @@ function getPhraseTokensForLang(term, lang) {
     .split(/\s+/)
     .map((token) => token.trim())
     .filter(Boolean);
+}
+
+function levenshteinDistance(a, b) {
+  const left = String(a || '');
+  const right = String(b || '');
+  if (!left) return right.length;
+  if (!right) return left.length;
+
+  const rows = left.length + 1;
+  const cols = right.length + 1;
+  const matrix = Array.from({ length: rows }, () => new Array(cols).fill(0));
+
+  for (let i = 0; i < rows; i += 1) matrix[i][0] = i;
+  for (let j = 0; j < cols; j += 1) matrix[0][j] = j;
+
+  for (let i = 1; i < rows; i += 1) {
+    for (let j = 1; j < cols; j += 1) {
+      const substitutionCost = left[i - 1] === right[j - 1] ? 0 : 1;
+      matrix[i][j] = Math.min(
+        matrix[i - 1][j] + 1,
+        matrix[i][j - 1] + 1,
+        matrix[i - 1][j - 1] + substitutionCost
+      );
+    }
+  }
+
+  return matrix[left.length][right.length];
 }
 
 function resolveClosestSpanishEquivalenceToken(unit) {
@@ -173,15 +265,70 @@ function getEquivalenceSearchTerms(term, langHint = detectLang(term)) {
   });
   return result;
 }
-  function pickPreferredHebrewAlias(candidates = []) {
+
+function pickPreferredHebrewAlias(candidates = []) {
     if (!Array.isArray(candidates) || !candidates.length) return null;
     return candidates.find((item) => item === 'יהושע')
       || candidates.find((item) => item === 'ישוע')
       || candidates[0];
   }
-  function getCorporaForScope(scope) {
+
+function getCorporaForScope(scope) {
     if (scope === 'es') return ['es'];
     if (scope === 'gr') return ['gr', 'lxx'];
     if (scope === 'he') return ['he'];
    return ['gr', 'lxx', 'he', 'es'];
   }
+
+function normalizeByLang(text, lang) {
+    if (lang === 'gr') return normalizeGreek(text);
+    if (lang === 'he') return normalizeHebrew(text);
+    return normalizeSpanish(text);
+  }
+
+function normalizePhraseByLang(text, lang) {
+    if (lang === 'he') {
+      return String(text || '')
+        .replace(/[\u200C-\u200F\u202A-\u202E]/g, '')
+        .replace(/[\u0591-\u05BD\u05BF\u05C1-\u05C2\u05C4-\u05C7]/g, '')
+        .replace(/[׃.,;:!?()"“”'׳״]/g, ' ')
+        .replace(/[\u05BE\-\u2010-\u2015\u2212]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+    if (lang === 'gr' || lang === 'lxx') {
+      return String(text || '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/\p{M}/gu, '')
+        .replace(/[··.,;:!?(){}\[\]<>«»]/g, ' ')
+        .replace(/ς/g, 'σ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+    return String(text || '')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9ñ\s]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+function getNormalizedQueryTokens(term, lang, minLength = 3) {
+    return String(term || '')
+      .split(/\s+/)
+      .map((token) => normalizeByLang(token, lang).trim())
+      .filter((token) => token.length >= minLength);
+  }
+
+function getRefsForTokenByLang(lang, token, index) {
+    if (!token) return [];
+    if (lang === 'gr') return getGreekRefs(token, index);
+    if (lang === 'he') return getHebrewRefs(token, index);
+return getSpanishRefs(token, index);
+  }
+
+function filterRefsByPhrase(refs, lang, term, options = {}
+
+function getRefsForQuery(term, lang, index, options = {}
