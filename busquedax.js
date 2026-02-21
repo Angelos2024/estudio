@@ -2040,10 +2040,7 @@ function mapLxxRefsToHebrewRefs(refs) {
 
     const corpus = pickCorpus(groupsByCorpus, activeLang);
     const groups = corpus?.groups || [];
-    const filteredGroups = groups.filter((g) => {
-      if (state.filter === 'todo') return true;
-      return g.category === state.filter;
-    });
+    const filteredGroups = groups;
 
     const agg = buildFilterAggFromGroups(filteredGroups, activeLang);
 
@@ -2085,22 +2082,16 @@ function renderResults(groupsByCorpus, highlightQueries = state.last?.highlightQ
         resultsByCorpus.appendChild(wrapper);
         return;
       }
-      const filteredGroups = groups.filter((group) => {
-        if (state.filter === 'todo') return true;
-        return group.category === state.filter;
-       });
- 
+      const filteredGroups = groups;
 
       if (!filteredGroups.length) {
         const empty = document.createElement('div');
         empty.className = 'muted small';
-        empty.textContent = 'No hay resultados para el filtro seleccionado.';
-        wrapper.appendChild(empty);
-        resultsByCorpus.appendChild(wrapper);
+        empty.textContent = 'Sin resultados.';
+        resultsByCorpus.appendChild(empty);
         return;
       }
-
-            const totalCount = filteredGroups.reduce((sum, group) => sum + group.count, 0);
+const totalCount = filteredGroups.reduce((sum, group) => sum + group.count, 0);
       const info = document.createElement('div');
       info.className = 'd-flex align-items-center justify-content-between mb-2';
       const meta = document.createElement('div');
@@ -2915,29 +2906,9 @@ if (enforceSpanishReferenceCorrespondence && enabledCorpora.has('he')) {
        return;
      }
 
-     // Botones superiores por corpus (Torah/Profetas/Evangelios/etc.)
-     const button = event.target.closest('button[data-filter]');
-     if (!button) return;
-     state.filter = button.dataset.filter || 'todo';
-     document.querySelectorAll('button[data-filter]').forEach((btn) => {
-       if (btn.dataset.filter === state.filter) {
-         btn.classList.add('btn-primary');
-         btn.classList.remove('btn-soft');
-       } else {
-         btn.classList.remove('btn-primary');
-         btn.classList.add('btn-soft');
-       }
-     });
+}
 
-     // Al cambiar de categoría, volvemos a "All" (pero mantenemos el panel a la derecha)
-     state.pagination.page = 1;
-     state.pagination.selectedTestament = null;
-     state.pagination.selectedBook = null;
-
-     if (state.last?.groupsByCorpus) {
-       void renderSearchUI(state.last.groupsByCorpus || [], state.last.highlightQueries || {}, state.last.relatedTerms || {});
-     }
-   }
+// (Filtro superior por corpus eliminado: ahora se usa el panel derecho por libro/testamento)
 
 function handleLanguageScopeChange(event) {
     const value = String(event?.target?.value || 'auto');
