@@ -335,8 +335,8 @@ function normalizeGreek(text) {
     return [...variants];
   }
  function escapeHtml(text) {
-    return String(text == null ? '' : text)
-     .replace(/&/g, '&amp;')
+    return String(text ?? '')
+      .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
@@ -449,8 +449,8 @@ function normalizeSpanish(text) {
 
 
   function highlightText(text, query, lang) {
-    const raw = String(text == null ? '' : text);
-    const normalizedQuery = String(query == null ? '' : query).trim();
+    const raw = String(text ?? '');
+    const normalizedQuery = String(query ?? '').trim();
     if (!raw || !normalizedQuery) return escapeHtml(raw);
 
     const safe = escapeHtml(raw);
@@ -2187,12 +2187,15 @@ for (const token of esSearchTokens) {
       const greekTranslit = greekEntry?.['Forma lexica'] || (greekTerm ? transliterateGreek(greekLemma || term) : '—');
       const hebrewSearchTerms = new Set();
       let hebrewPhraseQueries = [];
+      let hebrewPhraseHighlightQueries = [];
       if (lang === 'es') {
         const esPhrase = normalizeSpanishPhrase(term);
         if (esPhrase === 'hijo de dios' || esPhrase === 'hijo del dios' || esPhrase === 'hijos de dios' || esPhrase === 'hijos del dios') {
-          hebrewPhraseQueries = ['בן האלהים', 'בן האלוהים', 'בני האלהים', 'בני האלוהים', 'בן אל'];
+          hebrewPhraseHighlightQueries = ['בן האלהים', 'בן האלוהים', 'בני האלהים', 'בני האלוהים', 'בן אל'];
+          hebrewPhraseQueries = hebrewPhraseHighlightQueries.map((p) => normalizeHebrew(p));
         } else if (esPhrase === 'hijo del hombre' || esPhrase === 'hijo de hombre') {
-          hebrewPhraseQueries = ['בן אדם'];
+          hebrewPhraseHighlightQueries = ['בן אדם'];
+          hebrewPhraseQueries = hebrewPhraseHighlightQueries.map((p) => normalizeHebrew(p));
         }
       }
 
@@ -2339,7 +2342,7 @@ if (enforceSpanishReferenceCorrespondence && enabledCorpora.has('he')) {
       const highlightQueries = {
         gr: greekLemma !== '—' ? greekLemma : (lang === 'gr' ? term : ''),
         lxx: lxxHighlightQuery,
-        he: (hebrewPhraseQueries.length ? hebrewPhraseQueries.join(' || ') : '') || hebrewCandidate?.word || (lang === 'he' ? term : ''),
+        he: (hebrewPhraseHighlightQueries.length ? hebrewPhraseHighlightQueries.join(' || ') : '') || hebrewCandidate?.word || (lang === 'he' ? term : ''),
         es: [esDisplayWord, ...relatedTerms.es].join(' ').trim()
       };
 
