@@ -155,6 +155,21 @@
      '2_pedro', '1_juan', '2_juan', '3_juan', 'judas'
    ];
    const APOCALYPSE = ['apocalipsis'];
+
+// Orden canónico (Génesis → Apocalipsis) por slugs internos
+const CANONICAL_BOOK_ORDER = [
+  ...TORAH,
+  ...HISTORICAL,
+  ...WISDOM,
+  ...PROPHETS,
+  ...GOSPELS,
+  ...LETTERS,
+  ...APOCALYPSE
+];
+const CANON_INDEX = new Map(CANONICAL_BOOK_ORDER.map((slug, i) => [slug, i]));
+const OT_SET = new Set([...TORAH, ...HISTORICAL, ...WISDOM, ...PROPHETS]);
+const NT_SET = new Set([...GOSPELS, ...LETTERS, ...APOCALYPSE]);
+
   const NT_BOOKS = new Set([...GOSPELS, ...ACTS, ...LETTERS, ...APOCALYPSE]);
   const LXX_BOOKS = [
     '1Chr', '1Esdr', '1Kgs', '1Macc', '1Sam', '2Chr', '2Esdr', '2Kgs', '2Macc', '2Sam',
@@ -189,7 +204,23 @@
     }
   ];
  const state = {
-    dict: null,
+    
+  // UI state para filtros + paginación
+  pagination: {
+    pageSize: 25,
+    page: 1,
+    selectedTestament: null, // 'ot' | 'nt' | null
+    selectedBook: null,      // slug del libro o null
+    activeLang: null
+  },
+  // Cache de textos por verso para evitar recargas
+  verseCache: {
+    es: new Map(),
+    gr: new Map(),
+    he: new Map(),
+    lxx: new Map()
+  },
+dict: null,
     dictMap: new Map(),
       dictSpanishMap: new Map(),
     hebrewDict: null,
@@ -227,6 +258,9 @@
   const lemmaCorrespondence = document.getElementById('bxLemmaCorrespondence');
    const lemmaExamples = document.getElementById('bxLemmaExamples');
   const resultsByCorpus = document.getElementById('bxResultsByCorpus');
+  const resultsList = document.getElementById('bxResultsList');
+  const paginationEl = document.getElementById('bxPagination');
+  const filtersPanel = document.getElementById('bxFiltersPanel');
   const resultsLoadingIndicator = document.getElementById('bxResultsLoadingIndicator');
   const resultsLoadingStage = document.getElementById('bxResultsLoadingStage');
   const analysisResultsSection = document.getElementById('bxAnalysisResultsSection');
@@ -1672,7 +1706,294 @@ function mapLxxRefsToHebrewRefs(refs) {
     `;
   }
 
- function renderResults(groupsByCorpus, highlightQueries = state.last?.highlightQueries || {}, relatedTerms = state.last?.relatedTerms || {}) {
+ 
+
+  function sortRefsCanonically(refs = []) {
+    return [...refs].sort((a, b) => {
+      const [ba, ca, va] = String(a).split('|');
+      const [bb, cb, vb] = String(b).split('|');
+      const sa = LXX_TO_HEBREW_SLUG[ba] || ba;
+      const sb = LXX_TO_HEBREW_SLUG[bb] || bb;
+      const ia = CANON_INDEX.has(sa) ? CANON_INDEX.get(sa) : 9999;
+      const ib = CANON_INDEX.has(sb) ? CANON_INDEX.get(sb) : 9999;
+      if (ia !== ib) return ia - ib;
+      const c1 = Number(ca) || 0, c2 = Number(cb) || 0;
+      if (c1 !== c2) return c1 - c2;
+      const v1 = Number(va) || 0, v2 = Number(vb) || 0;
+      return v1 - v2;
+    });
+  }
+
+  function getActiveLangForNewUI() {
+    // Priorizamos un solo idioma: el scope seleccionado o el detectado
+    const last = state.last;
+    if (!last) return null;
+    const scope = state.languageScope || 'auto';
+    if (scope && scope !== 'auto' && scope !== 'all') return scope;
+    return last.lang || null;
+  }
+
+  function pickCorpus(groupsByCorpus, lang) {
+    return (groupsByCorpus || []).find((c) => c.lang === lang) || null;
+  }
+
+  function buildFilterAggFromGroups(groups = [], lang = 'es') {
+    // groups: salida de buildBookGroups (por libro)
+    const byBook = new Map();
+    groups.forEach((g) => {
+      const bookSlug = LXX_TO_HEBREW_SLUG[g.items?.[0]?.book] || LXX_TO_HEBREW_SLUG[g.refs?.[0]?.split?.('|')?.[0]] || (g.refs?.[0]?.split?.('|')?.[0]) || g.book || g.slug || null;
+      const slug = LXX_TO_HEBREW_SLUG[bookSlug] || bookSlug;
+      if (!slug) return;
+      byBook.set(slug, {
+        slug,
+        label: prettyBookLabel(slug),
+        count: g.count || (g.refs?.length || 0),
+        refs: g.refs || [],
+        group: g
+      });
+    });
+
+    // orden canónico
+    const orderedBooks = CANONICAL_BOOK_ORDER
+      .filter((slug) => byBook.has(slug))
+      .map((slug) => byBook.get(slug));
+
+    // por si hay libros fuera de lista
+    const extras = [...byBook.values()].filter((b) => !CANON_INDEX.has(b.slug))
+      .sort((a, b) => a.label.localeCompare(b.label));
+    const books = [...orderedBooks, ...extras];
+
+    const ot = books.filter((b) => OT_SET.has(b.slug));
+    const nt = books.filter((b) => NT_SET.has(b.slug));
+    const otCount = ot.reduce((s, b) => s + (b.count || 0), 0);
+    const ntCount = nt.reduce((s, b) => s + (b.count || 0), 0);
+    const allCount = otCount + ntCount;
+
+    return { lang, books, ot, nt, otCount, ntCount, allCount };
+  }
+
+  function renderFiltersPanel(agg) {
+    if (!filtersPanel) return;
+    const { books, ot, nt, otCount, ntCount, allCount } = agg;
+
+    const mkBtn = (id, label, count, active) => {
+      return `
+        <button class="bx-filter-item ${active ? 'is-active' : ''}" type="button"
+          data-bx-filter="${id}">
+          <span>${escapeHtml(label)}</span>
+          <span class="bx-count">(${count})</span>
+        </button>
+      `;
+    };
+
+    const isAll = !state.pagination.selectedBook && !state.pagination.selectedTestament;
+    const isOT = state.pagination.selectedTestament === 'ot';
+    const isNT = state.pagination.selectedTestament === 'nt';
+
+    const otItems = ot.map((b) => mkBtn(`book:${b.slug}`, b.label, b.count, state.pagination.selectedBook === b.slug)).join('');
+    const ntItems = nt.map((b) => mkBtn(`book:${b.slug}`, b.label, b.count, state.pagination.selectedBook === b.slug)).join('');
+
+    filtersPanel.innerHTML = `
+      <div class="d-grid gap-2">
+        ${mkBtn('all', 'All', allCount, isAll)}
+        ${mkBtn('ot', 'Old Testament', otCount, isOT)}
+        <div class="ps-1 d-grid gap-2">${otItems || '<div class="small muted ps-2">Sin resultados.</div>'}</div>
+        ${mkBtn('nt', 'New Testament', ntCount, isNT)}
+        <div class="ps-1 d-grid gap-2">${ntItems || '<div class="small muted ps-2">Sin resultados.</div>'}</div>
+      </div>
+    `;
+  }
+
+  function flattenRefsForSelection(agg) {
+    const selBook = state.pagination.selectedBook;
+    const selTest = state.pagination.selectedTestament;
+
+    if (selBook) {
+      const b = agg.books.find((x) => x.slug === selBook);
+      return sortRefsCanonically(b?.refs || []);
+    }
+    const pool = selTest === 'ot'
+      ? agg.ot
+      : selTest === 'nt'
+        ? agg.nt
+        : agg.books;
+
+    const refs = [];
+    pool.forEach((b) => refs.push(...(b.refs || [])));
+    return sortRefsCanonically(refs);
+  }
+
+  async function resolveVerseTextsForRefs(refs, lang, options = {}) {
+    // Agrupa por libro+capítulo para minimizar lecturas.
+    const cache = state.verseCache?.[lang] || new Map();
+    const result = [];
+    const byChapter = new Map(); // key: book|chapter -> [verseNumbers]
+    const parsed = refs.map((ref) => {
+      const [book, cRaw, vRaw] = String(ref).split('|');
+      const chapter = Number(cRaw);
+      const verse = Number(vRaw);
+      const key = `${book}|${chapter}`;
+      return { ref, book, chapter, verse, key };
+    });
+
+    parsed.forEach((p) => {
+      const canonicalRef = `${p.book}|${p.chapter}|${p.verse}`;
+      if (cache.has(canonicalRef)) return;
+      if (!byChapter.has(p.key)) byChapter.set(p.key, []);
+      byChapter.get(p.key).push(p.verse);
+    });
+
+    for (const [key, versesNeeded] of byChapter.entries()) {
+      const [book, chapterRaw] = key.split('|');
+      const chapter = Number(chapterRaw);
+      try {
+        if (lang === 'lxx') {
+          // LXX se resuelve por tokens verso a verso
+          await Promise.all(versesNeeded.map(async (v) => {
+            const canonicalRef = `${book}|${chapter}|${v}`;
+            if (cache.has(canonicalRef)) return;
+            const tokens = await loadLxxVerseTokens(book, chapter, v);
+            const resolvedText = Array.isArray(tokens) ? tokens.map((t) => t?.w).filter(Boolean).join(' ') : '';
+            cache.set(canonicalRef, resolvedText);
+          }));
+        } else {
+          const verses = await loadChapterText(lang, book, chapter, options);
+          versesNeeded.forEach((v) => {
+            const canonicalRef = `${book}|${chapter}|${v}`;
+            const text = verses?.[v - 1] || '';
+            cache.set(canonicalRef, text);
+          });
+        }
+      } catch (e) {
+        // Deja vacío si falla.
+        versesNeeded.forEach((v) => {
+          const canonicalRef = `${book}|${chapter}|${v}`;
+          if (!cache.has(canonicalRef)) cache.set(canonicalRef, '');
+        });
+      }
+    }
+
+    parsed.forEach((p) => {
+      const canonicalRef = `${p.book}|${p.chapter}|${p.verse}`;
+      result.push({
+        ref: formatRef(p.book, p.chapter, p.verse),
+        text: cache.get(canonicalRef) || '',
+        rawRef: canonicalRef,
+        book: p.book,
+        chapter: p.chapter,
+        verse: p.verse
+      });
+    });
+
+    state.verseCache[lang] = cache;
+    return result;
+  }
+
+  async function renderResultsPage(agg, highlightQueries = {}, options = {}) {
+    if (!resultsList || !paginationEl) return;
+    const allRefs = flattenRefsForSelection(agg);
+    const total = allRefs.length;
+
+    const pageSize = state.pagination.pageSize || 25;
+    const totalPages = Math.max(1, Math.ceil(total / pageSize));
+    state.pagination.page = Math.min(Math.max(1, state.pagination.page || 1), totalPages);
+
+    const start = (state.pagination.page - 1) * pageSize;
+    const slice = allRefs.slice(start, start + pageSize);
+
+    // UI loading
+    if (resultsLoadingStage) resultsLoadingStage.hidden = false;
+    resultsList.innerHTML = '';
+    paginationEl.innerHTML = '';
+
+    const items = await resolveVerseTextsForRefs(slice, agg.lang, options);
+
+    if (resultsLoadingStage) resultsLoadingStage.hidden = true;
+
+    const highlightQuery = highlightQueries?.[agg.lang] || state.last?.term || '';
+    resultsList.innerHTML = items.map((it) => `
+      <div class="bx-result-item">
+        <div class="bx-ref">${escapeHtml(it.ref)}</div>
+        <div class="bx-text">${highlightText(escapeHtml(it.text || ''), highlightQuery, agg.lang)}</div>
+      </div>
+    `).join('') || '<div class="muted small">Sin resultados.</div>';
+
+    // Paginación
+    const mkPageBtn = (label, page, disabled = false, active = false) => {
+      return `
+        <li class="page-item ${disabled ? 'disabled' : ''} ${active ? 'active' : ''}">
+          <button class="page-link" type="button" data-bx-page="${page}">${label}</button>
+        </li>
+      `;
+    };
+
+    if (total > pageSize) {
+      const prev = state.pagination.page - 1;
+      const next = state.pagination.page + 1;
+      let html = '';
+      html += mkPageBtn('«', prev, prev < 1);
+      // ventana simple
+      const windowSize = 5;
+      const half = Math.floor(windowSize / 2);
+      let from = Math.max(1, state.pagination.page - half);
+      let to = Math.min(totalPages, from + windowSize - 1);
+      from = Math.max(1, to - windowSize + 1);
+
+      if (from > 1) html += mkPageBtn('1', 1, false, state.pagination.page === 1);
+      if (from > 2) html += `<li class="page-item disabled"><span class="page-link">…</span></li>`;
+      for (let p = from; p <= to; p++) {
+        html += mkPageBtn(String(p), p, false, p === state.pagination.page);
+      }
+      if (to < totalPages - 1) html += `<li class="page-item disabled"><span class="page-link">…</span></li>`;
+      if (to < totalPages) html += mkPageBtn(String(totalPages), totalPages, false, state.pagination.page === totalPages);
+
+      html += mkPageBtn('»', next, next > totalPages);
+      paginationEl.innerHTML = html;
+    } else {
+      paginationEl.innerHTML = '';
+    }
+  }
+
+  async function renderSearchUI(groupsByCorpus, highlightQueries = {}, relatedTerms = {}, options = {}) {
+    // Si el usuario pide "Todos", caemos al modo legacy (multi-corpus)
+    const scope = state.languageScope || 'auto';
+    const activeLang = getActiveLangForNewUI();
+    state.pagination.activeLang = activeLang;
+
+    if (!activeLang || scope === 'all') {
+      // legacy
+      if (resultsByCorpus) resultsByCorpus.hidden = false;
+      if (filtersPanel) filtersPanel.innerHTML = '<div class="small muted">Selecciona un idioma específico para usar filtros por libro.</div>';
+      if (resultsList) resultsList.innerHTML = '';
+      if (paginationEl) paginationEl.innerHTML = '';
+      return await renderSearchUI(groupsByCorpus, highlightQueries, relatedTerms, options);
+    }
+
+    // Nuevo UI: un solo idioma
+    if (resultsByCorpus) resultsByCorpus.hidden = true;
+
+    const corpus = pickCorpus(groupsByCorpus, activeLang);
+    const groups = corpus?.groups || [];
+    const filteredGroups = groups.filter((g) => {
+      if (state.filter === 'todo') return true;
+      return g.category === state.filter;
+    });
+
+    const agg = buildFilterAggFromGroups(filteredGroups, activeLang);
+
+    // Si el filtro por categoría dejó vacío, reset
+    if (!agg.allCount) {
+      if (filtersPanel) filtersPanel.innerHTML = '<div class="small muted">Sin resultados para el filtro seleccionado.</div>';
+      if (resultsList) resultsList.innerHTML = '<div class="muted small">Sin resultados.</div>';
+      if (paginationEl) paginationEl.innerHTML = '';
+      return;
+    }
+
+    renderFiltersPanel(agg);
+    await renderResultsPage(agg, highlightQueries, options);
+  }
+
+function renderResults(groupsByCorpus, highlightQueries = state.last?.highlightQueries || {}, relatedTerms = state.last?.relatedTerms || {}) {
     resultsByCorpus.innerHTML = '';
     if (!groupsByCorpus.length) {
       resultsByCorpus.innerHTML = '<div class="col-12"><div class="muted small">Sin resultados en el corpus.</div></div>';
@@ -2030,6 +2351,11 @@ bookList.className = 'mt-2 d-grid gap-1';
 
       const lang = detectLang(term);
       const selectedScope = getLanguageScope(term);
+     // reset UI filters/paginación para nueva búsqueda
+     state.pagination.page = 1;
+     state.pagination.selectedBook = null;
+     state.pagination.selectedTestament = null;
+     state.pagination.activeLang = null;
      const enabledCorpora = new Set(getCorporaForScope(selectedScope));
      const enforceSpanishReferenceCorrespondence = lang === 'es' && (selectedScope === 'gr' || selectedScope === 'he')
         && !/\s/.test(String(term || '').trim());
@@ -2438,7 +2764,7 @@ if (enforceSpanishReferenceCorrespondence && enabledCorpora.has('he')) {
         loading: true
       }));
 
-      renderResults(groupsByCorpus, highlightQueries, relatedTerms);
+      await renderSearchUI(groupsByCorpus, highlightQueries, relatedTerms, options);
       state.last = { term, lang, refs, groupsByCorpus, highlightQueries, relatedTerms };
 
       await Promise.all(corpusConfigs.map(async (config, index) => {
@@ -2446,7 +2772,7 @@ if (enforceSpanishReferenceCorrespondence && enabledCorpora.has('he')) {
         const groups = await buildBookGroups(config.safeRefs, config.lang, config.preloaded, options);
         groupsByCorpus[index].groups = groups;
         groupsByCorpus[index].loading = false;
-        renderResults(groupsByCorpus, highlightQueries, relatedTerms);
+        await renderSearchUI(groupsByCorpus, highlightQueries, relatedTerms, options);
       }));
     } catch (error) {
       if (!isAbortError(error)) {
@@ -2464,6 +2790,40 @@ if (enforceSpanishReferenceCorrespondence && enabledCorpora.has('he')) {
 
  
    function handleFilterClick(event) {
+     // Panel derecho: filtros (All / OT / NT / Libro)
+     const bxFilterBtn = event.target.closest('button[data-bx-filter]');
+     if (bxFilterBtn) {
+       const id = bxFilterBtn.dataset.bxFilter || 'all';
+       if (id === 'all') {
+         state.pagination.selectedTestament = null;
+         state.pagination.selectedBook = null;
+       } else if (id === 'ot' || id === 'nt') {
+         state.pagination.selectedTestament = id;
+         state.pagination.selectedBook = null;
+       } else if (id.startsWith('book:')) {
+         state.pagination.selectedBook = id.slice(5);
+         state.pagination.selectedTestament = null;
+       }
+       state.pagination.page = 1;
+       if (state.last?.groupsByCorpus) {
+         void renderSearchUI(state.last.groupsByCorpus || [], state.last.highlightQueries || {}, state.last.relatedTerms || {});
+       }
+       return;
+     }
+
+     // Paginación
+     const pageBtn = event.target.closest('button[data-bx-page]');
+     if (pageBtn) {
+       const nextPage = Number(pageBtn.dataset.bxPage);
+       if (!Number.isFinite(nextPage) || nextPage < 1) return;
+       state.pagination.page = nextPage;
+       if (state.last?.groupsByCorpus) {
+         void renderSearchUI(state.last.groupsByCorpus || [], state.last.highlightQueries || {}, state.last.relatedTerms || {});
+       }
+       return;
+     }
+
+     // Botones superiores por corpus (Torah/Profetas/Evangelios/etc.)
      const button = event.target.closest('button[data-filter]');
      if (!button) return;
      state.filter = button.dataset.filter || 'todo';
@@ -2477,11 +2837,16 @@ if (enforceSpanishReferenceCorrespondence && enabledCorpora.has('he')) {
        }
      });
 
-  if (state.last?.groupsByCorpus) {
-      renderResults(state.last.groupsByCorpus || [], state.last.highlightQueries || {}, state.last.relatedTerms || {});
+     // Al cambiar de categoría, volvemos a "All" (pero mantenemos el panel a la derecha)
+     state.pagination.page = 1;
+     state.pagination.selectedTestament = null;
+     state.pagination.selectedBook = null;
+
+     if (state.last?.groupsByCorpus) {
+       void renderSearchUI(state.last.groupsByCorpus || [], state.last.highlightQueries || {}, state.last.relatedTerms || {});
      }
    }
- 
+
 function handleLanguageScopeChange(event) {
     const value = String(event?.target?.value || 'auto');
     state.languageScope = (value === 'es' || value === 'gr' || value === 'he' || value === 'all') ? value : 'auto';
