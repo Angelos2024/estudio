@@ -895,8 +895,7 @@ function containsHebrewTokenPhrase(normalizedVerse, phrase) {
     return filtered;
   }
   async function getRefsForQuery(term, lang, index, options = {}) {
-    var isCompoundQuery = /\s/.test(String(term||'').trim());
-    var normalized = normalizeByLang(term, lang);
+    const normalized = normalizeByLang(term, lang);
 
     if (!normalized) return [];
 
@@ -2444,6 +2443,10 @@ bookList.className = 'mt-2 d-grid gap-1';
      const aliasCandidates = isCompoundQuery ? { es: [], gr: [], he: [], lxx: [] } : getAliasCandidates(term, lang);
       const equivalenceTerms = isCompoundQuery ? { es: [], gr: [], he: [], lxx: [] } : getEquivalenceSearchTerms(term, lang);
       const normalized = normalizeByLang(term, lang);
+      const canCrossDisplay = (!isCompoundQuery) && (lang === 'es') && (selectedScope === 'gr' || selectedScope === 'he');
+      // Para búsquedas de una sola palabra: si el usuario cambió a gr/he, seguimos buscando en ES para no perder el NT,
+      // y usamos equivalencias solo para resaltar / abrir en el idioma elegido.
+      const searchLang = canCrossDisplay ? 'es' : (isCompoundQuery ? selectedScope : lang);
 
 
       let entry = null;
