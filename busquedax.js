@@ -512,8 +512,8 @@ async function loadTrilingualEquivalences(options = {}) {
   Object.entries(data?.by_es || {}).forEach(([esWord, payload]) => {
     const key = normalizeSpanishPhrase(esWord);
     if (!key) return;
-    const gr = new Set((payload?.gr || []).map((item) => normalizeGreek(item)).filter(Boolean));
-    const he = new Set((payload?.he || []).map((item) => normalizeHebrew(item)).filter(Boolean));
+    const gr = new Set((payload?.gr || []).map((item) => normalizePhraseByLang(item, 'gr')).filter(Boolean));
+    const he = new Set((payload?.he || []).map((item) => normalizePhraseByLang(item, 'he')).filter(Boolean));
     byEs.set(key, { gr, he });
   });
 
@@ -613,22 +613,69 @@ function getEquivalenceSearchTerms(term, langHint = detectLang(term)) {
   const result = { es: new Set(), gr: new Set(), he: new Set() };
   if (!state.trilingualEquiv) return result;
 
-  const normalizedPhrase = normalizePhraseByLang(term, langHint);
+  const addMatch = (match) => {
+    if (!match) return;
+    match.gr?.forEach((item) => result.gr.add(item));
+    match.he?.forEach((item) => result.he.add(item));
+  };
+
   const tokens = getPhraseTokensForLang(term, langHint);
-  const sourceUnits = [...new Set([normalizedPhrase, ...tokens].filter(Boolean))];
-  if (!sourceUnits.length) return result;
+  const normalizedKey = normalizeByLang(term, langHint);
+  const normalizedPhrase = normalizePhraseByLang(term, langHint);
 
   if (langHint === 'es') {
-    sourceUnits.forEach((unit) => {
-     const directKey = normalizeSpanishPhrase(unit || '');
+    const phraseKey = normalizeSpanishPhrase(term || '');
+    const isMultiWord = phraseKey.includes(' ') || tokens.length >= 2;
+
+    // 1) Prefer exact phrase equivalence (supports typos via closest match)
+    if (phraseKey) {
+      const phraseMatch = state.trilingualByEs.get(phraseKey)
+        || state.trilingualByEs.get(resolveClosestSpanishEquivalenceToken(phraseKey));
+      if (phraseMatch) {
+        addMatch(phraseMatch);
+        return result;
+      }
+    }
+
+    // 2) If it's multi-word and there's no phrase mapping, build a composite phrase
+    // (avoid searching each word separately => avoids false positives).
+    if (isMultiWord) {
+      const meaningfulTokens = tokens.filter((t) => t && !stopwords.has(t));
+      const buildComposite = (targetLang) => {
+        if (meaningfulTokens.length < 2) return null;
+        const parts = [];
+        for (const token of meaningfulTokens) {
+          const key = normalizeSpanishPhrase(token);
+          const match = state.trilingualByEs.get(key)
+            || state.trilingualByEs.get(resolveClosestSpanishEquivalenceToken(token));
+          const candidates = match?.[targetLang];
+          const candidate = candidates && candidates.size ? [...candidates][0] : null;
+          if (!candidate) return null;
+          parts.push(candidate);
+        }
+        return parts.length ? parts.join(' ') : null;
+      };
+
+      const compositeGr = buildComposite('gr');
+      const compositeHe = buildComposite('he');
+      if (compositeGr) result.gr.add(compositeGr);
+      if (compositeHe) result.he.add(compositeHe);
+      return result;
+    }
+
+    // 3) Single-word fallback: token-level mapping is fine.
+    tokens.forEach((unit) => {
+      const directKey = normalizeSpanishPhrase(unit || '');
       const match = state.trilingualByEs.get(directKey)
         || state.trilingualByEs.get(resolveClosestSpanishEquivalenceToken(unit));
-     if (!match) return;
-      match.gr.forEach((item) => result.gr.add(item));
-      match.he.forEach((item) => result.he.add(item));
+      addMatch(match);
     });
     return result;
   }
+
+  // Hebrew/Greek input: map to Spanish bridge using normalized keys (no spaces)
+  const sourceUnits = [...new Set([normalizedKey, normalizedPhrase, ...tokens].filter(Boolean))];
+  if (!sourceUnits.length) return result;
 
   const spanishBridge = new Set();
   const sourceMap = langHint === 'he' ? state.trilingualByHe : state.trilingualByGr;
@@ -641,13 +688,12 @@ function getEquivalenceSearchTerms(term, langHint = detectLang(term)) {
   spanishBridge.forEach((esWord) => {
     result.es.add(esWord);
     const match = state.trilingualByEs.get(esWord);
-    if (!match) return;
-    match.gr.forEach((item) => result.gr.add(item));
-    match.he.forEach((item) => result.he.add(item));
+    addMatch(match);
   });
+
   return result;
 }
-  function pickPreferredHebrewAlias(candidates = []) {
+function pickPreferredHebrewAlias(candidates = []) {
     if (!Array.isArray(candidates) || !candidates.length) return null;
     return candidates.find((item) => item === 'יהושע')
       || candidates.find((item) => item === 'ישוע')
@@ -692,13 +738,16 @@ function getEquivalenceSearchTerms(term, langHint = detectLang(term)) {
       .replace(/\s+/g, ' ')
       .trim();
   }
-  function getNormalizedQueryTokens(term, lang, minLength = 3) {
+  function getNormalizedQueryTokens(term, lang, minLength) {
+    const effectiveMinLength = Number.isFinite(minLength)
+      ? minLength
+      : ((lang === 'he' || lang === 'gr' || lang === 'lxx') ? 2 : 3);
     return String(term || '')
       .split(/\s+/)
       .map((token) => normalizeByLang(token, lang).trim())
-      .filter((token) => token.length >= minLength);
+      .filter((token) => token.length >= effectiveMinLength);
   }
-  function getRefsForTokenByLang(lang, token, index) {
+function getRefsForTokenByLang(lang, token, index) {
     if (!token) return [];
     if (lang === 'gr') return getGreekRefs(token, index);
     if (lang === 'he') return getHebrewRefs(token, index);
@@ -1961,6 +2010,7 @@ bookList.className = 'mt-2 d-grid gap-1';
       const lang = detectLang(term);
       const selectedScope = getLanguageScope(term);
      const enabledCorpora = new Set(getCorporaForScope(selectedScope));
+      const isMultiWordQuery = String(term || '').trim().split(/\s+/).filter(Boolean).length >= 2;
       await loadTrilingualEquivalences(options);
      const aliasCandidates = getAliasCandidates(term, lang);
       const equivalenceTerms = getEquivalenceSearchTerms(term, lang);
@@ -2209,7 +2259,7 @@ for (const token of esSearchTokens) {
         hebrewCandidate = await buildHebrewCandidateFromLxxRefs(lxxMatches.refs, options);
       }
       (equivalenceTerms.he || []).forEach((item) => hebrewSearchTerms.add(item));
-if (hebrewCandidate?.normalized) {
+      if (hebrewCandidate?.normalized && !isMultiWordQuery) {
         hebrewSearchTerms.add(hebrewCandidate.normalized);
       }
       const heIndex = await heIndexPromise;
