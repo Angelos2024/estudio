@@ -1526,6 +1526,7 @@ function setFromUrl(){
 
   if(bk) currentBookSlug = normalizeBookSlugInput(bk, nm || currentBookName) || currentBookSlug;
   if(view === 'interlinear') viewMode = 'interlinear';
+  if(view === 'parallel') viewMode = 'parallel';
   if(nm) currentBookName = nm.trim();
   if(q) searchInput.value = q;
   if(v) versionSelect.value = v;
