@@ -794,21 +794,46 @@ return getSpanishRefs(token, index);
   }
   function getSpanishRefs(normalized, index) {
     if (!normalized) return [];
-    const direct = index.tokens?.[normalized] || [];
+    const tokensMap = index.tokens || {};
+    const direct = tokensMap[normalized] || [];
     const refs = direct.slice();
     const seen = new Set(refs);
 
-    Object.entries(index.tokens || {}).forEach(([token, matches]) => {
-      if (!token || token === normalized || !token.includes(normalized)) return;
-      (matches || []).forEach((ref) => {
-        if (seen.has(ref)) return;
+    // Rendimiento: buckets por prefijo (2 letras) construidos una sola vez.
+    if (!index.__tokenBucketsBuilt) {
+      const buckets = new Map();
+      Object.keys(tokensMap).forEach((tok) => {
+        const t = String(tok || '');
+        if (!t) return;
+        const key = t.slice(0, 2);
+        if (!buckets.has(key)) buckets.set(key, []);
+        buckets.get(key).push(t);
+      });
+      index.__tokenBuckets = buckets;
+      index.__tokenBucketsBuilt = true;
+    }
+
+    const buckets = index.__tokenBuckets || new Map();
+    const prefixKey = normalized.slice(0, 2);
+    const candidates = buckets.get(prefixKey) || [];
+
+    // Coincidencia parcial: token que contiene el término (mar => marcos, marítimo, etc.)
+    for (let i = 0; i < candidates.length; i += 1) {
+      const token = candidates[i];
+      if (!token || token === normalized) continue;
+      if (!token.includes(normalized)) continue;
+      const matches = tokensMap[token] || [];
+      for (let j = 0; j < matches.length; j += 1) {
+        const ref = matches[j];
+        if (seen.has(ref)) continue;
         seen.add(ref);
         refs.push(ref);
-      });
-    });
+      }
+    }
 
     return refs;
   }
+
   function containsHebrewTokenPhrase(normalizedVerse, phrase) {
     const verseTokens = String(normalizedVerse || '').split(/\s+/).filter(Boolean);
     const phraseTokens = String(phrase || '').split(/\s+/).filter(Boolean);
@@ -1860,7 +1885,13 @@ function mapLxxRefsToHebrewRefs(refs) {
           const verses = await loadChapterText(lang, book, chapter, options);
           versesNeeded.forEach((v) => {
             const canonicalRef = `${book}|${chapter}|${v}`;
-            const text = verses?.[v - 1] || '';
+            let text = '';
+            if (Array.isArray(verses)) {
+              text = verses[v - 1] || '';
+            } else if (verses && typeof verses === 'object') {
+              text = verses[v] || verses[String(v)] || verses[String(v - 1)] || '';
+            }
+
             cache.set(canonicalRef, text);
           });
         }
@@ -1911,12 +1942,30 @@ function mapLxxRefsToHebrewRefs(refs) {
     if (resultsLoadingStage) resultsLoadingStage.hidden = true;
 
     const highlightQuery = highlightQueries?.[agg.lang] || state.last?.term || '';
-    resultsList.innerHTML = items.map((it) => `
-      <div class="bx-result-item">
-        <div class="bx-ref">${escapeHtml(it.ref)}</div>
-        <div class="bx-text">${highlightText(escapeHtml(it.text || ''), highlightQuery, agg.lang)}</div>
-      </div>
-    `).join('') || '<div class="muted small">Sin resultados.</div>';
+    resultsList.innerHTML = items.map((it) => {
+      const tBook = it.book;
+      const tName = prettyBookLabel(tBook);
+      const qs = new URLSearchParams();
+      qs.set('book', tBook);
+      qs.set('name', tName);
+      qs.set('search', `${it.chapter}:${it.verse}`);
+      qs.set('view', 'parallel');
+      if (state?.version) qs.set('version', String(state.version));
+      qs.set('orig', '1');
+      const openHref = `./index.html?${qs.toString()}`;
+      const safeText = it.text || '—';
+      return `
+        <div class="bx-result-item d-flex gap-2">
+          <div class="flex-grow-1">
+            <div class="bx-ref">${escapeHtml(it.ref)}</div>
+            <div class="bx-text">${highlightText(escapeHtml(safeText), highlightQuery, agg.lang)}</div>
+          </div>
+          <div class="bx-actions">
+            <a class="btn btn-primary btn-sm" href="${openHref}">Abrir</a>
+          </div>
+        </div>
+      `;
+    }).join('') || '<div class="muted small">Sin resultados.</div>';
 
     // Paginación
     const mkPageBtn = (label, page, disabled = false, active = false) => {
@@ -1954,7 +2003,7 @@ function mapLxxRefsToHebrewRefs(refs) {
     }
   }
 
-  async function renderSearchUI(groupsByCorpus, highlightQueries = {}, relatedTerms = {}, options = {}) {
+  async async function renderSearchUI(groupsByCorpus, highlightQueries = {}, relatedTerms = {}, options = {}) {
     // Si el usuario pide "Todos", caemos al modo legacy (multi-corpus)
     const scope = state.languageScope || 'auto';
     const activeLang = getActiveLangForNewUI();
@@ -1993,6 +2042,8 @@ function mapLxxRefsToHebrewRefs(refs) {
     renderFiltersPanel(agg);
     await renderResultsPage(agg, highlightQueries, options);
   }
+
+
 
 function renderResults(groupsByCorpus, highlightQueries = state.last?.highlightQueries || {}, relatedTerms = state.last?.relatedTerms || {}) {
     resultsByCorpus.innerHTML = '';
@@ -2108,6 +2159,7 @@ bookList.className = 'mt-2 d-grid gap-1';
                 p.set('search', `${item.chapter}:${item.verse}`);
                 p.set('version', 'RVR1960');
                 p.set('orig', '1');
+                p.set('view', 'parallel');
                 location.href = `./index.html?${p.toString()}`;
               });
               actions.appendChild(openBtn);
