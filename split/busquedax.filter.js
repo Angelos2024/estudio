@@ -7,11 +7,8 @@
   // -----------------------------
   function detectLang(input) {
     const s = String(input || '');
-    // Hebrew: 0590–05FF + FB1D–FB4F (presentation forms)
     const hasHebrew = /[\u0590-\u05FF\uFB1D-\uFB4F]/.test(s);
-    // Greek: 0370–03FF + 1F00–1FFF
     const hasGreek  = /[\u0370-\u03FF\u1F00-\u1FFF]/.test(s);
-
     if (hasHebrew && !hasGreek) return 'he';
     if (hasGreek && !hasHebrew) return 'gr';
     if (hasGreek && hasHebrew) return 'mixed';
@@ -28,45 +25,47 @@
     return detectLang(term);
   }
 
+  // MAIN espera esto:
+  // getCorporaForScope('gr') -> ['gr','lxx']
+  // getCorporaForScope('he') -> ['he']
+  // getCorporaForScope('es') -> ['es']
+  // getCorporaForScope('all')-> ['es','he','gr','lxx']
+  // getCorporaForScope('auto')-> decide luego; aquí devolvemos todos para que main haga su lógica.
+  function getCorporaForScope(scope) {
+    const s = String(scope || 'auto').toLowerCase();
+    if (s === 'gr') return ['gr', 'lxx'];
+    if (s === 'he') return ['he'];
+    if (s === 'es') return ['es'];
+    if (s === 'all') return ['es', 'he', 'gr', 'lxx'];
+    return ['es', 'he', 'gr', 'lxx'];
+  }
+
   // ---------------------------------------
   //  Equivalencias trilingües (JSON externo)
   // ---------------------------------------
-  // Guardamos mapas normalizados para lookup rápido:
-  // es -> { he:Set, gr:Set }
-  // he -> Set(es)
-  // gr -> Set(es)
   const TRI = {
     loaded: false,
     loading: null,
-    byEs: new Map(),
-    byHe: new Map(),
-    byGr: new Map()
+    byEs: new Map(), // es -> {he:Set, gr:Set}
+    byHe: new Map(), // he -> Set(es)
+    byGr: new Map()  // gr -> Set(es)
   };
 
   function _safeNormalizeEs(s) {
     s = String(s || '').trim().toLowerCase();
-    // quitar acentos sin depender de normalizeSpanish (pero si existe, úsala)
-    try {
-      if (typeof window.normalizeSpanish === 'function') return window.normalizeSpanish(s);
-    } catch (_) {}
+    try { if (typeof window.normalizeSpanish === 'function') return window.normalizeSpanish(s); } catch (_) {}
     return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   }
 
   function _safeNormalizeHe(s) {
     s = String(s || '').trim();
-    try {
-      if (typeof window.normalizeHebrew === 'function') return window.normalizeHebrew(s);
-    } catch (_) {}
-    // fallback: quitar niqqud + cantillation
+    try { if (typeof window.normalizeHebrew === 'function') return window.normalizeHebrew(s); } catch (_) {}
     return s.replace(/[\u0591-\u05BD\u05BF\u05C1-\u05C2\u05C4-\u05C7]/g, '');
   }
 
   function _safeNormalizeGr(s) {
     s = String(s || '').trim().toLowerCase();
-    try {
-      if (typeof window.normalizeGreek === 'function') return window.normalizeGreek(s);
-    } catch (_) {}
-    // fallback: quitar diacríticos combinados
+    try { if (typeof window.normalizeGreek === 'function') return window.normalizeGreek(s); } catch (_) {}
     return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   }
 
@@ -98,9 +97,7 @@
     const signal = options.signal;
 
     TRI.loading = (async () => {
-      // Ruta local (GitHub Pages / servidor)
       const localUrl = './diccionario/equivalencias_trilingue.min.json';
-      // Ruta raw (por si alguien abre el html desde otro path, o para pruebas)
       const rawUrl = 'https://raw.githubusercontent.com/Angelos2024/estudio/refs/heads/main/diccionario/equivalencias_trilingue.min.json';
 
       async function fetchJson(url) {
@@ -113,17 +110,12 @@
       try {
         data = await fetchJson(localUrl);
       } catch (e1) {
-        // intenta raw como fallback
         data = await fetchJson(rawUrl);
       }
 
-      // Resetea (por si se vuelve a llamar)
       TRI.byEs.clear(); TRI.byHe.clear(); TRI.byGr.clear();
 
-      // Soportamos varias formas de estructura:
-      // - Array de objetos: { es:[], he:[], gr:[] } o {es:"", he:"", gr:""}
-      // - Array de arrays: [es, he, gr]
-      // - Objeto: { "esTerm": { he:[...], gr:[...] } }
+      // soporta array/objeto de varias formas
       if (Array.isArray(data)) {
         for (const row of data) {
           if (!row) continue;
@@ -138,17 +130,11 @@
           const esList = Array.isArray(esVals) ? esVals : (esVals ? [esVals] : []);
           const heList = Array.isArray(heVals) ? heVals : (heVals ? [heVals] : []);
           const grList = Array.isArray(grVals) ? grVals : (grVals ? [grVals] : []);
-
-          // genera todas las combinaciones razonables
           for (const esTerm of esList) {
             if (!heList.length && !grList.length) continue;
-            if (!heList.length) {
-              for (const grTerm of grList) _addEquivalence(esTerm, '', grTerm);
-            } else if (!grList.length) {
-              for (const heTerm of heList) _addEquivalence(esTerm, heTerm, '');
-            } else {
-              for (const heTerm of heList) for (const grTerm of grList) _addEquivalence(esTerm, heTerm, grTerm);
-            }
+            if (!heList.length) for (const grTerm of grList) _addEquivalence(esTerm, '', grTerm);
+            else if (!grList.length) for (const heTerm of heList) _addEquivalence(esTerm, heTerm, '');
+            else for (const heTerm of heList) for (const grTerm of grList) _addEquivalence(esTerm, heTerm, grTerm);
           }
         }
       } else if (data && typeof data === 'object') {
@@ -156,15 +142,10 @@
           if (!v) continue;
           const heList = Array.isArray(v.he) ? v.he : (v.he ? [v.he] : (Array.isArray(v.hebreo) ? v.hebreo : (v.hebreo ? [v.hebreo] : [])));
           const grList = Array.isArray(v.gr) ? v.gr : (v.gr ? [v.gr] : (Array.isArray(v.griego) ? v.griego : (v.griego ? [v.griego] : [])));
-
           if (!heList.length && !grList.length) continue;
-          if (!heList.length) {
-            for (const grTerm of grList) _addEquivalence(esTerm, '', grTerm);
-          } else if (!grList.length) {
-            for (const heTerm of heList) _addEquivalence(esTerm, heTerm, '');
-          } else {
-            for (const heTerm of heList) for (const grTerm of grList) _addEquivalence(esTerm, heTerm, grTerm);
-          }
+          if (!heList.length) for (const grTerm of grList) _addEquivalence(esTerm, '', grTerm);
+          else if (!grList.length) for (const heTerm of heList) _addEquivalence(esTerm, heTerm, '');
+          else for (const heTerm of heList) for (const grTerm of grList) _addEquivalence(esTerm, heTerm, grTerm);
         }
       }
 
@@ -175,16 +156,10 @@
     return TRI.loading;
   }
 
-  // Devuelve tokens equivalentes para resaltar/buscar cruzado:
-  // { es:[], he:[], gr:[], lxx:[] }
-  function getEquivalenceSearchTerms(term, lang, options = {}) {
+  function getEquivalenceSearchTerms(term, lang) {
     const out = { es: [], he: [], gr: [], lxx: [] };
     const t = String(term || '').trim();
-    if (!t) return out;
-
-    // Si aún no cargó, no tiramos error: solo devolvemos vacío.
-    // (loadTrilingualEquivalences se llama desde analyze normalmente)
-    if (!TRI.loaded) return out;
+    if (!t || !TRI.loaded) return out;
 
     if (lang === 'es') {
       const key = _safeNormalizeEs(t);
@@ -192,7 +167,7 @@
       if (entry) {
         out.he = Array.from(entry.he);
         out.gr = Array.from(entry.gr);
-        out.lxx = Array.from(entry.gr); // LXX usa griego
+        out.lxx = Array.from(entry.gr);
       }
       return out;
     }
@@ -219,10 +194,8 @@
   // -----------------------------
   window.detectLang = detectLang;
   window.getLanguageScope = getLanguageScope;
+  window.getCorporaForScope = getCorporaForScope;
   window.loadTrilingualEquivalences = loadTrilingualEquivalences;
   window.getEquivalenceSearchTerms = getEquivalenceSearchTerms;
-
-  // (Opcional) expone el objeto interno por debug
   window.__BX_TRILINGUAL = TRI;
-
 })();
