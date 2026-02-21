@@ -558,6 +558,56 @@ function getPhraseTokensForLang(term, lang) {
     .map((token) => token.trim())
     .filter(Boolean);
 }
+function levenshteinDistance(a, b) {
+  const left = String(a || '');
+  const right = String(b || '');
+  if (!left) return right.length;
+  if (!right) return left.length;
+
+  const rows = left.length + 1;
+  const cols = right.length + 1;
+  const matrix = Array.from({ length: rows }, () => new Array(cols).fill(0));
+
+  for (let i = 0; i < rows; i += 1) matrix[i][0] = i;
+  for (let j = 0; j < cols; j += 1) matrix[0][j] = j;
+
+  for (let i = 1; i < rows; i += 1) {
+    for (let j = 1; j < cols; j += 1) {
+      const substitutionCost = left[i - 1] === right[j - 1] ? 0 : 1;
+      matrix[i][j] = Math.min(
+        matrix[i - 1][j] + 1,
+        matrix[i][j - 1] + 1,
+        matrix[i - 1][j - 1] + substitutionCost
+      );
+    }
+  }
+
+  return matrix[left.length][right.length];
+}
+
+function resolveClosestSpanishEquivalenceToken(unit) {
+  const token = normalizeSpanish(unit || '');
+  if (!token || !state.trilingualByEs?.size) return null;
+  if (state.trilingualByEs.has(token)) return token;
+  if (token.length < 5) return null;
+
+  const maxDistance = token.length >= 8 ? 2 : 1;
+  let best = null;
+  let bestDistance = Infinity;
+
+  state.trilingualByEs.forEach((_, key) => {
+    if (!key) return;
+    if (Math.abs(key.length - token.length) > maxDistance) return;
+    if (bestDistance <= 1 && key[0] !== token[0]) return;
+
+    const distance = levenshteinDistance(token, key);
+    if (distance > maxDistance || distance >= bestDistance) return;
+    bestDistance = distance;
+    best = key;
+  });
+
+  return bestDistance <= maxDistance ? best : null;
+}
 
 function getEquivalenceSearchTerms(term, langHint = detectLang(term)) {
   const result = { es: new Set(), gr: new Set(), he: new Set() };
@@ -570,8 +620,10 @@ function getEquivalenceSearchTerms(term, langHint = detectLang(term)) {
 
   if (langHint === 'es') {
     sourceUnits.forEach((unit) => {
-      const match = state.trilingualByEs.get(unit);
-      if (!match) return;
+     const directKey = normalizeSpanish(unit || '');
+      const match = state.trilingualByEs.get(directKey)
+        || state.trilingualByEs.get(resolveClosestSpanishEquivalenceToken(unit));
+     if (!match) return;
       match.gr.forEach((item) => result.gr.add(item));
       match.he.forEach((item) => result.he.add(item));
     });
