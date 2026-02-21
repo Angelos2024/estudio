@@ -2052,6 +2052,7 @@ bookList.className = 'mt-2 d-grid gap-1';
       let strictGreekPhrases = [];
       let strictLxxPhrases = [];
       let strictHebrewPhrase = null;
+      let strictHebrewDisplayPhrase = null;
 
       if (isEsPhraseQuery && esContentTokens.length >= 2 && state.trilingualByEs?.size) {
         const pickEquiv = (token) => {
@@ -2070,7 +2071,12 @@ bookList.className = 'mt-2 d-grid gap-1';
         if (firstEquiv?.he?.size && lastEquiv?.he?.size) {
           const heFirst = [...firstEquiv.he].find((t) => t === 'בן') || [...firstEquiv.he][0];
           const heLast = [...lastEquiv.he].find((t) => t === 'אדם') || [...lastEquiv.he][0];
-          if (heFirst && heLast) strictHebrewPhrase = `${heFirst} ${heLast}`;
+          if (heFirst && heLast) {
+            strictHebrewDisplayPhrase = `${heFirst} ${heLast}`;
+            // OJO: en muchos textos hebreos "בן־אדם" se indexa como un solo token (sin espacios/maqaf).
+            // Por eso buscamos como token compuesto ("בןאדם"), pero mostramos con espacio.
+            strictHebrewPhrase = `${heFirst}${heLast}`;
+          }
         }
 
         // Griego: variantes de frase estricta (p.ej. "υιοσ του ανθρωπου")
@@ -2356,11 +2362,12 @@ if (enforceSpanishReferenceCorrespondence && enabledCorpora.has('lxx')) {
       if (useStrictHebrewPhrase) {
         hebrewCandidate = {
           normalized: strictHebrewPhrase,
-          word: strictHebrewPhrase,
-          transliteration: transliterateHebrew(strictHebrewPhrase)
+          word: strictHebrewDisplayPhrase || strictHebrewPhrase,
+          transliteration: transliterateHebrew(strictHebrewDisplayPhrase || strictHebrewPhrase)
         };
         hebrewSearchTerms.clear();
         hebrewSearchTerms.add(strictHebrewPhrase);
+        if (strictHebrewDisplayPhrase) hebrewSearchTerms.add(strictHebrewDisplayPhrase);
       } else if (lang === 'he') {
         hebrewCandidate = {
           normalized,
@@ -2402,7 +2409,12 @@ if (enforceSpanishReferenceCorrespondence && enabledCorpora.has('he')) {
       } else if (enabledCorpora.has('he') && heIndex && hebrewSearchTerms.size) {
  const seen = new Set();
           for (const token of hebrewSearchTerms) {
-          const matches = await getRefsForQuery(token, 'he', heIndex, options);
+          let matches = await getRefsForQuery(token, 'he', heIndex, options);
+          // Si estamos en modo frase estricta (p.ej. "hijo del hombre" → "בןאדם"),
+          // filtramos por la frase visible ("בן אדם") para evitar falsos positivos por substring.
+          if (useStrictHebrewPhrase && strictHebrewDisplayPhrase && token === strictHebrewPhrase) {
+            matches = await filterRefsByPhrase(matches, 'he', strictHebrewDisplayPhrase, options);
+          }
           matches.forEach((ref) => {
             if (seen.has(ref)) return;
             seen.add(ref);
