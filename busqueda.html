@@ -125,11 +125,19 @@
   
     .bx-sticky-filters{ position:sticky; top:84px; }
     .bx-filter-group-title{ font-size:.85rem; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; }
-    .bx-filter-item{ display:flex; align-items:center; justify-content:space-between; gap:.75rem; width:100%; border:1px solid var(--bd); background:color-mix(in srgb, var(--soft-bg) 70%, #ffffff); padding:.5rem .65rem; border-radius:12px; }
+    .bx-filter-item{ display:flex; align-items:center; justify-content:space-between; gap:.5rem; width:100%; border:1px solid var(--bd); background:color-mix(in srgb, var(--soft-bg) 70%, #ffffff); padding:.32rem .5rem; border-radius:10px; font-size:.92rem; line-height:1.15; }
     .bx-filter-item:hover{ background:var(--soft-hover); }
     .bx-filter-item.is-active{ outline:2px solid var(--outline); }
     .bx-filter-item .bx-count{ font-size:.85rem; color:var(--muted); }
-    .bx-result-item{ border:1px solid var(--bd); background:color-mix(in srgb, var(--surface) 85%, #ffffff); border-radius:14px; padding:.75rem .85rem; }
+    .bx-filter-subgroup-title{ font-size:.78rem; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin-top:.35rem; margin-bottom:.15rem; padding-left:.25rem; }
+.bx-filter-subgroup-title.is-torah{ border-left:3px solid color-mix(in srgb, var(--primary) 55%, #d97706); padding-left:.45rem; }
+.bx-filter-subgroup-title.is-gospels{ border-left:3px solid color-mix(in srgb, var(--primary) 55%, #16a34a); padding-left:.45rem; }
+.bx-filter-item.bx-book--torah{ border-left:3px solid color-mix(in srgb, var(--primary) 55%, #d97706); }
+.bx-filter-item.bx-book--gospels{ border-left:3px solid color-mix(in srgb, var(--primary) 55%, #16a34a); }
+.bx-filter-item.bx-testament--ot{ font-weight:650; }
+.bx-filter-item.bx-testament--nt{ font-weight:650; }
+.bx-filter-item .bx-count{ font-size:.8rem; }
+.bx-result-item{ border:1px solid var(--bd); background:color-mix(in srgb, var(--surface) 85%, #ffffff); border-radius:14px; padding:.75rem .85rem; }
     .bx-result-item .bx-ref{ font-weight:700; }
     .bx-result-item .bx-text{ margin-top:.35rem; }
      /* Sidebar más angosta */
