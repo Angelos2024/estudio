@@ -432,10 +432,6 @@ function normalizeSpanish(text) {
 
   function buildTokenRegex(token, lang) {
     const escaped = String(token || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    if (!escaped) return null;
-
-    // Marcas/diacríticos (combining marks) para griego/hebreo
-    const MARKS = '(?:[\\u0300-\\u036f\\u0591-\\u05BD\\u05BF\\u05C1-\\u05C2\\u05C4-\\u05C7])*';
 
     if (lang === 'es') {
       const accentMap = {
@@ -447,46 +443,66 @@ function normalizeSpanish(text) {
         n: '[nñ]'
       };
       const pattern = escaped.split('').map((ch) => accentMap[ch] || ch).join('');
-      return new RegExp(pattern, 'gi');
+      return new RegExp(pattern, 'giu');
     }
 
     const letters = [];
     for (const ch of escaped) {
-      // soporte sigma final
-      if ((lang === 'gr' || lang === 'lxx') && ch === 'σ') {
+      if (ch === '\\') continue;
+      if ((lang === 'gr' || lang === 'lxx') && ch === 'σ') letters.push('[σς]');
+      else letters.push(ch);
+    }
+
+    const pattern = letters.map((letter) => `${letter}[\\u0300-\\u036F\\u0591-\\u05BD\\u05BF\\u05C1-\\u05C2\\u05C4-\\u05C7]*`).join('');
+    return new RegExp(pattern, 'giu');
+  };
+      const pattern = escaped.split('').map((ch) => accentMap[ch] || ch).join('');
+      return new RegExp(pattern, 'giu');
+    }
+
+    const letters = [];
+    for (const ch of escaped) {
+      if (ch === '\\') continue;
+       if ((lang === 'gr' || lang === 'lxx') && ch === 'σ') {
         letters.push('[σς]');
       } else {
         letters.push(ch);
       }
     }
-    const pattern = letters.map((letter) => `${letter}${MARKS}`).join('');
-    return new RegExp(pattern, 'gi');
+    const pattern = letters.map((letter) => `${letter}\[\\u0300-\\u036F\\u0591-\\u05BD\\u05BF\\u05C1-\\u05C2\\u05C4-\\u05C7]*`).join('');
+    return new RegExp(pattern, 'giu');
   }
 
   function buildPhraseRegex(tokens, lang) {
     const parts = (tokens || []).map((t) => String(t || '').trim()).filter(Boolean);
     if (!parts.length) return null;
 
-    const MARKS = '(?:[\\u0300-\\u036f\\u0591-\\u05BD\\u05BF\\u05C1-\\u05C2\\u05C4-\\u05C7])*';
-    const joiner = lang === 'he' ? '(?:\\s+|\\u05BE|-)+' : '(?:\\s+)+';
+    const joiner = (lang === 'he') ? '(?:\\s+|\\u05BE|\\-)+' : '(?:\\s+)+';
 
     const tokenPatterns = parts.map((token) => {
-      const esc = token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const escaped = String(token || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       const letters = [];
-      for (const ch of esc) {
-        if ((lang === 'gr' || lang === 'lxx') && ch === 'σ') {
-          letters.push('[σς]');
-        } else {
-          letters.push(ch);
-        }
+      for (const ch of escaped) {
+        if (ch === '\\') continue;
+        if ((lang === 'gr' || lang === 'lxx') && ch === 'σ') letters.push('[σς]');
+        else letters.push(ch);
       }
-      return letters.map((letter) => `${letter}${MARKS}`).join('');
+      return letters.map((letter) => `${letter}[\\u0300-\\u036F\\u0591-\\u05BD\\u05BF\\u05C1-\\u05C2\\u05C4-\\u05C7]*`).join('');
     });
 
     const core = tokenPatterns.join(joiner);
-    // Sin límites por \p{} para compatibilidad (evita "Invalid escape" en navegadores sin Unicode property escapes)
-    return new RegExp(core, 'gi');
+    return new RegExp(core, 'giu');
+  } else {
+          letters.push(ch);
+        }
+      }
+      return letters.map((letter) => `${letter}\[\\u0300-\\u036F\\u0591-\\u05BD\\u05BF\\u05C1-\\u05C2\\u05C4-\\u05C7]*`).join('');
+    });
+
+    const core = tokenPatterns.join(joiner);
+    return new RegExp(`(^|[^\[A-Za-z\u0370-\u03FF\u1F00-\u1FFF\u0590-\u05FF]\[\\u0300-\\u036F\\u0591-\\u05BD\\u05BF\\u05C1-\\u05C2\\u05C4-\\u05C7]])(${core})(?![\[A-Za-z\u0370-\u03FF\u1F00-\u1FFF\u0590-\u05FF]\[\\u0300-\\u036F\\u0591-\\u05BD\\u05BF\\u05C1-\\u05C2\\u05C4-\\u05C7]])`, 'giu');
   }
+
 
   function highlightText(text, query, lang) {
     const raw = String(text ?? '');
@@ -517,7 +533,10 @@ if (lang === 'he') {
   if (phraseRegexes.length) {
     let output = highlightSource;
     for (const re of phraseRegexes) {
-      output = output.replace(re, (match) => `<mark class="phrase">${match}</mark>`);
+      output = output.replace(
+        re,
+        (match, lead, coreText) => `${lead}<mark class="phrase">${coreText}</mark>`
+      );
     }
     return output;
   }
@@ -534,7 +553,6 @@ if (lang === 'he') {
     let output = highlightSource;
    for (const token of tokens) {
       const re = buildTokenRegex(token, lang);
-      if (!re) continue;
       output = output.replace(re, (match) => `<mark>${match}</mark>`);
     }
     return output;
@@ -556,7 +574,7 @@ function detectLang(text) {
     const esTokens = String(term || '')
       .toLowerCase()
       .normalize('NFD')
-      .replace(/\p{M}/gu, '')
+      .replace(/[\u0300-\u036F\u0591-\u05BD\u05BF\u05C1-\u05C2\u05C4-\u05C7]/g, '')
       .split(/\s+/)
       .filter(Boolean);
     const sourceTokens = langHint === 'he'
@@ -770,7 +788,7 @@ function getEquivalenceSearchTerms(term, langHint = detectLang(term)) {
       return String(text || '')
         .toLowerCase()
         .normalize('NFD')
-        .replace(/\p{M}/gu, '')
+        .replace(/[\u0300-\u036F\u0591-\u05BD\u05BF\u05C1-\u05C2\u05C4-\u05C7]/g, '')
         .replace(/[··.,;:!?(){}\[\]<>«»]/g, ' ')
         .replace(/ς/g, 'σ')
         .replace(/\s+/g, ' ')
