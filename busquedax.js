@@ -2602,17 +2602,24 @@ for (const token of esSearchTokens) {
       const grIndex = await grIndexPromise;
       throwIfAborted(options.signal);
  let grRefs = [];
-      if (enabledCorpora.has('gr') && grIndex && greekSearchTerms.size) {
-        const seen = new Set();
-        for (const token of greekSearchTerms) {
-          const matches = await getRefsForQuery(token, 'gr', grIndex, options);
-          matches.forEach((ref) => {
-            if (seen.has(ref)) return;
-            seen.add(ref);
-            grRefs.push(ref);
-          });
+      if (enabledCorpora.has('gr') && grIndex) {
+        const isPhraseQuery = /\s/.test(String(term || '').trim());
+        if (lang === 'gr' && isPhraseQuery) {
+          // ✅ Búsqueda de frase en griego: intersecta tokens y filtra por frase en el mismo idioma
+          grRefs = await getRefsForQuery(term, 'gr', grIndex, options);
+        } else if (greekSearchTerms.size) {
+          const seen = new Set();
+          for (const token of greekSearchTerms) {
+            const matches = await getRefsForQuery(token, 'gr', grIndex, options);
+            matches.forEach((ref) => {
+              if (seen.has(ref)) return;
+              seen.add(ref);
+              grRefs.push(ref);
+            });
+          }
         }
       }
+
      if (enforceSpanishReferenceCorrespondence && enabledCorpora.has('gr')) {
         grRefs = esNtRefs.slice();
       }
@@ -2693,7 +2700,16 @@ if (enforceSpanishReferenceCorrespondence && enabledCorpora.has('he')) {
         esOtRefs.forEach((ref) => heRefs.push(ref));
       } else if (enabledCorpora.has('he') && heIndex) {
         const seen = new Set();
-        if (hebrewPhraseQueries.length) {
+        const isPhraseQuery = /\s/.test(String(term || '').trim());
+        if (lang === 'he' && isPhraseQuery) {
+          // ✅ Búsqueda de frase en hebreo: intersecta tokens y filtra por frase en el mismo idioma
+          const matches = await getRefsForQuery(term, 'he', heIndex, options);
+          matches.forEach((ref) => {
+            if (seen.has(ref)) return;
+            seen.add(ref);
+            heRefs.push(ref);
+          });
+        } else if (hebrewPhraseQueries.length) {
           for (const phrase of hebrewPhraseQueries) {
             const matches = await getRefsForQuery(phrase, 'he', heIndex, options);
             matches.forEach((ref) => {
