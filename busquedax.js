@@ -335,8 +335,8 @@ function normalizeGreek(text) {
     return [...variants];
   }
  function escapeHtml(text) {
-    return String(text ?? '')
-      .replace(/&/g, '&amp;')
+    return String(text == null ? '' : text)
+     .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
@@ -449,8 +449,8 @@ function normalizeSpanish(text) {
 
 
   function highlightText(text, query, lang) {
-    const raw = String(text ?? '');
-    const normalizedQuery = String(query ?? '').trim();
+    const raw = String(text == null ? '' : text);
+    const normalizedQuery = String(query == null ? '' : query).trim();
     if (!raw || !normalizedQuery) return escapeHtml(raw);
 
     const safe = escapeHtml(raw);
