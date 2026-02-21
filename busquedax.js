@@ -362,28 +362,6 @@ function normalizeSpanish(text) {
       .replace(/\s+/g, ' ')
       .trim();
   }
-
-
-// --- Frase flexible en español (ignora artículos/preposiciones comunes) ---
-const SPANISH_PHRASE_STOPWORDS = new Set(['de','del','el','la','los','las','al','un','una','unos','unas','y','o']);
-function tokenizeSpanishPhraseLoose(text) {
-  return normalizeSpanishPhrase(text)
-    .split(/\s+/)
-    .map((t) => t.trim())
-    .filter((t) => t && !SPANISH_PHRASE_STOPWORDS.has(t));
-}
-function hasTokenSequence(tokens, queryTokens) {
-  if (!Array.isArray(tokens) || !Array.isArray(queryTokens)) return false;
-  if (!queryTokens.length || queryTokens.length > tokens.length) return false;
-  for (let i = 0; i <= tokens.length - queryTokens.length; i += 1) {
-    let ok = true;
-    for (let j = 0; j < queryTokens.length; j += 1) {
-      if (tokens[i + j] !== queryTokens[j]) { ok = false; break; }
-    }
-    if (ok) return true;
-  }
-  return false;
-}
   function getHebrewDefinition(entry) {
     return entry?.definitions?.short || entry?.strong_detail?.definicion || entry?.descripcion || '';
   }
@@ -564,37 +542,6 @@ function detectLang(text) {
       .replace(/\s+/g, ' ')
       .trim();
   }
-
-function looksLikePsalmTitle(text, lang) {
-  const norm = normalizePhraseByLang(text || '', lang);
-  if (!norm) return false;
-  if (lang === 'he') {
-    return norm.startsWith('למנצח') || norm.startsWith('מזמור') || norm.startsWith('שיר') || norm.startsWith('לשלמה');
-  }
-  if (lang === 'lxx') {
-    return norm.startsWith('ψαλμοσ') || norm.startsWith('εις το τελος') || norm.startsWith('αλληλουια') || norm.startsWith('ωδη');
-  }
-  return false;
-}
-
-function getVerseIndexForLang(book, lang, verseNumber, verses) {
-  let idx = verseNumber - 1;
-  if (!Array.isArray(verses) || !verses.length) return idx;
-  if ((lang === 'he' || lang === 'lxx') && book === 'salmos') {
-    // Many Hebrew/LXX Psalm files include a superscription as verse 1 (array index 0).
-    // RVR1960 typically does not count that as verse 1, so we shift by +1 when detected.
-    if (looksLikePsalmTitle(verses[0], lang) && verseNumber < verses.length) {
-      idx = verseNumber;
-    }
-  }
-  return idx;
-}
-
-function getVerseTextFromChapter(lang, book, chapter, verseNumber, verses) {
-  const idx = getVerseIndexForLang(book, lang, verseNumber, verses);
-  return verses?.[idx] || '';
-}
-
   function getNormalizedQueryTokens(term, lang, minLength = 3) {
     return String(term || '')
       .split(/\s+/)
@@ -624,42 +571,30 @@ return getSpanishRefs(token, index);
 
     return refs;
   }
-  
-async function filterRefsByPhrase(refs, lang, term, options = {}) {
-  const phrase = normalizePhraseByLang(term, lang);
-  if (!phrase || !refs.length) return refs;
+  async function filterRefsByPhrase(refs, lang, term, options = {}) {
+    const phrase = normalizePhraseByLang(term, lang);
+    if (!phrase || !refs.length) return refs;
 
-  const filtered = [];
-  for (const ref of refs) {
-    throwIfAborted(options.signal);
-    const [book, chapterRaw, verseRaw] = String(ref || '').split('|');
-    const chapter = Number(chapterRaw);
-    const verse = Number(verseRaw);
-    if (!book || !Number.isFinite(chapter) || !Number.isFinite(verse)) continue;
-    try {
-      const verses = await loadChapterText(lang === 'lxx' ? 'gr' : lang, book, chapter, options);
-      const verseText = getVerseTextFromChapter(lang, book, chapter, verse, verses);
-      const normalizedVerse = normalizePhraseByLang(verseText, lang);
-
-      if (lang === 'es' && options.looseStopwords) {
-        const queryTokens = tokenizeSpanishPhraseLoose(term);
-        if (queryTokens.length < 2) {
-          if (normalizedVerse.includes(phrase)) filtered.push(ref);
-        } else {
-          const verseTokens = tokenizeSpanishPhraseLoose(verseText);
-          if (hasTokenSequence(verseTokens, queryTokens)) filtered.push(ref);
+    const filtered = [];
+    for (const ref of refs) {
+      throwIfAborted(options.signal);
+      const [book, chapterRaw, verseRaw] = String(ref || '').split('|');
+      const chapter = Number(chapterRaw);
+      const verse = Number(verseRaw);
+      if (!book || !Number.isFinite(chapter) || !Number.isFinite(verse)) continue;
+      try {
+        const verses = await loadChapterText(lang, book, chapter, options);
+        const verseText = verses?.[verse - 1] || '';
+        const normalizedVerse = normalizePhraseByLang(verseText, lang);
+        if (normalizedVerse.includes(phrase)) {
+          filtered.push(ref);
         }
-      } else if (normalizedVerse.includes(phrase)) {
-        filtered.push(ref);
+      } catch (error) {
+        if (isAbortError(error)) throw error;
       }
-    } catch (error) {
-      if (isAbortError(error)) throw error;
     }
+    return filtered;
   }
-  return filtered;
-}
-
-
   async function getRefsForQuery(term, lang, index, options = {}) {
     const normalized = normalizeByLang(term, lang);
     if (!normalized) return [];
@@ -674,7 +609,6 @@ async function filterRefsByPhrase(refs, lang, term, options = {}) {
 
     if (!tokenRefLists.length) return [];
 
-    // Intersección por tokens (comportamiento base)
     let refs = tokenRefLists[0].slice();
     for (let i = 1; i < tokenRefLists.length; i += 1) {
       const lookup = new Set(tokenRefLists[i]);
@@ -682,29 +616,12 @@ async function filterRefsByPhrase(refs, lang, term, options = {}) {
       if (!refs.length) break;
     }
 
-    // Hebreo: si el usuario escribe la frase separada por espacios (בן אדם),
-    // pero el índice tiene el token unido (בן־אדם => בןאדם), agregamos el match del token compuesto.
-    if (lang === 'he' && uniqueTokens.length >= 2) {
-      const compoundRefs = getRefsForTokenByLang('he', normalized, index) || [];
-      if (compoundRefs.length) {
-        const seen = new Set(refs);
-        compoundRefs.forEach((ref) => {
-          if (seen.has(ref)) return;
-          seen.add(ref);
-          refs.push(ref);
-        });
-      }
-    }
-
-    // Si es frase (>=2 tokens), filtramos por frase real para evitar falsos positivos.
     if (uniqueTokens.length >= 2 && refs.length) {
-      refs = await filterRefsByPhrase(refs, lang, term, { ...options, looseStopwords: lang === 'es' });
+      refs = await filterRefsByPhrase(refs, lang, term, options);
     }
-
     return refs;
   }
-
-function getGreekRefsfunction getGreekRefs(normalized, index) {
+function getGreekRefs(normalized, index) {
     if (!normalized) return [];
     const keys = buildGreekSearchKeys(normalized);
     const refs = [];
@@ -1187,31 +1104,6 @@ async function loadLxxBookData(bookCode) {
     return String(token || '').replace(/[··.,;:!?“”"(){}\[\]<>«»]/g, '');
   }
 
-// Limpia tokens hebreos: quita puntuación y trata el maqaf (־) y guiones como separador (espacio).
-function cleanHebrewToken(token) {
-  return String(token || '')
-    .replace(/[׃.,;:!?"“”(){}\[\]<>«»׳״]/g, '')
-    .replace(/[\u05BE\-\u2010-\u2015\u2212]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
-// Tokeniza hebreo separando por espacios y también por maqaf (־) para evitar falsos negativos.
-function tokenizeHebrewText(text) {
-  return String(text || '')
-    .split(/\s+/)
-    .flatMap((token) => cleanHebrewToken(token).split(/\s+/))
-    .filter(Boolean);
-}
-
-function tokenizeGreekText(text) {
-  return String(text || '')
-    .split(/\s+/)
-    .map((t) => t.trim())
-    .filter(Boolean);
-}
-
-
   async function buildGreekCandidateFromHebrewRefs(refs) {
     if (!refs.length) return null;
     const counts = new Map();
@@ -1254,7 +1146,7 @@ function tokenizeGreekText(text) {
       const verse = Number(verseRaw);
       try {
         const verses = await loadChapterText('gr', book, chapter, options);
-       const verseText = getVerseTextFromChapter('gr', book, chapter, verse, verses);
+       const verseText = verses?.[verse - 1] || '';
         const tokens = verseText.split(/\s+/).filter(Boolean);
         tokens.forEach((token) => {
           const cleaned = cleanGreekToken(token);
@@ -1395,8 +1287,8 @@ function mapLxxRefsToHebrewRefs(refs) {
       const verse = Number(verseRaw);
       try {
         const verses = await loadChapterText('he', book, chapter, options);
-        const verseText = getVerseTextFromChapter('he', book, chapter, verse, verses);
-        const tokens = tokenizeHebrewText(verseText);
+        const verseText = verses?.[verse - 1] || '';
+        const tokens = verseText.split(/\s/).filter(Boolean);
         tokens.forEach((token) => {
           const cleaned = token.replace(/[׃,:;.!?()"“”]/g, '');
           const normalized = normalizeHebrew(cleaned);
@@ -1527,7 +1419,7 @@ function mapLxxRefsToHebrewRefs(refs) {
               : '';
           } else {
             const verses = await loadChapterText(lang, book, chapter, options);
-            verseText = getVerseTextFromChapter(lang, book, chapter, verse, verses);
+            verseText = verses?.[verse - 1] || '';
           }
         } catch (error) {
           if (isAbortError(error)) throw error;
@@ -1774,7 +1666,7 @@ bookList.className = 'mt-2 d-grid gap-1';
                  : '';
              } else {
                const verses = await loadChapterText(lang, bookName, chapter, options);
-               resolvedText = getVerseTextFromChapter(lang, bookName, chapter, verse, verses);
+               resolvedText = verses?.[verse - 1] || '';
              }
              group.items.push({
                book: bookName,
@@ -1809,7 +1701,7 @@ bookList.className = 'mt-2 d-grid gap-1';
       const verse = Number(verseRaw);
       try {
         const verses = await loadChapterText('es', book, chapter, options);
-        const verseText = getVerseTextFromChapter('gr', book, chapter, verse, verses);
+        const verseText = verses?.[verse - 1] || '';
         group.items.push({
           book,
           chapter,
@@ -1853,7 +1745,7 @@ bookList.className = 'mt-2 d-grid gap-1';
       sampleRef = formatRef(book, chapter, verse);
       try {
         const verses = await loadChapterText(lang, book, chapter, options);
-        sampleText = getVerseTextFromChapter(lang, book, chapter, verse, verses);
+        sampleText = verses?.[verse - 1] || '';
         if (lang !== 'es') {
           const versesEs = await loadChapterText('es', book, chapter, options);
           sampleEs = versesEs?.[verse - 1] || '';
