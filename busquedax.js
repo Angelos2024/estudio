@@ -896,6 +896,11 @@ function containsHebrewTokenPhrase(normalizedVerse, phrase) {
   }
   async function getRefsForQuery(term, lang, index, options = {}) {
     const normalized = normalizeByLang(term, lang);
+      const canCrossDisplay = (!isCompoundQuery) && (lang === 'es') && (selectedScope === 'gr' || selectedScope === 'he');
+      // Para búsquedas de una sola palabra: si el usuario cambió a gr/he, seguimos buscando en ES para no perder el NT,
+      // y usamos equivalencias solo para resaltar / abrir en el idioma elegido.
+      const searchLang = canCrossDisplay ? 'es' : (isCompoundQuery ? selectedScope : lang);
+
     if (!normalized) return [];
 
     const tokenMinLength = lang === 'he' ? 2 : 3;
@@ -2442,6 +2447,11 @@ bookList.className = 'mt-2 d-grid gap-1';
      const aliasCandidates = isCompoundQuery ? { es: [], gr: [], he: [], lxx: [] } : getAliasCandidates(term, lang);
       const equivalenceTerms = isCompoundQuery ? { es: [], gr: [], he: [], lxx: [] } : getEquivalenceSearchTerms(term, lang);
       const normalized = normalizeByLang(term, lang);
+      const canCrossDisplay = (!isCompoundQuery) && (lang === 'es') && (selectedScope === 'gr' || selectedScope === 'he');
+      // Para búsquedas de una sola palabra: si el usuario cambió a gr/he, seguimos buscando en ES para no perder el NT,
+      // y usamos equivalencias solo para resaltar / abrir en el idioma elegido.
+      const searchLang = canCrossDisplay ? 'es' : (isCompoundQuery ? selectedScope : lang);
+
 
       let entry = null;
       let hebrewEntry = null;
@@ -2455,9 +2465,11 @@ bookList.className = 'mt-2 d-grid gap-1';
         hebrewEntry = state.hebrewDictMap.get(normalized) || null;
       }
 
-      const index = await loadIndex(lang, options);
+      const index = await loadIndex(searchLang, options);
       throwIfAborted(options.signal);
- const refs = await getRefsForQuery(term, lang, index, options);
+      const refs = await getRefsForQuery(term, searchLang, index, options);
+      // UI: el corpus base de resultados es searchLang
+      state.pagination.activeLang = searchLang;
    let initialLxxMatches = { refs: [], texts: new Map() };
       if (lang === 'gr' && normalized && enabledCorpora.has('lxx')) {
         initialLxxMatches = await buildLxxMatches(normalized, 70);
