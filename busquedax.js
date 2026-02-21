@@ -454,36 +454,41 @@ function normalizeSpanish(text) {
     if (!raw || !normalizedQuery) return escapeHtml(raw);
 
     const safe = escapeHtml(raw);
-    const highlightSource = (lang === 'gr' || lang === 'lxx' || lang === 'he')
+     const highlightSource = (lang === 'gr' || lang === 'lxx' || lang === 'he')
       ? safe.normalize('NFD')
-      : safe;
-
-    // Hebrew: when searching a phrase (or multiple phrase variants separated by "||"),
-    // underline/highlight ONLY the full phrase, not each token separately.
-    if (lang === 'he') {
+      : safe;    if (lang === 'he') {
       const variants = String(normalizedQuery || '')
         .split('||')
         .map((part) => part.trim())
         .filter(Boolean);
 
-      const phraseRegexes = [];
-      for (const variant of variants) {
+      const cores = [];
+      const joiner = '(?:\s+|\u05BE|\-)+';
+
+      variants.forEach((variant) => {
         const phrase = normalizePhraseByLang(variant, 'he');
         const phraseTokens = phrase.split(/\s+/).filter(Boolean);
-        if (phraseTokens.length < 2) continue;
-        const re = buildPhraseRegex(phraseTokens, 'he');
-        if (re) phraseRegexes.push(re);
-      }
+        if (phraseTokens.length < 2) return;
 
-      if (phraseRegexes.length) {
-        let output = highlightSource;
-        for (const re of phraseRegexes) {
-          output = output.replace(re, (match, lead, coreText) => `${lead}<mark class="phrase">${coreText}</mark>`);
-        }
-        return output;
+        const tokenPatterns = phraseTokens.map((token) => {
+          const escaped = token.replace(/[.*+?^${}()|[\]\\]/g, '\$&');
+          const letters = [];
+          for (const ch of escaped) {
+            if (ch === '\') continue;
+            letters.push(ch);
+          }
+          return letters.map((letter) => `${letter}\p{M}*`).join('');
+        });
+
+        cores.push(tokenPatterns.join(joiner));
+      });
+
+      if (cores.length) {
+        const core = cores.length === 1 ? cores[0] : `(?:${cores.join('|')})`;
+        const phraseRe = new RegExp(`(^|[^\p{L}\p{M}])(${core})(?![\p{L}\p{M}])`, 'giu');
+        return highlightSource.replace(phraseRe, (match, lead, coreText) => `${lead}<mark class="phrase">${coreText}</mark>`);
       }
     }
-
 
 
    const tokens = normalizedQuery
@@ -2187,15 +2192,12 @@ for (const token of esSearchTokens) {
       const greekTranslit = greekEntry?.['Forma lexica'] || (greekTerm ? transliterateGreek(greekLemma || term) : '—');
       const hebrewSearchTerms = new Set();
       let hebrewPhraseQueries = [];
-      let hebrewPhraseHighlightQueries = [];
       if (lang === 'es') {
         const esPhrase = normalizeSpanishPhrase(term);
         if (esPhrase === 'hijo de dios' || esPhrase === 'hijo del dios' || esPhrase === 'hijos de dios' || esPhrase === 'hijos del dios') {
-          hebrewPhraseHighlightQueries = ['בן האלהים', 'בן האלוהים', 'בני האלהים', 'בני האלוהים', 'בן אל'];
-          hebrewPhraseQueries = hebrewPhraseHighlightQueries.map((p) => normalizeHebrew(p));
+          hebrewPhraseQueries = ['בן האלהים', 'בן האלוהים', 'בני האלהים', 'בני האלוהים', 'בן אל'];
         } else if (esPhrase === 'hijo del hombre' || esPhrase === 'hijo de hombre') {
-          hebrewPhraseHighlightQueries = ['בן אדם'];
-          hebrewPhraseQueries = hebrewPhraseHighlightQueries.map((p) => normalizeHebrew(p));
+          hebrewPhraseQueries = ['בן אדם'];
         }
       }
 
@@ -2342,7 +2344,7 @@ if (enforceSpanishReferenceCorrespondence && enabledCorpora.has('he')) {
       const highlightQueries = {
         gr: greekLemma !== '—' ? greekLemma : (lang === 'gr' ? term : ''),
         lxx: lxxHighlightQuery,
-        he: (hebrewPhraseHighlightQueries.length ? hebrewPhraseHighlightQueries.join(' || ') : '') || hebrewCandidate?.word || (lang === 'he' ? term : ''),
+        he: (hebrewPhraseQueries.length ? hebrewPhraseQueries.join(' || ') : '') || hebrewCandidate?.word || (lang === 'he' ? term : ''),
         es: [esDisplayWord, ...relatedTerms.es].join(' ').trim()
       };
 
