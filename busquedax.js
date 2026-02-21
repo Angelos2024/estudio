@@ -2373,7 +2373,23 @@ bookList.className = 'mt-2 d-grid gap-1';
 
    }
  
-  async function analyze() {
+  
+/** Detect language/script from query.
+ * Returns: 'he' | 'gr' | 'es'
+ * Note: We intentionally keep this lightweight; phrase searches stay within the active language.
+ */
+function detectLang(input) {
+  const q = String(input || '').trim();
+  if (!q) return 'es';
+  // Hebrew block
+  if (/[֐-׿]/.test(q)) return 'he';
+  // Greek + extended Greek
+  if (/[Ͱ-Ͽἀ-῿]/.test(q)) return 'gr';
+  // Default: Spanish/Latin
+  return 'es';
+}
+
+async function analyze() {
     const term = queryInput.value.trim();
     if (!term) return;
 
