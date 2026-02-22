@@ -1,338 +1,297 @@
-/* split: filter */
-  function getNormalizedQuery(lang, query) {
-    if (lang === 'gr' || lang === 'lxx') return normalizeGreek(query);
-    if (lang === 'he') return normalizeHebrew(query);
-    return normalizeSpanish(query);
-  }
 
-  function buildTokenRegex(token, lang) {
-    const escaped = token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    if (lang === 'es') {
-      const accentMap = {
-        a: '[aáàâäãå]',
-        e: '[eéèêë]',
-        i: '[iíìîï]',
-        o: '[oóòôöõ]',
-        u: '[uúùûü]',
-        n: '[nñ]'
-      };
-      const pattern = escaped.split('').map((ch) => accentMap[ch] || ch).join('');
-      return new RegExp(pattern, 'giu');
-    }
+;(() => {
+  'use strict';
 
-    const letters = [];
-    for (const ch of escaped) {
-      if (ch === '\\') continue;
-       if ((lang === 'gr' || lang === 'lxx') && ch === 'σ') {
-        letters.push('[σς]');
-      } else {
-        letters.push(ch);
-      }
-    }
-    const pattern = letters.map((letter) => `${letter}\\p{M}*`).join('');
-    return new RegExp(pattern, 'giu');
-  }
-
-  function buildPhraseRegex(tokens, lang) {
-    const parts = (tokens || []).map((token) => String(token || '').trim()).filter(Boolean);
-    if (!parts.length) return null;
-    const joiner = lang === 'he' ? '(?:\\s+|\\u05BE|\\-)+': '(?:\\s+)+';
-
-    const tokenPatterns = parts.map((token) => {
-      const escaped = token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      const letters = [];
-      for (const ch of escaped) {
-        if (ch === '\\') continue;
-        if ((lang === 'gr' || lang === 'lxx') && ch === 'σ') {
-          letters.push('[σς]');
-        } else {
-          letters.push(ch);
-        }
-      }
-      return letters.map((letter) => `${letter}\\p{M}*`).join('');
-    });
-
-    const core = tokenPatterns.join(joiner);
-    return new RegExp(`(^|[^\\p{L}\\p{M}])(${core})(?![\\p{L}\\p{M}])`, 'giu');
-  }
-
-
-  function highlightText(text, query, lang) {
-    const raw = String(text ?? '');
-    const normalizedQuery = String(query ?? '').trim();
-    if (!raw || !normalizedQuery) return escapeHtml(raw);
-
-    const safe = escapeHtml(raw);
-     const highlightSource = (lang === 'gr' || lang === 'lxx' || lang === 'he')
-      ? safe.normalize('NFD')
-      : safe;    
-      // Hebrew: when searching a phrase (or multiple phrase variants separated by "||"),
-// highlight ONLY the full phrase, not each token separately.
-if (lang === 'he') {
-  const variants = String(normalizedQuery || '')
-    .split('||')
-    .map((part) => part.trim())
-    .filter(Boolean);
-
-  const phraseRegexes = [];
-  for (const variant of variants) {
-    const phrase = normalizePhraseByLang(variant, 'he');
-    const phraseTokens = phrase.split(/\s+/).filter(Boolean);
-    if (phraseTokens.length < 2) continue;
-    const re = buildPhraseRegex(phraseTokens, 'he');
-    if (re) phraseRegexes.push(re);
-  }
-
-  if (phraseRegexes.length) {
-    let output = highlightSource;
-    for (const re of phraseRegexes) {
-      output = output.replace(
-        re,
-        (match, lead, coreText) => `${lead}<mark class="phrase">${coreText}</mark>`
-      );
-    }
-    return output;
-  }
-}
-
-
-   const cleanedQuery = (lang === 'gr' || lang === 'lxx')
-      ? normalizedQuery.replace(/[⸀··.,;:!?“”"(){}\[\]<>«»]/g, ' ')
-      : normalizedQuery;
-    const tokens = cleanedQuery
-      .split(/\s+/)
-      .map((part) => getNormalizedQuery(lang, part))
-      .map((token) => token.trim())
-      .filter((token) => token.length >= 2);
-    if (!tokens.length) return safe;
-
-    let output = highlightSource;
-   for (const token of tokens) {
-      const re = buildTokenRegex(token, lang);
-      output = output.replace(re, (match) => `<mark>${match}</mark>`);
-    }
-    return output;
-  }
-function detectLang(text) {
-    const sample = String(text || '');
-    if (/[\u0590-\u05FF]/.test(sample)) return 'he';
-    if (/[\u0370-\u03FF\u1F00-\u1FFF]/.test(sample)) return 'gr';
+  // -----------------------------
+  //  Detección de idioma (simple)
+  // -----------------------------
+  function detectLang(input) {
+    const s = String(input || '');
+    const hasHebrew = /[\u0590-\u05FF\uFB1D-\uFB4F]/.test(s);
+    const hasGreek  = /[\u0370-\u03FF\u1F00-\u1FFF]/.test(s);
+    if (hasHebrew && !hasGreek) return 'he';
+    if (hasGreek && !hasHebrew) return 'gr';
+    if (hasGreek && hasHebrew) return 'mixed';
     return 'es';
   }
 
-  function getLanguageScope(term = '') {
-    const scope = String(state.languageScope || 'auto');
-    if (scope === 'es' || scope === 'gr' || scope === 'he' || scope === 'all') return scope;
+  // -----------------------------
+  //  Scope / idioma seleccionado
+  // -----------------------------
+  function getLanguageScope(term) {
+    const el = document.getElementById('bxLanguageScope');
+    const selected = el ? String(el.value || 'auto') : 'auto';
+    if (selected !== 'auto') return selected;
     return detectLang(term);
   }
 
+  function getCorporaForScope(scope) {
+    const s = String(scope || 'auto').toLowerCase();
+    if (s === 'gr') return ['gr', 'lxx'];
+    if (s === 'he') return ['he'];
+    if (s === 'es') return ['es'];
+    if (s === 'all') return ['es', 'he', 'gr', 'lxx'];
+    return ['es', 'he', 'gr', 'lxx'];
+  }
+
+  // ---------------------------------------
+  //  Alias Candidates (fallback liviano)
+  // ---------------------------------------
+  function _normEs(s) {
+    try { if (typeof window.normalizeSpanish === 'function') return window.normalizeSpanish(s); } catch (_) {}
+    return String(s || '').toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  }
+  function _normHe(s) {
+    try { if (typeof window.normalizeHebrew === 'function') return window.normalizeHebrew(s); } catch (_) {}
+    return String(s || '').trim().replace(/[\u0591-\u05BD\u05BF\u05C1-\u05C2\u05C4-\u05C7]/g, '');
+  }
+  function _normGr(s) {
+    try { if (typeof window.normalizeGreek === 'function') return window.normalizeGreek(s); } catch (_) {}
+    return String(s || '').toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  }
+
   function getAliasCandidates(term, langHint = detectLang(term)) {
-    const esTokens = String(term || '')
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/\p{M}/gu, '')
-      .split(/\s+/)
-      .filter(Boolean);
-    const sourceTokens = langHint === 'he'
-      ? esTokens.map((token) => normalizeHebrew(token))
-      : (langHint === 'gr' ? esTokens.map((token) => normalizeGreek(token)) : esTokens);
+    const out = { es: [], he: [], gr: [], lxx: [] };
+    const raw = String(term || '').trim();
+    if (!raw) return out;
 
-    const gr = new Set();
-    const he = new Set();
-    const es = new Set();
-    const relatedLabels = { es: new Set(), he: new Set() };
+    const tokens = raw.split(/\s+/).filter(Boolean);
+    const tokenSet = new Set();
+    if (langHint === 'he') tokens.forEach(t => tokenSet.add(_normHe(t)));
+    else if (langHint === 'gr' || langHint === 'lxx') tokens.forEach(t => tokenSet.add(_normGr(t)));
+    else tokens.forEach(t => tokenSet.add(_normEs(t)));
 
-    SEARCH_EQUIVALENCE_GROUPS.forEach((group) => {
-      const normalizedGroup = {
-        es: new Set((group.es || []).map((value) => normalizeSpanish(value)).filter(Boolean)),
-        gr: new Set((group.gr || []).map((value) => normalizeGreek(value)).filter(Boolean)),
-        he: new Set((group.he || []).map((value) => normalizeHebrew(value)).filter(Boolean))
-      };
-      const matched = sourceTokens.some((token) => normalizedGroup[langHint]?.has(token));
-      if (!matched) return;
+    const groups = Array.isArray(window.SEARCH_EQUIVALENCE_GROUPS) ? window.SEARCH_EQUIVALENCE_GROUPS : [];
+    if (!groups.length) return out;
 
-      normalizedGroup.gr.forEach((value) => gr.add(value));
-      normalizedGroup.he.forEach((value) => he.add(value));
-      normalizedGroup.es.forEach((value) => es.add(value));
-      (group.relatedLabels?.es || []).forEach((value) => relatedLabels.es.add(value));
-      (group.relatedLabels?.he || []).forEach((value) => relatedLabels.he.add(value));
-    });
+    const es = new Set(), he = new Set(), gr = new Set();
+    for (const g of groups) {
+      if (!g) continue;
+      const gEs = (g.es || []).map(_normEs).filter(Boolean);
+      const gHe = (g.he || []).map(_normHe).filter(Boolean);
+      const gGr = (g.gr || []).map(_normGr).filter(Boolean);
 
-    return {
-      gr: [...gr],
-      he: [...he],
-      es: [...es],
-      relatedLabels: {
-        es: [...relatedLabels.es],
-        he: [...relatedLabels.he]
-      }
-    };
+      const match =
+        (langHint === 'he' && gHe.some(v => tokenSet.has(v))) ||
+        ((langHint === 'gr' || langHint === 'lxx') && gGr.some(v => tokenSet.has(v))) ||
+        (langHint === 'es' && gEs.some(v => tokenSet.has(v)));
+
+      if (!match) continue;
+
+      gEs.forEach(v => es.add(v));
+      gHe.forEach(v => he.add(v));
+      gGr.forEach(v => gr.add(v));
+    }
+
+    out.es = Array.from(es);
+    out.he = Array.from(he);
+    out.gr = Array.from(gr);
+    out.lxx = Array.from(gr);
+    return out;
   }
-  
-async function loadTrilingualEquivalences(options = {}) {
-  if (state.trilingualEquiv) return state.trilingualEquiv;
-  const data = await loadJson(TRILINGUAL_EQUIV_URL, options);
-  state.trilingualEquiv = data;
 
-  const byEs = new Map();
-  Object.entries(data?.by_es || {}).forEach(([esWord, payload]) => {
-    const key = normalizeSpanishPhrase(esWord);
-    if (!key) return;
-    const gr = new Set((payload?.gr || []).map((item) => normalizeGreek(item)).filter(Boolean));
-    const he = new Set((payload?.he || []).map((item) => normalizeHebrew(item)).filter(Boolean));
-    byEs.set(key, { gr, he });
-  });
+  // ---------------------------------------
+  //  Equivalencias trilingües (JSON externo)
+  // ---------------------------------------
+  const TRI = {
+    loaded: false,
+    loading: null,
+    byEs: new Map(), // es -> {he:Set, gr:Set}
+    byHe: new Map(), // he -> Set(es)
+    byGr: new Map()  // gr -> Set(es)
+  };
 
-  const byGr = new Map();
-  Object.entries(data?.by_gr || {}).forEach(([grWord, esWords]) => {
-    const key = normalizeGreek(grWord);
-    if (!key) return;
-    byGr.set(key, new Set((esWords || []).map((item) => normalizeSpanishPhrase(item)).filter(Boolean)));
-  });
+  function _addEquivalence(esTerm, heTerm, grTerm) {
+    const esN = _normEs(esTerm);
+    const heN = _normHe(heTerm);
+    const grN = _normGr(grTerm);
 
-  const byHe = new Map();
-  Object.entries(data?.by_he || {}).forEach(([heWord, esWords]) => {
-    const key = normalizeHebrew(heWord);
-    if (!key) return;
-    byHe.set(key, new Set((esWords || []).map((item) => normalizeSpanishPhrase(item)).filter(Boolean)));
-  });
-
-  state.trilingualByEs = byEs;
-  state.trilingualByGr = byGr;
-  state.trilingualByHe = byHe;
-  return data;
-}
-
-function getPhraseTokensForLang(term, lang) {
-  if (lang === 'he') {
-    return String(term || '')
-      .replace(/[\u200C-\u200F\u202A-\u202E]/g, '')
-      .replace(/[\u0591-\u05BD\u05BF\u05C1-\u05C2\u05C4-\u05C7]/g, '')
-      .replace(/[׃.,;:!?()"“”'׳״]/g, ' ')
-      .split(/\s+/)
-      .map((token) => normalizeHebrew(token))
-      .filter(Boolean);
-  }
-  if (lang === 'gr') {
-    return String(term || '')
-      .split(/\s+/)
-      .map((token) => normalizeGreek(token))
-      .filter(Boolean);
-  }
-  return normalizeSpanishPhrase(term)
-    .split(/\s+/)
-    .map((token) => token.trim())
-    .filter(Boolean);
-}
-function levenshteinDistance(a, b) {
-  const left = String(a || '');
-  const right = String(b || '');
-  if (!left) return right.length;
-  if (!right) return left.length;
-
-  const rows = left.length + 1;
-  const cols = right.length + 1;
-  const matrix = Array.from({ length: rows }, () => new Array(cols).fill(0));
-
-  for (let i = 0; i < rows; i += 1) matrix[i][0] = i;
-  for (let j = 0; j < cols; j += 1) matrix[0][j] = j;
-
-  for (let i = 1; i < rows; i += 1) {
-    for (let j = 1; j < cols; j += 1) {
-      const substitutionCost = left[i - 1] === right[j - 1] ? 0 : 1;
-      matrix[i][j] = Math.min(
-        matrix[i - 1][j] + 1,
-        matrix[i][j - 1] + 1,
-        matrix[i - 1][j - 1] + substitutionCost
-      );
+    if (esN) {
+      if (!TRI.byEs.has(esN)) TRI.byEs.set(esN, { he: new Set(), gr: new Set() });
+      const entry = TRI.byEs.get(esN);
+      if (heN) entry.he.add(heN);
+      if (grN) entry.gr.add(grN);
+    }
+    if (heN && esN) {
+      if (!TRI.byHe.has(heN)) TRI.byHe.set(heN, new Set());
+      TRI.byHe.get(heN).add(esN);
+    }
+    if (grN && esN) {
+      if (!TRI.byGr.has(grN)) TRI.byGr.set(grN, new Set());
+      TRI.byGr.get(grN).add(esN);
     }
   }
 
-  return matrix[left.length][right.length];
-}
-
-function resolveClosestSpanishEquivalenceToken(unit) {
-  const token = normalizeSpanishPhrase(unit || '');
-  if (!token || !state.trilingualByEs?.size) return null;
-  if (state.trilingualByEs.has(token)) return token;
-  if (token.length < 5) return null;
-
-  const maxDistance = token.length >= 8 ? 2 : 1;
-  let best = null;
-  let bestDistance = Infinity;
-
-  state.trilingualByEs.forEach((_, key) => {
-    if (!key) return;
-    if (Math.abs(key.length - token.length) > maxDistance) return;
-    if (bestDistance <= 1 && key[0] !== token[0]) return;
-
-    const distance = levenshteinDistance(token, key);
-    if (distance > maxDistance || distance >= bestDistance) return;
-    bestDistance = distance;
-    best = key;
-  });
-
-  return bestDistance <= maxDistance ? best : null;
-}
-
-function getEquivalenceSearchTerms(term, langHint = detectLang(term)) {
-  const result = { es: new Set(), gr: new Set(), he: new Set() };
-  if (!state.trilingualEquiv) return result;
-
-  const normalizedPhrase = normalizePhraseByLang(term, langHint);
-  const tokens = getPhraseTokensForLang(term, langHint);
-  const sourceUnits = [...new Set([normalizedPhrase, ...tokens].filter(Boolean))];
-  if (!sourceUnits.length) return result;
-
-  if (langHint === 'es') {
-    sourceUnits.forEach((unit) => {
-     const directKey = normalizeSpanishPhrase(unit || '');
-      const match = state.trilingualByEs.get(directKey)
-        || state.trilingualByEs.get(resolveClosestSpanishEquivalenceToken(unit));
-     if (!match) return;
-      match.gr.forEach((item) => result.gr.add(item));
-      match.he.forEach((item) => result.he.add(item));
-    });
-    return result;
+  // Heurística para arrays: detecta si el orden es [es,he,gr] o [he,es,gr], etc.
+  function _classifyToken(x) {
+    const s = String(x || '');
+    if (/[\u0590-\u05FF\uFB1D-\uFB4F]/.test(s)) return 'he';
+    if (/[\u0370-\u03FF\u1F00-\u1FFF]/.test(s)) return 'gr';
+    return 'es';
   }
 
-  const spanishBridge = new Set();
-  const sourceMap = langHint === 'he' ? state.trilingualByHe : state.trilingualByGr;
-  sourceUnits.forEach((unit) => {
-    const esWords = sourceMap.get(unit);
-    if (!esWords) return;
-    esWords.forEach((item) => spanishBridge.add(item));
-  });
+  
+  function _longestCommonPrefix(arr) {
+    const list = (arr || []).filter(Boolean);
+    if (!list.length) return '';
+    let prefix = String(list[0]);
+    for (let i = 1; i < list.length; i++) {
+      const s = String(list[i]);
+      while (prefix && !s.startsWith(prefix)) {
+        prefix = prefix.slice(0, -1);
+      }
+      if (!prefix) return '';
+    }
+    return prefix;
+  }
 
-  spanishBridge.forEach((esWord) => {
-    result.es.add(esWord);
-    const match = state.trilingualByEs.get(esWord);
-    if (!match) return;
-    match.gr.forEach((item) => result.gr.add(item));
-    match.he.forEach((item) => result.he.add(item));
-  });
-  return result;
-}
-  function pickPreferredHebrewAlias(candidates = []) {
-    if (!Array.isArray(candidates) || !candidates.length) return null;
-    return candidates.find((item) => item === 'יהוה')
-      || candidates.find((item) => item === 'אלהים')
-      || candidates.find((item) => item === 'אלוהים')
-      || candidates.find((item) => item === 'אדני')
-      || candidates.find((item) => item === 'אל')
-      || candidates.find((item) => item === 'אלה')
-      || candidates.find((item) => item === 'יהושע')
-      || candidates.find((item) => item === 'ישוע')
-      || candidates.slice().sort((a, b) => b.length - a.length)[0];
+async function loadTrilingualEquivalences(options = {}) {
+    if (TRI.loaded) return TRI;
+    if (TRI.loading) return TRI.loading;
+
+    const signal = options.signal;
+
+    TRI.loading = (async () => {
+      const localUrl = './diccionario/equivalencias_trilingue.min.json';
+      const rawUrl = 'https://raw.githubusercontent.com/Angelos2024/estudio/refs/heads/main/diccionario/equivalencias_trilingue.min.json';
+
+      async function fetchJson(url) {
+        const res = await fetch(url, { cache: 'no-cache', signal });
+        if (!res.ok) throw new Error(`No se pudo cargar ${url} (${res.status})`);
+        return await res.json();
+      }
+
+      let data;
+      try { data = await fetchJson(localUrl); }
+      catch (e1) { data = await fetchJson(rawUrl); }
+
+      TRI.byEs.clear(); TRI.byHe.clear(); TRI.byGr.clear();
+
+      if (Array.isArray(data)) {
+        for (const row of data) {
+          if (!row) continue;
+
+          // Caso: array => intentamos autodetectar orden
+          if (Array.isArray(row)) {
+            const a = row[0], b = row[1], c = row[2];
+            const ca = _classifyToken(a), cb = _classifyToken(b), cc = _classifyToken(c);
+
+            // Preferimos asignar por script (he/gr/es) si es claro
+            let esTerm = '', heTerm = '', grTerm = '';
+            const triples = [
+              { v: a, k: ca },
+              { v: b, k: cb },
+              { v: c, k: cc }
+            ];
+
+            for (const t of triples) {
+              if (t.k === 'he' && !heTerm) heTerm = t.v;
+              else if (t.k === 'gr' && !grTerm) grTerm = t.v;
+              else if (t.k === 'es' && !esTerm) esTerm = t.v;
+            }
+
+            // Si no quedó claro (por ejemplo todo es latín), usa el orden clásico [es,he,gr]
+            if (!esTerm && !heTerm && !grTerm) {
+              esTerm = a; heTerm = b; grTerm = c;
+            } else {
+              if (!esTerm) esTerm = a; // fallback suave
+              if (!heTerm) heTerm = b;
+              if (!grTerm) grTerm = c;
+            }
+
+            _addEquivalence(esTerm, heTerm, grTerm);
+            continue;
+          }
+
+          // Caso: objeto con llaves
+          const esVals = row.es ?? row.espanol ?? row.spanish ?? row.ES;
+          const heVals = row.he ?? row.hebreo ?? row.hebrew ?? row.HE;
+          const grVals = row.gr ?? row.griego ?? row.greek ?? row.GR;
+          const esList = Array.isArray(esVals) ? esVals : (esVals ? [esVals] : []);
+          const heList = Array.isArray(heVals) ? heVals : (heVals ? [heVals] : []);
+          const grList = Array.isArray(grVals) ? grVals : (grVals ? [grVals] : []);
+
+          for (const esTerm of esList) {
+            if (!heList.length && !grList.length) continue;
+            if (!heList.length) for (const grTerm of grList) _addEquivalence(esTerm, '', grTerm);
+            else if (!grList.length) for (const heTerm of heList) _addEquivalence(esTerm, heTerm, '');
+            else for (const heTerm of heList) for (const grTerm of grList) _addEquivalence(esTerm, heTerm, grTerm);
+          }
+        }
+      } else if (data && typeof data === 'object') {
+        for (const [esTerm, v] of Object.entries(data)) {
+          if (!v) continue;
+          const heList = Array.isArray(v.he) ? v.he : (v.he ? [v.he] : (Array.isArray(v.hebreo) ? v.hebreo : (v.hebreo ? [v.hebreo] : [])));
+          const grList = Array.isArray(v.gr) ? v.gr : (v.gr ? [v.gr] : (Array.isArray(v.griego) ? v.griego : (v.griego ? [v.griego] : [])));
+          if (!heList.length && !grList.length) continue;
+          if (!heList.length) for (const grTerm of grList) _addEquivalence(esTerm, '', grTerm);
+          else if (!grList.length) for (const heTerm of heList) _addEquivalence(esTerm, heTerm, '');
+          else for (const heTerm of heList) for (const grTerm of grList) _addEquivalence(esTerm, heTerm, grTerm);
+        }
+      }
+
+      TRI.loaded = true;
+      return TRI;
+    })();
+
+    return TRI.loading;
   }
-  function getCorporaForScope(scope) {
-    if (scope === 'es') return ['es'];
-    if (scope === 'gr') return ['gr', 'lxx'];
-    if (scope === 'he') return ['he'];
-   return ['gr', 'lxx', 'he', 'es'];
+
+  function getEquivalenceSearchTerms(term, lang) {
+    const out = { es: [], he: [], gr: [], lxx: [] };
+    const t = String(term || '').trim();
+    if (!t || !TRI.loaded) return out;
+
+    if (lang === 'es') {
+      const key = _normEs(t);
+      const entry = TRI.byEs.get(key);
+      if (entry) {
+        out.he = Array.from(entry.he);
+        out.gr = Array.from(entry.gr);
+        // Para griego: si el diccionario trae formas flexionadas (ej. θεοι, θεους),
+        // añadimos una raíz común (LCP) para que el resaltado funcione con otras declinaciones (θεου, θεος, etc.).
+        const grForms = out.gr.map((x) => _normGr(x)).filter(Boolean);
+        const root = _longestCommonPrefix(grForms);
+        if (root && root.length >= 3 && /[\u0370-\u03FF\u1F00-\u1FFF]/.test(root)) {
+          const seen = new Set();
+          const merged = [];
+          for (const v of [root, ...out.gr]) {
+            const k = _normGr(v);
+            if (!k || seen.has(k)) continue;
+            seen.add(k);
+            merged.push(k);
+          }
+          out.gr = merged;
+        } else {
+          out.gr = Array.from(new Set(out.gr.map((x) => _normGr(x)).filter(Boolean)));
+        }
+        out.lxx = Array.from(out.gr);
+      }
+      return out;
+    }
+
+    if (lang === 'he') {
+      const key = _normHe(t);
+      const esSet = TRI.byHe.get(key);
+      if (esSet) out.es = Array.from(esSet);
+      return out;
+    }
+
+    if (lang === 'gr' || lang === 'lxx') {
+      const key = _normGr(t);
+      const esSet = TRI.byGr.get(key);
+      if (esSet) out.es = Array.from(esSet);
+      return out;
+    }
+
+    return out;
   }
-  function normalizeByLang(text, lang) {
-    if (lang === 'gr') return normalizeGreek(text);
-    if (lang === 'he') return normalizeHebrew(text);
-    return normalizeSpanish(text);
-  }
+
+  window.detectLang = detectLang;
+  window.getLanguageScope = getLanguageScope;
+  window.getCorporaForScope = getCorporaForScope;
+  window.getAliasCandidates = getAliasCandidates;
+  window.loadTrilingualEquivalences = loadTrilingualEquivalences;
+  window.getEquivalenceSearchTerms = getEquivalenceSearchTerms;
+  window.__BX_TRILINGUAL = TRI;
+})();
