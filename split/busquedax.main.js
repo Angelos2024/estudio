@@ -1,3 +1,4 @@
+
 function getVerseTextFromChapter(verses, verseNumber) {
     if (!verses || !Number.isFinite(verseNumber)) return '';
     if (Array.isArray(verses)) return String(verses[verseNumber - 1] || '');
@@ -626,7 +627,7 @@ if (enforceSpanishReferenceCorrespondence && enabledCorpora.has('he')) {
         `RVR1960: ${enabledCorpora.has('es') ? esRefs.length : '—'}`
       ]);
 
-      const lxxHighlightQuery = lxxMatches.highlightTerms?.length
+            const lxxHighlightQuery = lxxMatches.highlightTerms?.length
         ? lxxMatches.highlightTerms.join(' ')
         : (greekLemma !== '—' ? greekLemma : (lang === 'gr' ? term : ''));
 
@@ -635,29 +636,54 @@ if (enforceSpanishReferenceCorrespondence && enabledCorpora.has('he')) {
         he: aliasCandidates.relatedLabels?.he || []
       };
 
-      const grEquivs = equivalenceTerms?.gr ? Array.from(equivalenceTerms.gr) : [];
-      const grHighlightTokens = new Set();
-      // Preferimos resaltar formas reales presentes en el texto (equivalencias y formas relacionadas),
-      // no solo el lema, porque ES->GR normalmente cae en declinaciones (θεου/θεος/θεους/θεοι).
-      grEquivs.forEach((t) => { if (t) grHighlightTokens.add(t); });
-      (aliasCandidates.gr || []).forEach((t) => { if (t) grHighlightTokens.add(t); });
-      if (greekLemma && greekLemma !== '—') grHighlightTokens.add(greekLemma);
-      if (greekTerm) grHighlightTokens.add(greekTerm);
+      // --- FIX Punto 1 (ES -> GR): resaltar declinaciones ---
+      // Nota: equivalenceTerms.* vienen como Set() (desde getEquivalenceSearchTerms),
+      // así que aquí los convertimos a arrays y elegimos un "stem" (prefijo común) para resaltar
+      // palabras flexionadas como θεου/θεον/θεος, etc.
+      const grEquivs = equivalenceTerms?.gr ? [...equivalenceTerms.gr] : [];
+      const greekLemmaNorm = (greekLemma && greekLemma !== '—') ? normalizeGreek(greekLemma) : '';
+      const greekStem = (greekLemmaNorm.endsWith('σ') && greekLemmaNorm.length >= 3)
+        ? greekLemmaNorm.slice(0, -1)
+        : greekLemmaNorm;
 
-      // Si venimos de una búsqueda en ES y el usuario cambió el scope a GR,
-      // añadimos un "stem" corto (3 letras) del término griego normalizado para cubrir declinaciones.
-      if (lang === 'es' && (selectedScope === 'gr' || selectedScope === 'all') && greekTerm && greekTerm.length >= 4) {
-        grHighlightTokens.add(greekTerm.slice(0, 3));
+      let grPreferred = grEquivs[0] || greekStem || greekTerm || '';
+      if (grEquivs.length > 1) {
+        let prefix = grEquivs[0];
+        for (const w of grEquivs.slice(1)) {
+          let i = 0;
+          while (i < prefix.length && i < w.length && prefix[i] === w[i]) i += 1;
+          prefix = prefix.slice(0, i);
+          if (prefix.length < 3) break;
+        }
+        if (prefix.length >= 3) grPreferred = prefix;
       }
-      const grHighlightQuery = Array.from(grHighlightTokens).filter(Boolean).join(' ');
+      if (!grPreferred && greekStem) grPreferred = greekStem;
 
-      const heEquivsArray = equivalenceTerms?.he ? Array.from(equivalenceTerms.he) : [];
-      const hePreferred = pickPreferredHebrewAlias(heEquivsArray);
+      const isSpanishCrossToGreek = (!isCompoundQuery) && (lang === 'es') && (selectedScope === 'gr' || selectedScope === 'all');
+
+      const grHighlight = isSpanishCrossToGreek
+        ? [grPreferred, greekStem].filter(Boolean).join(' ').trim()
+        : ((greekLemma && greekLemma !== '—') ? greekLemma : (lang === 'gr' ? term : ''));
+
+      const lxxHighlight = isSpanishCrossToGreek
+        ? [lxxHighlightQuery, grPreferred, greekStem].filter(Boolean).join(' ').trim()
+        : (lxxHighlightQuery || grPreferred || ((greekLemma && greekLemma !== '—') ? greekLemma : ''));
+
+      const heEquivs = equivalenceTerms?.he ? [...equivalenceTerms.he] : [];
+      const hePreferred =
+        heEquivs.find((t) => String(t || '').includes('יהוה')) ||
+        heEquivs.find((t) => String(t || '').includes('אלהים')) ||
+        heEquivs.find((t) => String(t || '') === 'אל') ||
+        heEquivs.sort((a, b) => String(b || '').length - String(a || '').length)[0] ||
+        '';
 
       const highlightQueries = {
-        gr: grHighlightQuery || (greekLemma !== '—' ? greekLemma : (lang === 'gr' ? term : '')),
-        lxx: lxxHighlightQuery || grHighlightQuery,
-        he: (hebrewPhraseQueries.length ? hebrewPhraseQueries.join(' || ') : '') || hePreferred || hebrewCandidate?.word || (lang === 'he' ? term : ''),
+        gr: grHighlight,
+        lxx: lxxHighlight,
+        he: (hebrewPhraseQueries.length ? hebrewPhraseQueries.join(' || ') : '')
+          || hePreferred
+          || hebrewCandidate?.word
+          || (lang === 'he' ? term : ''),
         es: [esDisplayWord, ...relatedTerms.es].join(' ').trim()
       };
 
