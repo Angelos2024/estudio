@@ -25,12 +25,6 @@
     return detectLang(term);
   }
 
-  // MAIN espera esto:
-  // getCorporaForScope('gr') -> ['gr','lxx']
-  // getCorporaForScope('he') -> ['he']
-  // getCorporaForScope('es') -> ['es']
-  // getCorporaForScope('all')-> ['es','he','gr','lxx']
-  // getCorporaForScope('auto')-> decide luego; aquí devolvemos todos para que main haga su lógica.
   function getCorporaForScope(scope) {
     const s = String(scope || 'auto').toLowerCase();
     if (s === 'gr') return ['gr', 'lxx'];
@@ -38,6 +32,73 @@
     if (s === 'es') return ['es'];
     if (s === 'all') return ['es', 'he', 'gr', 'lxx'];
     return ['es', 'he', 'gr', 'lxx'];
+  }
+
+  // ---------------------------------------
+  //  Alias Candidates (para remarcado cruzado)
+  // ---------------------------------------
+  // Objetivo: cuando el usuario busca en ES y cambia el scope a HE/GR,
+  // el resaltado necesita tokens equivalentes/alias para remarcar correctamente.
+  // Este helper usa SEARCH_EQUIVALENCE_GROUPS (si existe) como lista manual de sinónimos/alias.
+  function _normEs(s) {
+    try { if (typeof window.normalizeSpanish === 'function') return window.normalizeSpanish(s); } catch (_) {}
+    return String(s || '').toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  }
+  function _normHe(s) {
+    try { if (typeof window.normalizeHebrew === 'function') return window.normalizeHebrew(s); } catch (_) {}
+    return String(s || '').trim().replace(/[\u0591-\u05BD\u05BF\u05C1-\u05C2\u05C4-\u05C7]/g, '');
+  }
+  function _normGr(s) {
+    try { if (typeof window.normalizeGreek === 'function') return window.normalizeGreek(s); } catch (_) {}
+    return String(s || '').toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  }
+
+  function getAliasCandidates(term, langHint = detectLang(term)) {
+    const out = { es: [], he: [], gr: [], lxx: [] };
+
+    const raw = String(term || '').trim();
+    if (!raw) return out;
+
+    // tokens de entrada
+    const tokens = raw.split(/\s+/).filter(Boolean);
+
+    const tokenSet = new Set();
+    if (langHint === 'he') tokens.forEach(t => tokenSet.add(_normHe(t)));
+    else if (langHint === 'gr' || langHint === 'lxx') tokens.forEach(t => tokenSet.add(_normGr(t)));
+    else tokens.forEach(t => tokenSet.add(_normEs(t)));
+
+    const groups = Array.isArray(window.SEARCH_EQUIVALENCE_GROUPS) ? window.SEARCH_EQUIVALENCE_GROUPS : [];
+
+    // Si no hay grupos, devuelve vacío (pero la función existe y no rompe).
+    if (!groups.length) return out;
+
+    const es = new Set();
+    const he = new Set();
+    const gr = new Set();
+
+    for (const g of groups) {
+      if (!g) continue;
+      const gEs = (g.es || []).map(_normEs).filter(Boolean);
+      const gHe = (g.he || []).map(_normHe).filter(Boolean);
+      const gGr = (g.gr || []).map(_normGr).filter(Boolean);
+
+      const match =
+        (langHint === 'he' && gHe.some(v => tokenSet.has(v))) ||
+        ((langHint === 'gr' || langHint === 'lxx') && gGr.some(v => tokenSet.has(v))) ||
+        (langHint === 'es' && gEs.some(v => tokenSet.has(v)));
+
+      if (!match) continue;
+
+      gEs.forEach(v => es.add(v));
+      gHe.forEach(v => he.add(v));
+      gGr.forEach(v => gr.add(v));
+    }
+
+    out.es = Array.from(es);
+    out.he = Array.from(he);
+    out.gr = Array.from(gr);
+    out.lxx = Array.from(gr); // LXX usa griego
+    return out;
   }
 
   // ---------------------------------------
@@ -51,23 +112,9 @@
     byGr: new Map()  // gr -> Set(es)
   };
 
-  function _safeNormalizeEs(s) {
-    s = String(s || '').trim().toLowerCase();
-    try { if (typeof window.normalizeSpanish === 'function') return window.normalizeSpanish(s); } catch (_) {}
-    return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-  }
-
-  function _safeNormalizeHe(s) {
-    s = String(s || '').trim();
-    try { if (typeof window.normalizeHebrew === 'function') return window.normalizeHebrew(s); } catch (_) {}
-    return s.replace(/[\u0591-\u05BD\u05BF\u05C1-\u05C2\u05C4-\u05C7]/g, '');
-  }
-
-  function _safeNormalizeGr(s) {
-    s = String(s || '').trim().toLowerCase();
-    try { if (typeof window.normalizeGreek === 'function') return window.normalizeGreek(s); } catch (_) {}
-    return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-  }
+  function _safeNormalizeEs(s) { return _normEs(s); }
+  function _safeNormalizeHe(s) { return _normHe(s); }
+  function _safeNormalizeGr(s) { return _normGr(s); }
 
   function _addEquivalence(esTerm, heTerm, grTerm) {
     const esN = _safeNormalizeEs(esTerm);
@@ -107,15 +154,11 @@
       }
 
       let data;
-      try {
-        data = await fetchJson(localUrl);
-      } catch (e1) {
-        data = await fetchJson(rawUrl);
-      }
+      try { data = await fetchJson(localUrl); }
+      catch (e1) { data = await fetchJson(rawUrl); }
 
       TRI.byEs.clear(); TRI.byHe.clear(); TRI.byGr.clear();
 
-      // soporta array/objeto de varias formas
       if (Array.isArray(data)) {
         for (const row of data) {
           if (!row) continue;
@@ -195,6 +238,7 @@
   window.detectLang = detectLang;
   window.getLanguageScope = getLanguageScope;
   window.getCorporaForScope = getCorporaForScope;
+  window.getAliasCandidates = getAliasCandidates;
   window.loadTrilingualEquivalences = loadTrilingualEquivalences;
   window.getEquivalenceSearchTerms = getEquivalenceSearchTerms;
   window.__BX_TRILINGUAL = TRI;
