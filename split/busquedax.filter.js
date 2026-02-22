@@ -35,11 +35,8 @@
   }
 
   // ---------------------------------------
-  //  Alias Candidates (para remarcado cruzado)
+  //  Alias Candidates (fallback liviano)
   // ---------------------------------------
-  // Objetivo: cuando el usuario busca en ES y cambia el scope a HE/GR,
-  // el resaltado necesita tokens equivalentes/alias para remarcar correctamente.
-  // Este helper usa SEARCH_EQUIVALENCE_GROUPS (si existe) como lista manual de sinónimos/alias.
   function _normEs(s) {
     try { if (typeof window.normalizeSpanish === 'function') return window.normalizeSpanish(s); } catch (_) {}
     return String(s || '').toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -55,27 +52,19 @@
 
   function getAliasCandidates(term, langHint = detectLang(term)) {
     const out = { es: [], he: [], gr: [], lxx: [] };
-
     const raw = String(term || '').trim();
     if (!raw) return out;
 
-    // tokens de entrada
     const tokens = raw.split(/\s+/).filter(Boolean);
-
     const tokenSet = new Set();
     if (langHint === 'he') tokens.forEach(t => tokenSet.add(_normHe(t)));
     else if (langHint === 'gr' || langHint === 'lxx') tokens.forEach(t => tokenSet.add(_normGr(t)));
     else tokens.forEach(t => tokenSet.add(_normEs(t)));
 
     const groups = Array.isArray(window.SEARCH_EQUIVALENCE_GROUPS) ? window.SEARCH_EQUIVALENCE_GROUPS : [];
-
-    // Si no hay grupos, devuelve vacío (pero la función existe y no rompe).
     if (!groups.length) return out;
 
-    const es = new Set();
-    const he = new Set();
-    const gr = new Set();
-
+    const es = new Set(), he = new Set(), gr = new Set();
     for (const g of groups) {
       if (!g) continue;
       const gEs = (g.es || []).map(_normEs).filter(Boolean);
@@ -97,7 +86,7 @@
     out.es = Array.from(es);
     out.he = Array.from(he);
     out.gr = Array.from(gr);
-    out.lxx = Array.from(gr); // LXX usa griego
+    out.lxx = Array.from(gr);
     return out;
   }
 
@@ -112,14 +101,10 @@
     byGr: new Map()  // gr -> Set(es)
   };
 
-  function _safeNormalizeEs(s) { return _normEs(s); }
-  function _safeNormalizeHe(s) { return _normHe(s); }
-  function _safeNormalizeGr(s) { return _normGr(s); }
-
   function _addEquivalence(esTerm, heTerm, grTerm) {
-    const esN = _safeNormalizeEs(esTerm);
-    const heN = _safeNormalizeHe(heTerm);
-    const grN = _safeNormalizeGr(grTerm);
+    const esN = _normEs(esTerm);
+    const heN = _normHe(heTerm);
+    const grN = _normGr(grTerm);
 
     if (esN) {
       if (!TRI.byEs.has(esN)) TRI.byEs.set(esN, { he: new Set(), gr: new Set() });
@@ -135,6 +120,14 @@
       if (!TRI.byGr.has(grN)) TRI.byGr.set(grN, new Set());
       TRI.byGr.get(grN).add(esN);
     }
+  }
+
+  // Heurística para arrays: detecta si el orden es [es,he,gr] o [he,es,gr], etc.
+  function _classifyToken(x) {
+    const s = String(x || '');
+    if (/[\u0590-\u05FF\uFB1D-\uFB4F]/.test(s)) return 'he';
+    if (/[\u0370-\u03FF\u1F00-\u1FFF]/.test(s)) return 'gr';
+    return 'es';
   }
 
   async function loadTrilingualEquivalences(options = {}) {
@@ -162,17 +155,47 @@
       if (Array.isArray(data)) {
         for (const row of data) {
           if (!row) continue;
+
+          // Caso: array => intentamos autodetectar orden
           if (Array.isArray(row)) {
-            const [esTerm, heTerm, grTerm] = row;
+            const a = row[0], b = row[1], c = row[2];
+            const ca = _classifyToken(a), cb = _classifyToken(b), cc = _classifyToken(c);
+
+            // Preferimos asignar por script (he/gr/es) si es claro
+            let esTerm = '', heTerm = '', grTerm = '';
+            const triples = [
+              { v: a, k: ca },
+              { v: b, k: cb },
+              { v: c, k: cc }
+            ];
+
+            for (const t of triples) {
+              if (t.k === 'he' && !heTerm) heTerm = t.v;
+              else if (t.k === 'gr' && !grTerm) grTerm = t.v;
+              else if (t.k === 'es' && !esTerm) esTerm = t.v;
+            }
+
+            // Si no quedó claro (por ejemplo todo es latín), usa el orden clásico [es,he,gr]
+            if (!esTerm && !heTerm && !grTerm) {
+              esTerm = a; heTerm = b; grTerm = c;
+            } else {
+              if (!esTerm) esTerm = a; // fallback suave
+              if (!heTerm) heTerm = b;
+              if (!grTerm) grTerm = c;
+            }
+
             _addEquivalence(esTerm, heTerm, grTerm);
             continue;
           }
+
+          // Caso: objeto con llaves
           const esVals = row.es ?? row.espanol ?? row.spanish ?? row.ES;
           const heVals = row.he ?? row.hebreo ?? row.hebrew ?? row.HE;
           const grVals = row.gr ?? row.griego ?? row.greek ?? row.GR;
           const esList = Array.isArray(esVals) ? esVals : (esVals ? [esVals] : []);
           const heList = Array.isArray(heVals) ? heVals : (heVals ? [heVals] : []);
           const grList = Array.isArray(grVals) ? grVals : (grVals ? [grVals] : []);
+
           for (const esTerm of esList) {
             if (!heList.length && !grList.length) continue;
             if (!heList.length) for (const grTerm of grList) _addEquivalence(esTerm, '', grTerm);
@@ -205,7 +228,7 @@
     if (!t || !TRI.loaded) return out;
 
     if (lang === 'es') {
-      const key = _safeNormalizeEs(t);
+      const key = _normEs(t);
       const entry = TRI.byEs.get(key);
       if (entry) {
         out.he = Array.from(entry.he);
@@ -216,14 +239,14 @@
     }
 
     if (lang === 'he') {
-      const key = _safeNormalizeHe(t);
+      const key = _normHe(t);
       const esSet = TRI.byHe.get(key);
       if (esSet) out.es = Array.from(esSet);
       return out;
     }
 
     if (lang === 'gr' || lang === 'lxx') {
-      const key = _safeNormalizeGr(t);
+      const key = _normGr(t);
       const esSet = TRI.byGr.get(key);
       if (esSet) out.es = Array.from(esSet);
       return out;
@@ -232,9 +255,6 @@
     return out;
   }
 
-  // -----------------------------
-  // Exponer globals esperados
-  // -----------------------------
   window.detectLang = detectLang;
   window.getLanguageScope = getLanguageScope;
   window.getCorporaForScope = getCorporaForScope;
