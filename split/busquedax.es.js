@@ -1,42 +1,41 @@
-/* Auto-generated split from busquedax.js (es) */
-  function getSpanishRefs(normalized, index) {
-    if (!normalized) return [];
-    const tokensMap = index.tokens || {};
-    const direct = tokensMap[normalized] || [];
-    const refs = direct.slice();
-    const seen = new Set(refs);
+/* split: es */
+function normalizeSpanish(text) {
+    return String(text || '')
+      .trim()
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9ñ]/g, '');
+  }
+   function normalizeSpanishPhrase(text) {
+    return String(text || '')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9ñ\s]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+  function getHebrewDefinition(entry) {
+    return entry?.definitions?.short || entry?.strong_detail?.definicion || entry?.descripcion || '';
+  }
+  function normalizeTransliteration(text) {
+    return normalizeSpanish(text).replace(/ñ/g, 'n');
+  }
 
-    // Rendimiento: buckets por prefijo (2 letras) construidos una sola vez.
-    if (!index.__tokenBucketsBuilt) {
-      const buckets = new Map();
-      Object.keys(tokensMap).forEach((tok) => {
-        const t = String(tok || '');
-        if (!t) return;
-        const key = t.slice(0, 2);
-        if (!buckets.has(key)) buckets.set(key, []);
-        buckets.get(key).push(t);
-      });
-      index.__tokenBuckets = buckets;
-      index.__tokenBucketsBuilt = true;
-    }
-
-    const buckets = index.__tokenBuckets || new Map();
-    const prefixKey = normalized.slice(0, 2);
-    const candidates = buckets.get(prefixKey) || [];
-
-    // Coincidencia parcial: token que contiene el término (mar => marcos, marítimo, etc.)
-    for (let i = 0; i < candidates.length; i += 1) {
-      const token = candidates[i];
-      if (!token || token === normalized) continue;
-      if (!token.includes(normalized)) continue;
-      const matches = tokensMap[token] || [];
-      for (let j = 0; j < matches.length; j += 1) {
-        const ref = matches[j];
-        if (seen.has(ref)) continue;
-        seen.add(ref);
-        refs.push(ref);
-      }
-    }
-
-    return refs;
+  function buildTranslitVariants(text) {
+    const base = normalizeTransliteration(text);
+    if (!base) return [];
+    const variants = new Set([base]);
+    variants.add(base.replace(/u/g, 'v'));
+    variants.add(base.replace(/v/g, 'u'));
+    variants.add(base.replace(/y/g, 'i'));
+    variants.add(base.replace(/i/g, 'y'));
+    variants.add(base.replace(/au/g, 'av'));
+    variants.add(base.replace(/ou/g, 'ov'));
+    variants.add(base.replace(/k/g, 'c'));
+    variants.add(base.replace(/c/g, 'k'));
+    variants.add(base.replace(/ck/g, 'k'));
+    variants.add(base.replace(/qu/g, 'k'));
+    return [...variants].filter(Boolean);
   }

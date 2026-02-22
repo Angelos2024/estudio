@@ -1,5 +1,4 @@
-/* Auto-generated split from busquedax.js (bootstrap) */
-
+/* split: bootstrap */
    const DICT_URL = './diccionario/masterdiccionario.json';
    const HEBREW_DICT_URL = './diccionario/diccionario_unificado.min.json';
    const TRILINGUAL_EQUIV_URL = './diccionario/equivalencias_trilingue.min.json';
@@ -266,3 +265,7 @@ dict: null,
   const analysisResultsSection = document.getElementById('bxAnalysisResultsSection');
   const lemmaSummaryPanel = document.getElementById('bxLemmaSummaryPanel');
     const languageScopeSelect = document.getElementById('bxLanguageScope');
+
+  
+  const nextFrame = () => new Promise((resolve) => requestAnimationFrame(resolve));
+  const isAbortError = (error) => error?.name === 'AbortError';
