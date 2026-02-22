@@ -1368,50 +1368,15 @@ if (enforceSpanishReferenceCorrespondence && enabledCorpora.has('he')) {
       };
 
       const highlightQueries = {
-        // Para el resaltado, cuando la búsqueda original es ES pero el usuario cambia a HE/GR,
-        // preferimos equivalencias/alias y marcamos TODOS los candidatos (OR) para evitar que se elija una palabra frecuente equivocada.
-        gr: (() => {
-          const list = [];
-          if (greekLemma && greekLemma !== '—') list.push(greekLemma);
-          if (equivalenceTerms.gr && equivalenceTerms.gr.length) list.push(...equivalenceTerms.gr);
-          if (aliasCandidates.gr && aliasCandidates.gr.length) list.push(...aliasCandidates.gr);
-          if (greekTerm) list.push(greekTerm);
-          if (lang === 'gr') list.push(term);
-
-          const dedup = [...new Set(list.filter(Boolean))];
-          return dedup.slice(0, 6).join(' || ');
-        })(),
+        // Para el resaltado, si la búsqueda original fue en ES pero el usuario está viendo GR/HE,
+        // usamos equivalencias (no el "candidato más frecuente" del verso) para evitar remarcar verbos comunes como ויאמר.
+        gr: (greekLemma !== '—' ? greekLemma : (greekTerm || (lang === 'gr' ? term : ''))),
         lxx: lxxHighlightQuery,
-        he: (() => {
-          const list = [];
-          if (hebrewPhraseQueries.length) list.push(...hebrewPhraseQueries);
-          if (equivalenceTerms.he && equivalenceTerms.he.length) list.push(...equivalenceTerms.he);
-          if (aliasCandidates.he && aliasCandidates.he.length) list.push(...aliasCandidates.he);
-          if (hebrewCandidate?.word) list.push(hebrewCandidate.word);
-          if (lang === 'he') list.push(term);
-
-          const dedup = [...new Set(list.filter(Boolean))];
-
-          // Heurística: para "Dios/Señor" en ES, preferir nombres divinos si existen entre los candidatos.
-          if (lang === 'es' && selectedScope === 'he' && dedup.length) {
-            let esKey = String(term || '').trim().toLowerCase();
-            try { if (typeof normalizeSpanish === 'function') esKey = normalizeSpanish(esKey); } catch (_) {}
-            const targets = new Set(['dios', 'señor', 'senor', 'jehova', 'yahweh', 'yahve', 'yahvé']);
-            if (targets.has(esKey)) {
-              const divineNorms = ['אלהים', 'יהוה', 'אל', 'אדני'].map((x) => {
-                try { return (typeof normalizeHebrew === 'function') ? normalizeHebrew(x) : x; } catch (_) { return x; }
-              });
-              const preferred = dedup.find((cand) => {
-                let n = String(cand || '');
-                try { if (typeof normalizeHebrew === 'function') n = normalizeHebrew(n); } catch (_) {}
-                return divineNorms.some(d => n.includes(d));
-              });
-              if (preferred) return preferred;
-            }
-          }
-
-          return dedup.slice(0, 6).join(' || ');
-        })(),
+        he: (hebrewPhraseQueries.length ? hebrewPhraseQueries.join(' || ') : '')
+          || (equivalenceTerms.he && equivalenceTerms.he[0] ? equivalenceTerms.he[0] : '')
+          || (aliasCandidates.he && aliasCandidates.he[0] ? aliasCandidates.he[0] : '')
+          || hebrewCandidate?.word
+          || (lang === 'he' ? term : ''),
         es: [esDisplayWord, ...relatedTerms.es].join(' ').trim()
       };
 
