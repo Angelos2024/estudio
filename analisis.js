@@ -2,7 +2,8 @@
  (() => {
    const DICT_URL = './diccionario/masterdiccionario.json';
    const HEBREW_DICT_URL = './diccionario/hebrewdic.json';
-  const HEBREW_DICT_INDEX_URL = './diccionario/diccionario_index_by_lemma.json';
+   const HEBREW_DICT_INDEX_URL = './diccionario/diccionario_index_by_lemma.json';
+   const HEBREW_LEXICON_URL = './diccionario/lexico_hebreo.json';
   const TRILINGUAL_EQUIV_URL = './diccionario/equivalencias_trilingue.min.json';
   const SEARCH_MANIFEST_URL = './search/manifestv1.json';
    const SEARCH_INDEX = {
@@ -172,6 +173,7 @@
     hebrewDictMap: new Map(),
     hebrewDictIdMap: new Map(),
     hebrewLemmaIndex: null,
+      hebrewPosMap: null,
     searchManifest: null,
     trilingualEquiv: null,
     trilingualByEs: new Map(),
@@ -760,6 +762,38 @@ const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
     state.hebrewDictIdMap = idMap;
     return state.hebrewDict;
   }
+
+  async function loadHebrewPosMap() {
+    if (state.hebrewPosMap) return state.hebrewPosMap;
+    const data = await loadJson(HEBREW_LEXICON_URL).catch(() => []);
+    const map = new Map();
+    const verbMarkers = new Set([
+      'QAL', 'NIFAL', 'PIEL', 'PUAL', 'HIFIL', 'HOFAL', 'HITPAEL', 'HAFEL', 'PEAL', 'PAEL',
+      'Perf.', 'Impf.', 'Impv.', 'Inf.', 'Part.', 'Part.pas.'
+    ]);
+
+    (Array.isArray(data) ? data : []).forEach((entry) => {
+      const normalized = normalizeHebrew(entry?.palabra || '');
+      if (!normalized) return;
+      const morphList = Array.isArray(entry?.morfologia) ? entry.morfologia : [];
+      const hasVerbMarker = morphList.some((token) => verbMarkers.has(token));
+      let pos = null;
+      if (hasVerbMarker) {
+        pos = 'Verbo (HE)';
+      } else if (morphList.includes('Suf.')) {
+        pos = 'Sufijo / pronombre enclítico (HE)';
+      } else if (morphList.includes('Pref.')) {
+        pos = 'Prefijo (HE)';
+      } else if (morphList.includes('Const.') || morphList.includes('Const.pl') || morphList.includes('Pl.')) {
+        pos = 'Nombre / forma nominal (HE)';
+      }
+
+      if (pos && !map.has(normalized)) map.set(normalized, pos);
+    });
+
+    state.hebrewPosMap = map;
+    return state.hebrewPosMap;
+  }
    async function loadIndex(lang) {
      if (state.indexes[lang]) return state.indexes[lang];
      const data = await loadJson(SEARCH_INDEX[lang]);
@@ -1112,7 +1146,34 @@ async function loadLxxBookData(bookCode) {
      if (parts.length < 2) return raw.trim();
      return parts[1].trim() || '—';
    }
- 
+
+
+  function resolveGreekPos(entry) {
+    const extracted = extractPos(entry);
+    if (!extracted || extracted === '—') return '—';
+    return describeMorphTag(extracted);
+  }
+
+  function resolvePosLabel({ lang, entry, greekEntry, term, hebrewWord }) {
+    const greekPos = resolveGreekPos(lang === 'gr' ? entry : greekEntry);
+    if (lang === 'gr') return greekPos;
+
+    if (lang === 'he') {
+      const normalized = normalizeHebrew(hebrewWord || term || '');
+      const fromHebrew = normalized ? state.hebrewPosMap?.get(normalized) : null;
+      if (fromHebrew && greekPos !== '—') return `${fromHebrew} · Eq.GR: ${greekPos}`;
+      if (fromHebrew) return fromHebrew;
+      if (greekPos !== '—') return `${greekPos} (equivalencia griega)`;
+      return '—';
+    }
+
+    if (lang === 'es') {
+      if (greekPos !== '—') return `${greekPos} (equivalencia griega)`;
+      return '—';
+    }
+
+    return greekPos;
+  }
    function shortDefinition(text) {
      if (!text) return '';
      const trimmed = text.replace(/\s/g, ' ').trim();
@@ -1875,14 +1936,12 @@ const formattedSpanish = formatSpanishDisplayWord(spanish);
       let hebrewCandidate = lang === 'he'
         ? { normalized, word: term, transliteration: transliterateHebrew(term), confidence: 0.98 }
         : null;
-      let usedStatisticalFallback = false;
-      let confidenceLabel = null;
+   
 
       if (lang === 'es') {
         const equivalenceResolution = await resolveSpanishEquivalences(term, refs, esOtRefs, esNtRefs, grIndex, heIndex);
         if (equivalenceResolution?.greek) {
           greekTerm = equivalenceResolution.greek.normalized;
-          confidenceLabel = equivalenceResolution.greek.confidence;
           await loadDictionary();
           greekEntry = state.dictMap.get(greekTerm) || greekEntry;
         }
@@ -1895,11 +1954,9 @@ const formattedSpanish = formatSpanishDisplayWord(spanish);
             count: item.refs.length,
             confidence: item.confidence
           };
-          confidenceLabel = Math.max(confidenceLabel || 0, item.confidence || 0);
         }
 
         if (!equivalenceResolution?.entry) {
-          usedStatisticalFallback = true;
           const ntCandidate = esNtRefs.length ? await buildGreekCandidateFromGreekRefs(esNtRefs) : null;
           const otLxxRefs = esOtRefs.length ? mapOtRefsToLxxRefs(esOtRefs) : [];
           const otCandidate = otLxxRefs.length ? await buildGreekCandidateFromLxxRefs(otLxxRefs) : null;
@@ -1952,20 +2009,24 @@ const formattedSpanish = formatSpanishDisplayWord(spanish);
         gr: buildBookCountRows([...grRefs, ...lxxMatches.refs])
       });
 
-      const posTag = lang === 'gr' ? extractPos(entry) : '—';
-      const lemmaLabel = lang === 'gr' ? (entry?.lemma || term) : term;
+  await loadHebrewPosMap();
+      const posTag = resolvePosLabel({
+        lang,
+        entry,
+        greekEntry,
+        term,
+        hebrewWord: hebrewCandidate?.word
+      });
+     const lemmaLabel = lang === 'gr' ? (entry?.lemma || term) : term;
       const translitLabel = lang === 'he'
         ? transliterateHebrew(term)
         : (entry?.['Forma lexica'] || (lang === 'gr' ? transliterateGreek(term) : '—'));
-      const confidenceTag = confidenceLabel
-        ? `Confianza equivalencia: ${Math.round(confidenceLabel * 100)}%`
-        : (usedStatisticalFallback ? 'Confianza equivalencia: baja (fallback)' : 'Confianza equivalencia: —');
+     
 
       renderTags([
         `Lema: <span class="fw-semibold">${lemmaLabel}</span>`,
         `Transliteración: ${translitLabel}`,
         `POS: ${posTag}`,
-        confidenceTag,
         `RKANT: ${grRefs.length}`,
         `LXX: ${lxxMatches.refs.length}`,
         `Hebreo: ${heRefs.length}`,
