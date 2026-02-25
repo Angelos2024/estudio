@@ -1253,6 +1253,12 @@ function mapLxxRefsToHebrewRefs(refs) {
     `;
   }
 
+function buildSpanishTestamentLabel(otRefs = [], ntRefs = []) {
+    if (otRefs.length && ntRefs.length) return 'RVR1960 (AT/NT)';
+    if (otRefs.length) return 'RVR1960 (AT)';
+    if (ntRefs.length) return 'RVR1960 (NT)';
+    return 'RVR1960';
+  }
   function cleanHebrewToken(token) {
     return String(token || '')
       .replace(/[׃.,;:!?"“”(){}\[\]<>«»]/g, '')
@@ -1834,30 +1840,17 @@ samplesTasks.push(
         })
       );
     }
-    if (esOtRefs.length) {
-      samplesTasks.push(
-        buildSamplesForRefs(esOtRefs, 'es', 3).then((esOtSamples) => {
+ if (esRefs.length) {
+      const esTitle = buildSpanishTestamentLabel(esOtRefs, esNtRefs);
+            samplesTasks.push(
+                buildSamplesForRefs(esRefs, 'es', 3).then((esSamples) => {
           cards.push(buildCorrespondenceCard({
-            title: 'RVR1960 (AT)',
+            title: esTitle,
             word: esDisplayWord,
             transliteration: '',
-            samples: esOtSamples,
-            lang: 'es',
-           highlightQuery: highlightQueries.es
-          }));
-        })
-      );
-    }
-    if (esNtRefs.length) {
-     samplesTasks.push(
-        buildSamplesForRefs(esNtRefs, 'es', 3).then((esNtSamples) => {
-          cards.push(buildCorrespondenceCard({
-            title: 'RVR1960 (NT)',
-            word: esDisplayWord,
-            transliteration: '',
-            samples: esNtSamples,
-            lang: 'es',
-           highlightQuery: highlightQueries.es
+            samples: esSamples,
+           lang: 'es',
+            highlightQuery: highlightQueries.es
           }));
         })
       );
