@@ -964,7 +964,7 @@ async function loadLxxBookData(bookCode) {
       if (char === 'ו' && vowel) {
         consonant = '';
       }
-      output = `${consonant}${vowel}`;
+      output += `${consonant}${vowel}`;
     }
     return output.replace(/''/g, '\'').trim() || '—';
   }
@@ -1477,8 +1477,8 @@ function mapLxxRefsToHebrewRefs(refs) {
       lemmaCorrespondence.appendChild(div);
    });
   }
-function buildCorrespondenceHeading(spanish, hebrew, greek) {
-    return `Correspondencias idiomáticas: ${spanish} / ${hebrew} / ${greek}`;
+function buildCorrespondenceHeading() {
+    return 'Correspondencias idiomáticas';
   }
 
   function renderDeepLexicalCorrespondence({ spanish = '—', hebrew = '—', greek = '—' } = {}) {
@@ -1487,8 +1487,7 @@ const formattedSpanish = formatSpanishDisplayWord(spanish);
     const formattedHebrew = stripHebrewDiacritics(hebrew) || '—';
         const formattedGreek = greek || '—';
     const hasData = [formattedSpanish, formattedHebrew, greek].some((value) => value && value !== '—');
- const heading = buildCorrespondenceHeading(formattedSpanish, formattedHebrew, formattedGreek);
-
+const heading = buildCorrespondenceHeading();
     if (lemmaCorrespondenceTitle) {
       lemmaCorrespondenceTitle.textContent = heading;
     }
