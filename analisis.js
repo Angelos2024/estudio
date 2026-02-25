@@ -1686,7 +1686,6 @@ const summaryRefs = lang === 'gr' && !refs.length ? initialLxxMatches.refs : ref
 
     const greekLemma = greekEntry?.lemma || greekCandidate?.lemma || (lang === 'gr' ? term : '—');
 const greekTranslit = greekEntry?.['Forma lexica'] || (greekTerm ? transliterateGreek(greekLemma || term) : '—');
-     const grIndex = await grIndexPromise;
    const grRefs = greekTerm ? getGreekRefs(greekTerm, grIndex) : [];
    const lxxMatchesPromise = greekTerm
       ? (lang === 'gr' && greekTerm === normalized
