@@ -672,6 +672,42 @@ const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
       he: [...new Set([...(value?.he || []), ...(axis === 'he' ? [key] : [])])]
     };
   }
+  function mergeTrilingualEntries(base, extra) {
+    return {
+      es: [...new Set([...(base?.es || []), ...(extra?.es || [])])],
+      gr: [...new Set([...(base?.gr || []), ...(extra?.gr || [])])],
+      he: [...new Set([...(base?.he || []), ...(extra?.he || [])])],
+      s: [...new Set([...(base?.s || []), ...(extra?.s || [])])]
+    };
+  }
+
+  function enrichTrilingualEntry(entry, sourceData) {
+    let enriched = { ...entry };
+    const byEs = sourceData?.by_es || {};
+    const byGr = sourceData?.by_gr || {};
+    const byHe = sourceData?.by_he || {};
+
+    (entry.es || []).forEach((token) => {
+      const linked = byEs[token];
+      if (!linked) return;
+      const linkedEntry = coerceTrilingualEntry(linked, token, 'es');
+      enriched = mergeTrilingualEntries(enriched, linkedEntry);
+    });
+    (entry.gr || []).forEach((token) => {
+      const linked = byGr[token];
+      if (!linked) return;
+      const linkedEntry = coerceTrilingualEntry(linked, token, 'gr');
+      enriched = mergeTrilingualEntries(enriched, linkedEntry);
+    });
+    (entry.he || []).forEach((token) => {
+      const linked = byHe[token];
+      if (!linked) return;
+      const linkedEntry = coerceTrilingualEntry(linked, token, 'he');
+      enriched = mergeTrilingualEntries(enriched, linkedEntry);
+    });
+
+    return enriched;
+  }
   async function loadTrilingualEquivalences() {
     if (state.trilingualEquiv) return state.trilingualEquiv;
     const data = await loadJson(TRILINGUAL_EQUIV_URL);
@@ -682,24 +718,24 @@ const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
     const byHe = new Map();
 
     Object.entries(data?.by_es || {}).forEach(([key, value]) => {
-           const entry = coerceTrilingualEntry(value, key, 'es');
-      registerTrilingualKey(byEs, key, normalizeSpanish, entry);
+      const entry = enrichTrilingualEntry(coerceTrilingualEntry(value, key, 'es'), data);
+     registerTrilingualKey(byEs, key, normalizeSpanish, entry);
       (entry.es || []).forEach((token) => registerTrilingualKey(byEs, token, normalizeSpanish, entry));
       (entry.gr || []).forEach((token) => registerTrilingualKey(byGr, token, normalizeGreek, entry));
       (entry.he || []).forEach((token) => registerTrilingualKey(byHe, token, normalizeHebrew, entry));
     });
 
     Object.entries(data?.by_gr || {}).forEach(([key, value]) => {
-            const entry = coerceTrilingualEntry(value, key, 'gr');
-      registerTrilingualKey(byGr, key, normalizeGreek, entry);
+      const entry = enrichTrilingualEntry(coerceTrilingualEntry(value, key, 'gr'), data);
+     registerTrilingualKey(byGr, key, normalizeGreek, entry);
       (entry.gr || []).forEach((token) => registerTrilingualKey(byGr, token, normalizeGreek, entry));
       (entry.he || []).forEach((token) => registerTrilingualKey(byHe, token, normalizeHebrew, entry));
       (entry.es || []).forEach((token) => registerTrilingualKey(byEs, token, normalizeSpanish, entry));
     });
 
     Object.entries(data?.by_he || {}).forEach(([key, value]) => {
-           const entry = coerceTrilingualEntry(value, key, 'he');
-      registerTrilingualKey(byHe, key, normalizeHebrew, entry);
+      const entry = enrichTrilingualEntry(coerceTrilingualEntry(value, key, 'he'), data);
+     registerTrilingualKey(byHe, key, normalizeHebrew, entry);
       (entry.he || []).forEach((token) => registerTrilingualKey(byHe, token, normalizeHebrew, entry));
       (entry.gr || []).forEach((token) => registerTrilingualKey(byGr, token, normalizeGreek, entry));
       (entry.es || []).forEach((token) => registerTrilingualKey(byEs, token, normalizeSpanish, entry));
