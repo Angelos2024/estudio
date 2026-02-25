@@ -1,8 +1,8 @@
 
  (() => {
    const DICT_URL = './diccionario/masterdiccionario.json';
-   const HEBREW_DICT_URL = './diccionario/hebrewdic.json';
-   const HEBREW_DICT_INDEX_URL = './diccionario/diccionario_index_by_lemma.json';
+const HEBREW_DICT_URL = './dic/hebrewdic.json';
+  const HEBREW_DICT_INDEX_URL = './dic/diccionario_index_by_lemma.json';
    const HEBREW_LEXICON_URL = './diccionario/lexico_hebreo.json';
   const TRILINGUAL_EQUIV_URL = './diccionario/equivalencias_trilingue.min.json';
   const SEARCH_MANIFEST_URL = './search/manifestv1.json';
@@ -657,6 +657,21 @@ const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
     map.set(normalized, entry);
   }
 
+  function coerceTrilingualEntry(value, key, axis) {
+    if (Array.isArray(value)) {
+      return {
+        es: axis === 'es' ? [key, ...value] : [...value],
+        gr: axis === 'gr' ? [key] : [],
+        he: axis === 'he' ? [key] : []
+      };
+    }
+    return {
+      ...value,
+      es: [...new Set([...(value?.es || []), ...(axis === 'es' ? [key] : [])])],
+      gr: [...new Set([...(value?.gr || []), ...(axis === 'gr' ? [key] : [])])],
+      he: [...new Set([...(value?.he || []), ...(axis === 'he' ? [key] : [])])]
+    };
+  }
   async function loadTrilingualEquivalences() {
     if (state.trilingualEquiv) return state.trilingualEquiv;
     const data = await loadJson(TRILINGUAL_EQUIV_URL);
@@ -667,12 +682,7 @@ const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
     const byHe = new Map();
 
     Object.entries(data?.by_es || {}).forEach(([key, value]) => {
-      const entry = {
-        ...value,
-        es: [...new Set([key, ...(value?.es || [])])],
-        gr: [...new Set(value?.gr || [])],
-        he: [...new Set(value?.he || [])]
-      };
+           const entry = coerceTrilingualEntry(value, key, 'es');
       registerTrilingualKey(byEs, key, normalizeSpanish, entry);
       (entry.es || []).forEach((token) => registerTrilingualKey(byEs, token, normalizeSpanish, entry));
       (entry.gr || []).forEach((token) => registerTrilingualKey(byGr, token, normalizeGreek, entry));
@@ -681,11 +691,7 @@ const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
 
     Object.entries(data?.by_gr || {}).forEach(([key, value]) => {
       const entry = {
-        ...value,
-        gr: [...new Set([key, ...(value?.gr || [])])],
-        he: [...new Set(value?.he || [])],
-        es: [...new Set(value?.es || [])]
-      };
+            const entry = coerceTrilingualEntry(value, key, 'gr');
       registerTrilingualKey(byGr, key, normalizeGreek, entry);
       (entry.gr || []).forEach((token) => registerTrilingualKey(byGr, token, normalizeGreek, entry));
       (entry.he || []).forEach((token) => registerTrilingualKey(byHe, token, normalizeHebrew, entry));
@@ -693,12 +699,7 @@ const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
     });
 
     Object.entries(data?.by_he || {}).forEach(([key, value]) => {
-      const entry = {
-        ...value,
-        he: [...new Set([key, ...(value?.he || [])])],
-        gr: [...new Set(value?.gr || [])],
-        es: [...new Set(value?.es || [])]
-      };
+           const entry = coerceTrilingualEntry(value, key, 'he');
       registerTrilingualKey(byHe, key, normalizeHebrew, entry);
       (entry.he || []).forEach((token) => registerTrilingualKey(byHe, token, normalizeHebrew, entry));
       (entry.gr || []).forEach((token) => registerTrilingualKey(byGr, token, normalizeGreek, entry));
@@ -1297,6 +1298,29 @@ async function loadLxxBookData(bookCode) {
       heIndex,
       refsIniciales,
       esOtRefs
+    );
+    return { entry: equivalenceEntry, greek, hebrew };
+  }
+
+   async function resolveGreekEquivalences(term, refsIniciales, hePreferredRefs, grIndex, heIndex) {
+    await loadTrilingualEquivalences();
+    const normalized = normalizeGreek(term);
+    const equivalenceEntry = state.trilingualByGr.get(normalized) || null;
+    if (!equivalenceEntry) return { entry: null, greek: null, hebrew: null };
+
+    const greek = resolveDictionaryCandidate(
+      equivalenceEntry.gr || [term],
+      'gr',
+      grIndex,
+      refsIniciales,
+      refsIniciales
+    );
+    const hebrew = resolveDictionaryCandidate(
+      equivalenceEntry.he || [],
+      'he',
+      heIndex,
+      refsIniciales,
+      hePreferredRefs
     );
     return { entry: equivalenceEntry, greek, hebrew };
   }
@@ -1973,6 +1997,25 @@ const formattedSpanish = formatSpanishDisplayWord(spanish);
           if (!hebrewCandidate && esOtRefs.length) {
             hebrewCandidate = await buildHebrewCandidateFromRefs(esOtRefs);
           }
+        }
+         } else if (lang === 'gr') {
+        const equivalenceResolution = await resolveGreekEquivalences(term, refs, esOtRefs, grIndex, heIndex);
+        if (equivalenceResolution?.greek) {
+          greekTerm = equivalenceResolution.greek.normalized;
+          confidenceLabel = equivalenceResolution.greek.confidence;
+          await loadDictionary();
+          greekEntry = state.dictMap.get(greekTerm) || greekEntry;
+        }
+        if (equivalenceResolution?.hebrew) {
+          const item = equivalenceResolution.hebrew;
+          hebrewCandidate = {
+            normalized: item.normalized,
+            word: item.token,
+            transliteration: transliterateHebrew(item.token),
+            count: item.refs.length,
+            confidence: item.confidence
+          };
+          confidenceLabel = Math.max(confidenceLabel || 0, item.confidence || 0);
         }
       } else if (lang === 'he') {
         greekCandidate = await buildGreekCandidateFromHebrewRefs(refs);
