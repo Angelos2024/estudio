@@ -1,7 +1,8 @@
 
  (() => {
    const DICT_URL = './diccionario/masterdiccionario.json';
-   const HEBREW_DICT_URL = './diccionario/diccionario_unificado.min.json';
+   const HEBREW_DICT_URL = './diccionario/hebrewdic.json';
+  const HEBREW_DICT_INDEX_URL = './diccionario/diccionario_index_by_lemma.json';
    const SEARCH_INDEX = {
      es: './search/index-es.json',
      gr: './search/index-gr.json',
@@ -167,6 +168,8 @@
     dictMap: new Map(),
     hebrewDict: null,
     hebrewDictMap: new Map(),
+    hebrewDictIdMap: new Map(),
+    hebrewLemmaIndex: null,
      indexes: {},
      textCache: new Map(),
     lxxFileCache: new Map(),
@@ -350,7 +353,70 @@ function normalizeSpanish(text) {
   }
   
   function getHebrewDefinition(entry) {
-    return entry?.definitions?.short || entry?.strong_detail?.definicion || entry?.descripcion || '';
+    return entry?.text || entry?.definitions?.short || entry?.strong_detail?.definicion || entry?.descripcion || entry?.gloss_es || '';
+  }
+
+  function scoreHebrewEntryCandidate(entry, rawTerm, normalizedTerm) {
+    if (!entry) return -Infinity;
+    const raw = String(rawTerm || '').trim();
+    const norm = normalizeHebrew(normalizedTerm || rawTerm || '');
+    const lemmaNorm = normalizeHebrew(entry?.lemma || '');
+    const head = String(entry?.headword_line || '');
+    const text = String(entry?.text || '');
+    let score = 0;
+    if (lemmaNorm && lemmaNorm === norm) score += 120;
+    if (Array.isArray(entry?.headword_tokens) && entry.headword_tokens.some((t) => normalizeHebrew(t) === norm)) score += 80;
+    if (raw && head.includes(raw)) score += 110;
+    if (raw && text.includes(`[ ${raw}`)) score += 140;
+    else if (raw && text.includes(raw)) score += 55;
+    if (raw && text.includes(`\n${raw}\n`)) score += 35;
+    if (/\bQ\.pf\.|\bimpf\./.test(head) && raw.length <= 3) score -= 130;
+    if (/La palabra hebrea tiene una gama de acepciones/i.test(text)) score += 130;
+    if (/Sentido propio|Sentido figurado/i.test(text)) score += 60;
+    score += Math.min(Math.floor(text.length / 180), 30);
+    return score;
+  }
+
+  function findHebrewEntry(rawTerm) {
+    const raw = String(rawTerm || '').trim();
+    const normalized = normalizeHebrew(raw);
+    if (!normalized) return null;
+
+    const candidates = [];
+    const seen = new Set();
+    const pushCandidate = (entry) => {
+      if (!entry || !entry.id || seen.has(entry.id)) return;
+      seen.add(entry.id);
+      candidates.push(entry);
+    };
+
+    const indexedIds = [];
+    if (state.hebrewLemmaIndex) {
+      Object.entries(state.hebrewLemmaIndex).forEach(([lemmaKey, ids]) => {
+        if (normalizeHebrew(lemmaKey) === normalized) indexedIds.push(...(ids || []));
+      });
+    }
+    indexedIds.forEach((id) => pushCandidate(state.hebrewDictIdMap.get(id)));
+
+    const direct = state.hebrewDictMap.get(normalized);
+    if (direct) pushCandidate(direct);
+
+    if (raw) {
+      for (const entry of (state.hebrewDict || [])) {
+        const head = String(entry?.headword_line || '');
+        const text = String(entry?.text || '');
+        if (head.includes(raw) || text.includes(raw)) pushCandidate(entry);
+      }
+    }
+
+    if (!candidates.length) return null;
+    const preferredLexicalArticle = candidates.find((entry) => {
+      const text = String(entry?.text || '');
+      return raw && text.includes(`[ ${raw}`) && /La palabra hebrea tiene una gama de acepciones|Sentido propio/i.test(text);
+    });
+    if (preferredLexicalArticle) return preferredLexicalArticle;
+    candidates.sort((a, b) => scoreHebrewEntryCandidate(b, raw, normalized) - scoreHebrewEntryCandidate(a, raw, normalized));
+    return candidates[0] || null;
   }
   function normalizeTransliteration(text) {
     return normalizeSpanish(text).replace(/ñ/g, 'n');
@@ -541,27 +607,43 @@ const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
   }
  async function loadHebrewDictionary() {
     if (state.hebrewDict) return state.hebrewDict;
-    const data = await loadJson(HEBREW_DICT_URL);
-    state.hebrewDict = data;
+    const [data, lemmaIndex] = await Promise.all([
+      loadJson(HEBREW_DICT_URL),
+      loadJson(HEBREW_DICT_INDEX_URL).catch(() => ({}))
+    ]);
+    state.hebrewDict = Array.isArray(data) ? data : [];
+    state.hebrewLemmaIndex = lemmaIndex || {};
     const map = new Map();
-    (data || []).forEach((item) => {
-     const keys = [
-        item?.palabra,
+    const idMap = new Map();
+    (state.hebrewDict || []).forEach((item) => {
+      if (item?.id) idMap.set(item.id, item);
+      const keys = [
         item?.lemma,
+        item?.palabra,
         item?.hebreo,
         item?.forma,
+        item?.headword_line,
+        ...(item?.headword_tokens || []),
         ...(item?.forms || []),
         ...(item?.formas || []),
         ...(item?.hebreos || [])
       ]
+        .flatMap((token) => String(token || '').split(/[\s,;\[\]\(\)]+/))
         .map((token) => normalizeHebrew(token || ''))
         .filter(Boolean);
       keys.forEach((key) => {
         if (!map.has(key)) map.set(key, item);
       });
     });
+    Object.entries(state.hebrewLemmaIndex || {}).forEach(([lemmaKey, ids]) => {
+      const normalized = normalizeHebrew(lemmaKey);
+      if (!normalized || map.has(normalized)) return;
+      const first = (ids || []).map((id) => idMap.get(id)).find(Boolean);
+      if (first) map.set(normalized, first);
+    });
     state.hebrewDictMap = map;
-    return data;
+    state.hebrewDictIdMap = idMap;
+    return state.hebrewDict;
   }
    async function loadIndex(lang) {
      if (state.indexes[lang]) return state.indexes[lang];
@@ -1457,7 +1539,7 @@ function mapLxxRefsToHebrewRefs(refs) {
       entry = state.dictMap.get(normalized) || null;
       } else if (lang === 'he') {
       await loadHebrewDictionary();
-      hebrewEntry = state.hebrewDictMap.get(normalized) || null;
+      hebrewEntry = findHebrewEntry(term) || state.hebrewDictMap.get(normalized) || null;
     }
  
     const indexPromise = loadIndex(lang);
