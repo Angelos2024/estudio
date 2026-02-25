@@ -453,7 +453,12 @@
   <script>
     (function(){
       const allowedThemes = new Set(['cream', 'white']);
-      const stored = localStorage.getItem('lectorTheme');
+ let stored = null;
+      try {
+        stored = window.localStorage?.getItem('lectorTheme');
+      } catch (_) {
+        stored = null;
+      }
       const theme = allowedThemes.has(stored) ? stored : 'cream';
       document.documentElement.dataset.theme = theme;
     })();
