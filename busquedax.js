@@ -1378,7 +1378,7 @@ async function loadLxxBookData(bookCode) {
       if (char === 'ו' && vowel) {
         consonant = '';
       }
-      output = `${consonant}${vowel}`;
+      output += `${consonant}${vowel}`;
     }
     return output.replace(/''/g, '\'').trim() || '—';
   }
