@@ -192,6 +192,7 @@
   const lemmaCorrespondence = document.getElementById('lemmaCorrespondence');
    const lemmaExamples = document.getElementById('lemmaExamples');
   const deepLexicalAnalysis = document.getElementById('deepLexicalAnalysis');
+  const deepLexicalCorrespondence = document.getElementById('deepLexicalCorrespondence');
   const resultsLoadingIndicator = document.getElementById('resultsLoadingIndicator');
   const resultsLoadingStage = document.getElementById('resultsLoadingStage');
   const analysisResultsSection = document.getElementById('analysisResultsSection');
@@ -1165,6 +1166,15 @@ function mapLxxRefsToHebrewRefs(refs) {
    });
   }
 
+  function renderDeepLexicalCorrespondence({ spanish = '—', hebrew = '—', greek = '—' } = {}) {
+    if (!deepLexicalCorrespondence) return;
+    const hasData = [spanish, hebrew, greek].some((value) => value && value !== '—');
+    deepLexicalCorrespondence.classList.toggle('muted', !hasData);
+    deepLexicalCorrespondence.innerHTML = `
+      <div class="trilingual-title">Correspondencias idiomáticas: español – hebreo - griego</div>
+      <div class="trilingual-line">${escapeHtml(spanish)} / <span class="hebrew">${escapeHtml(hebrew)}</span> / <span class="greek">${escapeHtml(greek)}</span></div>
+    `;
+  }
   function renderSingleWordInputError(term) {
     renderTags([
       `Entrada: <span class="fw-semibold">${term}</span>`,
@@ -1172,6 +1182,7 @@ function mapLxxRefsToHebrewRefs(refs) {
     ]);
     lemmaSummary.textContent = 'Solo se aceptan entradas de una sola palabra en el análisis textual.';
     renderCorrespondence([]);
+    renderDeepLexicalCorrespondence();
     renderExamples([]);
     occurrenceDonut?.setData({ es: [], he: [], gr: [] });
     deepLexicalAnalysis.innerHTML = '<div class="col-12"><div class="small muted">Corrige la consulta: usa una sola palabra (sin frases).</div></div>';
@@ -1565,6 +1576,7 @@ function mapLxxRefsToHebrewRefs(refs) {
        ]);
       lemmaSummary.textContent = 'No se encontraron ocurrencias en los índices disponibles.';
       renderCorrespondence([]);
+      renderDeepLexicalCorrespondence();
        lemmaExamples.innerHTML = '';
       occurrenceDonut?.setData({ es: [], he: [], gr: [] });
       deepLexicalAnalysis.innerHTML = '<div class="col-12"><div class="small muted">No hay ocurrencias para construir el análisis léxico profundo.</div></div>';
@@ -1693,6 +1705,9 @@ const greekTranslit = greekEntry?.['Forma lexica'] || (greekTerm ? transliterate
     }
     const heIndex = await heIndexPromise;
     const heRefs = hebrewCandidate ? getHebrewRefs(hebrewCandidate.normalized, heIndex) : [];
+         const hebrewDisplayWord = hebrewCandidate?.word || (lang === 'he' ? term : '—');
+    const greekDisplayWord = greekLemma || (lang === 'gr' ? term : '—');
+    renderDeepLexicalCorrespondence({ spanish: esDisplayWord, hebrew: hebrewDisplayWord, greek: greekDisplayWord });
        occurrenceDonut?.setData({
       es: buildBookCountRows(esRefs),
       he: buildBookCountRows(heRefs),

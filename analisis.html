@@ -210,10 +210,25 @@
       border-radius:50%;
       animation:spin .9s linear infinite;
     }
+     .trilingual-brief{
+      border:1px dashed var(--outline);
+      background:var(--soft-bg);
+      border-radius:10px;
+      padding:.65rem .75rem;
+      margin-bottom:.85rem;
+    }
+    .trilingual-brief .trilingual-title{ font-weight:600; }
+    .trilingual-brief .trilingual-line{ margin-top:.2rem; }
+
     [data-theme="cream"] .results-loading-stage{
       background:#ffffff;
       color:#000000;
       border-color:#4b2743;
+    }
+    [data-theme="cream"] .trilingual-brief{
+      background:#ffffff;
+      color:#000000;
+      border-color:#000000;
     }
     .form-control,
     .form-select{
@@ -422,6 +437,7 @@
           </div>
           <div class="panel-body">
             <div class="small muted mb-2">Lemma introducido · Diccionario A Griego: <code>masterdiccionario.json</code> + <code>diccionarioG_unificado.min.json</code> · Diccionario B Hebreo: <code>diccionario_entries.jsonl</code> + <code>diccionario_index_by_lemma.json</code> + <code>hebrewdic.json</code></div>
+                        <div id="deepLexicalCorrespondence" class="trilingual-brief small muted">Correspondencias idiomáticas: español – hebreo - griego</div>
              <div id="resultsLoadingStage" class="results-loading-stage" role="status" aria-live="polite" hidden>
               <span class="big-spinner" aria-hidden="true"></span>
               <span class="fw-semibold">Cargando análisis...</span>
