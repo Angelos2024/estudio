@@ -280,6 +280,17 @@ function normalizeGreek(text) {
        .replace(/[\s\u05BE\-\u2010-\u2015\u2212]/g, '')
        .replace(/[׃.,;:!?()"“”'׳״]/g, '');
    }
+   function stripHebrewDiacritics(text) {
+    return String(text || '')
+      .replace(/[֑-ֽֿׁ-ׂׄ-ׇ]/g, '')
+      .trim();
+  }
+
+  function formatSpanishDisplayWord(word) {
+    const trimmed = String(word || '').trim();
+    if (!trimmed) return '—';
+    return trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
+  }
  
 function normalizeSpanish(text) {
     return String(text || '')
@@ -1168,11 +1179,14 @@ function mapLxxRefsToHebrewRefs(refs) {
 
   function renderDeepLexicalCorrespondence({ spanish = '—', hebrew = '—', greek = '—' } = {}) {
     if (!deepLexicalCorrespondence) return;
-    const hasData = [spanish, hebrew, greek].some((value) => value && value !== '—');
-    deepLexicalCorrespondence.classList.toggle('muted', !hasData);
+const formattedSpanish = formatSpanishDisplayWord(spanish);
+    const formattedHebrew = stripHebrewDiacritics(hebrew) || '—';
+    const hasData = [formattedSpanish, formattedHebrew, greek].some((value) => value && value !== '—');
+
+        deepLexicalCorrespondence.classList.toggle('muted', !hasData);
     deepLexicalCorrespondence.innerHTML = `
-      <div class="trilingual-title">Correspondencias idiomáticas: español – hebreo - griego</div>
-      <div class="trilingual-line">${escapeHtml(spanish)} / <span class="hebrew">${escapeHtml(hebrew)}</span> / <span class="greek">${escapeHtml(greek)}</span></div>
+      <div class="trilingual-title">Correspondencias idiomáticas: español – hebreo – griego</div>
+      <div class="trilingual-line">${escapeHtml(formattedSpanish)} / <span class="hebrew">${escapeHtml(formattedHebrew)}</span> / <span class="greek">${escapeHtml(greek)}</span></div>
     `;
   }
   function renderSingleWordInputError(term) {
