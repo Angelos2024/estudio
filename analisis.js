@@ -1204,14 +1204,11 @@ function mapLxxRefsToHebrewRefs(refs) {
     deepLexicalAnalysis.innerHTML = '<div class="col-12"><div class="small muted">Corrige la consulta: usa una sola palabra (sin frases).</div></div>';
   }
  
-  async function buildSamplesForRefs(refs, lang, maxPerBook = 4, preloadedTexts = null, maxTotal = 32) {
-      const samples = [];
- const byBookCount = new Map();
-    for (const ref of refs) {
-      if (samples.length >= maxTotal) break;
+  async function buildSamplesForRefs(refs, lang, max = 3, preloadedTexts = null) {
+        const samples = [];
+    for (const ref of refs.slice(0, max)) {
+
       const [book, chapterRaw, verseRaw] = ref.split('|');
-        const currentBookCount = byBookCount.get(book) || 0;
-      if (currentBookCount >= maxPerBook) continue;
       const chapter = Number(chapterRaw);
       const verse = Number(verseRaw);
       let verseText = '';
@@ -1229,7 +1226,6 @@ function mapLxxRefsToHebrewRefs(refs) {
         ref: formatRef(book, chapter, verse),
         text: verseText
       });
-            byBookCount.set(book, currentBookCount + 1);
     }
     return samples;
   }
