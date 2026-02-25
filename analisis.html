@@ -1,4 +1,4 @@
-<!doctype html> 
+<!doctype html>
 <html lang="es" data-theme="cream">
 <head>
   <meta charset="utf-8"/>
@@ -113,8 +113,8 @@
       gap:.75rem;
     }
     .example-card{
-    border:1px dashed var(--outline);
-      background:var(--soft-bg);
+    border:1px solid #000000;
+    background:var(--soft-bg);
       border-radius:10px;
       padding:.65rem .75rem;
       font-size:.9rem;
@@ -198,8 +198,8 @@
       gap:.85rem;
       color:var(--muted);
       background:color-mix(in srgb, var(--soft-bg) 55%, #ffffff);
-      border:1px dashed var(--bd);
-      border-radius:12px;
+      border:1px solid #000000;
+            border-radius:12px;
       margin-bottom:1rem;
     }
     .results-loading-stage .big-spinner{
@@ -210,10 +210,25 @@
       border-radius:50%;
       animation:spin .9s linear infinite;
     }
+     .trilingual-brief{
+      border:1px solid #000000;
+      background:var(--soft-bg);
+      border-radius:10px;
+      padding:.65rem .75rem;
+      margin-bottom:.85rem;
+    }
+    .trilingual-brief .trilingual-title{ font-weight:600; }
+    .trilingual-brief .trilingual-line{ margin-top:.2rem; }
+
     [data-theme="cream"] .results-loading-stage{
       background:#ffffff;
       color:#000000;
       border-color:#4b2743;
+    }
+    [data-theme="cream"] .trilingual-brief{
+      background:#ffffff;
+      color:#000000;
+      border-color:#000000;
     }
     .form-control,
     .form-select{
@@ -367,12 +382,12 @@
           <div class="search-column">
            <div class="search-controls">
               <div>
-                <label for="queryInput" class="form-label fw-semibold">Buscar palabra, lema o frase compuesta</label>
+                <label for="queryInput" class="form-label fw-semibold">Buscar palabra o lema</label>
                 <div class="input-group">
                   <input id="queryInput" class="form-control" placeholder="Ej: אָב, πατήρ, origen, fuente" value="πατήρ"/>
                  <button id="analyzeBtn" class="btn btn-primary" type="button">Analizar</button>
                 </div>
-                <div class="form-text">Se aceptan términos en hebreo, griego o español. El sistema prioriza el lema y las variantes morfológicas.</div>
+                <div class="form-text">Se aceptan términos de una sola palabra en hebreo, griego o español.</div>  
               </div>
               <div>
                 <label class="form-label fw-semibold">Filtros rápidos</label>
@@ -401,8 +416,8 @@
               
         <div id="lemmaTags" class="d-flex flex-wrap gap-2"></div>
               <p id="lemmaSummary" class="mb-2 small muted">Escribe un término para generar el resumen del lema.</p>
-               <div>
-                <div class="fw-semibold">Correspondencia multilingüe</div>
+<div>
+                
                 <div id="lemmaCorrespondence" class="d-grid gap-2 mt-2"></div>
               </div>
               <div id="lemmaExamples" class="d-grid gap-2"></div>
@@ -421,7 +436,9 @@
            </div>
           </div>
           <div class="panel-body">
-             <div id="resultsLoadingStage" class="results-loading-stage" role="status" aria-live="polite" hidden>
+            <div class="small muted mb-2">Lemma introducido · Diccionario A Griego: <code>masterdiccionario.json</code> + <code>diccionarioG_unificado.min.json</code> · Diccionario B Hebreo: <code>diccionario_entries.jsonl</code> + <code>diccionario_index_by_lemma.json</code> + <code>hebrewdic.json</code></div>
+        <div id="deepLexicalCorrespondence" class="trilingual-brief small muted">Correspondencias idiomáticas: — / — / —</div>             <div id="resultsLoadingStage" class="results-loading-stage" role="status" aria-live="polite" hidden>
+
               <span class="big-spinner" aria-hidden="true"></span>
               <span class="fw-semibold">Cargando análisis...</span>
             </div>
@@ -436,7 +453,12 @@
   <script>
     (function(){
       const allowedThemes = new Set(['cream', 'white']);
-      const stored = localStorage.getItem('lectorTheme');
+ let stored = null;
+      try {
+        stored = window.localStorage?.getItem('lectorTheme');
+      } catch (_) {
+        stored = null;
+      }
       const theme = allowedThemes.has(stored) ? stored : 'cream';
       document.documentElement.dataset.theme = theme;
     })();
