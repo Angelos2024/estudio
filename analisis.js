@@ -1228,39 +1228,8 @@ function mapLxxRefsToHebrewRefs(refs) {
     return consonants.slice(0, Math.min(3, consonants.length || 0));
   }
 
-      function getContextCategoryRules(lang) {
-    if (lang === 'he') {
-      return [
-        { key: 'Uso biológico', words: ['בן', 'אב', 'אם'] },
-        { key: 'Uso divino', words: ['שמים', 'אלהים', 'יהוה'] },
-        { key: 'Uso genealógico', words: ['דוד', 'אברהם', 'יצחק', 'יעקב'] }
-      ];
-    }
-    return [
-      { key: 'Uso biológico', words: ['υιος', 'μητηρ', 'πατηρ'] },
-      { key: 'Uso divino', words: ['ουρανος', 'θεος', 'κυριος'] },
-      { key: 'Uso genealógico', words: ['δαβιδ', 'αβρααμ', 'ισαακ', 'ιακωβ'] }
-    ];
-  }
-           
-   function classifyContextByRules(windowTokens, lang) {
-    const normalizedTokens = windowTokens
-      .map((token) => (lang === 'he' ? normalizeHebrew(token) : normalizeGreek(token)))
-      .filter(Boolean);
-    const rules = getContextCategoryRules(lang);
-    for (const rule of rules) {
-      if (rule.words.some((word) => normalizedTokens.includes(word))) {
-        return rule.key;
-      }
-    }
-    return 'Uso no determinado';
-  }
- 
-
  async function buildDeepLexicalModules({ lang, normalizedLemma, displayLemma, grRefs, heRefs, lxxRefs }) {
     const formStats = new Map();
-    const contextStats = new Map();
-    const lexicalCandidates = new Map();
     let totalOccurrences = 0;
 
   
@@ -1270,60 +1239,6 @@ function mapLxxRefsToHebrewRefs(refs) {
       current.count += 1;
       formStats.set(key, current);
     };
-
-    const pushContext = (tokens, hitIndex, analysisLang) => {
-      const start = Math.max(0, hitIndex - 3);
-      const end = Math.min(tokens.length, hitIndex + 4);
-      const window = tokens.slice(start, end);
-      const category = classifyContextByRules(window, analysisLang);
-      contextStats.set(category, (contextStats.get(category) || 0) + 1);
-           totalOccurrences += 1;
-    };
-
-    for (const ref of grRefs) {
-      const [book, chapterRaw, verseRaw] = ref.split('|');
-      const chapter = Number(chapterRaw);
-      const verse = Number(verseRaw);
-      try {
-        const verses = await loadChapterText('gr', book, chapter);
-        const tokens = tokenizeGreekText(verses?.[verse - 1] || '');
-        tokens.forEach((token, index) => {
-          if (normalizeGreek(token) !== normalizedLemma) return;
-          pushContext(tokens, index, 'gr');
-        });
-      } catch (error) {
-         continue;
-      }
-    }
-
-    for (const ref of lxxRefs) {
-      const [book, chapterRaw, verseRaw] = ref.split('|');
-      const chapter = Number(chapterRaw);
-      const verse = Number(verseRaw);
-      const tokens = await loadLxxVerseTokens(book, chapter, verse);
-      if (!tokens) continue;
-      const words = tokens.map((token) => token?.w || '').filter(Boolean);
-      tokens.forEach((token, index) => {
-        if (normalizeGreek(token?.lemma || '') !== normalizedLemma) return;
-        pushContext(words, index, 'gr');
-      });
-    }
-
-    for (const ref of heRefs) {
-      const [book, chapterRaw, verseRaw] = ref.split('|');
-      const chapter = Number(chapterRaw);
-      const verse = Number(verseRaw);
-      try {
-        const verses = await loadChapterText('he', book, chapter);
-        const tokens = tokenizeHebrewText(verses?.[verse - 1] || '');
-        tokens.forEach((token, index) => {
-          if (normalizeHebrew(token) !== normalizedLemma) return;
-          pushContext(tokens, index, 'he');
-        });
-        } catch (error) {
-        continue;
-      }
-    }
 
    if (lang === 'gr' || lxxRefs.length) {
       const grIndex = await loadIndex('gr');
@@ -1389,42 +1304,6 @@ function mapLxxRefsToHebrewRefs(refs) {
         });
       }
     }
- const networkLang = lang === 'he' ? 'he' : 'gr';
-    if (networkLang === 'gr') {
-      await loadDictionary();
-      const grIndex = await loadIndex('gr');
-      const root = buildGreekLexicalRoot(normalizedLemma);
- const greekEntries = Array.isArray(state.dict)
-        ? state.dict
-        : Array.isArray(state.dict?.items)
-          ? state.dict.items
-          : [];
-      greekEntries.forEach((item) => {        const lemmaNorm = normalizeGreek(item?.lemma || '');
-        if (!lemmaNorm || lemmaNorm === normalizedLemma || lemmaNorm.length < 3) return;
-        if (!lemmaNorm.startsWith(root) && !lemmaNorm.includes(root)) return;
-        const total = (grIndex.tokens?.[lemmaNorm] || []).length;
-        if (!total) return;
-        if (!lexicalCandidates.has(lemmaNorm)) {
-          lexicalCandidates.set(lemmaNorm, { lemma: item.lemma || lemmaNorm, count: total });
-        }
-      });
-    } else {
-      await loadHebrewDictionary();
-      const heIndex = await loadIndex('he');
-      const root = buildHebrewLexicalRoot(displayLemma);
-      state.hebrewDict.forEach((item) => {
-        const lemma = item?.strong_detail?.lemma || item?.hebreo || '';
-        const normalized = normalizeHebrew(lemma);
-        if (!normalized || normalized === normalizedLemma) return;
-        if (!normalized.startsWith(root) && !normalized.includes(root)) return;
-        const total = (heIndex.tokens?.[normalized] || []).length || Number(item?.stats?.tokens || 0);
-        if (!total) return;
-        if (!lexicalCandidates.has(normalized)) {
-          lexicalCandidates.set(normalized, { lemma, count: total });
-        }
-      });
-    }
-
     const forms = [...formStats.values()].sort((a, b) => b.count - a.count);
     const sourceOrder = ['LXX (base completa)', 'Hebreo (base completa)', 'RKANT (base completa)', 'Español (base completa)'];
     const sourceLabels = {
@@ -1443,12 +1322,7 @@ function mapLxxRefsToHebrewRefs(refs) {
         total
       };
     }).filter((item) => item.rows.length);
-    const network = [...lexicalCandidates.values()].sort((a, b) => b.count - a.count).slice(0, 20);
-    const contexts = [...contextStats.entries()]
-      .map(([category, count]) => ({ category, count, percent: toPercent(count, totalOccurrences) }))
-      .sort((a, b) => b.count - a.count);
-
-    return { forms, formsBySource, network, contexts, totalOccurrences };
+    return { forms, formsBySource, totalOccurrences };
  }
    function renderDeepLexicalAnalysis(modules) {
     deepLexicalAnalysis.innerHTML = '';
@@ -1482,36 +1356,12 @@ function mapLxxRefsToHebrewRefs(refs) {
       `;
     }).join('');
 
-    const networkRows = modules.network.length
-      ? modules.network.map((item) => `<li><span class="fw-semibold">${escapeHtml(item.lemma)}</span> <span class="small muted">(${item.count} ocurrencias)</span></li>`).join('')
-      : '<li class="small muted">No se detectaron lemas relacionados desde la base local.</li>';
-
-    const contextRows = modules.contexts.map((item) => `
-      <tr>
-        <td>${escapeHtml(item.category)}</td>
-        <td>${item.count}</td>
-        <td>${item.percent}</td>
-      </tr>
-    `).join('');
-
     wrapper.innerHTML = `
       <details open>
         <summary class="fw-semibold mb-2">Mostrar / ocultar análisis</summary>
-        <div class="small muted mb-2">Total de ocurrencias evaluadas para contexto: ${modules.totalOccurrences}</div>
         <div class="table-responsive mb-3">
     <div class="fw-semibold mb-2">1) Formas flexionadas encontradas en la base (por libro)</div>
           ${formsByBookRows || '<div class="small muted">Sin coincidencias.</div>'}
-        </div>
-        <div class="mb-3">
-          <div class="fw-semibold mb-2">2) Red léxica derivada desde la base</div>
-          <ul class="mb-0">${networkRows}</ul>
-        </div>
-        <div class="table-responsive">
-          <div class="fw-semibold mb-2">3) Distribución contextual automática</div>
-          <table class="table table-sm align-middle">
-            <thead><tr><th>Categoría</th><th>Cantidad</th><th>Porcentaje</th></tr></thead>
-            <tbody>${contextRows || '<tr><td colspan="3" class="small muted">Sin contexto.</td></tr>'}</tbody>
-          </table>
         </div>
       </details>
     `;
