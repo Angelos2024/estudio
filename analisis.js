@@ -1400,18 +1400,16 @@ function buildSpanishTestamentLabel(otRefs = [], ntRefs = []) {
     return consonants.slice(0, Math.min(3, consonants.length || 0));
   }
 
- async function buildDeepLexicalModules({ lang, normalizedLemma, displayLemma, grRefs, heRefs, lxxRefs, comparisonContext = {} }) {    const formStats = new Map();
-    let totalOccurrences = 0;
-
-  
-        const pushForm = (form, source, morph = '') => {
+async function buildFormsBySource({ lang, normalizedLemma, displayLemma, lxxRefs }) {
+    const formStats = new Map();
+    const pushForm = (form, source, morph = '') => {
       const key = `${source}::${form}::${morph}`;
       const current = formStats.get(key) || { form, source, morph, count: 0 };
       current.count += 1;
       formStats.set(key, current);
     };
 
-   if (lang === 'gr' || lxxRefs.length) {
+    if (lang === 'gr' || lxxRefs.length) {
       const grIndex = await loadIndex('gr');
       await loadDictionary();
       const greekEntries = Array.isArray(state.dict?.items) ? state.dict.items : [];
@@ -1493,13 +1491,23 @@ function buildSpanishTestamentLabel(otRefs = [], ntRefs = []) {
         total
       };
     }).filter((item) => item.rows.length);
+        return { forms, formsBySource };
+ }
+
+ async function buildDeepLexicalModules({ lang, normalizedLemma, displayLemma, grRefs, heRefs, lxxRefs, comparisonContext = {} }) {
  const dictionaryComparison = await buildDictionaryComparison({
       lemmaIntroducido: comparisonContext.lemmaIntroducido || displayLemma,
       normalizedGreekLemma: comparisonContext.greekLemma || (lang === 'he' ? '' : normalizedLemma),
       normalizedHebrewLemma: comparisonContext.hebrewLemma || (lang === 'he' ? normalizedLemma : '')
     });
-    return { forms, formsBySource, totalOccurrences, dictionaryComparison };
-     }
+    return {
+      forms: [],
+      formsBySource: [],
+      totalOccurrences: 0,
+      dictionaryComparison,
+      formsContext: { lang, normalizedLemma, displayLemma, lxxRefs }
+    };
+         }
 async function buildDictionaryComparison({ lemmaIntroducido, normalizedGreekLemma, normalizedHebrewLemma }) {
     await loadDictionary();
     await loadGreekUnifiedDictionary();
@@ -1516,38 +1524,27 @@ async function buildDictionaryComparison({ lemmaIntroducido, normalizedGreekLemm
 
     const hebrewResources = await loadHebrewExtendedDictionary();
     const hebrewQuery = normalizeHebrew(normalizedHebrewLemma || lemmaIntroducido || '');
-    const directIds = hebrewResources.indexByLemma?.[hebrewQuery] || [];
-    let resolvedEntries = directIds.map((id) => hebrewResources.entriesById.get(id)).filter(Boolean);
-    if (!resolvedEntries.length && hebrewResources.byLemma.has(hebrewQuery)) {
-      resolvedEntries = hebrewResources.byLemma.get(hebrewQuery);
+ const resolveEntriesByQuery = (query) => {
+      if (!query) return [];
+      const ids = hebrewResources.indexByLemma?.[query] || [];
+      const byId = ids.map((id) => hebrewResources.entriesById.get(id)).filter(Boolean);
+      if (byId.length) return byId;
+      return hebrewResources.byLemma.get(query) || [];
+    };
+    let resolvedEntries = resolveEntriesByQuery(hebrewQuery);
+    if ((!resolvedEntries.length || (resolvedEntries.length > 3 && hebrewQuery.endsWith('י'))) && hebrewQuery.length > 2) {
+      const trimmed = hebrewQuery.slice(0, -1);
+      const trimmedMatches = resolveEntriesByQuery(trimmed);
+      if (trimmedMatches.length) resolvedEntries = trimmedMatches;
     }
-    if (!resolvedEntries.length && hebrewQuery) {
-      let fallbackKey = '';
-      let bestScore = -1;
-      Object.keys(hebrewResources.indexByLemma || {}).forEach((lemma) => {
-        const normalizedLemma = normalizeHebrew(lemma);
-        if (!normalizedLemma) return;
-        const related = hebrewQuery.includes(normalizedLemma) || normalizedLemma.includes(hebrewQuery);
-        if (!related) return;
-        const score = (hebrewResources.indexByLemma[lemma] || []).length;
-        if (score > bestScore) {
-          bestScore = score;
-          fallbackKey = lemma;
-        }
-      });
-      if (fallbackKey) {
-        const ids = hebrewResources.indexByLemma[fallbackKey] || [];
-        resolvedEntries = ids.map((id) => hebrewResources.entriesById.get(id)).filter(Boolean);
-        if (!resolvedEntries.length) {
-          resolvedEntries = hebrewResources.byLemma.get(normalizeHebrew(fallbackKey)) || [];
-        }
-      }
-    }
-    const hebrewText = resolvedEntries
-      .slice(0, 3)
-      .map((entry) => String(entry?.text || entry?.headword_line || entry?.gloss_es || '').trim())
-      .filter(Boolean)
-      .join('\n\n') || 'Sin coincidencias para este lemma en Diccionario B.';
+     const bestHebrewEntry = resolvedEntries
+      .map((entry) => ({
+        entry,
+        text: String(entry?.text || entry?.headword_line || entry?.gloss_es || '').trim()
+      }))
+      .filter((item) => item.text)
+      .sort((a, b) => b.text.length - a.text.length)[0];
+    const hebrewText = bestHebrewEntry?.text || 'Sin coincidencias para este lemma en Diccionario B.';
 
     return {
       lemmaIntroducido: lemmaIntroducido || '—',
@@ -1555,6 +1552,30 @@ async function buildDictionaryComparison({ lemmaIntroducido, normalizedGreekLemm
       hebrewText
     };
   }
+  function renderFormsBySource(target, formsBySource = []) {
+    const formsByBookRows = formsBySource.map((group) => {
+          const formsRows = group.rows.map((item) => `
+        <tr>
+          <td>${escapeHtml(item.form)}</td>
+          <td>${item.count}</td>
+          <td>${escapeHtml(describeMorphTag(item.morph || ''))}</td>
+        </tr>
+   `).join('');
+      return `
+        <details class="mb-2" open>
+                  <summary class="fw-semibold">${escapeHtml(group.label)} <span class="small muted">(${group.total} coincidencias)</span></summary>
+          <div class="table-responsive mt-2">
+            <table class="table table-sm align-middle">
+              <thead><tr><th>Forma</th><th>Frecuencia</th><th>Morfología</th></tr></thead>
+              <tbody>${formsRows || '<tr><td colspan="3" class="small muted">Sin coincidencias.</td></tr>'}</tbody>
+            </table>
+          </div>
+        </details>
+      `;
+        }).join('');
+    target.innerHTML = formsByBookRows || '<div class="small muted">Sin coincidencias.</div>';
+  }
+
   function renderDeepLexicalAnalysis(modules) {
       deepLexicalAnalysis.innerHTML = '';
     const wrapper = document.createElement('div');
@@ -1566,34 +1587,13 @@ async function buildDictionaryComparison({ lemmaIntroducido, normalizedGreekLemm
       return;
     }
 
-   const formsByBookRows = (modules.formsBySource || []).map((group) => {
-      const formsRows = group.rows.map((item) => `
-        <tr>
-          <td>${escapeHtml(item.form)}</td>
-          <td>${item.count}</td>
-          <td>${escapeHtml(describeMorphTag(item.morph || ''))}</td>
-        </tr>
-   `).join('');
-      return `
-        <details class="mb-2">
-          <summary class="fw-semibold">${escapeHtml(group.label)} <span class="small muted">(${group.total} coincidencias)</span></summary>
-          <div class="table-responsive mt-2">
-            <table class="table table-sm align-middle">
-              <thead><tr><th>Forma</th><th>Frecuencia</th><th>Morfología</th></tr></thead>
-              <tbody>${formsRows || '<tr><td colspan="3" class="small muted">Sin coincidencias.</td></tr>'}</tbody>
-            </table>
-          </div>
-        </details>
-      `;
-    }).join('');
 
  const comparison = modules.dictionaryComparison || {};
+  const formsLoaded = Array.isArray(modules.formsBySource) && modules.formsBySource.length > 0;
     wrapper.innerHTML = `
-      <details open>
-        <summary class="fw-semibold mb-2">Mostrar / ocultar análisis</summary>
        <div class="fw-semibold mb-2">Lemma introducido: ${escapeHtml(comparison.lemmaIntroducido || '—')}</div>
-        <div class="table-responsive mb-3">
-          <table class="table table-sm align-middle">
+      <div class="table-responsive mb-3 dictionary-comparison-wrap">
+          <table class="table table-sm align-middle dictionary-comparison-table">
             <thead>
               <tr>
                 <th>Diccionario A (Griego)</th>
@@ -1607,15 +1607,41 @@ async function buildDictionaryComparison({ lemmaIntroducido, normalizedGreekLemm
               </tr>
             </tbody>
           </table>
+       </div>
+      <div class="table-responsive mb-3">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+          <div class="fw-semibold">Formas flexionadas encontradas en la base (por libro)</div>
+          <button type="button" class="btn btn-soft btn-sm" id="loadFormsByBookBtn">${formsLoaded ? 'Recargar formas' : 'Cargar formas'}</button>
         </div>
-        <div class="table-responsive mb-3">
-    <div class="fw-semibold mb-2">1) Formas flexionadas encontradas en la base (por libro)</div>
-          ${formsByBookRows || '<div class="small muted">Sin coincidencias.</div>'}
-        </div>
-      </details>
+       div id="formsByBookContainer">${formsLoaded ? '' : '<div class="small muted">Carga bajo demanda para evitar retrasos. Usa el botón para consultar este bloque.</div>'}</div>
+      </div>
     `;
 
     deepLexicalAnalysis.appendChild(wrapper);
+     if (formsLoaded) {
+      const formsContainer = wrapper.querySelector('#formsByBookContainer');
+      renderFormsBySource(formsContainer, modules.formsBySource);
+    }
+    const loadFormsButton = wrapper.querySelector('#loadFormsByBookBtn');
+    const formsContainer = wrapper.querySelector('#formsByBookContainer');
+    loadFormsButton?.addEventListener('click', async () => {
+      if (!modules.formsContext || !formsContainer) return;
+      loadFormsButton.disabled = true;
+      loadFormsButton.textContent = 'Cargando...';
+      formsContainer.innerHTML = '<div class="small muted">Consultando formas flexionadas...</div>';
+      try {
+        const formsModule = await buildFormsBySource(modules.formsContext);
+        modules.forms = formsModule.forms;
+        modules.formsBySource = formsModule.formsBySource;
+        renderFormsBySource(formsContainer, modules.formsBySource);
+        loadFormsButton.textContent = 'Recargar formas';
+      } catch (error) {
+        formsContainer.innerHTML = '<div class="small muted">No se pudieron cargar las formas en este momento.</div>';
+        loadFormsButton.textContent = 'Reintentar carga';
+      } finally {
+        loadFormsButton.disabled = false;
+      }
+    });
   }
 
   async function buildSummary(term, lang, entry, hebrewEntry, refs, highlightQueries = {}) {
