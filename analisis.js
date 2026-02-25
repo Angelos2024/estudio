@@ -1,9 +1,7 @@
 
-
  (() => {
    const DICT_URL = './diccionario/masterdiccionario.json';
    const HEBREW_DICT_URL = './diccionario/diccionario_unificado.min.json';
-     const TRILINGUAL_EQUIV_URL = './diccionario/equivalencias_trilingue.min.json';
    const SEARCH_INDEX = {
      es: './search/index-es.json',
      gr: './search/index-gr.json',
@@ -135,17 +133,16 @@
   ]);
  
    const TORAH = ['genesis', 'exodo', 'levitico', 'numeros', 'deuteronomio'];
-   const HISTORICAL = [
-     'josue', 'jueces', 'rut', '1_samuel', '2_samuel', '1_reyes', '2_reyes',
-     '1_cronicas', '2_cronicas', 'esdras', 'nehemias', 'ester', 'hechos'
-   ];
-   const WISDOM = ['job', 'salmos', 'proverbios', 'eclesiastes', 'cantares'];
    const PROPHETS = [
-     'isaias', 'jeremias', 'lamentaciones', 'ezequiel', 'daniel', 'oseas', 'joel', 'amos',
+     'josue', 'jueces', '1_samuel', '2_samuel', '1_reyes', '2_reyes', 'isaias',
+     'jeremias', 'lamentaciones', 'ezequiel', 'daniel', 'oseas', 'joel', 'amos',
      'abdias', 'jonas', 'miqueas', 'nahum', 'habacuc', 'sofonias', 'hageo',
      'zacarias', 'malaquias'
    ];
-   
+   const WRITINGS = [
+     'rut', '1_cronicas', '2_cronicas', 'esdras', 'nehemias', 'ester', 'job',
+     'salmos', 'proverbios', 'eclesiastes', 'cantares'
+   ];
    const GOSPELS = ['mateo', 'marcos', 'lucas', 'juan'];
    const ACTS = ['hechos'];
    const LETTERS = [
@@ -169,10 +166,6 @@
     dictMap: new Map(),
     hebrewDict: null,
     hebrewDictMap: new Map(),
-  trilingualEquiv: null,
-    trilingualByEs: new Map(),
-    trilingualByGr: new Map(),
-    trilingualByHe: new Map(),
      indexes: {},
      textCache: new Map(),
     lxxFileCache: new Map(),
@@ -185,8 +178,6 @@
      isLoading: false
     };
   const jsonCache = new Map();
-  const failedJsonRequests = new Map();
-  const JSON_RETRY_COOLDOWN_MS = 15000;
  
    const queryInput = document.getElementById('queryInput');
    const analyzeBtn = document.getElementById('analyzeBtn');
@@ -194,15 +185,12 @@
    const lemmaSummary = document.getElementById('lemmaSummary');
   const lemmaCorrespondence = document.getElementById('lemmaCorrespondence');
    const lemmaExamples = document.getElementById('lemmaExamples');
-  const deepLexicalAnalysis = document.getElementById('deepLexicalAnalysis');
-  const deepLexicalCorrespondence = document.getElementById('deepLexicalCorrespondence');
+  const resultsByCorpus = document.getElementById('resultsByCorpus');
   const resultsLoadingIndicator = document.getElementById('resultsLoadingIndicator');
   const resultsLoadingStage = document.getElementById('resultsLoadingStage');
   const analysisResultsSection = document.getElementById('analysisResultsSection');
   const lemmaSummaryPanel = document.getElementById('lemmaSummaryPanel');
-const occurrenceDonutMount = document.getElementById('occurrenceDonutMount');
-  const occurrenceDonut = window.AnalisisOccurrenceDonut?.create(occurrenceDonutMount)
-  
+
   const nextFrame = () => new Promise((resolve) => requestAnimationFrame(resolve));
   function scrollToLemmaSummary() {
     if (!lemmaSummaryPanel) {
@@ -220,8 +208,8 @@ const occurrenceDonutMount = document.getElementById('occurrenceDonutMount');
   
    if (resultsLoadingIndicator) resultsLoadingIndicator.hidden = !isLoading;
     if (resultsLoadingStage) resultsLoadingStage.hidden = !isLoading;
-    if (deepLexicalAnalysis) deepLexicalAnalysis.hidden = isLoading;
-   if (analyzeBtn) analyzeBtn.disabled = isLoading;
+    if (resultsByCorpus) resultsByCorpus.hidden = isLoading;
+    if (analyzeBtn) analyzeBtn.disabled = isLoading;
   }
  
 function normalizeGreek(text) {
@@ -278,10 +266,8 @@ function normalizeGreek(text) {
   }
    function normalizeHebrew(text) {
      return String(text || '')
-      .replace(/[\u200C-\u200F\u202A-\u202E]/g, '')
        .replace(/[\u0591-\u05BD\u05BF\u05C1-\u05C2\u05C4-\u05C7]/g, '')
-       .replace(/[\s\u05BE\-\u2010-\u2015\u2212]/g, '')
-       .replace(/[׃.,;:!?()"“”'׳״]/g, '');
+       .replace(/[\s\u05BE]/g, '');
    }
  
 function normalizeSpanish(text) {
@@ -292,81 +278,6 @@ function normalizeSpanish(text) {
       .replace(/[\u0300-\u036f]/g, '')
       .replace(/[^a-z0-9ñ]/g, '');
   }
-
-  function normalizeSpanishWord(text) {
-    return normalizeSpanish(text);
-  }
-
-    function normalizeSpanishPhrase(text) {
-    return String(text || '')
-      .trim()
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^a-z0-9ñ\s]/g, ' ')
-      .replace(/\s+/g, ' ')
-      .trim();
-  }
-  function tokenizeSpanishWords(text) {
-    return String(text || '')
-      .split(/[^\p{L}\p{N}ñÑ]+/u)
-      .map((token) => normalizeSpanishWord(token))
-      .filter(Boolean);
-  }
-  function tokenizeGreekWords(text) {
-    return String(text || '')
-      .split(/[^\p{Script=Greek}\p{N}]+/u)
-      .map((token) => normalizeGreek(token))
-      .filter(Boolean);
-  }
-  function tokenizeHebrewWords(text) {
-    return String(text || '')
-      .replace(/[\u05BE\-\u2010-\u2015\u2212]/g, ' ')
-      .split(/\s+/)
-      .map((token) => normalizeHebrew(token))
-      .filter(Boolean);
-  }
-  function hasTokenSequence(tokens, queryTokens) {
-    if (!queryTokens.length || queryTokens.length > tokens.length) return false;
-    for (let i = 0; i <= tokens.length - queryTokens.length; i += 1) {
-      let matches = true;
-      for (let j = 0; j < queryTokens.length; j += 1) {
-        if (tokens[i + j] !== queryTokens[j]) {
-          matches = false;
-          break;
-        }
-      }
-      if (matches) return true;
-    }
-    return false;
-  }
-  function tokenizeQueryForExactSearch(rawQuery, lang) {
-    if (lang === 'gr' || lang === 'lxx') return tokenizeGreekWords(rawQuery);
-    if (lang === 'he') return tokenizeHebrewWords(rawQuery);
-    return tokenizeSpanishWords(rawQuery);
-  }
-  function tokenizeVerseForExactSearch(verseText, lang) {
-    if (lang === 'gr' || lang === 'lxx') return tokenizeGreekWords(verseText);
-    if (lang === 'he') return tokenizeHebrewWords(verseText);
-    return tokenizeSpanishWords(verseText);
-  }
-  async function filterRefsByExactSequence(refs, lang, rawQuery) {
-    const queryTokens = tokenizeQueryForExactSearch(rawQuery, lang);
-    if (queryTokens.length < 2) return refs;
-    const output = [];
-    for (const ref of refs) {
-      const [book, chapterRaw, verseRaw] = String(ref || '').split('|');
-      const chapter = Number(chapterRaw);
-      const verse = Number(verseRaw);
-      if (!book || !Number.isFinite(chapter) || !Number.isFinite(verse)) continue;
-      const verses = await loadChapterText(lang, book, chapter);
-      const verseText = verses?.[verse - 1] || '';
-      const verseTokens = tokenizeVerseForExactSearch(verseText, lang);
-      if (hasTokenSequence(verseTokens, queryTokens)) output.push(ref);
-    }
-    return output;
-  }
-  
   function getHebrewDefinition(entry) {
     return entry?.definitions?.short || entry?.strong_detail?.definicion || entry?.descripcion || '';
   }
@@ -431,11 +342,6 @@ function normalizeSpanish(text) {
     if (!tokens.length) return safe;
 
     let output = safe;
-   if (tokens.length > 1) {
-      const phrasePattern = tokens.map((token) => buildTokenRegex(token, lang).source).join('\\s+');
-      const phraseRe = new RegExp(phrasePattern, 'giu');
-      return output.replace(phraseRe, (match) => `<mark>${match}</mark>`);
-    }
     for (const token of tokens) {
       const re = buildTokenRegex(token, lang);
       output = output.replace(re, (match) => `<mark>${match}</mark>`);
@@ -454,89 +360,6 @@ function detectLang(text) {
     if (lang === 'he') return normalizeHebrew(text);
     return normalizeSpanish(text);
   }
-    function stripStrongPrefix(token) {
-    return String(token || '').replace(/^[GH]\d+:/i, '').trim();
-  }
-  async function loadTrilingualEquivalences() {
-    if (state.trilingualEquiv) return state.trilingualEquiv;
-    const data = await loadJson(TRILINGUAL_EQUIV_URL);
-    state.trilingualEquiv = data;
-
-    const byEs = new Map();
-    const byGr = new Map();
-    const byHe = new Map();
-    const register = (esWord, grList, heList) => {
-      const esKey = normalizeSpanishPhrase(esWord);
-      if (!esKey) return;
-      const grSet = new Set((grList || []).map((item) => normalizeGreek(stripStrongPrefix(item))).filter(Boolean));
-      const heSet = new Set((heList || []).map((item) => normalizeHebrew(stripStrongPrefix(item))).filter(Boolean));
-      byEs.set(esKey, {
-        gr: new Set([...(byEs.get(esKey)?.gr || []), ...grSet]),
-        he: new Set([...(byEs.get(esKey)?.he || []), ...heSet])
-      });
-      grSet.forEach((grWord) => {
-        if (!byGr.has(grWord)) byGr.set(grWord, new Set());
-        byGr.get(grWord).add(esKey);
-      });
-      heSet.forEach((heWord) => {
-        if (!byHe.has(heWord)) byHe.set(heWord, new Set());
-        byHe.get(heWord).add(esKey);
-      });
-    };
-
-    if (Array.isArray(data)) {
-      data.forEach((item) => register(item?.es, item?.gr, item?.he));
-    } else {
-      Object.entries(data?.by_es || {}).forEach(([esWord, payload]) => {
-        register(esWord, payload?.gr || [], payload?.he || []);
-      });
-      Object.entries(data?.by_gr || {}).forEach(([grWord, esWords]) => {
-        const grKey = normalizeGreek(stripStrongPrefix(grWord));
-        if (!grKey) return;
-        if (!byGr.has(grKey)) byGr.set(grKey, new Set());
-        (esWords || []).forEach((esWord) => byGr.get(grKey).add(normalizeSpanishPhrase(esWord)));
-      });
-      Object.entries(data?.by_he || {}).forEach(([heWord, esWords]) => {
-        const heKey = normalizeHebrew(stripStrongPrefix(heWord));
-        if (!heKey) return;
-        if (!byHe.has(heKey)) byHe.set(heKey, new Set());
-        (esWords || []).forEach((esWord) => byHe.get(heKey).add(normalizeSpanishPhrase(esWord)));
-      });
-    }
-
-    state.trilingualByEs = byEs;
-    state.trilingualByGr = byGr;
-    state.trilingualByHe = byHe;
-    return data;
-  }
-
-  function getEquivalenceSearchTerms(term, langHint = detectLang(term)) {
-    const result = { es: new Set(), gr: new Set(), he: new Set() };
-    if (!state.trilingualEquiv) return result;
-    const normalized = langHint === 'es'
-      ? normalizeSpanishPhrase(term)
-      : (langHint === 'gr' ? normalizeGreek(term) : normalizeHebrew(term));
-    if (!normalized) return result;
-
-    if (langHint === 'es') {
-      const match = state.trilingualByEs.get(normalized);
-      if (!match) return result;
-      match.gr.forEach((item) => result.gr.add(item));
-      match.he.forEach((item) => result.he.add(item));
-      return result;
-    }
-
-    const bridge = langHint === 'gr' ? state.trilingualByGr.get(normalized) : state.trilingualByHe.get(normalized);
-    if (!bridge) return result;
-    bridge.forEach((esWord) => {
-      result.es.add(esWord);
-      const match = state.trilingualByEs.get(esWord);
-      if (!match) return;
-      match.gr.forEach((item) => result.gr.add(item));
-      match.he.forEach((item) => result.he.add(item));
-    });
-    return result;
-  }
 function getGreekRefs(normalized, index) {
     if (!normalized) return [];
     const keys = buildGreekSearchKeys(normalized);
@@ -552,32 +375,7 @@ function getGreekRefs(normalized, index) {
     });
     return refs;
   }
-   function getHebrewRefs(normalized, index) {
-    if (!normalized) return [];
-    const direct = index.tokens?.[normalized] || [];
-    if (direct.length) return direct;
-
-    const refs = [];
-    const seen = new Set();
-    Object.entries(index.tokens || {}).forEach(([token, matches]) => {
-      if (!token || token === normalized) return;
-      if (!token.endsWith(normalized) && !token.includes(normalized)) return;
-     const prefixLen = token.length - normalized.length;
-      if (prefixLen < 0 || prefixLen > 3) return;
-     (matches || []).forEach((ref) => {
-        if (seen.has(ref)) return;
-        seen.add(ref);
-        refs.push(ref);
-      });
-    });
-    return refs;
-  }
   async function loadJson(url) {
-   const failedRequest = failedJsonRequests.get(url);
-    if (failedRequest && (Date.now() - failedRequest.timestamp) < JSON_RETRY_COOLDOWN_MS) {
-      throw failedRequest.error;
-    }
-
    if (jsonCache.has(url)) return jsonCache.get(url);
     const promise = fetch(url, { cache: 'force-cache' }).then((res) => {
       if (!res.ok) throw new Error(`No se pudo cargar ${url}`);
@@ -585,21 +383,10 @@ function getGreekRefs(normalized, index) {
     });
     jsonCache.set(url, promise);
     try {
-    failedJsonRequests.delete(url);
       return await promise;
     } catch (error) {
       jsonCache.delete(url);
-const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
-      const isNetworkError = offline || error instanceof TypeError;
-      const normalizedError = isNetworkError
-        ? new Error(
-          `Error de red cargando ${url}. Revisa si el navegador está en modo Offline (DevTools), ` +
-          'si el servidor local está activo y si no hay un bloqueador/proxy interrumpiendo peticiones locales.'
-        )
-        : error;
-
-      failedJsonRequests.set(url, { timestamp: Date.now(), error: normalizedError });
-      throw normalizedError;
+      throw error;
     }
   }
 
@@ -631,8 +418,8 @@ const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
     if (!term) return null;
     await loadDictionary();
     const tokens = String(term || '').split(/\s+/).filter(Boolean);
-    const candidates = tokens.length > 1 ? [term] : [term, ...tokens];
-   for (const candidate of candidates) {
+    const candidates = [term, ...tokens];
+    for (const candidate of candidates) {
       const key = normalizeTransliteration(candidate);
       if (!key) continue;
       const entry = state.dictTranslitMap.get(key);
@@ -1114,37 +901,21 @@ function mapLxxRefsToHebrewRefs(refs) {
   function groupForBook(book) {
      const slug = LXX_TO_HEBREW_SLUG[book] || book;
      if (TORAH.includes(slug)) return { key: 'torah', label: 'Torah' };
-    if (HISTORICAL.includes(slug)) return { key: 'historicos', label: 'Históricos' };
-     if (WISDOM.includes(slug)) return { key: 'sabiduria', label: 'Sabiduría' };
      if (PROPHETS.includes(slug)) return { key: 'profetas', label: 'Profetas' };
+     if (WRITINGS.includes(slug)) return { key: 'escritos', label: 'Escritos' };
      if (GOSPELS.includes(slug)) return { key: 'evangelios', label: 'Evangelios' };
+     if (ACTS.includes(slug)) return { key: 'hechos', label: 'Hechos' };
      if (LETTERS.includes(slug)) return { key: 'cartas', label: 'Cartas' };
      if (APOCALYPSE.includes(slug)) return { key: 'apocalipsis', label: 'Apocalipsis' };
      return { key: 'otros', label: 'Otros' };
    }
-
-  function prettyBookLabel(book) {
-     return (book || '').replace(/_/g, ' ').replace(/\b\w/g, (m) => m.toUpperCase());
-   }
-
-   function buildBookCountRows(refs) {
-     const counts = new Map();
-     refs.forEach((ref) => {
-       const [book] = String(ref || '').split('|');
-       if (!book) return;
-       const slug = LXX_TO_HEBREW_SLUG[book] || book;
-       counts.set(slug, (counts.get(slug) || 0) + 1);
-     });
-     return [...counts.entries()]
-       .map(([book, count]) => ({ book, label: prettyBookLabel(book), count }))
-       .sort((a, b) => b.count - a.count);
-   }
+ 
    function formatRef(book, chapter, verse) {
-     const bookLabel = prettyBookLabel(book);
-    return `${bookLabel} ${chapter}:${verse}`;
+     const bookLabel = book.replace(/_/g, ' ').replace(/\b\w/g, (m) => m.toUpperCase());
+     return `${bookLabel} ${chapter}:${verse}`;
    }
  
-    function classForLang(lang) {
+   function classForLang(lang) {
     if (lang === 'gr' || lang === 'lxx') return 'greek';
      if (lang === 'he') return 'hebrew';
      return 'mono';
@@ -1169,7 +940,6 @@ function mapLxxRefsToHebrewRefs(refs) {
        lemmaExamples.appendChild(div);
      });
    }
-
  
   function renderCorrespondence(cards) {
     lemmaCorrespondence.innerHTML = '';
@@ -1182,25 +952,12 @@ function mapLxxRefsToHebrewRefs(refs) {
       div.className = 'example-card';
       div.innerHTML = card;
       lemmaCorrespondence.appendChild(div);
-   });
-  }
-
-  function renderSingleWordInputError(term) {
-    renderTags([
-      `Entrada: <span class="fw-semibold">${term}</span>`,
-      'Estado: <span class="fw-semibold text-danger">Error de validación</span>'
-    ]);
-    lemmaSummary.textContent = 'Solo se aceptan entradas de una sola palabra en el análisis textual.';
-    renderCorrespondence([]);
-    renderExamples([]);
-    occurrenceDonut?.setData({ es: [], he: [], gr: [] });
-    deepLexicalAnalysis.innerHTML = '<div class="col-12"><div class="small muted">Corrige la consulta: usa una sola palabra (sin frases).</div></div>';
-  }
+     });
+   }
  
   async function buildSamplesForRefs(refs, lang, max = 3, preloadedTexts = null) {
-        const samples = [];
+    const samples = [];
     for (const ref of refs.slice(0, max)) {
-
       const [book, chapterRaw, verseRaw] = ref.split('|');
       const chapter = Number(chapterRaw);
       const verse = Number(verseRaw);
@@ -1223,13 +980,6 @@ function mapLxxRefsToHebrewRefs(refs) {
     return samples;
   }
 
-  function updateTrilingualBrief({ esWord = '—', grWord = '—', heWord = '—' } = {}) {
-    if (!deepLexicalCorrespondence) return;
-    deepLexicalCorrespondence.innerHTML = `
-      <span class="trilingual-title">Correspondencias idiomáticas:</span>
-      <span class="trilingual-line">Español: <span class="fw-semibold">${escapeHtml(esWord || '—')}</span> / Hebreo: <span class="fw-semibold he">${escapeHtml(heWord || '—')}</span> / Griego: <span class="fw-semibold gr">${escapeHtml(grWord || '—')}</span></span>
-    `;
-  }
   function buildCorrespondenceCard({ title, word, transliteration, samples, lang, highlightQuery }) {
     const wordLine = word
       ? `<div class="${classForLang(lang)} fw-semibold">${highlightText(word, highlightQuery, lang)}</div>`
@@ -1246,245 +996,209 @@ function mapLxxRefsToHebrewRefs(refs) {
     `;
   }
 
-function buildSpanishTestamentLabel(otRefs = [], ntRefs = []) {
-    if (otRefs.length && ntRefs.length) return 'RVR1960 (AT/NT)';
-    if (otRefs.length) return 'RVR1960 (AT)';
-    if (ntRefs.length) return 'RVR1960 (NT)';
-    return 'RVR1960';
-  }
-  function cleanHebrewToken(token) {
-    return String(token || '')
-      .replace(/[׃.,;:!?"“”(){}\[\]<>«»]/g, '')
-      .replace(/[\u05BE\-\u2010-\u2015\u2212]/g, ' ');
-  }
+ function renderResults(groupsByCorpus, highlightQueries = state.last?.highlightQueries || {}) {
+    resultsByCorpus.innerHTML = '';
+    if (!groupsByCorpus.length) {
+      resultsByCorpus.innerHTML = '<div class="col-12"><div class="muted small">Sin resultados en el corpus.</div></div>';
+       return;
+     }
 
-   function tokenizeGreekText(text) {
-    return String(text || '')
-      .split(/\s+/)
-      .map((token) => cleanGreekToken(token))
-      .filter(Boolean);
-  }
+   groupsByCorpus.forEach((corpus) => {
+      const { lang, groups } = corpus;
+      const wrapper = document.createElement('div');
+      wrapper.className = 'col-12';
+       const header = document.createElement('div');
+      header.className = 'fw-semibold mb-2';
+      header.textContent = langLabels[lang] || lang;
+      wrapper.appendChild(header);
 
-    function tokenizeHebrewText(text) {
-    return String(text || '')
-      .split(/\s+/)
-      .flatMap((token) => cleanHebrewToken(token).split(/\s+/))
-     .filter(Boolean);
-  }
+    if (corpus.loading) {
+        const loading = document.createElement('div');
+        loading.className = 'muted small';
+        loading.textContent = 'Cargando resultados...';
+        wrapper.appendChild(loading);
+        resultsByCorpus.appendChild(wrapper);
+        return;
+      }
+      const filteredGroups = groups.filter((group) => {
+        if (state.filter === 'todo') return true;
+        return group.category === state.filter;
+       });
  
 
-    function toPercent(part, total) {
-    if (!total) return '0.0%';
-    return `${((part / total) * 100).toFixed(1)}%`;
-  }
-
-  function describeMorphTag(tag) {
-    const raw = String(tag || '').trim();
-    if (!raw) return '—';
-    const posMap = {
-      N: 'Sustantivo',
-      V: 'Verbo',
-      A: 'Adjetivo',
-      D: 'Adverbio',
-      P: 'Preposición',
-      C: 'Conjunción',
-      T: 'Artículo',
-      I: 'Interjección',
-      X: 'Partícula',
-      M: 'Numeral',
-      RP: 'Pronombre personal',
-      RA: 'Pronombre/artículo',
-      RD: 'Pronombre demostrativo',
-      RI: 'Pronombre interrogativo',
-      RR: 'Pronombre relativo'
-    };
-    const caseMap = { N: 'Nominativo', G: 'Genitivo', D: 'Dativo', A: 'Acusativo', V: 'Vocativo' };
-    const numMap = { S: 'Singular', P: 'Plural', D: 'Dual' };
-    const genMap = { M: 'Masculino', F: 'Femenino', N: 'Neutro' };
-    const tenseMap = { P: 'Presente', I: 'Imperfecto', F: 'Futuro', A: 'Aoristo', X: 'Perfecto', Y: 'Pluscuamperfecto' };
-    const voiceMap = { A: 'Activa', M: 'Media', P: 'Pasiva' };
-    const moodMap = { I: 'Indicativo', S: 'Subjuntivo', O: 'Optativo', M: 'Imperativo', N: 'Infinitivo', P: 'Participio' };
-
-    const nounMatch = raw.match(/^([A-Z]{1,2})\.([NGDAV])([SPD])([MFN])$/);
-    if (nounMatch) {
-      const [, posCode, caseCode, numCode, genCode] = nounMatch;
-      const parts = [posMap[posCode] || posCode, caseMap[caseCode], numMap[numCode], genMap[genCode]].filter(Boolean);
-      return `${parts.join(' · ')} (${raw})`;
-    }
-
-    const pronounMatch = raw.match(/^([A-Z]{1,2})\.([NGDAV])([SP])([MFN]?)$/);
-    if (pronounMatch) {
-      const [, posCode, caseCode, numCode, genCode] = pronounMatch;
-      const parts = [posMap[posCode] || posCode, caseMap[caseCode], numMap[numCode], genMap[genCode]].filter(Boolean);
-      return `${parts.join(' · ')} (${raw})`;
-    }
-
-    const verbMatch = raw.match(/^V\.([PIFAXY])([AMP])([ISOMNP])([123]?)([SPD]?)$/);
-    if (verbMatch) {
-      const [, tenseCode, voiceCode, moodCode, personCode, numCode] = verbMatch;
-      const person = personCode ? `${personCode}ª persona` : '';
-      const parts = ['Verbo', tenseMap[tenseCode], voiceMap[voiceCode], moodMap[moodCode], person, numMap[numCode]].filter(Boolean);
-      return `${parts.join(' · ')} (${raw})`;
-    }
-
-    return posMap[raw] ? `${posMap[raw]} (${raw})` : raw;
-  }
-  function buildGreekLexicalRoot(normalizedLemma) {
-    const endings = ['ων','ους','ουσ','οις','αις','ειν','εις','ας','ης','ος','οι','αι','ον','ην','ου','ω'];
-    for (const ending of endings) {
-      if (normalizedLemma.endsWith(ending) && normalizedLemma.length - ending.length >= 3) {
-        return normalizedLemma.slice(0, -ending.length);
+      if (!filteredGroups.length) {
+        const empty = document.createElement('div');
+        empty.className = 'muted small';
+        empty.textContent = 'No hay resultados para el filtro seleccionado.';
+        wrapper.appendChild(empty);
+        resultsByCorpus.appendChild(wrapper);
+        return;
       }
-    }
-    return normalizedLemma.slice(0, Math.min(4, normalizedLemma.length));
-  }
 
-          function buildHebrewLexicalRoot(baseLemma) {
-    const consonants = normalizeHebrew(baseLemma || '');
-    return consonants.slice(0, Math.min(3, consonants.length || 0));
-  }
+            const totalCount = filteredGroups.reduce((sum, group) => sum + group.count, 0);
+      const info = document.createElement('div');
+      info.className = 'd-flex align-items-center justify-content-between mb-2';
+      const meta = document.createElement('div');
+      meta.innerHTML = `
+        <div class="fw-semibold">Resultados en ${filteredGroups.length} libro(s)</div>
+        <div class="small muted">${totalCount} ocurrencia(s) en total.</div>
+      `;
+      const button = document.createElement('button');
+      button.className = 'btn btn-soft btn-sm';
+      button.type = 'button';
+      button.textContent = corpus.expanded ? 'Ocultar resultados' : 'Ver resultados';
+      info.appendChild(meta);
+      info.appendChild(button);
+      wrapper.appendChild(info);
 
- async function buildDeepLexicalModules({ lang, normalizedLemma, displayLemma, grRefs, heRefs, lxxRefs }) {
-    const formStats = new Map();
-    let totalOccurrences = 0;
-
-  
-        const pushForm = (form, source, morph = '') => {
-      const key = `${source}::${form}::${morph}`;
-      const current = formStats.get(key) || { form, source, morph, count: 0 };
-      current.count += 1;
-      formStats.set(key, current);
-    };
-
-   if (lang === 'gr' || lxxRefs.length) {
-      const grIndex = await loadIndex('gr');
-      await loadDictionary();
-      const greekEntries = Array.isArray(state.dict?.items) ? state.dict.items : [];
-      greekEntries.forEach((item) => {
-        if (normalizeGreek(item?.lemma || '') !== normalizedLemma) return;
-        const form = item?.['Forma flexionada del texto'] || item?.lemma || '';
-        const normalizedForm = normalizeGreek(form);
-        if (!normalizedForm) return;
-        const count = (grIndex.tokens?.[normalizedForm] || []).length;
-        if (!count) return;
-        pushForm(form, 'RKANT (base completa)', '');
-        formStats.get(`RKANT (base completa)::${form}::`).count = count;
-      });
-
-      for (const file of LXX_FILES) {
-        try {
-          const data = await loadLxxFile(file);
-          Object.values(data?.text || {}).forEach((chapters) => {
-            Object.values(chapters || {}).forEach((verses) => {
-              Object.values(verses || {}).forEach((tokens) => {
-                (tokens || []).forEach((token) => {
-                  if (normalizeGreek(token?.lemma || '') !== normalizedLemma) return;
-                  pushForm(token?.w || token?.lemma || '', 'LXX (base completa)', token?.morph || '');
-                });
-              });
-            });
+      const list = document.createElement('div');
+      list.className = 'd-grid gap-2';
+      if (corpus.expanded) {
+        filteredGroups.forEach((group) => {
+          const bookBlock = document.createElement('div');
+          bookBlock.className = 'mb-2';
+          const bookHeader = document.createElement('div');
+          bookHeader.className = 'fw-semibold';
+          bookHeader.textContent = group.label;
+          const bookMeta = document.createElement('div');
+          bookMeta.className = 'small muted';
+         if (lang === 'es' && group.limit) {
+            bookMeta.textContent = `${group.loadedCount} de ${group.count} ocurrencia(s).`;
+          } else {
+            bookMeta.textContent = `${group.count} ocurrencia(s).`;
+          }
+          bookBlock.appendChild(bookHeader);
+          bookBlock.appendChild(bookMeta);
+          const bookList = document.createElement('div');
+          bookList.className = 'mt-1 d-grid gap-1';
+         const highlightQuery = highlightQueries[lang] || '';
+          group.items.forEach((item) => {
+            const row = document.createElement('div');
+            row.className = classForLang(lang);
+            row.innerHTML = `${escapeHtml(item.ref)} · ${highlightText(item.text, highlightQuery, lang)}`;
+            bookList.appendChild(row);
           });
-        } catch (error) {
-          continue;
-        }
-      }
-    }
-
-    if (lang === 'he') {
-      await loadHebrewDictionary();
-      const heIndex = await loadIndex('he');
-      const formSet = new Set([
-        hebrewStopwords.has(displayLemma) ? '' : displayLemma,
-        ...(state.hebrewDictMap.get(normalizedLemma)?.forms || []),
-        ...(state.hebrewDictMap.get(normalizedLemma)?.formas || [])
-      ].filter(Boolean));
-      formSet.forEach((form) => {
-        const normalizedForm = normalizeHebrew(form);
-        const count = (heIndex.tokens?.[normalizedForm] || []).length;
-        if (!count) return;
-        const key = `Hebreo (base completa)::${form}::`;
-        formStats.set(key, { form, source: 'Hebreo (base completa)', morph: '', count });
+          bookBlock.appendChild(bookList);
+         if (lang === 'es' && group.hasMore) {
+            const loadMoreWrapper = document.createElement('div');
+            loadMoreWrapper.className = 'mt-2';
+            const loadMoreButton = document.createElement('button');
+            loadMoreButton.className = 'btn btn-soft btn-sm';
+            loadMoreButton.type = 'button';
+            loadMoreButton.disabled = group.loadingMore;
+            loadMoreButton.textContent = group.loadingMore
+              ? 'Cargando...'
+              : 'Cargar más en RVR1960';
+            loadMoreButton.addEventListener('click', async () => {
+              if (group.loadingMore) return;
+              group.loadingMore = true;
+              renderResults(groupsByCorpus);
+              await loadMoreRvr1960(group);
+              group.loadingMore = false;
+              renderResults(groupsByCorpus);
+            });
+            loadMoreWrapper.appendChild(loadMoreButton);
+            bookBlock.appendChild(loadMoreWrapper);
+          }
+          list.appendChild(bookBlock);
+        });
+       }
+      wrapper.appendChild(list);
+    
+       button.addEventListener('click', () => {
+        corpus.expanded = !corpus.expanded;
+        renderResults(groupsByCorpus);
       });
-    }
+ 
 
-    if (lang === 'es') {
-      const esIndex = await loadIndex('es');
-      const normalizedEs = normalizeSpanish(displayLemma);
-      const count = (esIndex.tokens?.[normalizedEs] || []).length;
-      if (count) {
-        formStats.set(`Español (base completa)::${displayLemma}::`, {
-          form: displayLemma,
-          source: 'Español (base completa)',
-          morph: '',
-          count
+      resultsByCorpus.appendChild(wrapper);
+     });
+   }
+ 
+
+  async function buildBookGroups(refs, lang, preloadedTexts = null) {
+     const grouped = new Map();
+     refs.forEach((ref) => {
+       const [book] = ref.split('|');
+       if (!grouped.has(book)) grouped.set(book, []);
+       grouped.get(book).push(ref);
+     });
+     
+        const limit = lang === 'es' ? 20 : 12;
+     const groups = [];
+     for (const [book, bookRefs] of grouped.entries()) {
+       const { key, label } = groupForBook(book);
+       const group = {
+         label: book.replace(/_/g, ' ').replace(/\b\w/g, (m) => m.toUpperCase()),
+         items: [],
+         count: bookRefs.length,
+         expanded: false,
+         category: key,
+         categoryLabel: label,
+         refs: bookRefs,
+         limit,
+         loadedCount: 0,
+         hasMore: false,
+         loadingMore: false
+       };
+       const refsToLoad = bookRefs.slice(0, limit);
+       for (const ref of refsToLoad) {
+         const [bookName, chapterRaw, verseRaw] = ref.split('|');
+         const chapter = Number(chapterRaw);
+         const verse = Number(verseRaw);
+         try {
+
+          const verseText = preloadedTexts?.get?.(ref);
+           if (!verseText) throw new Error('no preloaded');
+           group.items.push({
+             ref: formatRef(bookName, chapter, verse),
+             text: verseText
+           });
+         } catch (error) {
+          try {
+             const verses = await loadChapterText(lang, bookName, chapter);
+             const verseText = verses?.[verse - 1] || '';
+             group.items.push({
+               ref: formatRef(bookName, chapter, verse),
+               text: verseText
+             });
+           } catch (innerError) {
+             group.items.push({
+               ref: formatRef(bookName, chapter, verse),
+               text: 'Texto no disponible.'
+             });
+           }
+         }
+       }
+      group.loadedCount = group.items.length;
+       group.hasMore = lang === 'es' && group.loadedCount < group.count;
+       groups.push(group);
+       }
+    return groups.sort((a, b) => b.count - a.count);
+   }
+ async function loadMoreRvr1960(group) {
+    const refsToLoad = group.refs.slice(group.loadedCount);
+    for (const ref of refsToLoad) {
+      const [book, chapterRaw, verseRaw] = ref.split('|');
+      const chapter = Number(chapterRaw);
+      const verse = Number(verseRaw);
+      try {
+        const verses = await loadChapterText('es', book, chapter);
+        const verseText = verses?.[verse - 1] || '';
+        group.items.push({
+          ref: formatRef(book, chapter, verse),
+          text: verseText
+        });
+      } catch (error) {
+        group.items.push({
+          ref: formatRef(book, chapter, verse),
+          text: 'Texto no disponible.'
         });
       }
     }
-    const forms = [...formStats.values()].sort((a, b) => b.count - a.count);
-    const sourceOrder = ['LXX (base completa)', 'Hebreo (base completa)', 'RKANT (base completa)', 'Español (base completa)'];
-    const sourceLabels = {
-      'LXX (base completa)': 'LXX',
-      'Hebreo (base completa)': 'Hebreo',
-      'RKANT (base completa)': 'RKANT',
-      'Español (base completa)': 'RVR1960'
-    };
-    const formsBySource = sourceOrder.map((source) => {
-      const rows = forms.filter((item) => item.source === source);
-      const total = rows.reduce((acc, row) => acc + row.count, 0);
-      return {
-        source,
-        label: sourceLabels[source] || source,
-        rows,
-        total
-      };
-    }).filter((item) => item.rows.length);
-    return { forms, formsBySource, totalOccurrences };
- }
-   function renderDeepLexicalAnalysis(modules) {
-    deepLexicalAnalysis.innerHTML = '';
-    const wrapper = document.createElement('div');
-    wrapper.className = 'col-12';
-
-    if (!modules || (!modules.totalOccurrences && !(modules.forms || []).length)) {
-     wrapper.innerHTML = '<div class="small muted">No hay datos suficientes para generar el análisis léxico profundo.</div>';
-      deepLexicalAnalysis.appendChild(wrapper);
-      return;
-    }
-
-   const formsByBookRows = (modules.formsBySource || []).map((group) => {
-      const formsRows = group.rows.map((item) => `
-        <tr>
-          <td>${escapeHtml(item.form)}</td>
-          <td>${item.count}</td>
-          <td>${escapeHtml(describeMorphTag(item.morph || ''))}</td>
-        </tr>
-   `).join('');
-      return `
-        <details class="mb-2">
-          <summary class="fw-semibold">${escapeHtml(group.label)} <span class="small muted">(${group.total} coincidencias)</span></summary>
-          <div class="table-responsive mt-2">
-            <table class="table table-sm align-middle">
-              <thead><tr><th>Forma</th><th>Frecuencia</th><th>Morfología</th></tr></thead>
-              <tbody>${formsRows || '<tr><td colspan="3" class="small muted">Sin coincidencias.</td></tr>'}</tbody>
-            </table>
-          </div>
-        </details>
-      `;
-    }).join('');
-
-    wrapper.innerHTML = `
-      <details open>
-        <summary class="fw-semibold mb-2">Mostrar / ocultar análisis</summary>
-        <div class="table-responsive mb-3">
-    <div class="fw-semibold mb-2">1) Formas flexionadas encontradas en la base (por libro)</div>
-          ${formsByBookRows || '<div class="small muted">Sin coincidencias.</div>'}
-        </div>
-      </details>
-    `;
-
-    deepLexicalAnalysis.appendChild(wrapper);
+    group.loadedCount = group.items.length;
+    group.hasMore = false;
   }
-
   async function buildSummary(term, lang, entry, hebrewEntry, refs, highlightQueries = {}) {
      const lemma = entry?.lemma || term;
      const transliteration = entry?.['Forma lexica'] || '—';
@@ -1497,12 +1211,46 @@ function buildSpanishTestamentLabel(otRefs = [], ntRefs = []) {
     if (defShort) summaryParts.push(defShort);
     if (definition && definition !== defShort) summaryParts.push(definition);
 
-    
+    let sampleRef = null;
+    let sampleText = '';
+    let sampleEs = '';
+    if (refs.length) {
+      const [book, chapterRaw, verseRaw] = refs[0].split('|');
+      const chapter = Number(chapterRaw);
+      const verse = Number(verseRaw);
+      sampleRef = formatRef(book, chapter, verse);
+      try {
+        const verses = await loadChapterText(lang, book, chapter);
+        sampleText = verses?.[verse - 1] || '';
+        if (lang !== 'es') {
+          const versesEs = await loadChapterText('es', book, chapter);
+          sampleEs = versesEs?.[verse - 1] || '';
+        }
+      } catch (error) {
+        sampleText = '';
+        sampleEs = '';
+      }
+    }
     if (!summaryParts.length) summaryParts.push('No se encontró definición directa, se usa la concordancia del corpus para contexto.');
     const summaryQuery = highlightQueries.es || (lang === 'es' ? term : '');
     lemmaSummary.innerHTML = highlightText(summaryParts.join(' '), summaryQuery, 'es');
      const cards = [];
-     
+     const primaryQuery = highlightQueries[lang] || term;
+    const spanishQuery = highlightQueries.es || '';
+    if (sampleRef && sampleText) {
+      cards.push(`
+        <div class="fw-semibold">Ejemplo en ${langLabels[lang]}</div>
+        <div class="small muted">${sampleRef}</div>
+        <div class="${classForLang(lang)}">${highlightText(sampleText, primaryQuery, lang)}</div>
+      `);
+    }
+    if (sampleEs) {
+      cards.push(`
+        <div class="fw-semibold">Traducción RVR1960</div>
+        <div class="small muted">Ejemplo contextual</div>
+        <div>${highlightText(sampleEs, spanishQuery, 'es')}</div>
+      `);
+    }
      
      if (keywords.length) {
        cards.push(`
@@ -1520,23 +1268,13 @@ function buildSpanishTestamentLabel(otRefs = [], ntRefs = []) {
     if (!term) {
       return;
     }
-   const queryTokens = tokenizeQueryForExactSearch(term, detectLang(term));
-    if (queryTokens.length > 1) {
-      renderSingleWordInputError(term);
-      return;
-    }
     scrollToLemmaSummary();
    setLoading(true);
     await nextFrame();
       try {
     const lang = detectLang(term);
     const normalized = normalizeByLang(term, lang);
-  try {
-      await loadTrilingualEquivalences();
-    } catch (error) {
-      // El análisis sigue funcionando aunque falle la carga de equivalencias.
-    }
-    const equivalenceTerms = getEquivalenceSearchTerms(term, lang);
+ 
      let entry = null;
        let hebrewEntry = null;
     if (lang === 'gr') {
@@ -1549,14 +1287,8 @@ function buildSpanishTestamentLabel(otRefs = [], ntRefs = []) {
  
     const indexPromise = loadIndex(lang);
     const index = await indexPromise;
-    const isMultiWordQuery = queryTokens.length > 1;
-    let refs = lang === 'gr'
-     ? getGreekRefs(normalized, index)
-      : (lang === 'he' ? getHebrewRefs(normalized, index) : (index.tokens?.[normalized] || []));
-       if (isMultiWordQuery) {
-      const seed = index.tokens?.[queryTokens[0]] || [];
-      refs = await filterRefsByExactSequence(seed, lang, term);
-    }
+   const refs = lang === 'gr' ? getGreekRefs(normalized, index) : (index.tokens?.[normalized] || []);
+ 
    const initialLxxMatches = lang === 'gr' && normalized
       ? await buildLxxMatches(normalized, 70)
       : { refs: [], texts: new Map() };
@@ -1571,10 +1303,8 @@ function buildSpanishTestamentLabel(otRefs = [], ntRefs = []) {
       lemmaSummary.textContent = 'No se encontraron ocurrencias en los índices disponibles.';
       renderCorrespondence([]);
        lemmaExamples.innerHTML = '';
-      occurrenceDonut?.setData({ es: [], he: [], gr: [] });
-      deepLexicalAnalysis.innerHTML = '<div class="col-12"><div class="small muted">No hay ocurrencias para construir el análisis léxico profundo.</div></div>';
-      state.last = { term, lang, refs: [], lexicalModules: null };
-     return;
+      state.last = { term, lang, refs: [], groupsByCorpus: [] };
+      return;
      }
  
    
@@ -1584,7 +1314,7 @@ function buildSpanishTestamentLabel(otRefs = [], ntRefs = []) {
     const esIndex = await esIndexPromise;
    let esSearchTokens = [];
     if (lang === 'es') {
-      esSearchTokens = isMultiWordQuery ? [] : [normalized].filter(Boolean);
+      esSearchTokens = [normalized].filter(Boolean);
     } else if (entry?.definicion) {
       esSearchTokens = extractSpanishTokensFromDefinition(entry.definicion);
  } else if (lang === 'he' && getHebrewDefinition(hebrewEntry)) {
@@ -1592,10 +1322,6 @@ function buildSpanishTestamentLabel(otRefs = [], ntRefs = []) {
     } else {
       esSearchTokens = [normalizeSpanish(term)].filter(Boolean);
     }
-         esSearchTokens = [...new Set([
-      ...esSearchTokens,
-      ...[...(equivalenceTerms.es || [])].flatMap((item) => normalizeSpanishPhrase(item).split(/\s+/)).filter(Boolean)
-    ])];
      const esDisplayWord = lang === 'es' ? term : (esSearchTokens[0] || term);
     let greekEntry = entry;
     let greekTerm = null;
@@ -1634,30 +1360,11 @@ const summaryRefs = lang === 'gr' && !refs.length ? initialLxxMatches.refs : ref
         esRefs.push(ref);
       });
     });
-       if (lang === 'es' && isMultiWordQuery) {
-      const phraseRefs = await filterRefsByExactSequence(index.tokens?.[queryTokens[0]] || [], 'es', term);
-      phraseRefs.forEach((ref) => {
-        if (esSeen.has(ref)) return;
-        esSeen.add(ref);
-        esRefs.push(ref);
-      });
-    }
     const { ot: esOtRefs, nt: esNtRefs } = splitRefsByTestament(esRefs);
 
     if (lang === 'gr') {
       greekTerm = normalized;
     } else if (lang === 'es') {
-        if (!greekTerm && equivalenceTerms.gr?.size) {
-        const rankedEquivalents = [...equivalenceTerms.gr]
-          .map((candidate) => ({ candidate, refs: getGreekRefs(candidate, grIndex).length }))
-          .sort((a, b) => b.refs - a.refs);
-        const fromEquivalence = rankedEquivalents.find((item) => item.refs > 0) || rankedEquivalents[0];
-        if (fromEquivalence?.candidate) {
-          greekTerm = fromEquivalence.candidate;
-          await loadDictionary();
-          greekEntry = state.dictMap.get(greekTerm) || greekEntry;
-        }
-      }
       if (!greekTerm) {
         const ntCandidate = esNtRefs.length ? await buildGreekCandidateFromGreekRefs(esNtRefs) : null;
         const otLxxRefs = esOtRefs.length ? mapOtRefsToLxxRefs(esOtRefs) : [];
@@ -1692,8 +1399,8 @@ const greekTranslit = greekEntry?.['Forma lexica'] || (greekTerm ? transliterate
           ? Promise.resolve(initialLxxMatches)
           : buildLxxMatches(greekTerm, 70))
       : Promise.resolve({ refs: [], texts: new Map() });
-          const lxxMatches = await lxxMatchesPromise;
-    const heIndex = await heIndexPromise;
+    const lxxMatches = await lxxMatchesPromise;
+
     let hebrewCandidate = null;
     if (lang === 'he') {
       hebrewCandidate = {
@@ -1702,20 +1409,8 @@ const greekTranslit = greekEntry?.['Forma lexica'] || (greekTerm ? transliterate
         transliteration: transliterateHebrew(term)
       };
      } else if (lang === 'es') {
- if (!hebrewCandidate && equivalenceTerms.he?.size) {
-        const preferredHe = [...equivalenceTerms.he]
-          .map((candidate) => ({ candidate, refs: getHebrewRefs(candidate, heIndex).length }))
-          .sort((a, b) => b.refs - a.refs)[0];
-        if (preferredHe?.candidate) {
-          hebrewCandidate = {
-            normalized: preferredHe.candidate,
-            word: preferredHe.candidate,
-            transliteration: transliterateHebrew(preferredHe.candidate)
-          };
-        }
-      }
-     if (!hebrewCandidate && greekTerm && lxxMatches.refs.length) {
-      hebrewCandidate = await buildHebrewCandidateFromLxxRefs(lxxMatches.refs);
+     if (greekTerm && lxxMatches.refs.length) {
+        hebrewCandidate = await buildHebrewCandidateFromLxxRefs(lxxMatches.refs);
       }
       if (!hebrewCandidate && esOtRefs.length) {
         hebrewCandidate = await buildHebrewCandidateFromRefs(esOtRefs);
@@ -1723,20 +1418,10 @@ const greekTranslit = greekEntry?.['Forma lexica'] || (greekTerm ? transliterate
     } else if (lxxMatches.refs.length) {
       hebrewCandidate = await buildHebrewCandidateFromLxxRefs(lxxMatches.refs);
     }
-    const heRefs = hebrewCandidate ? getHebrewRefs(hebrewCandidate.normalized, heIndex) : [];
-     const posTag = lang === 'gr' ? extractPos(entry) : '—';
+    const heIndex = await heIndexPromise;
+    const heRefs = hebrewCandidate ? (heIndex.tokens?.[hebrewCandidate.normalized] || []) : [];
+const posTag = lang === 'gr' ? extractPos(entry) : '—';
     const lemmaLabel = lang === 'gr' ? (entry?.lemma || term) : term;
-    updateTrilingualBrief({
-      esWord: esDisplayWord || term,
-      heWord: hebrewCandidate?.word || (lang === 'he' ? term : '—'),
-      grWord: lemmaLabel || (lang === 'gr' ? term : '—')
-    });
-       occurrenceDonut?.setData({
-      es: buildBookCountRows(esRefs),
-      he: buildBookCountRows(heRefs),
-      gr: buildBookCountRows([...grRefs, ...lxxMatches.refs])
-    });
-
     const translitLabel = lang === 'he'
       ? transliterateHebrew(term)
        : (entry?.['Forma lexica'] || (lang === 'gr' ? transliterateGreek(term) : '—'));
@@ -1799,34 +1484,56 @@ samplesTasks.push(
         })
       );
     }
- if (esRefs.length) {
-      const esTitle = buildSpanishTestamentLabel(esOtRefs, esNtRefs);
-            samplesTasks.push(
-                buildSamplesForRefs(esRefs, 'es', 3).then((esSamples) => {
+    if (esOtRefs.length) {
+      samplesTasks.push(
+        buildSamplesForRefs(esOtRefs, 'es', 3).then((esOtSamples) => {
           cards.push(buildCorrespondenceCard({
-            title: esTitle,
+            title: 'RVR1960 (AT)',
             word: esDisplayWord,
             transliteration: '',
-            samples: esSamples,
-           lang: 'es',
-            highlightQuery: highlightQueries.es
+            samples: esOtSamples,
+            lang: 'es',
+           highlightQuery: highlightQueries.es
+          }));
+        })
+      );
+    }
+    if (esNtRefs.length) {
+     samplesTasks.push(
+        buildSamplesForRefs(esNtRefs, 'es', 3).then((esNtSamples) => {
+          cards.push(buildCorrespondenceCard({
+            title: 'RVR1960 (NT)',
+            word: esDisplayWord,
+            transliteration: '',
+            samples: esNtSamples,
+            lang: 'es',
+           highlightQuery: highlightQueries.es
           }));
         })
       );
     }
        await Promise.all(samplesTasks);
     renderCorrespondence(cards);
-deepLexicalAnalysis.innerHTML = '<div class="col-12"><div class="small muted">Construyendo módulos de análisis...</div></div>';
-    const lexicalModules = await buildDeepLexicalModules({
-      lang,
-      normalizedLemma: lang === 'he' ? normalizeHebrew(term) : normalizeGreek(greekLemma !== '—' ? greekLemma : term),
-      displayLemma: lang === 'he' ? term : (greekLemma !== '—' ? greekLemma : term),
-      grRefs,
-      heRefs,
-      lxxRefs: lxxMatches.refs
-    });
-    renderDeepLexicalAnalysis(lexicalModules);
-    state.last = { term, lang, refs, lexicalModules };
+const corpusConfigs = [
+      { lang: 'gr', refs: grRefs, preloaded: null },
+      { lang: 'lxx', refs: lxxMatches.refs, preloaded: lxxMatches.texts },
+      { lang: 'he', refs: heRefs, preloaded: null },
+      { lang: 'es', refs: esRefs, preloaded: null }
+    ];
+       const groupsByCorpus = corpusConfigs.map((config) => ({
+      lang: config.lang,
+      groups: [],
+      expanded: false,
+      loading: true
+    }));
+       renderResults(groupsByCorpus, highlightQueries);
+    state.last = { term, lang, refs, groupsByCorpus, highlightQueries };
+       await Promise.all(corpusConfigs.map(async (config, index) => {
+      const groups = await buildBookGroups(config.refs, config.lang, config.preloaded);
+      groupsByCorpus[index].groups = groups;
+      groupsByCorpus[index].loading = false;
+       renderResults(groupsByCorpus, highlightQueries);
+    }));
         } catch (error) {
       console.error('Error en el análisis:', error);
     } finally {
@@ -1848,7 +1555,9 @@ deepLexicalAnalysis.innerHTML = '<div class="col-12"><div class="small muted">Co
        }
      });
 
-  // Los filtros rápidos no alteran el módulo léxico profundo actual.
+  if (state.last?.groupsByCorpus) {
+      renderResults(state.last.groupsByCorpus || []);
+     }
    }
  
 
