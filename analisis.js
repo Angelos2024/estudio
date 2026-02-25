@@ -1301,6 +1301,34 @@ async function loadLxxBookData(bookCode) {
     return { entry: equivalenceEntry, greek, hebrew };
   }
 
+
+  async function resolveHebrewEquivalences(term, refsIniciales, grIndex, heIndex) {
+    await loadTrilingualEquivalences();
+    const normalized = normalizeHebrew(term);
+    const equivalenceEntry = state.trilingualByHe.get(normalized) || null;
+    if (!equivalenceEntry) return { entry: null, greek: null, hebrew: null, spanish: null };
+
+    const greek = resolveDictionaryCandidate(
+      equivalenceEntry.gr || [],
+      'gr',
+      grIndex,
+      refsIniciales,
+      refsIniciales
+    );
+    const hebrew = resolveDictionaryCandidate(
+      equivalenceEntry.he || [term],
+      'he',
+      heIndex,
+      refsIniciales,
+      refsIniciales
+    );
+    const spanish = (equivalenceEntry.es || [])
+      .map((token) => normalizeSpanish(token))
+      .find(Boolean) || null;
+
+    return { entry: equivalenceEntry, greek, hebrew, spanish };
+  }
+
    async function resolveGreekEquivalences(term, refsIniciales, hePreferredRefs, grIndex, heIndex) {
     await loadTrilingualEquivalences();
     const normalized = normalizeGreek(term);
@@ -1906,9 +1934,16 @@ const heading = buildCorrespondenceHeading();
 
       const [esIndex, grIndex, heIndex] = await Promise.all([loadIndex('es'), loadIndex('gr'), loadIndex('he')]);
 
+
+     let hebrewEquivalenceResolution = null;
+      if (lang === 'he') {
+        hebrewEquivalenceResolution = await resolveHebrewEquivalences(term, refs, grIndex, heIndex);
+      }
       let esSearchTokens = [];
       if (lang === 'es') {
         esSearchTokens = [normalized].filter(Boolean);
+       } else if (lang === 'he' && hebrewEquivalenceResolution?.spanish) {
+        esSearchTokens = [hebrewEquivalenceResolution.spanish];
       } else if (entry?.definicion) {
         esSearchTokens = extractSpanishTokensFromDefinition(entry.definicion);
       } else if (lang === 'he' && getHebrewDefinition(hebrewEntry)) {
@@ -2016,8 +2051,26 @@ const heading = buildCorrespondenceHeading();
           confidenceLabel = Math.max(confidenceLabel || 0, item.confidence || 0);
         }
       } else if (lang === 'he') {
-        greekCandidate = await buildGreekCandidateFromHebrewRefs(refs);
-        if (greekCandidate) {
+
+       if (hebrewEquivalenceResolution?.greek) {
+          greekTerm = hebrewEquivalenceResolution.greek.normalized;
+          await loadDictionary();
+          greekEntry = state.dictMap.get(greekTerm) || greekEntry;
+        } else {
+          greekCandidate = await buildGreekCandidateFromHebrewRefs(refs);
+        }
+
+        if (hebrewEquivalenceResolution?.hebrew) {
+          const item = hebrewEquivalenceResolution.hebrew;
+          hebrewCandidate = {
+            normalized: item.normalized,
+            word: item.token,
+            transliteration: transliterateHebrew(item.token),
+            count: item.refs.length,
+            confidence: item.confidence
+          };
+        }
+if (greekCandidate) {
           greekTerm = greekCandidate.normalized;
           await loadDictionary();
           greekEntry = state.dictMap.get(greekTerm) || greekEntry;
