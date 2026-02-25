@@ -1,8 +1,12 @@
 
 
  (() => {
-   const DICT_URL = './diccionario/masterdiccionario.json';
-   const HEBREW_DICT_URL = './diccionario/diccionario_unificado.min.json';
+const DICT_URL = './diccionario/masterdiccionario.json';
+  const HEBREW_DICT_URL = './diccionario/diccionario_unificado.min.json';
+  const GREEK_UNIFIED_DICT_URL = './diccionario/diccionarioG_unificado.min.json';
+  const HEBREW_ENTRIES_JSONL_URL = './dic/diccionario_entries.jsonl';
+  const HEBREW_INDEX_BY_LEMMA_URL = './dic/diccionario_index_by_lemma.json';
+  const HEBREW_DIC_URL = './dic/hebrewdic.json';
      const TRILINGUAL_EQUIV_URL = './diccionario/equivalencias_trilingue.min.json';
    const SEARCH_INDEX = {
      es: './search/index-es.json',
@@ -169,6 +173,8 @@
     dictMap: new Map(),
     hebrewDict: null,
     hebrewDictMap: new Map(),
+    greekUnifiedMap: new Map(),
+    hebrewExtended: null,
   trilingualEquiv: null,
     trilingualByEs: new Map(),
     trilingualByGr: new Map(),
@@ -626,6 +632,56 @@ const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
     state.dictMap = map;
     state.dictTranslitMap = translitMap;
     return data;
+  }
+   async function loadGreekUnifiedDictionary() {
+    if (state.greekUnifiedMap.size) return state.greekUnifiedMap;
+    const data = await loadJson(GREEK_UNIFIED_DICT_URL);
+    const map = new Map();
+    (data || []).forEach((row) => {
+      if (!Array.isArray(row) || row.length < 2) return;
+      const key = normalizeGreek(row[0]);
+      const gloss = String(row[1] || '').trim();
+      if (!key || !gloss) return;
+      if (!map.has(key)) map.set(key, []);
+      const current = map.get(key);
+      if (current.length < 60 && !current.includes(gloss)) current.push(gloss);
+    });
+    state.greekUnifiedMap = map;
+    return map;
+  }
+  async function loadHebrewExtendedDictionary() {
+    if (state.hebrewExtended) return state.hebrewExtended;
+    const [indexByLemma, hebrewDicRows, jsonlRaw] = await Promise.all([
+      loadJson(HEBREW_INDEX_BY_LEMMA_URL),
+      loadJson(HEBREW_DIC_URL),
+      fetch(HEBREW_ENTRIES_JSONL_URL, { cache: 'force-cache' }).then((res) => {
+        if (!res.ok) throw new Error(`No se pudo cargar ${HEBREW_ENTRIES_JSONL_URL}`);
+        return res.text();
+      })
+    ]);
+    const entriesById = new Map();
+    const byLemma = new Map();
+    const register = (entry) => {
+      if (!entry || typeof entry !== 'object') return;
+      const id = String(entry.id || '').trim();
+      const lemmaKey = normalizeHebrew(entry.lemma || '');
+      if (id) entriesById.set(id, entry);
+      if (!lemmaKey) return;
+      if (!byLemma.has(lemmaKey)) byLemma.set(lemmaKey, []);
+      byLemma.get(lemmaKey).push(entry);
+    };
+    (hebrewDicRows || []).forEach(register);
+    String(jsonlRaw || '').split('\n').forEach((line) => {
+      const clean = line.trim();
+      if (!clean) return;
+      try {
+        register(JSON.parse(clean));
+      } catch (_) {
+        return;
+      }
+    });
+    state.hebrewExtended = { indexByLemma: indexByLemma || {}, entriesById, byLemma };
+    return state.hebrewExtended;
   }
   async function findGreekEntryFromSpanish(term) {
     if (!term) return null;
@@ -1344,8 +1400,7 @@ function buildSpanishTestamentLabel(otRefs = [], ntRefs = []) {
     return consonants.slice(0, Math.min(3, consonants.length || 0));
   }
 
- async function buildDeepLexicalModules({ lang, normalizedLemma, displayLemma, grRefs, heRefs, lxxRefs }) {
-    const formStats = new Map();
+ async function buildDeepLexicalModules({ lang, normalizedLemma, displayLemma, grRefs, heRefs, lxxRefs, comparisonContext = {} }) {    const formStats = new Map();
     let totalOccurrences = 0;
 
   
@@ -1438,10 +1493,70 @@ function buildSpanishTestamentLabel(otRefs = [], ntRefs = []) {
         total
       };
     }).filter((item) => item.rows.length);
-    return { forms, formsBySource, totalOccurrences };
- }
-   function renderDeepLexicalAnalysis(modules) {
-    deepLexicalAnalysis.innerHTML = '';
+ const dictionaryComparison = await buildDictionaryComparison({
+      lemmaIntroducido: comparisonContext.lemmaIntroducido || displayLemma,
+      normalizedGreekLemma: comparisonContext.greekLemma || (lang === 'he' ? '' : normalizedLemma),
+      normalizedHebrewLemma: comparisonContext.hebrewLemma || (lang === 'he' ? normalizedLemma : '')
+    });
+    return { forms, formsBySource, totalOccurrences, dictionaryComparison };
+     }
+async function buildDictionaryComparison({ lemmaIntroducido, normalizedGreekLemma, normalizedHebrewLemma }) {
+    await loadDictionary();
+    await loadGreekUnifiedDictionary();
+    const greekKey = normalizeGreek(normalizedGreekLemma || lemmaIntroducido || '');
+    const greekEntry = state.dictMap.get(greekKey);
+    const greekGlosses = state.greekUnifiedMap.get(greekKey) || [];
+    const greekParts = [];
+    if (greekEntry?.lemma) greekParts.push(`Lemma: ${greekEntry.lemma}`);
+    if (greekEntry?.['Forma lexica']) greekParts.push(`Transliteración: ${greekEntry['Forma lexica']}`);
+    if (greekEntry?.entrada_impresa) greekParts.push(`Entrada: ${greekEntry.entrada_impresa}`);
+    if (greekEntry?.definicion) greekParts.push(greekEntry.definicion);
+    if (greekGlosses.length) greekParts.push(`Glosas (diccionarioG_unificado): ${greekGlosses.join('; ')}`);
+    const greekText = greekParts.join('\n\n') || 'Sin coincidencias para este lemma en Diccionario A.';
+
+    const hebrewResources = await loadHebrewExtendedDictionary();
+    const hebrewQuery = normalizeHebrew(normalizedHebrewLemma || lemmaIntroducido || '');
+    const directIds = hebrewResources.indexByLemma?.[hebrewQuery] || [];
+    let resolvedEntries = directIds.map((id) => hebrewResources.entriesById.get(id)).filter(Boolean);
+    if (!resolvedEntries.length && hebrewResources.byLemma.has(hebrewQuery)) {
+      resolvedEntries = hebrewResources.byLemma.get(hebrewQuery);
+    }
+    if (!resolvedEntries.length && hebrewQuery) {
+      let fallbackKey = '';
+      let bestScore = -1;
+      Object.keys(hebrewResources.indexByLemma || {}).forEach((lemma) => {
+        const normalizedLemma = normalizeHebrew(lemma);
+        if (!normalizedLemma) return;
+        const related = hebrewQuery.includes(normalizedLemma) || normalizedLemma.includes(hebrewQuery);
+        if (!related) return;
+        const score = (hebrewResources.indexByLemma[lemma] || []).length;
+        if (score > bestScore) {
+          bestScore = score;
+          fallbackKey = lemma;
+        }
+      });
+      if (fallbackKey) {
+        const ids = hebrewResources.indexByLemma[fallbackKey] || [];
+        resolvedEntries = ids.map((id) => hebrewResources.entriesById.get(id)).filter(Boolean);
+        if (!resolvedEntries.length) {
+          resolvedEntries = hebrewResources.byLemma.get(normalizeHebrew(fallbackKey)) || [];
+        }
+      }
+    }
+    const hebrewText = resolvedEntries
+      .slice(0, 3)
+      .map((entry) => String(entry?.text || entry?.headword_line || entry?.gloss_es || '').trim())
+      .filter(Boolean)
+      .join('\n\n') || 'Sin coincidencias para este lemma en Diccionario B.';
+
+    return {
+      lemmaIntroducido: lemmaIntroducido || '—',
+      greekText,
+      hebrewText
+    };
+  }
+  function renderDeepLexicalAnalysis(modules) {
+      deepLexicalAnalysis.innerHTML = '';
     const wrapper = document.createElement('div');
     wrapper.className = 'col-12';
 
@@ -1472,9 +1587,27 @@ function buildSpanishTestamentLabel(otRefs = [], ntRefs = []) {
       `;
     }).join('');
 
+ const comparison = modules.dictionaryComparison || {};
     wrapper.innerHTML = `
       <details open>
         <summary class="fw-semibold mb-2">Mostrar / ocultar análisis</summary>
+       <div class="fw-semibold mb-2">Lemma introducido: ${escapeHtml(comparison.lemmaIntroducido || '—')}</div>
+        <div class="table-responsive mb-3">
+          <table class="table table-sm align-middle">
+            <thead>
+              <tr>
+                <th>Diccionario A (Griego)</th>
+                <th>Diccionario B (Hebreo)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><pre class="comparison-pre">${escapeHtml(comparison.greekText || 'Sin datos')}</pre></td>
+                <td><pre class="comparison-pre">${escapeHtml(comparison.hebrewText || 'Sin datos')}</pre></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
         <div class="table-responsive mb-3">
     <div class="fw-semibold mb-2">1) Formas flexionadas encontradas en la base (por libro)</div>
           ${formsByBookRows || '<div class="small muted">Sin coincidencias.</div>'}
@@ -1823,8 +1956,13 @@ deepLexicalAnalysis.innerHTML = '<div class="col-12"><div class="small muted">Co
       displayLemma: lang === 'he' ? term : (greekLemma !== '—' ? greekLemma : term),
       grRefs,
       heRefs,
-      lxxRefs: lxxMatches.refs
-    });
+ lxxRefs: lxxMatches.refs,
+      comparisonContext: {
+        lemmaIntroducido: term,
+        greekLemma: greekLemma !== '—' ? normalizeGreek(greekLemma) : '',
+        hebrewLemma: hebrewCandidate?.word ? normalizeHebrew(hebrewCandidate.word) : ''
+      }
+          });
     renderDeepLexicalAnalysis(lexicalModules);
     state.last = { term, lang, refs, lexicalModules };
         } catch (error) {
