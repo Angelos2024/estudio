@@ -690,7 +690,6 @@ const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
     });
 
     Object.entries(data?.by_gr || {}).forEach(([key, value]) => {
-      const entry = {
             const entry = coerceTrilingualEntry(value, key, 'gr');
       registerTrilingualKey(byGr, key, normalizeGreek, entry);
       (entry.gr || []).forEach((token) => registerTrilingualKey(byGr, token, normalizeGreek, entry));
