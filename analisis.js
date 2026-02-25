@@ -195,6 +195,7 @@
   const lemmaCorrespondence = document.getElementById('lemmaCorrespondence');
    const lemmaExamples = document.getElementById('lemmaExamples');
   const deepLexicalAnalysis = document.getElementById('deepLexicalAnalysis');
+  const deepLexicalCorrespondence = document.getElementById('deepLexicalCorrespondence');
   const resultsLoadingIndicator = document.getElementById('resultsLoadingIndicator');
   const resultsLoadingStage = document.getElementById('resultsLoadingStage');
   const analysisResultsSection = document.getElementById('analysisResultsSection');
@@ -1168,6 +1169,14 @@ function mapLxxRefsToHebrewRefs(refs) {
        lemmaExamples.appendChild(div);
      });
    }
+     function appendExamples(cards) {
+    cards.forEach((card) => {
+      const div = document.createElement('div');
+      div.className = 'example-card';
+      div.innerHTML = card;
+      lemmaExamples.appendChild(div);
+    });
+  }
  
   function renderCorrespondence(cards) {
     lemmaCorrespondence.innerHTML = '';
@@ -1195,10 +1204,14 @@ function mapLxxRefsToHebrewRefs(refs) {
     deepLexicalAnalysis.innerHTML = '<div class="col-12"><div class="small muted">Corrige la consulta: usa una sola palabra (sin frases).</div></div>';
   }
  
-  async function buildSamplesForRefs(refs, lang, max = 3, preloadedTexts = null) {
-    const samples = [];
-    for (const ref of refs.slice(0, max)) {
+  async function buildSamplesForRefs(refs, lang, maxPerBook = 4, preloadedTexts = null, maxTotal = 32) {
+      const samples = [];
+ const byBookCount = new Map();
+    for (const ref of refs) {
+      if (samples.length >= maxTotal) break;
       const [book, chapterRaw, verseRaw] = ref.split('|');
+        const currentBookCount = byBookCount.get(book) || 0;
+      if (currentBookCount >= maxPerBook) continue;
       const chapter = Number(chapterRaw);
       const verse = Number(verseRaw);
       let verseText = '';
@@ -1216,10 +1229,18 @@ function mapLxxRefsToHebrewRefs(refs) {
         ref: formatRef(book, chapter, verse),
         text: verseText
       });
+            byBookCount.set(book, currentBookCount + 1);
     }
     return samples;
   }
 
+  function updateTrilingualBrief({ esWord = '—', grWord = '—', heWord = '—' } = {}) {
+    if (!deepLexicalCorrespondence) return;
+    deepLexicalCorrespondence.innerHTML = `
+      <span class="trilingual-title">Correspondencias idiomáticas:</span>
+      <span class="trilingual-line">Español: <span class="fw-semibold">${escapeHtml(esWord || '—')}</span> / Hebreo: <span class="fw-semibold he">${escapeHtml(heWord || '—')}</span> / Griego: <span class="fw-semibold gr">${escapeHtml(grWord || '—')}</span></span>
+    `;
+  }
   function buildCorrespondenceCard({ title, word, transliteration, samples, lang, highlightQuery }) {
     const wordLine = word
       ? `<div class="${classForLang(lang)} fw-semibold">${highlightText(word, highlightQuery, lang)}</div>`
@@ -1710,6 +1731,7 @@ const greekTranslit = greekEntry?.['Forma lexica'] || (greekTerm ? transliterate
           ? Promise.resolve(initialLxxMatches)
           : buildLxxMatches(greekTerm, 70))
       : Promise.resolve({ refs: [], texts: new Map() });
+          const lxxMatches = await lxxMatchesPromise;
     const heIndex = await heIndexPromise;
     let hebrewCandidate = null;
     if (lang === 'he') {
@@ -1741,13 +1763,19 @@ const greekTranslit = greekEntry?.['Forma lexica'] || (greekTerm ? transliterate
       hebrewCandidate = await buildHebrewCandidateFromLxxRefs(lxxMatches.refs);
     }
     const heRefs = hebrewCandidate ? getHebrewRefs(hebrewCandidate.normalized, heIndex) : [];
+     const posTag = lang === 'gr' ? extractPos(entry) : '—';
+    const lemmaLabel = lang === 'gr' ? (entry?.lemma || term) : term;
+    updateTrilingualBrief({
+      esWord: esDisplayWord || term,
+      heWord: hebrewCandidate?.word || (lang === 'he' ? term : '—'),
+      grWord: lemmaLabel || (lang === 'gr' ? term : '—')
+    });
        occurrenceDonut?.setData({
       es: buildBookCountRows(esRefs),
       he: buildBookCountRows(heRefs),
       gr: buildBookCountRows([...grRefs, ...lxxMatches.refs])
     });
-const posTag = lang === 'gr' ? extractPos(entry) : '—';
-    const lemmaLabel = lang === 'gr' ? (entry?.lemma || term) : term;
+
     const translitLabel = lang === 'he'
       ? transliterateHebrew(term)
        : (entry?.['Forma lexica'] || (lang === 'gr' ? transliterateGreek(term) : '—'));
@@ -1840,6 +1868,7 @@ samplesTasks.push(
     }
        await Promise.all(samplesTasks);
     renderCorrespondence(cards);
+        appendExamples(cards);
 deepLexicalAnalysis.innerHTML = '<div class="col-12"><div class="small muted">Construyendo módulos de análisis...</div></div>';
     const lexicalModules = await buildDeepLexicalModules({
       lang,
