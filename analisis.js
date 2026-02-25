@@ -188,8 +188,9 @@
    const queryInput = document.getElementById('queryInput');
    const analyzeBtn = document.getElementById('analyzeBtn');
    const lemmaTags = document.getElementById('lemmaTags');
-   const lemmaSummary = document.getElementById('lemmaSummary');
-  const lemmaCorrespondence = document.getElementById('lemmaCorrespondence');
+ const lemmaSummary = document.getElementById('lemmaSummary');
+  const lemmaCorrespondenceTitle = document.getElementById('lemmaCorrespondenceTitle');
+    const lemmaCorrespondence = document.getElementById('lemmaCorrespondence');
    const lemmaExamples = document.getElementById('lemmaExamples');
   const deepLexicalAnalysis = document.getElementById('deepLexicalAnalysis');
   const deepLexicalCorrespondence = document.getElementById('deepLexicalCorrespondence');
@@ -1176,17 +1177,25 @@ function mapLxxRefsToHebrewRefs(refs) {
       lemmaCorrespondence.appendChild(div);
    });
   }
+function buildCorrespondenceHeading(spanish, hebrew, greek) {
+    return `Correspondencias idiomáticas: ${spanish} / ${hebrew} / ${greek}`;
+  }
 
   function renderDeepLexicalCorrespondence({ spanish = '—', hebrew = '—', greek = '—' } = {}) {
     if (!deepLexicalCorrespondence) return;
 const formattedSpanish = formatSpanishDisplayWord(spanish);
     const formattedHebrew = stripHebrewDiacritics(hebrew) || '—';
+        const formattedGreek = greek || '—';
     const hasData = [formattedSpanish, formattedHebrew, greek].some((value) => value && value !== '—');
+ const heading = buildCorrespondenceHeading(formattedSpanish, formattedHebrew, formattedGreek);
 
+    if (lemmaCorrespondenceTitle) {
+      lemmaCorrespondenceTitle.textContent = heading;
+    }
         deepLexicalCorrespondence.classList.toggle('muted', !hasData);
     deepLexicalCorrespondence.innerHTML = `
-      <div class="trilingual-title">Correspondencias idiomáticas: español – hebreo – griego</div>
-      <div class="trilingual-line">${escapeHtml(formattedSpanish)} / <span class="hebrew">${escapeHtml(formattedHebrew)}</span> / <span class="greek">${escapeHtml(greek)}</span></div>
+        <div class="trilingual-title">${escapeHtml(heading)}</div>
+      <div class="trilingual-line">${escapeHtml(formattedSpanish)} / <span class="hebrew">${escapeHtml(formattedHebrew)}</span> / <span class="greek">${escapeHtml(formattedGreek)}</span></div>
     `;
   }
   function renderSingleWordInputError(term) {
