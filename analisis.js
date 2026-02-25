@@ -1169,14 +1169,7 @@ function mapLxxRefsToHebrewRefs(refs) {
        lemmaExamples.appendChild(div);
      });
    }
-     function appendExamples(cards) {
-    cards.forEach((card) => {
-      const div = document.createElement('div');
-      div.className = 'example-card';
-      div.innerHTML = card;
-      lemmaExamples.appendChild(div);
-    });
-  }
+
  
   function renderCorrespondence(cards) {
     lemmaCorrespondence.innerHTML = '';
@@ -1504,46 +1497,12 @@ function buildSpanishTestamentLabel(otRefs = [], ntRefs = []) {
     if (defShort) summaryParts.push(defShort);
     if (definition && definition !== defShort) summaryParts.push(definition);
 
-    let sampleRef = null;
-    let sampleText = '';
-    let sampleEs = '';
-    if (refs.length) {
-      const [book, chapterRaw, verseRaw] = refs[0].split('|');
-      const chapter = Number(chapterRaw);
-      const verse = Number(verseRaw);
-      sampleRef = formatRef(book, chapter, verse);
-      try {
-        const verses = await loadChapterText(lang, book, chapter);
-        sampleText = verses?.[verse - 1] || '';
-        if (lang !== 'es') {
-          const versesEs = await loadChapterText('es', book, chapter);
-          sampleEs = versesEs?.[verse - 1] || '';
-        }
-      } catch (error) {
-        sampleText = '';
-        sampleEs = '';
-      }
-    }
+    
     if (!summaryParts.length) summaryParts.push('No se encontró definición directa, se usa la concordancia del corpus para contexto.');
     const summaryQuery = highlightQueries.es || (lang === 'es' ? term : '');
     lemmaSummary.innerHTML = highlightText(summaryParts.join(' '), summaryQuery, 'es');
      const cards = [];
-     const primaryQuery = highlightQueries[lang] || term;
-    const spanishQuery = highlightQueries.es || '';
-    if (sampleRef && sampleText) {
-      cards.push(`
-        <div class="fw-semibold">Ejemplo en ${langLabels[lang]}</div>
-        <div class="small muted">${sampleRef}</div>
-        <div class="${classForLang(lang)}">${highlightText(sampleText, primaryQuery, lang)}</div>
-      `);
-    }
-    if (sampleEs) {
-      cards.push(`
-        <div class="fw-semibold">Traducción RVR1960</div>
-        <div class="small muted">Ejemplo contextual</div>
-        <div>${highlightText(sampleEs, spanishQuery, 'es')}</div>
-      `);
-    }
+     
      
      if (keywords.length) {
        cards.push(`
@@ -1857,7 +1816,6 @@ samplesTasks.push(
     }
        await Promise.all(samplesTasks);
     renderCorrespondence(cards);
-        appendExamples(cards);
 deepLexicalAnalysis.innerHTML = '<div class="col-12"><div class="small muted">Construyendo módulos de análisis...</div></div>';
     const lexicalModules = await buildDeepLexicalModules({
       lang,
