@@ -1512,6 +1512,7 @@ samplesTasks.push(
         })
       );
     }
+    
        await Promise.all(samplesTasks);
     renderCorrespondence(cards);
 const corpusConfigs = [
