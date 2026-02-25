@@ -68,12 +68,13 @@ async function buildDictionary(payload) {
   postProgress(93, 'Construyendo salida final...');
   const items = [];
   let id = 1;
-  for (const [es, heMap] of pairES_HE.entries()) {
-    const grMap = pairES_GR.get(es);
-    if (!grMap) continue;
-    const heList = topFromMap(heMap, topK, minCount);
-    const grList = topFromMap(grMap, topK, minCount);
-    if (!heList.length || !grList.length) continue;
+const allESTokens = new Set([...pairES_HE.keys(), ...pairES_GR.keys()]);
+  for (const es of allESTokens) {
+    const heMap = pairES_HE.get(es);
+        const grMap = pairES_GR.get(es);
+    const heList = heMap ? topFromMap(heMap, topK, minCount) : [];
+    const grList = grMap ? topFromMap(grMap, topK, minCount) : [];
+    if (!heList.length && !grList.length) continue;
     items.push({ id: id++, es, he: heList, gr: grList });
   }
 

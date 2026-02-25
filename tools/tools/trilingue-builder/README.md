@@ -16,7 +16,7 @@ Salida: `trilingue_generado_solo_3idiomas.min.json`.
    - `LXX/`
 3. Carga archivo `IdiomaORIGEN/Bgriega.json`.
 4. (Opcional) carga `diccionario/masterdiccionario.json`.
-5. Ajusta `Top-K`, `minCount`, etc.
+5. Ajusta `Top-K`, `minCount`, etc. (para cobertura completa de la Biblia deja `minCount=1`).
 6. Pulsa **Generar** y luego **Descargar JSON**.
 
 ## Uso con servidor local (modo rutas)
