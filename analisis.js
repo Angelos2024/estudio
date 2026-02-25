@@ -1582,6 +1582,7 @@ function buildSpanishTestamentLabel(otRefs = [], ntRefs = []) {
     const grIndexPromise = loadIndex('gr');
     const heIndexPromise = loadIndex('he');
     const esIndex = await esIndexPromise;
+    const grIndex = await grIndexPromise;
    let esSearchTokens = [];
     if (lang === 'es') {
       esSearchTokens = isMultiWordQuery ? [] : [normalized].filter(Boolean);
