@@ -219,25 +219,35 @@
     }
     .trilingual-brief .trilingual-title{ font-weight:600; }
     .trilingual-brief .trilingual-line{ margin-top:.2rem; }
-         .comparison-pre{
+     .comparison-pre{
       white-space:pre-wrap;
+      word-break:break-word;
       margin:0;
       font-family:inherit;
       font-size:.92rem;
-      line-height:1.55;
-      padding:1rem 1.1rem;
-      max-height:380px;
+      line-height:1.45;
+      padding:.8rem .9rem;
+      max-height:460px;
       overflow:auto;
-      scrollbar-gutter:stable;
-      background:rgba(241,245,249,.75);
-      border:0;
-      unicode-bidi: plaintext;
+      background:color-mix(in srgb, var(--soft-bg) 75%, #ffffff);
+      border:1px solid color-mix(in srgb, var(--text) 16%, #ffffff);
+      border-radius:12px;
     }
     .comparison-pre--greek{
-      border-left:4px solid rgba(37,99,235,.45);
+      direction:ltr;
+      unicode-bidi:plaintext;
+      border-left:5px solid color-mix(in srgb, var(--text) 25%, #ffffff);
     }
     .comparison-pre--hebrew{
-      border-left:4px solid rgba(15,23,42,.22);
+      direction:rtl;
+      unicode-bidi:plaintext;
+      border-left:5px solid color-mix(in srgb, var(--text) 25%, #ffffff);
+    }
+    .dictionary-comparison-table td + td{
+      border-left:1px solid color-mix(in srgb, var(--text) 16%, #ffffff);
+    }
+    .dictionary-comparison-table td{
+      padding:0.6rem;
     }
 
  .dictionary-comparison-wrap{

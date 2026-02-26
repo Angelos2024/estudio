@@ -669,8 +669,9 @@ const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
     state.greekUnifiedMap = map;
     return map;
   }
-  async function loadHebrewExtendedDictionary() {
+    async function loadHebrewExtendedDictionary() {
     if (state.hebrewExtended) return state.hebrewExtended;
+
     const [indexByLemma, hebrewDicRows, jsonlRaw] = await Promise.all([
       loadJson(HEBREW_INDEX_BY_LEMMA_URL),
       loadJson(HEBREW_DIC_URL),
@@ -682,42 +683,111 @@ const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
 
     const entriesById = new Map();
     const byLemma = new Map();
-    const subLemmaIndex = new Map();
 
-    const extractSubLemmasFromText = (text) => {
-      const out = new Set();
-      const re = /[\[\]]\s*([\u0590-\u05FF][\u0590-\u05FF\s]{0,38})/g;
-      let match;
-      const source = String(text || '');
-      while ((match = re.exec(source))) {
-        const raw = match[1] || '';
-        const norm = normalizeHebrew(raw);
-        if (norm && norm.length >= 2) out.add(norm);
+    // "Entradas virtuales" para sub-entradas embebidas dentro de textos grandes.
+    // key: lemma normalizado (sin niqqud) -> array de segmentos {id, lemma, text, parentId, page_start, page_end}
+    const segmentIndex = new Map();
+
+    const HEB_LETTER = /[\u0590-\u05FF]/;
+    const isHebrewLetter = (ch) => HEB_LETTER.test(ch || '');
+
+    const extractLeadingHebrewLemma = (raw) => {
+      const s = String(raw || '').trim();
+      if (!s) return '';
+      // toma letras hebreas + espacios al inicio hasta el primer caracter no hebreo/espacio
+      const m = s.match(/^([\u0590-\u05FF][\u0590-\u05FF\s]{0,24})/);
+      if (!m) return '';
+      const norm = normalizeHebrew(m[1] || '');
+      return norm && norm.length >= 2 ? norm : '';
+    };
+
+    const pushSegment = (parentEntry, lemmaNorm, textRaw, indexHint) => {
+      if (!lemmaNorm || !textRaw) return;
+      const segmentText = String(textRaw).trim();
+      if (!segmentText || segmentText.length < 25) return;
+
+      const sid = `${String(parentEntry.id || 'heb')}:${indexHint || 0}:${lemmaNorm}`;
+      const seg = {
+        id: sid,
+        lemma: lemmaNorm,
+        text: segmentText,
+        parentId: String(parentEntry.id || ''),
+        page_start: parentEntry.page_start,
+        page_end: parentEntry.page_end
+      };
+
+      if (!segmentIndex.has(lemmaNorm)) segmentIndex.set(lemmaNorm, []);
+      segmentIndex.get(lemmaNorm).push(seg);
+    };
+
+    const splitIntoSegments = (entry) => {
+      const src = String(entry?.text || '');
+      if (!src) return;
+
+      const markers = [];
+      const seen = new Set();
+
+      const addMarker = (pos, lemmaNorm) => {
+        if (!lemmaNorm || lemmaNorm.length < 2) return;
+        const key = `${pos}:${lemmaNorm}`;
+        if (seen.has(key)) return;
+        seen.add(key);
+        markers.push({ pos, lemma: lemmaNorm });
+      };
+
+      // 1) Marcadores tipo "[ אב ...", " ]אביר ..." etc al inicio de línea
+      const reBracket = /^\s*\[\s*([^\n\]]{1,80})/gm;
+      let m;
+      while ((m = reBracket.exec(src))) {
+        const lemmaNorm = extractLeadingHebrewLemma(m[1] || '');
+        addMarker(m.index, lemmaNorm);
       }
-      return out;
+
+      // 2) Marcadores tipo "א ב ד ro.pf." (letras separadas) al inicio de línea
+      const reSpacedRoot = /^\s*([\u0590-\u05FF](?:\s+[\u0590-\u05FF]){1,7})(?=\s+[A-Za-z]{1,6}\.)/gm;
+      while ((m = reSpacedRoot.exec(src))) {
+        const lemmaNorm = normalizeHebrew(m[1] || '');
+        addMarker(m.index, lemmaNorm);
+      }
+
+      // 3) Marcadores tipo "איבד Dt 32,28" (palabra normal) al inicio de línea
+      const rePlain = /^\s*([\u0590-\u05FF]{2,12})(?=\s+(?:[A-Z][a-z]{0,2}\s*\d|[A-Z][a-z]{0,2}\b))/gm;
+      while ((m = rePlain.exec(src))) {
+        const lemmaNorm = normalizeHebrew(m[1] || '');
+        addMarker(m.index, lemmaNorm);
+      }
+
+      if (!markers.length) return;
+
+      markers.sort((a, b) => a.pos - b.pos);
+
+      // segmentar entre marcadores
+      for (let i = 0; i < markers.length; i += 1) {
+        const start = markers[i].pos;
+        const end = i + 1 < markers.length ? markers[i + 1].pos : src.length;
+        const chunk = src.slice(start, end).trim();
+        pushSegment(entry, markers[i].lemma, chunk, i);
+      }
     };
 
     const register = (entry) => {
       if (!entry || typeof entry !== 'object') return;
 
       const id = String(entry.id || '').trim();
-      if (id) entriesById.set(id, entry);
-
       const lemmaKey = normalizeHebrew(entry.lemma || '');
+
+      if (id) entriesById.set(id, entry);
       if (lemmaKey) {
         if (!byLemma.has(lemmaKey)) byLemma.set(lemmaKey, []);
         byLemma.get(lemmaKey).push(entry);
       }
 
-      // Sub-lemas embebidos en el texto (ej. "[ אב ... ]" dentro de una entrada mayor)
-      const subs = extractSubLemmasFromText(entry.text || entry.headword_line || '');
-      subs.forEach((sub) => {
-        if (!subLemmaIndex.has(sub)) subLemmaIndex.set(sub, new Set());
-        if (id) subLemmaIndex.get(sub).add(id);
-      });
+      // Indexar segmentos embebidos (lo que arregla casos como אב / אבי, etc.)
+      splitIntoSegments(entry);
     };
 
     (hebrewDicRows || []).forEach(register);
+
     String(jsonlRaw || '').split('\n').forEach((line) => {
       const clean = line.trim();
       if (!clean) return;
@@ -728,12 +798,20 @@ const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
       }
     });
 
+    // Compactar / ordenar segmentos por lemma para ranking más estable
+    segmentIndex.forEach((arr, key) => {
+      arr.sort((a, b) => (b.text.length - a.text.length));
+      // evita crecimiento excesivo en lemas ultra-frecuentes
+      if (arr.length > 40) segmentIndex.set(key, arr.slice(0, 40));
+    });
+
     state.hebrewExtended = {
       indexByLemma: indexByLemma || {},
       entriesById,
       byLemma,
-      subLemmaIndex
+      segmentIndex
     };
+
     return state.hebrewExtended;
   }
   async function findGreekEntryFromSpanish(term) {
@@ -1566,7 +1644,146 @@ async function buildFormsBySource({ lang, normalizedLemma, displayLemma, lxxRefs
       formsContext: { lang, normalizedLemma, displayLemma, lxxRefs }
     };
          }
-async function buildDictionaryComparison({ lemmaIntroducido, normalizedGreekLemma, normalizedHebrewLemma }) {
+  async function buildDictionaryComparison({ lemmaIntroducido, normalizedGreekLemma, normalizedHebrewLemma }) {
+    await loadDictionary();
+    await loadGreekUnifiedDictionary();
+
+    const greekKey = normalizeGreek(normalizedGreekLemma || lemmaIntroducido || '');
+    const greekEntry = state.dictMap.get(greekKey);
+    const greekGlosses = state.greekUnifiedMap.get(greekKey) || [];
+    const greekParts = [];
+    if (greekEntry?.lemma) greekParts.push(`Lemma: ${greekEntry.lemma}`);
+    if (greekEntry?.['Forma lexica']) greekParts.push(`Transliteración: ${greekEntry['Forma lexica']}`);
+    if (greekEntry?.entrada_impresa) greekParts.push(`Entrada: ${greekEntry.entrada_impresa}`);
+    if (greekEntry?.definicion) greekParts.push(greekEntry.definicion);
+    if (greekGlosses.length) greekParts.push(`Glosas (diccionarioG_unificado): ${greekGlosses.join('; ')}`);
+    const greekText = greekParts.join('\n\n') || 'Sin coincidencias para este lemma en Diccionario A.';
+
+    const hebrewResources = await loadHebrewExtendedDictionary();
+    const rawQuery = normalizedHebrewLemma || lemmaIntroducido || '';
+    const hebrewQuery = normalizeHebrew(rawQuery);
+
+    const countLatinLetters = (s) => (String(s || '').match(/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]/g) || []).length;
+
+    const buildHebrewQueryVariants = (q) => {
+      const out = [];
+      const seen = new Set();
+      const push = (x) => {
+        const k = String(x || '').trim();
+        if (!k || k.length < 2) return;
+        if (seen.has(k)) return;
+        seen.add(k);
+        out.push(k);
+      };
+
+      push(q);
+
+      // Prefijos comunes (muy conservador)
+      ['ה', 'ו', 'ב', 'כ', 'ל', 'מ'].forEach((pref) => {
+        if (q.startsWith(pref) && q.length >= 3) push(q.slice(1));
+      });
+
+      // Sufijos pronominales frecuentes / constructo: אביו, אביך, אבינו, etc.
+      const suffixes = [
+        'יהם','יהן','יכם','יכן','ינו','כם','כן','נו','יו','יה','הו','ך','י','ם','ן','ה'
+      ];
+      suffixes.forEach((suf) => {
+        if (q.endsWith(suf) && q.length - suf.length >= 2) push(q.slice(0, -suf.length));
+      });
+
+      return out;
+    };
+
+    const variants = buildHebrewQueryVariants(hebrewQuery);
+
+    const candidates = [];
+    const seenCand = new Set();
+
+    const pushCand = (cand, variant, source) => {
+      if (!cand) return;
+      const id = String(cand.id || '') || `${source}:${cand.lemma}:${variant}`;
+      const key = `${id}:${variant}`;
+      if (seenCand.has(key)) return;
+      seenCand.add(key);
+      candidates.push({ cand, variant, source });
+    };
+
+    // 1) Segmentos (lo más fiable)
+    variants.forEach((v) => {
+      (hebrewResources.segmentIndex?.get(v) || []).forEach((seg) => pushCand(seg, v, 'segment'));
+    });
+
+    // 2) Fallbacks: entradas completas por lemma o por indexByLemma (si faltan segmentos)
+    if (!candidates.length) {
+      variants.forEach((v) => {
+        const ids = hebrewResources.indexByLemma?.[v] || [];
+        ids.forEach((id) => pushCand(hebrewResources.entriesById.get(id), v, 'id'));
+        (hebrewResources.byLemma.get(v) || []).forEach((e) => pushCand(e, v, 'lemma'));
+      });
+    }
+
+    const scoreHebrewText = (text, lemmaNorm, usedVariant, isExactQuery) => {
+      const t = String(text || '');
+      if (!t) return -Infinity;
+
+      let score = 0;
+
+      // match fuerte si el segmento empieza con el lema (en forma compacta o con espacios)
+      const compact = normalizeHebrew(t).replace(/^[\[\]\s]+/, '');
+      if (compact.startsWith(lemmaNorm)) score += 60;
+
+      // si la variante no es la consulta exacta, pequeño castigo (pero permite caer a forma base)
+      if (!isExactQuery) score -= 8;
+
+      // entradas "ricas" suelen contener estos marcadores
+      if (/Sentido\s+propio|Sentido\s+figurad|Significa|Fraseolog/i.test(t)) score += 25;
+
+      // que tenga explicación en español (evita segmentos casi solo morfológicos)
+      const latin = countLatinLetters(t);
+      if (latin >= 80) score += 25;
+      else if (latin >= 30) score += 10;
+      else score -= 15;
+
+      // completitud
+      score += Math.min(80, Math.floor(t.length / 450));
+
+      // bonus si aparece una glosa clara al comienzo (muchas entradas traen "]LEMMA Glosa...")
+      if (/]\s*[\u0590-\u05FF]{2,12}\s+[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]/.test(t.slice(0, 200))) score += 10;
+
+      return score;
+    };
+
+    const ranked = candidates
+      .map(({ cand, variant, source }) => {
+        const lemmaNorm = normalizeHebrew(cand?.lemma || variant || '');
+        const text = String(cand?.text || cand?.headword_line || cand?.gloss_es || '').trim();
+        const isExactQuery = variant === hebrewQuery;
+        const score = scoreHebrewText(text, lemmaNorm || variant, variant, isExactQuery);
+        return { cand, variant, source, text, score };
+      })
+      .filter((x) => x.text && Number.isFinite(x.score))
+      .sort((a, b) => b.score - a.score || b.text.length - a.text.length);
+
+    let hebrewText = ranked[0]?.text || 'Sin coincidencias para este lemma en Diccionario B.';
+
+    // Si hay ambigüedad fuerte, muestra alternativas mínimas (sin romper el contrato: sigue siendo un texto)
+    const alts = ranked
+      .slice(1, 6)
+      .filter((x) => x.text && x.text !== hebrewText)
+      .filter((x) => x.score >= (ranked[0]?.score ?? 0) - 12)
+      .slice(0, 2);
+
+    if (alts.length) {
+      const altLines = alts.map((x) => `• ${x.variant} → ${normalizeHebrew(x.cand?.lemma || x.variant)} (otra coincidencia)`);
+      hebrewText = `${hebrewText}\n\n—\nOtras coincidencias cercanas:\n${altLines.join('\n')}`;
+    }
+
+    return {
+      lemmaIntroducido: lemmaIntroducido || '—',
+      greekText,
+      hebrewText
+    };
+  }) {
     await loadDictionary();
     await loadGreekUnifiedDictionary();
     const greekKey = normalizeGreek(normalizedGreekLemma || lemmaIntroducido || '');
@@ -1580,132 +1797,31 @@ async function buildDictionaryComparison({ lemmaIntroducido, normalizedGreekLemm
     if (greekGlosses.length) greekParts.push(`Glosas (diccionarioG_unificado): ${greekGlosses.join('; ')}`);
     const greekText = greekParts.join('\n\n') || 'Sin coincidencias para este lemma en Diccionario A.';
 
-        const hebrewResources = await loadHebrewExtendedDictionary();
+    const hebrewResources = await loadHebrewExtendedDictionary();
     const hebrewQuery = normalizeHebrew(normalizedHebrewLemma || lemmaIntroducido || '');
-
-    const isHebrewLetter = (ch) => /[\u0590-\u05FF]/.test(ch || '');
-
-    const startsWithWholeLemma = (textNorm, queryNorm) => {
-      if (!textNorm || !queryNorm) return false;
-      if (!textNorm.startsWith(queryNorm)) return false;
-      const next = textNorm.charAt(queryNorm.length);
-      return !next || !isHebrewLetter(next);
-    };
-
-    const getPrimaryLemma = (entry) => {
-      const raw = String(entry?.headword_line || entry?.text || '');
-      if (!raw) return '';
-      const norm = normalizeHebrew(raw).replace(/^[\[\]]+/, '');
-      const m = norm.match(/^([\u0590-\u05FF]{1,12})/);
-      const primary = m ? m[1] : '';
-      return primary && primary.length >= 2 ? primary : '';
-    };
-
-    const buildLemmaMatchPattern = (lemmaNorm) => {
-      const letters = Array.from(lemmaNorm || '').filter(Boolean);
-      if (!letters.length) return '';
-      return letters.map((ch) => `${ch}[\u0591-\u05C7]*`).join('\\s*');
-    };
-
-    const extractSubEntryBlock = (textRaw, lemmaNorm) => {
-      const src = String(textRaw || '');
-      if (!src || !lemmaNorm) return '';
-
-      const pat = buildLemmaMatchPattern(lemmaNorm);
-      if (!pat) return '';
-
-      const reStart = new RegExp(`[\\[\\]]\\s*(${pat})(?![\\s\\u0591-\\u05C7]*[\\u0590-\\u05FF])`, 'g');
-      const m = reStart.exec(src);
-      if (!m) return '';
-
-      const start = m.index;
-      const reNext = /[\[\]]\s*[\u0590-\u05FF]/g;
-      reNext.lastIndex = start + 1;
-      const m2 = reNext.exec(src);
-      const end = m2 ? m2.index : src.length;
-
-      const block = src.slice(start, end).trim();
-      if (block.length < 60) return '';
-      return block;
-    };
-
-    const resolveEntriesByQuery = (query) => {
+ const resolveEntriesByQuery = (query) => {
       if (!query) return [];
-      const resolved = [];
-      const seen = new Set();
-
-      const pushEntry = (entry) => {
-        if (!entry) return;
-        const id = String(entry.id || '').trim();
-        const key = id || `${normalizeHebrew(entry.lemma || '')}:${normalizeHebrew(entry.headword_line || '')}`;
-        if (!key || seen.has(key)) return;
-        seen.add(key);
-        resolved.push(entry);
-      };
-
-      (hebrewResources.indexByLemma?.[query] || []).forEach((id) => {
-        pushEntry(hebrewResources.entriesById.get(id));
-      });
-
-      (hebrewResources.byLemma.get(query) || []).forEach(pushEntry);
-
-      const subIds = hebrewResources.subLemmaIndex?.get(query);
-      if (subIds && typeof subIds.forEach === 'function') {
-        subIds.forEach((id) => pushEntry(hebrewResources.entriesById.get(id)));
-      }
-
-      return resolved;
+      const ids = hebrewResources.indexByLemma?.[query] || [];
+      const byId = ids.map((id) => hebrewResources.entriesById.get(id)).filter(Boolean);
+      if (byId.length) return byId;
+      return hebrewResources.byLemma.get(query) || [];
     };
-
-    const scoreHebrewEntry = (entry, queryNorm) => {
-      const lemmaField = normalizeHebrew(entry?.lemma || '');
-      const headRaw = String(entry?.headword_line || '');
-      const headNorm = normalizeHebrew(headRaw);
-      const fullRaw = String(entry?.text || entry?.headword_line || entry?.gloss_es || '').trim();
-
-      const primary = getPrimaryLemma(entry);
-      const subBlock = extractSubEntryBlock(entry?.text || '', queryNorm);
-      const chosenRaw = (subBlock || fullRaw).trim();
-      const chosenNorm = normalizeHebrew(chosenRaw);
-
-      let score = 0;
-
-      if (subBlock) {
-        score += 120 + Math.min(200, Math.floor(subBlock.length / 60));
-      }
-
-      if (primary && primary === queryNorm) score += 100;
-
-      if (lemmaField === queryNorm && primary && primary !== queryNorm) score -= 120;
-
-      if (lemmaField && lemmaField === queryNorm) score += 80;
-
-      if (headNorm && startsWithWholeLemma(headNorm, queryNorm)) score += 40;
-
-      if (chosenNorm && chosenNorm.includes(queryNorm)) score += 20;
-
-      score += Math.min(60, Math.floor(chosenRaw.length / 350));
-
-      return { score, text: chosenRaw };
-    };
-
     let resolvedEntries = resolveEntriesByQuery(hebrewQuery);
-
     if ((!resolvedEntries.length || (resolvedEntries.length > 3 && hebrewQuery.endsWith('י'))) && hebrewQuery.length > 2) {
       const trimmed = hebrewQuery.slice(0, -1);
       const trimmedMatches = resolveEntriesByQuery(trimmed);
       if (trimmedMatches.length) resolvedEntries = trimmedMatches;
     }
-
-    const bestHebrewEntry = resolvedEntries
-      .map((entry) => {
-        const scored = scoreHebrewEntry(entry, hebrewQuery);
-        return { entry, text: scored.text, score: scored.score };
-      })
+     const bestHebrewEntry = resolvedEntries
+      .map((entry) => ({
+        entry,
+        text: String(entry?.text || entry?.headword_line || entry?.gloss_es || '').trim()
+      }))
       .filter((item) => item.text)
-      .sort((a, b) => b.score - a.score || b.text.length - a.text.length)[0];
+      .sort((a, b) => b.text.length - a.text.length)[0];
+    const hebrewText = bestHebrewEntry?.text || 'Sin coincidencias para este lemma en Diccionario B.';
 
-    const hebrewText = bestHebrewEntry?.text || 'Sin coincidencias para este lemma en Diccionario B.';return {
+    return {
       lemmaIntroducido: lemmaIntroducido || '—',
       greekText,
       hebrewText
@@ -1767,8 +1883,8 @@ const hasDictionaryData = Boolean(
             </thead>
             <tbody>
               <tr>
-                <td><pre class="comparison-pre comparison-pre--greek" dir="auto">${escapeHtml(comparison.greekText || 'Sin datos')}</pre></td>
-                <td><pre class="comparison-pre comparison-pre--hebrew" dir="auto">${escapeHtml(comparison.hebrewText || 'Sin datos')}</pre></td>
+                <td><pre class="comparison-pre comparison-pre--greek">${escapeHtml(comparison.greekText || 'Sin datos')}</pre></td>
+                <td><pre class="comparison-pre comparison-pre--hebrew">${escapeHtml(comparison.hebrewText || 'Sin datos')}</pre></td>
               </tr>
             </tbody>
           </table>
