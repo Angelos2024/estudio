@@ -223,30 +223,48 @@
       white-space:pre-wrap;
       margin:0;
       font-family:inherit;
-      font-size:.9rem;
-      line-height:1.35;
+      font-size:.92rem;
+      line-height:1.55;
+      padding:1rem 1.1rem;
+      max-height:360px;
+      overflow:auto;
+      scrollbar-gutter:stable;
+      background:color-mix(in srgb, var(--soft-bg) 72%, #ffffff);
+      border:0;
+    }
+    .comparison-pre--greek{
+      border-left:4px solid color-mix(in srgb, var(--primary) 70%, #ffffff);
+    }
+    .comparison-pre--hebrew{
+      border-left:4px solid color-mix(in srgb, var(--text) 28%, #ffffff);
     }
 
- .dictionary-comparison-wrap{
+    .dictionary-comparison-wrap{
       border:1px solid color-mix(in srgb, var(--text) 15%, #ffffff);
-      border-radius:12px;
+      border-radius:14px;
       overflow:hidden;
       background:#ffffff;
+    }
+    .dictionary-comparison-table{
+      table-layout:fixed;
     }
     .dictionary-comparison-table thead th{
       background:color-mix(in srgb, var(--soft-bg) 70%, #ffffff);
       border-bottom:1px solid color-mix(in srgb, var(--text) 18%, #ffffff);
-      font-weight:700;
+      font-weight:800;
       text-transform:uppercase;
       font-size:.78rem;
-      letter-spacing:.02em;
+      letter-spacing:.04em;
+      padding:.8rem 1rem;
     }
     .dictionary-comparison-table td{
       vertical-align:top;
       background:#ffffff;
+      padding:0;
     }
-
-    [data-theme="cream"] .results-loading-stage{
+    .dictionary-comparison-table tbody td + td{
+      border-left:1px solid color-mix(in srgb, var(--text) 12%, #ffffff);
+    }[data-theme="cream"] .results-loading-stage{
       background:#ffffff;
       color:#000000;
       border-color:#4b2743;

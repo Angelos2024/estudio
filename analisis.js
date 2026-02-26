@@ -681,17 +681,48 @@ const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
         return res.text();
       })
     ]);
+
     const entriesById = new Map();
     const byLemma = new Map();
+    const subLemmaIndex = new Map();
+
+    const extractSubLemmasFromText = (text) => {
+      const out = new Set();
+      const re = /[\[\]]\s*([\u0590-\u05FF][\u0590-\u05FF\s]{0,38})/g;
+      let match;
+      const source = String(text || '');
+      while ((match = re.exec(source))) {
+        const raw = match[1] || '';
+        const norm = normalizeHebrew(raw);
+        if (norm && norm.length >= 2) out.add(norm);
+      }
+      return out;
+    };
+
     const register = (entry) => {
       if (!entry || typeof entry !== 'object') return;
       const id = String(entry.id || '').trim();
-      const lemmaKey = normalizeHebrew(entry.lemma || '');
       if (id) entriesById.set(id, entry);
-      if (!lemmaKey) return;
-      if (!byLemma.has(lemmaKey)) byLemma.set(lemmaKey, []);
-      byLemma.get(lemmaKey).push(entry);
+
+      const lemmaKey = normalizeHebrew(entry.lemma || '');
+      if (lemmaKey) {
+        if (!byLemma.has(lemmaKey)) byLemma.set(lemmaKey, []);
+        byLemma.get(lemmaKey).push(entry);
+      }
+
+      // Indexar sub-lemas embebidos en el texto para poder recuperar entradas extensas
+      // aunque no aparezcan en indexByLemma (ej. "[ אב ... ]" dentro de otra entrada).
+      if (id) {
+        const subs = new Set();
+        extractSubLemmasFromText(entry.text).forEach((x) => subs.add(x));
+        extractSubLemmasFromText(entry.headword_line).forEach((x) => subs.add(x));
+        subs.forEach((sub) => {
+          if (!subLemmaIndex.has(sub)) subLemmaIndex.set(sub, new Set());
+          subLemmaIndex.get(sub).add(id);
+        });
+      }
     };
+
     (hebrewDicRows || []).forEach(register);
     String(jsonlRaw || '').split('\n').forEach((line) => {
       const clean = line.trim();
@@ -702,7 +733,8 @@ const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
         return;
       }
     });
-    state.hebrewExtended = { indexByLemma: indexByLemma || {}, entriesById, byLemma };
+
+    state.hebrewExtended = { indexByLemma: indexByLemma || {}, entriesById, byLemma, subLemmaIndex };
     return state.hebrewExtended;
   }
   async function findGreekEntryFromSpanish(term) {
@@ -912,7 +944,7 @@ async function loadLxxBookData(bookCode) {
       if (char === 'ו' && vowel) {
         consonant = '';
       }
-      output = `${consonant}${vowel}`;
+      output += `${consonant}${vowel}`;
     }
     return output.replace(/''/g, '\'').trim() || '—';
   }
@@ -1551,26 +1583,70 @@ async function buildDictionaryComparison({ lemmaIntroducido, normalizedGreekLemm
 
     const hebrewResources = await loadHebrewExtendedDictionary();
     const hebrewQuery = normalizeHebrew(normalizedHebrewLemma || lemmaIntroducido || '');
- const resolveEntriesByQuery = (query) => {
+
+    const resolveEntriesByQuery = (query) => {
       if (!query) return [];
+      const resolved = [];
+      const seen = new Set();
+
+      const pushEntry = (entry) => {
+        if (!entry) return;
+        const id = String(entry.id || '').trim();
+        const key = id || `${normalizeHebrew(entry.lemma || '')}:${normalizeHebrew(entry.headword_line || '')}`;
+        if (!key || seen.has(key)) return;
+        seen.add(key);
+        resolved.push(entry);
+      };
+
+      // 1) Coincidencias directas por índice lemma -> ids
       const ids = hebrewResources.indexByLemma?.[query] || [];
-      const byId = ids.map((id) => hebrewResources.entriesById.get(id)).filter(Boolean);
-      if (byId.length) return byId;
-      return hebrewResources.byLemma.get(query) || [];
+      ids.forEach((id) => pushEntry(hebrewResources.entriesById.get(id)));
+
+      // 2) Coincidencias por mapa lemma -> entries
+      (hebrewResources.byLemma.get(query) || []).forEach(pushEntry);
+
+      // 3) Coincidencias por sub-lemas embebidos en el texto (si existe)
+      const subIds = hebrewResources.subLemmaIndex?.get(query);
+      if (subIds && typeof subIds.forEach === 'function') {
+        subIds.forEach((id) => pushEntry(hebrewResources.entriesById.get(id)));
+      }
+
+      return resolved;
     };
+
+    const scoreHebrewEntry = (entry, queryNorm) => {
+      const lemma = normalizeHebrew(entry?.lemma || '');
+      const head = normalizeHebrew(entry?.headword_line || '');
+      const textRaw = String(entry?.text || entry?.headword_line || entry?.gloss_es || '');
+      const textNorm = normalizeHebrew(textRaw);
+
+      let score = 0;
+      if (lemma && lemma === queryNorm) score += 100;
+      if (head && head.startsWith(queryNorm)) score += 45;
+      if (textNorm && textNorm.includes(queryNorm)) score += 25;
+
+      // Empate por "completitud" (artículos más largos suelen ser más útiles)
+      score += Math.min(50, Math.floor(textRaw.length / 300));
+      return score;
+    };
+
     let resolvedEntries = resolveEntriesByQuery(hebrewQuery);
+
+    // Heurística: si termina en י y hay demasiadas entradas, probar versión recortada
     if ((!resolvedEntries.length || (resolvedEntries.length > 3 && hebrewQuery.endsWith('י'))) && hebrewQuery.length > 2) {
       const trimmed = hebrewQuery.slice(0, -1);
       const trimmedMatches = resolveEntriesByQuery(trimmed);
       if (trimmedMatches.length) resolvedEntries = trimmedMatches;
     }
-     const bestHebrewEntry = resolvedEntries
-      .map((entry) => ({
-        entry,
-        text: String(entry?.text || entry?.headword_line || entry?.gloss_es || '').trim()
-      }))
+
+    const bestHebrewEntry = resolvedEntries
+      .map((entry) => {
+        const text = String(entry?.text || entry?.headword_line || entry?.gloss_es || '').trim();
+        return { entry, text, score: scoreHebrewEntry(entry, hebrewQuery) };
+      })
       .filter((item) => item.text)
-      .sort((a, b) => b.text.length - a.text.length)[0];
+      .sort((a, b) => b.score - a.score || b.text.length - a.text.length)[0];
+
     const hebrewText = bestHebrewEntry?.text || 'Sin coincidencias para este lemma en Diccionario B.';
 
     return {
@@ -1635,8 +1711,8 @@ const hasDictionaryData = Boolean(
             </thead>
             <tbody>
               <tr>
-                <td><pre class="comparison-pre">${escapeHtml(comparison.greekText || 'Sin datos')}</pre></td>
-                <td><pre class="comparison-pre">${escapeHtml(comparison.hebrewText || 'Sin datos')}</pre></td>
+                <td><pre class="comparison-pre comparison-pre--greek">${escapeHtml(comparison.greekText || 'Sin datos')}</pre></td>
+                <td><pre class="comparison-pre comparison-pre--hebrew">${escapeHtml(comparison.hebrewText || 'Sin datos')}</pre></td>
               </tr>
             </tbody>
           </table>
@@ -2044,7 +2120,7 @@ deepLexicalAnalysis.innerHTML = '<div class="col-12"><div class="small muted">Co
       comparisonContext: {
         lemmaIntroducido: term,
         greekLemma: greekLemma !== '—' ? normalizeGreek(greekLemma) : '',
-        hebrewLemma: hebrewCandidate?.word ? normalizeHebrew(hebrewCandidate.word) : ''
+        hebrewLemma: hebrewCandidate?.normalized || (hebrewCandidate?.word ? normalizeHebrew(hebrewCandidate.word) : '')
       }
           });
     renderDeepLexicalAnalysis(lexicalModules);
