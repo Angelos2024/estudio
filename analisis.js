@@ -495,6 +495,7 @@ function detectLang(text) {
         heDisplayList.push({ normalized, display: stripStrongPrefix(item) });
       });
       byEs.set(esKey, {
+                gr: new Set([...(byEs.get(esKey)?.gr || []), ...grSet]),
           he: new Set([...(byEs.get(esKey)?.he || []), ...heSet]),
         grDisplay: [...(byEs.get(esKey)?.grDisplay || []), ...grDisplayList],
         heDisplay: [...(byEs.get(esKey)?.heDisplay || []), ...heDisplayList]
