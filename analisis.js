@@ -480,13 +480,14 @@ function detectLang(text) {
     const register = (esWord, grList, heList) => {
       const esKey = normalizeSpanishPhrase(esWord);
       if (!esKey) return;
-     const grSet = new Set((grList || []).map((item) => normalizeAndStrip(item, 'gr')).filter(Boolean));
+     const grSet = new Set((grList || []).map((item) => normalizeAndStrip(item, 'gr')).filter((word) => word && !greekStopwords.has(word)));
       const heSet = new Set((heList || []).map((item) => normalizeAndStrip(item, 'he')).filter(Boolean));
       const grDisplayList = [];
       const heDisplayList = [];
       (grList || []).forEach((item) => {
         const normalized = normalizeAndStrip(item, 'gr');
         if (!normalized) return;
+        if (greekStopwords.has(normalized)) return;
         grDisplayList.push({ normalized, display: stripStrongPrefix(item) });
       });
       (heList || []).forEach((item) => {
@@ -519,6 +520,7 @@ function detectLang(text) {
       Object.entries(data?.by_gr || {}).forEach(([grWord, esWords]) => {
         const grKey = normalizeGreek(stripStrongPrefix(grWord));
         if (!grKey) return;
+        if (greekStopwords.has(grKey)) return;
         if (!byGr.has(grKey)) byGr.set(grKey, new Set());
         (esWords || []).forEach((esWord) => byGr.get(grKey).add(normalizeSpanishPhrase(esWord)));
       });
@@ -1944,7 +1946,8 @@ const summaryRefs = lang === 'gr' && !refs.length ? initialLxxMatches.refs : ref
     updateTrilingualBrief({
       esWord: esDisplayWord || term,
       heWord: hebrewCandidate?.word || (lang === 'he' ? term : '—'),
-  grWord: (lang === 'es' ? (greekDisplayWord || greekLemma) : lemmaLabel) || (lang === 'gr' ? term : '—')    });
+  grWord: (greekDisplayWord || greekLemma || (lang === 'gr' ? term : '—'))
+    });
        occurrenceDonut?.setData({
       es: buildBookCountRows(esRefs),
       he: buildBookCountRows(heRefs),
