@@ -471,14 +471,33 @@ function detectLang(text) {
     const byEs = new Map();
     const byGr = new Map();
     const byHe = new Map();
+      const normalizeAndStrip = (item, lang) => {
+      const stripped = stripStrongPrefix(item);
+      if (lang === 'gr') return normalizeGreek(stripped);
+      if (lang === 'he') return normalizeHebrew(stripped);
+      return normalizeSpanishPhrase(stripped);
+    };
     const register = (esWord, grList, heList) => {
       const esKey = normalizeSpanishPhrase(esWord);
       if (!esKey) return;
-      const grSet = new Set((grList || []).map((item) => normalizeGreek(stripStrongPrefix(item))).filter(Boolean));
-      const heSet = new Set((heList || []).map((item) => normalizeHebrew(stripStrongPrefix(item))).filter(Boolean));
+     const grSet = new Set((grList || []).map((item) => normalizeAndStrip(item, 'gr')).filter(Boolean));
+      const heSet = new Set((heList || []).map((item) => normalizeAndStrip(item, 'he')).filter(Boolean));
+      const grDisplayList = [];
+      const heDisplayList = [];
+      (grList || []).forEach((item) => {
+        const normalized = normalizeAndStrip(item, 'gr');
+        if (!normalized) return;
+        grDisplayList.push({ normalized, display: stripStrongPrefix(item) });
+      });
+      (heList || []).forEach((item) => {
+        const normalized = normalizeAndStrip(item, 'he');
+        if (!normalized) return;
+        heDisplayList.push({ normalized, display: stripStrongPrefix(item) });
+      });
       byEs.set(esKey, {
-        gr: new Set([...(byEs.get(esKey)?.gr || []), ...grSet]),
-        he: new Set([...(byEs.get(esKey)?.he || []), ...heSet])
+          he: new Set([...(byEs.get(esKey)?.he || []), ...heSet]),
+        grDisplay: [...(byEs.get(esKey)?.grDisplay || []), ...grDisplayList],
+        heDisplay: [...(byEs.get(esKey)?.heDisplay || []), ...heDisplayList]
       });
       grSet.forEach((grWord) => {
         if (!byGr.has(grWord)) byGr.set(grWord, new Set());
@@ -1760,6 +1779,7 @@ async function buildDictionaryComparison({ lemmaIntroducido, normalizedGreekLemm
     let greekEntry = entry;
     let greekTerm = null;
     let greekCandidate = null;
+        let greekDisplayWord = '';
     if (lang === 'es') {
       greekEntry = await findGreekEntryFromSpanish(term);
       if (greekEntry?.lemma) {
@@ -1807,13 +1827,24 @@ const summaryRefs = lang === 'gr' && !refs.length ? initialLxxMatches.refs : ref
     if (lang === 'gr') {
       greekTerm = normalized;
     } else if (lang === 'es') {
-        if (!greekTerm && equivalenceTerms.gr?.size) {
-        const rankedEquivalents = [...equivalenceTerms.gr]
+         if (!greekTerm && equivalenceTerms.gr?.size) {
+        const esEquivalence = state.trilingualByEs.get(normalizeSpanishPhrase(term));
+        const orderedGreek = (esEquivalence?.grDisplay || []).map((item) => item.normalized);
+        const seenGreek = new Set();
+        const mergedEquivalents = [...orderedGreek, ...equivalenceTerms.gr]
+          .filter((candidate) => {
+            if (seenGreek.has(candidate)) return false;
+            seenGreek.add(candidate);
+            return true;
+          });
+        const orderedMatch = orderedGreek.find((candidate) => getGreekRefs(candidate, grIndex).length > 0) || orderedGreek[0];
+        const rankedEquivalents = mergedEquivalents
           .map((candidate) => ({ candidate, refs: getGreekRefs(candidate, grIndex).length }))
           .sort((a, b) => b.refs - a.refs);
-        const fromEquivalence = rankedEquivalents.find((item) => item.refs > 0) || rankedEquivalents[0];
-        if (fromEquivalence?.candidate) {
+  const fromEquivalence = orderedMatch ? { candidate: orderedMatch } : (rankedEquivalents.find((item) => item.refs > 0) || rankedEquivalents[0]);        if (fromEquivalence?.candidate) {
           greekTerm = fromEquivalence.candidate;
+           const selected = (esEquivalence?.grDisplay || []).find((item) => item.normalized === greekTerm);
+          greekDisplayWord = selected?.display || greekDisplayWord;
           await loadDictionary();
           greekEntry = state.dictMap.get(greekTerm) || greekEntry;
         }
@@ -1843,8 +1874,8 @@ const summaryRefs = lang === 'gr' && !refs.length ? initialLxxMatches.refs : ref
     }
 
 
-    const greekLemma = greekEntry?.lemma || greekCandidate?.lemma || (lang === 'gr' ? term : '—');
-const greekTranslit = greekEntry?.['Forma lexica'] || (greekTerm ? transliterateGreek(greekLemma || term) : '—');
+    const greekLemma = greekEntry?.lemma || greekCandidate?.lemma || greekDisplayWord || (lang === 'gr' ? term : '—');
+    const greekTranslit = greekEntry?.['Forma lexica'] || (greekTerm ? transliterateGreek(greekLemma || term) : '—');
    const grRefs = greekTerm ? getGreekRefs(greekTerm, grIndex) : [];
    const lxxMatchesPromise = greekTerm
       ? (lang === 'gr' && greekTerm === normalized
@@ -1861,15 +1892,28 @@ const greekTranslit = greekEntry?.['Forma lexica'] || (greekTerm ? transliterate
         transliteration: transliterateHebrew(term)
       };
      } else if (lang === 'es') {
- if (!hebrewCandidate && equivalenceTerms.he?.size) {
-        const preferredHe = [...equivalenceTerms.he]
-          .map((candidate) => ({ candidate, refs: getHebrewRefs(candidate, heIndex).length }))
-          .sort((a, b) => b.refs - a.refs)[0];
+  if (!hebrewCandidate && equivalenceTerms.he?.size) {
+        const esEquivalence = state.trilingualByEs.get(normalizeSpanishPhrase(term));
+        const orderedHebrew = (esEquivalence?.heDisplay || []).map((item) => item.normalized);
+        const seenHebrew = new Set();
+        const mergedHebrew = [...orderedHebrew, ...equivalenceTerms.he]
+          .filter((candidate) => {
+            if (seenHebrew.has(candidate)) return false;
+            seenHebrew.add(candidate);
+            return true;
+          });
+        const orderedMatch = orderedHebrew.find((candidate) => getHebrewRefs(candidate, heIndex).length > 0) || orderedHebrew[0];
+        const preferredHe = orderedMatch
+          ? { candidate: orderedMatch }
+          : mergedHebrew
+              .map((candidate) => ({ candidate, refs: getHebrewRefs(candidate, heIndex).length }))
+              .sort((a, b) => b.refs - a.refs)[0];
         if (preferredHe?.candidate) {
+           const selected = (esEquivalence?.heDisplay || []).find((item) => item.normalized === preferredHe.candidate);
           hebrewCandidate = {
             normalized: preferredHe.candidate,
-            word: preferredHe.candidate,
-            transliteration: transliterateHebrew(preferredHe.candidate)
+           word: selected?.display || preferredHe.candidate,
+            transliteration: transliterateHebrew(selected?.display || preferredHe.candidate)
           };
         }
       }
@@ -1888,8 +1932,7 @@ const greekTranslit = greekEntry?.['Forma lexica'] || (greekTerm ? transliterate
     updateTrilingualBrief({
       esWord: esDisplayWord || term,
       heWord: hebrewCandidate?.word || (lang === 'he' ? term : '—'),
-      grWord: lemmaLabel || (lang === 'gr' ? term : '—')
-    });
+  grWord: (lang === 'es' ? (greekDisplayWord || greekLemma) : lemmaLabel) || (lang === 'gr' ? term : '—')    });
        occurrenceDonut?.setData({
       es: buildBookCountRows(esRefs),
       he: buildBookCountRows(heRefs),
