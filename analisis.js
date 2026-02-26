@@ -1021,7 +1021,7 @@ async function loadLxxBookData(bookCode) {
       if (char === 'ו' && vowel) {
         consonant = '';
       }
-      output = `${consonant}${vowel}`;
+      output += `${consonant}${vowel}`;
     }
     return output.replace(/''/g, '\'').trim() || '—';
   }
@@ -1777,49 +1777,6 @@ async function buildFormsBySource({ lang, normalizedLemma, displayLemma, lxxRefs
       const altLines = alts.map((x) => `• ${x.variant} → ${normalizeHebrew(x.cand?.lemma || x.variant)} (otra coincidencia)`);
       hebrewText = `${hebrewText}\n\n—\nOtras coincidencias cercanas:\n${altLines.join('\n')}`;
     }
-
-    return {
-      lemmaIntroducido: lemmaIntroducido || '—',
-      greekText,
-      hebrewText
-    };
-  }) {
-    await loadDictionary();
-    await loadGreekUnifiedDictionary();
-    const greekKey = normalizeGreek(normalizedGreekLemma || lemmaIntroducido || '');
-    const greekEntry = state.dictMap.get(greekKey);
-    const greekGlosses = state.greekUnifiedMap.get(greekKey) || [];
-    const greekParts = [];
-    if (greekEntry?.lemma) greekParts.push(`Lemma: ${greekEntry.lemma}`);
-    if (greekEntry?.['Forma lexica']) greekParts.push(`Transliteración: ${greekEntry['Forma lexica']}`);
-    if (greekEntry?.entrada_impresa) greekParts.push(`Entrada: ${greekEntry.entrada_impresa}`);
-    if (greekEntry?.definicion) greekParts.push(greekEntry.definicion);
-    if (greekGlosses.length) greekParts.push(`Glosas (diccionarioG_unificado): ${greekGlosses.join('; ')}`);
-    const greekText = greekParts.join('\n\n') || 'Sin coincidencias para este lemma en Diccionario A.';
-
-    const hebrewResources = await loadHebrewExtendedDictionary();
-    const hebrewQuery = normalizeHebrew(normalizedHebrewLemma || lemmaIntroducido || '');
- const resolveEntriesByQuery = (query) => {
-      if (!query) return [];
-      const ids = hebrewResources.indexByLemma?.[query] || [];
-      const byId = ids.map((id) => hebrewResources.entriesById.get(id)).filter(Boolean);
-      if (byId.length) return byId;
-      return hebrewResources.byLemma.get(query) || [];
-    };
-    let resolvedEntries = resolveEntriesByQuery(hebrewQuery);
-    if ((!resolvedEntries.length || (resolvedEntries.length > 3 && hebrewQuery.endsWith('י'))) && hebrewQuery.length > 2) {
-      const trimmed = hebrewQuery.slice(0, -1);
-      const trimmedMatches = resolveEntriesByQuery(trimmed);
-      if (trimmedMatches.length) resolvedEntries = trimmedMatches;
-    }
-     const bestHebrewEntry = resolvedEntries
-      .map((entry) => ({
-        entry,
-        text: String(entry?.text || entry?.headword_line || entry?.gloss_es || '').trim()
-      }))
-      .filter((item) => item.text)
-      .sort((a, b) => b.text.length - a.text.length)[0];
-    const hebrewText = bestHebrewEntry?.text || 'Sin coincidencias para este lemma en Diccionario B.';
 
     return {
       lemmaIntroducido: lemmaIntroducido || '—',
