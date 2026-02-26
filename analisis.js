@@ -1520,11 +1520,16 @@ async function buildFormsBySource({ lang, normalizedLemma, displayLemma, lxxRefs
       normalizedGreekLemma: comparisonContext.greekLemma || (lang === 'he' ? '' : normalizedLemma),
       normalizedHebrewLemma: comparisonContext.hebrewLemma || (lang === 'he' ? normalizedLemma : '')
     });
+  const totalOccurrences = [grRefs, heRefs, lxxRefs].reduce((acc, refs) => {
+      if (!Array.isArray(refs)) return acc;
+      return acc + refs.length;
+    }, 0);
+
     return {
       forms: [],
       formsBySource: [],
-      totalOccurrences: 0,
-      dictionaryComparison,
+      totalOccurrences,
+            dictionaryComparison,
       formsContext: { lang, normalizedLemma, displayLemma, lxxRefs }
     };
          }
@@ -1601,8 +1606,14 @@ async function buildDictionaryComparison({ lemmaIntroducido, normalizedGreekLemm
     const wrapper = document.createElement('div');
     wrapper.className = 'col-12';
 
-    if (!modules || (!modules.totalOccurrences && !(modules.forms || []).length)) {
-     wrapper.innerHTML = '<div class="small muted">No hay datos suficientes para generar el análisis léxico profundo.</div>';
+const hasDictionaryData = Boolean(
+      modules?.dictionaryComparison &&
+      ((modules.dictionaryComparison.greekText && modules.dictionaryComparison.greekText !== 'Sin coincidencias para este lemma en Diccionario A.') ||
+      (modules.dictionaryComparison.hebrewText && modules.dictionaryComparison.hebrewText !== 'Sin coincidencias para este lemma en Diccionario B.'))
+    );
+
+    if (!modules || (!modules.totalOccurrences && !(modules.forms || []).length && !hasDictionaryData)) {
+         wrapper.innerHTML = '<div class="small muted">No hay datos suficientes para generar el análisis léxico profundo.</div>';
       deepLexicalAnalysis.appendChild(wrapper);
       return;
     }
@@ -1633,8 +1644,8 @@ async function buildDictionaryComparison({ lemmaIntroducido, normalizedGreekLemm
           <div class="fw-semibold">Formas flexionadas encontradas en la base (por libro)</div>
           <button type="button" class="btn btn-soft btn-sm" id="loadFormsByBookBtn">${formsLoaded ? 'Recargar formas' : 'Cargar formas'}</button>
         </div>
-       div id="formsByBookContainer">${formsLoaded ? '' : '<div class="small muted">Carga bajo demanda para evitar retrasos. Usa el botón para consultar este bloque.</div>'}</div>
-      </div>
+       <div id="formsByBookContainer">${formsLoaded ? '' : '<div class="small muted">Carga bajo demanda para evitar retrasos. Usa el botón para consultar este bloque.</div>'}</div>
+             </div>
     `;
 
     deepLexicalAnalysis.appendChild(wrapper);
