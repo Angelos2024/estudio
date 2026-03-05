@@ -2082,13 +2082,7 @@ const hasDictionaryData = Boolean(
         greekTerm = normalizeGreek(greekEntry.lemma);
       }
     }
-    const summaryHighlightQueries = {
-      es: esDisplayWord,
-      [lang]: lang === 'gr' ? (entry?.lemma || term) : term
-    };
-const summaryRefs = lang === 'gr' && !refs.length ? initialLxxMatches.refs : refs;
-    await buildSummary(term, lang, entry || greekEntry, hebrewEntry, summaryRefs, summaryHighlightQueries);
-    const esRefs = [];
+const esRefs = [];
     const esSeen = new Set();
         const directEsRefs = [];
     if (lang === 'gr') {
@@ -2249,12 +2243,23 @@ const summaryRefs = lang === 'gr' && !refs.length ? initialLxxMatches.refs : ref
       hebrewCandidate = await buildHebrewCandidateFromLxxRefs(lxxMatches.refs);
     }
     const heRefs = hebrewCandidate ? getHebrewRefs(hebrewCandidate.normalized, heIndex) : [];
+
+    // Resumen del lema: ejecutar cuando ya se resolvieron correspondencias y candidatos
+    const summaryHighlightQueries = {
+      es: esDisplayWord,
+      gr: greekLemma !== '—' ? greekLemma : (lang === 'gr' ? term : ''),
+      he: hebrewCandidate?.word || (lang === 'he' ? term : '')
+    };
+    const summaryRefs = lang === 'gr' && !refs.length ? lxxMatches.refs : refs;
+    await buildSummary(term, lang, entry || greekEntry, hebrewEntry, summaryRefs, summaryHighlightQueries);
+
+
      const posTag = lang === 'gr' ? extractPos(entry) : '—';
     const lemmaLabel = lang === 'gr' ? (entry?.lemma || term) : term;
     updateTrilingualBrief({
       esWord: esDisplayWord || term,
       heWord: hebrewCandidate?.word || (lang === 'he' ? term : (torahDisplay?.he || '—')),
-  grWord: (lang === 'es' ? (greekDisplayWord || greekLemma) : lemmaLabel) || (lang === 'gr' ? term : '—')    });
+  grWord: (greekDisplayWord || greekLemma || (lang === 'gr' ? term : '—'))    });
        occurrenceDonut?.setData({
       es: buildBookCountRows(esRefs),
       he: buildBookCountRows(heRefs),
