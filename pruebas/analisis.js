@@ -626,18 +626,37 @@ function detectLang(text) {
     const qGr = normalizeGreek(term);
     const qHe = normalizeHebrew(term);
 
+    // Regla: respetar orden Génesis→Deuteronomio. Dentro de un mismo libro:
+    // 1) Si la consulta es hebrea y hay match hebreo → tomarlo.
+    // 2) Si la consulta es griega y hay match griego → tomarlo.
+    // 3) Si la consulta es española y hay match español → tomarlo.
+    // 4) Si hay varios hits por combinaciones, preferir el que tenga hebreo visible.
     for (const book of (state.torahTri || [])) {
-      let hits = [];
-      if (qHe) hits = hits.concat(book.byHe.get(qHe) || []);
-      if (qGr) hits = hits.concat(book.byGr.get(qGr) || []);
-      if (qEs) hits = hits.concat(book.byEs.get(qEs) || []);
-      if (hits.length) return hits[0]; // primer match por libro
+      const heHits = qHe ? (book.byHe.get(qHe) || []) : [];
+      const grHits = qGr ? (book.byGr.get(qGr) || []) : [];
+      const esHits = qEs ? (book.byEs.get(qEs) || []) : [];
+
+      if (heHits.length) return heHits[0];
+      if (grHits.length) {
+        const withHebrew = grHits.find((e) => String(e?.texto_hebreo || '').trim());
+        return withHebrew || grHits[0];
+      }
+      if (esHits.length) {
+        const withHebrew = esHits.find((e) => String(e?.texto_hebreo || '').trim());
+        return withHebrew || esHits[0];
+      }
+
+      // Si no hay match directo pero por alguna razón hay hits cruzados, elegir el más completo
+      const hits = [...heHits, ...grHits, ...esHits];
+      if (hits.length) {
+        const withHebrew = hits.find((e) => String(e?.texto_hebreo || '').trim());
+        return withHebrew || hits[0];
+      }
     }
     return null;
+  }
 
-
-  // Si el match "primero por libro" (Torah) viene por ES/GR pero la entrada no trae hebreo,
-  // intentar completar hebreo buscando en Torah por el griego (primer match por libro que sí tenga texto_hebreo).
+  // Dado un lema griego, buscar (Gen→Deut) la primera entrada que tenga ese griego y un hebreo no vacío.
   async function findFirstTorahHebrewByGreek(normalizedGreekLemma) {
     await loadTorahTrilingualEquivalences();
     const grKey = normalizeGreek(normalizedGreekLemma);
@@ -645,19 +664,29 @@ function detectLang(text) {
 
     for (const book of (state.torahTri || [])) {
       const hits = book.byGr.get(grKey) || [];
-      const withHebrew = hits.find((e) => {
-        const he = String(e?.texto_hebreo || '').trim();
-        return Boolean(normalizeHebrew(he));
-      });
+      const withHebrew = hits.find((e) => String(e?.texto_hebreo || '').trim());
       if (withHebrew) {
         const heDisplay = String(withHebrew.texto_hebreo || '').trim();
         const heNorm = normalizeHebrew(heDisplay);
-        if (!heNorm) continue;
-        return { normalized: heNorm, display: heDisplay };
+        if (heNorm) return { normalized: heNorm, display: heDisplay };
       }
     }
     return null;
   }
+
+  // Dado un hebreo normalizado, devolver una forma de display desde Torah (Gen→Deut).
+  async function findTorahHebrewDisplayByNormalized(normalizedHebrew) {
+    await loadTorahTrilingualEquivalences();
+    const heKey = normalizeHebrew(normalizedHebrew);
+    if (!heKey) return null;
+    for (const book of (state.torahTri || [])) {
+      const hits = book.byHe.get(heKey) || [];
+      if (hits.length) {
+        const heDisplay = String(hits[0]?.texto_hebreo || '').trim();
+        if (heDisplay) return heDisplay;
+      }
+    }
+    return null;
   }
 
 function getGreekRefs(normalized, index) {
@@ -1964,6 +1993,13 @@ const hasDictionaryData = Boolean(
       if (heRaw) torahEquivalenceTerms.he.add(normalizeHebrew(heRaw));
       splitGrVariants(grRaw).map(normalizeGreek).filter(Boolean).forEach((x) => torahEquivalenceTerms.gr.add(x));
       [...splitEsVariants(esRaw), ...candidatos].map(normalizeSpanishPhrase).filter(Boolean).forEach((x) => torahEquivalenceTerms.es.add(x));
+    // Guardar hebreo/griego/español "display" directo del primer match Torah (si existe).
+    const torahDisplay = {
+      he: torahEntry ? String(torahEntry?.texto_hebreo || '').trim() : '',
+      gr: torahEntry ? String(torahEntry?.equivalencia_griega || '').split(',')[0]?.trim() : '',
+      es: torahEntry ? String(torahEntry?.equivalencia_espanol || torahEntry?.equivalencia_español || '').trim() : ''
+    };
+
     }
 
   try {
@@ -2149,6 +2185,18 @@ const summaryRefs = lang === 'gr' && !refs.length ? initialLxxMatches.refs : ref
         transliteration: transliterateHebrew(term)
       };
      } else if (lang === 'es') {
+      // Prioridad absoluta: si el primer match Torah ya trae hebreo, úsalo (evita '—' injustificado).
+      if (!hebrewCandidate && torahDisplay?.he) {
+        const heNorm = normalizeHebrew(torahDisplay.he);
+        if (heNorm) {
+          hebrewCandidate = {
+            normalized: heNorm,
+            word: torahDisplay.he,
+            transliteration: transliterateHebrew(torahDisplay.he)
+          };
+        }
+      }
+
   if (!hebrewCandidate && equivalenceTerms.he?.size) {
         const esEquivalence = state.trilingualByEs.get(normalizeSpanishPhrase(term));
         const orderedHebrew = (esEquivalence?.heDisplay || []).map((item) => item.normalized);
@@ -2169,7 +2217,7 @@ const summaryRefs = lang === 'gr' && !refs.length ? initialLxxMatches.refs : ref
            const selected = (esEquivalence?.heDisplay || []).find((item) => item.normalized === preferredHe.candidate);
           hebrewCandidate = {
             normalized: preferredHe.candidate,
-           word: selected?.display || preferredHe.candidate,
+           word: selected?.display || (await findTorahHebrewDisplayByNormalized(preferredHe.candidate)) || preferredHe.candidate,
             transliteration: transliterateHebrew(selected?.display || preferredHe.candidate)
           };
         }
@@ -2202,7 +2250,7 @@ const summaryRefs = lang === 'gr' && !refs.length ? initialLxxMatches.refs : ref
     const lemmaLabel = lang === 'gr' ? (entry?.lemma || term) : term;
     updateTrilingualBrief({
       esWord: esDisplayWord || term,
-      heWord: hebrewCandidate?.word || (lang === 'he' ? term : '—'),
+      heWord: hebrewCandidate?.word || (lang === 'he' ? term : (torahDisplay?.he || '—')),
   grWord: (lang === 'es' ? (greekDisplayWord || greekLemma) : lemmaLabel) || (lang === 'gr' ? term : '—')    });
        occurrenceDonut?.setData({
       es: buildBookCountRows(esRefs),
