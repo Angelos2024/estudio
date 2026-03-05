@@ -2413,7 +2413,7 @@ deepLexicalAnalysis.innerHTML = '<div class="col-12"><div class="small muted">Co
    }
  
 
- 
+  
    analyzeBtn?.addEventListener('click', analyze);
    queryInput?.addEventListener('keydown', (event) => {
      if (event.key === 'Enter') {
