@@ -1,13 +1,12 @@
 
 
  (() => {
-const DICT_URL = './diccionario/masterdiccionario.json';
-  const HEBREW_DICT_URL = './diccionario/diccionario_unificado.min.json';
-  const GREEK_UNIFIED_DICT_URL = './diccionario/diccionarioG_unificado.min.json';
-  const HEBREW_ENTRIES_JSONL_URL = './dic/diccionario_entries.jsonl';
-  const HEBREW_INDEX_BY_LEMMA_URL = './dic/diccionario_index_by_lemma.json';
-  const HEBREW_DIC_URL = './dic/hebrewdic.json';
-     const TRILINGUAL_EQUIV_URL = './diccionario/equivalencias_trilingue.min.json';
+const TORAH_TRILINGUAL_DICT_URLS = [
+    './diccionario/pruebas/02Éxodo.json',
+    './diccionario/pruebas/03Levítico.json',
+    './diccionario/pruebas/04Números.json',
+    './diccionario/pruebas/05Deuteronomio.json'
+  ];
    const SEARCH_INDEX = {
      es: './search/index-es.json',
      gr: './search/index-gr.json',
@@ -465,8 +464,8 @@ function detectLang(text) {
   }
   async function loadTrilingualEquivalences() {
     if (state.trilingualEquiv) return state.trilingualEquiv;
-    const data = await loadJson(TRILINGUAL_EQUIV_URL);
-    state.trilingualEquiv = data;
+    const data = await loadDictionary();
+        state.trilingualEquiv = data;
 
     const byEs = new Map();
     const byGr = new Map();
@@ -510,25 +509,15 @@ function detectLang(text) {
       });
     };
 
-    if (Array.isArray(data)) {
-      data.forEach((item) => register(item?.es, item?.gr, item?.he));
-    } else {
-      Object.entries(data?.by_es || {}).forEach(([esWord, payload]) => {
-        register(esWord, payload?.gr || [], payload?.he || []);
-      });
-      Object.entries(data?.by_gr || {}).forEach(([grWord, esWords]) => {
-        const grKey = normalizeGreek(stripStrongPrefix(grWord));
-        if (!grKey) return;
-        if (!byGr.has(grKey)) byGr.set(grKey, new Set());
-        (esWords || []).forEach((esWord) => byGr.get(grKey).add(normalizeSpanishPhrase(esWord)));
-      });
-      Object.entries(data?.by_he || {}).forEach(([heWord, esWords]) => {
-        const heKey = normalizeHebrew(stripStrongPrefix(heWord));
-        if (!heKey) return;
-        if (!byHe.has(heKey)) byHe.set(heKey, new Set());
-        (esWords || []).forEach((esWord) => byHe.get(heKey).add(normalizeSpanishPhrase(esWord)));
-      });
-    }
+    (data?.entries || []).forEach((item) => {
+      const es = String(item?.equivalencia_espanol || '').trim();
+      const gr = String(item?.equivalencia_griega || '')
+        .split(',')
+        .map((part) => String(part || '').trim())
+        .filter(Boolean);
+      const he = [String(item?.texto_hebreo || '').trim()].filter(Boolean);
+      register(es, gr, he);
+    });
 
     state.trilingualByEs = byEs;
     state.trilingualByGr = byGr;
@@ -629,9 +618,33 @@ const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
     }
   }
 
-  async function loadDictionary() {
-    if (state.dict) return state.dict;
-    const data = await loadJson(DICT_URL);
+  async function loadTorahTrilingualEntries() {
+      if (state.dict) return state.dict;
+
+    const batches = await Promise.all(TORAH_TRILINGUAL_DICT_URLS.map((url) => loadJson(url)));
+    const entries = batches.flatMap((batch) => Array.isArray(batch) ? batch : []);
+    const items = entries.map((entry) => {
+      const greekLemma = String(entry?.equivalencia_griega || '')
+        .split(',')
+        .map((part) => String(part || '').trim())
+        .find(Boolean) || '';
+      const glosses = [
+        String(entry?.equivalencia_espanol || '').trim(),
+        ...(Array.isArray(entry?.candidatos) ? entry.candidatos.map((item) => String(item || '').trim()) : [])
+      ].filter(Boolean);
+      return {
+        lemma: greekLemma,
+        'Forma flexionada del texto': greekLemma,
+        'Forma lexica': greekLemma,
+        definicion: glosses.join(' · '),
+        entrada_impresa: String(entry?.texto_hebreo || '').trim(),
+        texto_hebreo: String(entry?.texto_hebreo || '').trim(),
+        equivalencia_griega: String(entry?.equivalencia_griega || '').trim(),
+        equivalencia_espanol: String(entry?.equivalencia_espanol || '').trim(),
+        candidatos: Array.isArray(entry?.candidatos) ? entry.candidatos : []
+      };
+    });
+    const data = { items, entries };
     state.dict = data;
     const map = new Map();
     const translitMap = new Map();
@@ -653,163 +666,38 @@ const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
     state.dictTranslitMap = translitMap;
     return data;
   }
+   async function loadDictionary() {
+    return loadTorahTrilingualEntries();
+  }
    async function loadGreekUnifiedDictionary() {
     if (state.greekUnifiedMap.size) return state.greekUnifiedMap;
-    const data = await loadJson(GREEK_UNIFIED_DICT_URL);
     const map = new Map();
-    (data || []).forEach((row) => {
-      if (!Array.isArray(row) || row.length < 2) return;
-      const key = normalizeGreek(row[0]);
-      const gloss = String(row[1] || '').trim();
-      if (!key || !gloss) return;
+    const data = await loadDictionary();
+    (data?.items || []).forEach((row) => {
+      const key = normalizeGreek(row?.lemma || row?.equivalencia_griega || '');
+      const glosses = [
+        row?.equivalencia_espanol,
+        ...(Array.isArray(row?.candidatos) ? row.candidatos : [])
+      ].map((item) => String(item || '').trim()).filter(Boolean);
+      if (!key || !glosses.length) return;
       if (!map.has(key)) map.set(key, []);
       const current = map.get(key);
-      if (current.length < 60 && !current.includes(gloss)) current.push(gloss);
-    });
+  glosses.forEach((gloss) => {
+        if (current.length < 60 && !current.includes(gloss)) current.push(gloss);
+      });
+          });
     state.greekUnifiedMap = map;
     return map;
   }
     async function loadHebrewExtendedDictionary() {
     if (state.hebrewExtended) return state.hebrewExtended;
 
-    const [indexByLemma, hebrewDicRows, jsonlRaw] = await Promise.all([
-      loadJson(HEBREW_INDEX_BY_LEMMA_URL),
-      loadJson(HEBREW_DIC_URL),
-      fetch(HEBREW_ENTRIES_JSONL_URL, { cache: 'force-cache' }).then((res) => {
-        if (!res.ok) throw new Error(`No se pudo cargar ${HEBREW_ENTRIES_JSONL_URL}`);
-        return res.text();
-      })
-    ]);
-
-    const entriesById = new Map();
-    const byLemma = new Map();
-
-    // "Entradas virtuales" para sub-entradas embebidas dentro de textos grandes.
-    // key: lemma normalizado (sin niqqud) -> array de segmentos {id, lemma, text, parentId, page_start, page_end}
-    const segmentIndex = new Map();
-
-    const HEB_LETTER = /[\u0590-\u05FF]/;
-    const isHebrewLetter = (ch) => HEB_LETTER.test(ch || '');
-
-    const extractLeadingHebrewLemma = (raw) => {
-      const s = String(raw || '').trim();
-      if (!s) return '';
-      // toma letras hebreas + espacios al inicio hasta el primer caracter no hebreo/espacio
-      const m = s.match(/^([\u0590-\u05FF][\u0590-\u05FF\s]{0,24})/);
-      if (!m) return '';
-      const norm = normalizeHebrew(m[1] || '');
-      return norm && norm.length >= 2 ? norm : '';
-    };
-
-    const pushSegment = (parentEntry, lemmaNorm, textRaw, indexHint) => {
-      if (!lemmaNorm || !textRaw) return;
-      const segmentText = String(textRaw).trim();
-      if (!segmentText || segmentText.length < 25) return;
-
-      const sid = `${String(parentEntry.id || 'heb')}:${indexHint || 0}:${lemmaNorm}`;
-      const seg = {
-        id: sid,
-        lemma: lemmaNorm,
-        text: segmentText,
-        parentId: String(parentEntry.id || ''),
-        page_start: parentEntry.page_start,
-        page_end: parentEntry.page_end
-      };
-
-      if (!segmentIndex.has(lemmaNorm)) segmentIndex.set(lemmaNorm, []);
-      segmentIndex.get(lemmaNorm).push(seg);
-    };
-
-    const splitIntoSegments = (entry) => {
-      const src = String(entry?.text || '');
-      if (!src) return;
-
-      const markers = [];
-      const seen = new Set();
-
-      const addMarker = (pos, lemmaNorm) => {
-        if (!lemmaNorm || lemmaNorm.length < 2) return;
-        const key = `${pos}:${lemmaNorm}`;
-        if (seen.has(key)) return;
-        seen.add(key);
-        markers.push({ pos, lemma: lemmaNorm });
-      };
-
-      // 1) Marcadores tipo "[ אב ...", " ]אביר ..." etc al inicio de línea
-      const reBracket = /^\s*\[\s*([^\n\]]{1,80})/gm;
-      let m;
-      while ((m = reBracket.exec(src))) {
-        const lemmaNorm = extractLeadingHebrewLemma(m[1] || '');
-        addMarker(m.index, lemmaNorm);
-      }
-
-      // 2) Marcadores tipo "א ב ד ro.pf." (letras separadas) al inicio de línea
-      const reSpacedRoot = /^\s*([\u0590-\u05FF](?:\s+[\u0590-\u05FF]){1,7})(?=\s+[A-Za-z]{1,6}\.)/gm;
-      while ((m = reSpacedRoot.exec(src))) {
-        const lemmaNorm = normalizeHebrew(m[1] || '');
-        addMarker(m.index, lemmaNorm);
-      }
-
-      // 3) Marcadores tipo "איבד Dt 32,28" (palabra normal) al inicio de línea
-      const rePlain = /^\s*([\u0590-\u05FF]{2,12})(?=\s+(?:[A-Z][a-z]{0,2}\s*\d|[A-Z][a-z]{0,2}\b))/gm;
-      while ((m = rePlain.exec(src))) {
-        const lemmaNorm = normalizeHebrew(m[1] || '');
-        addMarker(m.index, lemmaNorm);
-      }
-
-      if (!markers.length) return;
-
-      markers.sort((a, b) => a.pos - b.pos);
-
-      // segmentar entre marcadores
-      for (let i = 0; i < markers.length; i += 1) {
-        const start = markers[i].pos;
-        const end = i + 1 < markers.length ? markers[i + 1].pos : src.length;
-        const chunk = src.slice(start, end).trim();
-        pushSegment(entry, markers[i].lemma, chunk, i);
-      }
-    };
-
-    const register = (entry) => {
-      if (!entry || typeof entry !== 'object') return;
-
-      const id = String(entry.id || '').trim();
-      const lemmaKey = normalizeHebrew(entry.lemma || '');
-
-      if (id) entriesById.set(id, entry);
-      if (lemmaKey) {
-        if (!byLemma.has(lemmaKey)) byLemma.set(lemmaKey, []);
-        byLemma.get(lemmaKey).push(entry);
-      }
-
-      // Indexar segmentos embebidos (lo que arregla casos como אב / אבי, etc.)
-      splitIntoSegments(entry);
-    };
-
-    (hebrewDicRows || []).forEach(register);
-
-    String(jsonlRaw || '').split('\n').forEach((line) => {
-      const clean = line.trim();
-      if (!clean) return;
-      try {
-        register(JSON.parse(clean));
-      } catch (_) {
-        return;
-      }
-    });
-
-    // Compactar / ordenar segmentos por lemma para ranking más estable
-    segmentIndex.forEach((arr, key) => {
-      arr.sort((a, b) => (b.text.length - a.text.length));
-      // evita crecimiento excesivo en lemas ultra-frecuentes
-      if (arr.length > 40) segmentIndex.set(key, arr.slice(0, 40));
-    });
-
+     await loadDictionary();
     state.hebrewExtended = {
-      indexByLemma: indexByLemma || {},
-      entriesById,
-      byLemma,
-      segmentIndex
+       byLemma: new Map(),
+      entriesById: new Map(),
+      segmentIndex: new Map(),
+      index: { tokens: {} }
     };
 
     return state.hebrewExtended;
@@ -829,24 +717,16 @@ const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
   }
  async function loadHebrewDictionary() {
     if (state.hebrewDict) return state.hebrewDict;
-    const data = await loadJson(HEBREW_DICT_URL);
-    state.hebrewDict = data;
+    const data = await loadDictionary();
+        state.hebrewDict = data;
     const map = new Map();
-    (data || []).forEach((item) => {
-     const keys = [
-        item?.palabra,
-        item?.lemma,
-        item?.hebreo,
-        item?.forma,
-        ...(item?.forms || []),
-        ...(item?.formas || []),
-        ...(item?.hebreos || [])
-      ]
-        .map((token) => normalizeHebrew(token || ''))
-        .filter(Boolean);
-      keys.forEach((key) => {
-        if (!map.has(key)) map.set(key, item);
-      });
+     (data.items || []).forEach((item) => {
+      const hebrew = String(item?.texto_hebreo || item?.entrada_impresa || '').trim();
+      const key = normalizeHebrew(hebrew);
+      if (!key) return;
+      if (!map.has(key)) {
+        map.set(key, { lemma: hebrew, forms: [hebrew], formas: [hebrew] });
+      }
     });
     state.hebrewDictMap = map;
     return data;
@@ -1656,8 +1536,7 @@ async function buildFormsBySource({ lang, normalizedLemma, displayLemma, lxxRefs
     if (greekEntry?.['Forma lexica']) greekParts.push(`Transliteración: ${greekEntry['Forma lexica']}`);
     if (greekEntry?.entrada_impresa) greekParts.push(`Entrada: ${greekEntry.entrada_impresa}`);
     if (greekEntry?.definicion) greekParts.push(greekEntry.definicion);
-    if (greekGlosses.length) greekParts.push(`Glosas (diccionarioG_unificado): ${greekGlosses.join('; ')}`);
-    const greekText = greekParts.join('\n\n') || 'Sin coincidencias para este lemma en Diccionario A.';
+    if (greekGlosses.length) greekParts.push(`Glosas (diccionario trilingüe Torah): ${greekGlosses.join('; ')}`);    const greekText = greekParts.join('\n\n') || 'Sin coincidencias para este lemma en Diccionario A.';
 
     const hebrewResources = await loadHebrewExtendedDictionary();
     const rawQuery = normalizedHebrewLemma || lemmaIntroducido || '';
