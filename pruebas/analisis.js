@@ -634,6 +634,30 @@ function detectLang(text) {
       if (hits.length) return hits[0]; // primer match por libro
     }
     return null;
+
+
+  // Si el match "primero por libro" (Torah) viene por ES/GR pero la entrada no trae hebreo,
+  // intentar completar hebreo buscando en Torah por el griego (primer match por libro que sí tenga texto_hebreo).
+  async function findFirstTorahHebrewByGreek(normalizedGreekLemma) {
+    await loadTorahTrilingualEquivalences();
+    const grKey = normalizeGreek(normalizedGreekLemma);
+    if (!grKey) return null;
+
+    for (const book of (state.torahTri || [])) {
+      const hits = book.byGr.get(grKey) || [];
+      const withHebrew = hits.find((e) => {
+        const he = String(e?.texto_hebreo || '').trim();
+        return Boolean(normalizeHebrew(he));
+      });
+      if (withHebrew) {
+        const heDisplay = String(withHebrew.texto_hebreo || '').trim();
+        const heNorm = normalizeHebrew(heDisplay);
+        if (!heNorm) continue;
+        return { normalized: heNorm, display: heDisplay };
+      }
+    }
+    return null;
+  }
   }
 
 function getGreekRefs(normalized, index) {
@@ -2150,6 +2174,20 @@ const summaryRefs = lang === 'gr' && !refs.length ? initialLxxMatches.refs : ref
           };
         }
       }
+
+    // Fallback prioritario: si ya tenemos griego pero aún no hay hebreo en equivalencias,
+    // buscar hebreo directamente en los diccionarios Torah por ese lema griego (Gen→Deut).
+    if (!hebrewCandidate && greekTerm) {
+      const heFromTorah = await findFirstTorahHebrewByGreek(greekTerm);
+      if (heFromTorah?.normalized) {
+        hebrewCandidate = {
+          normalized: heFromTorah.normalized,
+          word: heFromTorah.display,
+          transliteration: transliterateHebrew(heFromTorah.display)
+        };
+      }
+    }
+
      if (!hebrewCandidate && greekTerm && lxxMatches.refs.length) {
       hebrewCandidate = await buildHebrewCandidateFromLxxRefs(lxxMatches.refs);
       }
