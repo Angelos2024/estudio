@@ -587,6 +587,22 @@ function getGreekRefs(normalized, index) {
     });
     return refs;
   }
+
+   function buildJsonUrlCandidates(url) {
+    const candidates = [url];
+    const cleaned = String(url || '').replace(/^\.\//, '');
+    const withoutParents = cleaned.replace(/^(\.\.\/)+/, '');
+    if (withoutParents && withoutParents !== cleaned) {
+      candidates.push(`/${withoutParents}`);
+    }
+    if (typeof window !== 'undefined' && withoutParents) {
+      const segments = window.location.pathname.split('/').filter(Boolean);
+      if (segments.length) {
+        candidates.push(`/${segments[0]}/${withoutParents}`);
+      }
+    }
+    return [...new Set(candidates.filter(Boolean))];
+  }
   async function loadJson(url) {
    const failedRequest = failedJsonRequests.get(url);
     if (failedRequest && (Date.now() - failedRequest.timestamp) < JSON_RETRY_COOLDOWN_MS) {
@@ -594,10 +610,23 @@ function getGreekRefs(normalized, index) {
     }
 
    if (jsonCache.has(url)) return jsonCache.get(url);
-    const promise = fetch(url, { cache: 'force-cache' }).then((res) => {
-      if (!res.ok) throw new Error(`No se pudo cargar ${url}`);
-      return res.json();
-    });
+     const candidates = buildJsonUrlCandidates(url);
+    const promise = (async () => {
+      let lastError = null;
+      for (const candidate of candidates) {
+        try {
+          const res = await fetch(candidate, { cache: 'force-cache' });
+          if (!res.ok) {
+            lastError = new Error(`No se pudo cargar ${candidate}`);
+            continue;
+          }
+          return await res.json();
+        } catch (error) {
+          lastError = error;
+        }
+      }
+      throw lastError || new Error(`No se pudo cargar ${url}`);
+    })();
     jsonCache.set(url, promise);
     try {
     failedJsonRequests.delete(url);
