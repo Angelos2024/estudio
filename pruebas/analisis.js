@@ -1959,6 +1959,9 @@ const hasDictionaryData = Boolean(
   async function analyze() {
     if (state.isLoading) return;
     const term = queryInput.value.trim();
+    // Siempre definido para evitar ReferenceError; se rellena si hay match Torah.
+    let torahDisplay = { he: '', gr: '', es: '' };
+
     if (!term) {
       return;
     }
@@ -1994,13 +1997,13 @@ const hasDictionaryData = Boolean(
       splitGrVariants(grRaw).map(normalizeGreek).filter(Boolean).forEach((x) => torahEquivalenceTerms.gr.add(x));
       [...splitEsVariants(esRaw), ...candidatos].map(normalizeSpanishPhrase).filter(Boolean).forEach((x) => torahEquivalenceTerms.es.add(x));
     // Guardar hebreo/griego/español "display" directo del primer match Torah (si existe).
-    const torahDisplay = {
+    torahDisplay = {
       he: torahEntry ? String(torahEntry?.texto_hebreo || '').trim() : '',
       gr: torahEntry ? String(torahEntry?.equivalencia_griega || '').split(',')[0]?.trim() : '',
       es: torahEntry ? String(torahEntry?.equivalencia_espanol || torahEntry?.equivalencia_español || '').trim() : ''
     };
 
-    }
+}
 
   try {
       await loadTrilingualEquivalences();
