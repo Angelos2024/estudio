@@ -1,7 +1,6 @@
-
-
  (() => {
 const TORAH_TRILINGUAL_DICT_URLS = [
+    '../diccionario/pruebas/01Génesis.json',
     '../diccionario/pruebas/02Éxodo.json',
     '../diccionario/pruebas/03Levítico.json',
     '../diccionario/pruebas/04Números.json',
@@ -552,6 +551,91 @@ function detectLang(text) {
     });
     return result;
   }
+
+
+  // ============================
+  // Torah trilingüe (Gen→Deut): primer match por libro (ES/GR/HE)
+  // ============================
+
+  function splitEsVariants(raw) {
+    return String(raw || '')
+      .split('/')
+      .flatMap((part) => String(part || '').split(','))
+      .map((s) => String(s || '').trim())
+      .filter(Boolean);
+  }
+
+  function splitGrVariants(raw) {
+    return String(raw || '')
+      .split(',')
+      .map((s) => String(s || '').trim())
+      .filter(Boolean);
+  }
+
+  async function loadTorahTrilingualEquivalences() {
+    if (state.torahTriLoaded) return state.torahTriLoaded;
+
+    state.torahTri = [];
+    state.torahTriLoaded = (async () => {
+      const batches = await Promise.all(TORAH_TRILINGUAL_DICT_URLS.map((url) => loadJson(url)));
+      // Mantener el orden exacto del array: Génesis→Deuteronomio
+      for (let i = 0; i < batches.length; i++) {
+        const entries = Array.isArray(batches[i]) ? batches[i] : [];
+        const byEs = new Map();
+        const byGr = new Map();
+        const byHe = new Map();
+
+        const pushMap = (map, key, entry) => {
+          if (!key) return;
+          if (!map.has(key)) map.set(key, []);
+          map.get(key).push(entry);
+        };
+
+        entries.forEach((entry) => {
+          const heRaw = String(entry?.texto_hebreo || '').trim();
+          const grRaw = String(entry?.equivalencia_griega || '').trim();
+          const esRaw = String(entry?.equivalencia_espanol || entry?.equivalencia_español || '').trim();
+          const candidatos = Array.isArray(entry?.candidatos) ? entry.candidatos : [];
+
+          const heKeys = [normalizeHebrew(heRaw)].filter(Boolean);
+          const grKeys = splitGrVariants(grRaw).map(normalizeGreek).filter(Boolean);
+          const esKeys = [
+            ...splitEsVariants(esRaw),
+            ...candidatos
+          ].map(normalizeSpanishPhrase).filter(Boolean);
+
+          const enriched = { ...entry, __torahBookIndex: i };
+
+          heKeys.forEach((k) => pushMap(byHe, k, enriched));
+          grKeys.forEach((k) => pushMap(byGr, k, enriched));
+          esKeys.forEach((k) => pushMap(byEs, k, enriched));
+        });
+
+        state.torahTri.push({ byEs, byGr, byHe, entries });
+      }
+      return state.torahTri;
+    })();
+
+    return state.torahTriLoaded;
+  }
+
+  async function findFirstTorahTrilingualMatch(term) {
+    await loadTorahTrilingualEquivalences();
+
+    const qEs = normalizeSpanishPhrase(term);
+    const qGr = normalizeGreek(term);
+    const qHe = normalizeHebrew(term);
+
+    for (const book of (state.torahTri || [])) {
+      let hits = [];
+      if (qHe) hits = hits.concat(book.byHe.get(qHe) || []);
+      if (qGr) hits = hits.concat(book.byGr.get(qGr) || []);
+      if (qEs) hits = hits.concat(book.byEs.get(qEs) || []);
+      if (hits.length) return hits[0]; // primer match por libro
+    }
+    return null;
+  }
+
 function getGreekRefs(normalized, index) {
     if (!normalized) return [];
     const keys = buildGreekSearchKeys(normalized);
@@ -1836,12 +1920,34 @@ const hasDictionaryData = Boolean(
       try {
     const lang = detectLang(term);
     const normalized = normalizeByLang(term, lang);
+
+    // 1) Prioridad: resolver correspondencias trilingües por Torah (Génesis→Deuteronomio)
+    //    sin importar el idioma de entrada (ES/GR/HE).
+    let torahEntry = null;
+    try {
+      torahEntry = await findFirstTorahTrilingualMatch(term);
+    } catch (e) {
+      torahEntry = null;
+    }
+
+    let torahEquivalenceTerms = { es: new Set(), gr: new Set(), he: new Set() };
+    if (torahEntry) {
+      const heRaw = String(torahEntry?.texto_hebreo || '').trim();
+      const grRaw = String(torahEntry?.equivalencia_griega || '').trim();
+      const esRaw = String(torahEntry?.equivalencia_espanol || torahEntry?.equivalencia_español || '').trim();
+      const candidatos = Array.isArray(torahEntry?.candidatos) ? torahEntry.candidatos : [];
+
+      if (heRaw) torahEquivalenceTerms.he.add(normalizeHebrew(heRaw));
+      splitGrVariants(grRaw).map(normalizeGreek).filter(Boolean).forEach((x) => torahEquivalenceTerms.gr.add(x));
+      [...splitEsVariants(esRaw), ...candidatos].map(normalizeSpanishPhrase).filter(Boolean).forEach((x) => torahEquivalenceTerms.es.add(x));
+    }
+
   try {
       await loadTrilingualEquivalences();
     } catch (error) {
       // El análisis sigue funcionando aunque falle la carga de equivalencias.
     }
-    const equivalenceTerms = getEquivalenceSearchTerms(term, lang);
+    const equivalenceTerms = torahEntry ? torahEquivalenceTerms : getEquivalenceSearchTerms(term, lang);
      let entry = null;
        let hebrewEntry = null;
     if (lang === 'gr') {
