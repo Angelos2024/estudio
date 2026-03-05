@@ -6399,7 +6399,6 @@
     "candidatos": ["con 'Elohim"],
     "frecuencia_versos": 45
   },
-  [
   {
     "id": 801,
     "texto_hebreo": "בְּאֵלֹנֵי מַמְרֵא",
@@ -20399,7 +20398,7 @@
     "equivalencia_espanol": "y él se afeitó",
     "candidatos": ["afeitar"],
     "frecuencia_versos": 4
-  },[
+  },
   {
     "id": 2551,
     "texto_hebreo": "וַיַּשִּׂיגֵם",
@@ -26080,7 +26079,6 @@
     "candidatos": ["caza", "captura"],
     "frecuencia_versos": 1
   },
-  [
   {
     "id": 3261,
     "texto_hebreo": "וְצֹחַר",
@@ -26529,7 +26527,6 @@
     "candidatos": ["y delgadas", "y flacas", "y enjutas"],
     "frecuencia_versos": 1
   },
-  [
   {
     "id": 3317,
     "texto_hebreo": "וְשָׁאוּל",
@@ -27602,7 +27599,6 @@
     "candidatos": ["y tuvo envidia", "y celó"],
     "frecuencia_versos": 1
   },
-  [
   {
     "id": 3451,
     "texto_hebreo": "וַתֵּקַע",
@@ -28883,7 +28879,6 @@
     "candidatos": ["estatuto", "porción", "ley", "decreto"],
     "frecuencia_versos": 1
   },
-[
   {
     "id": 3611,
     "texto_hebreo": "חֻקֹּתַי",
