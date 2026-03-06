@@ -12,6 +12,8 @@ const TORAH_TRILINGUAL_DICT_URLS = [
      he: '../search/index-he.json'
    };
    const TEXT_BASE = '../search/texts';
+   const LXX_BASE = '../LXX';
+   const LXX_REMOTE_BASE = 'https://raw.githubusercontent.com/Angelos2024/estudio/refs/heads/main/LXX';
      const LXX_FILES = [
     'lxx_rahlfs_1935_1Chr.json',
     'lxx_rahlfs_1935_1Esdr.json',
@@ -913,13 +915,60 @@ const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
      return data;
    }
  
+  function extractLxxBookCodeFromFilename(file) {
+    const match = String(file || '').match(/_([^_]+)\.json$/i);
+    return match ? match[1] : '';
+  }
+
+  function looksLikeLxxChapterTree(node) {
+    if (!node || typeof node !== 'object' || Array.isArray(node)) return false;
+    const chapterValues = Object.values(node).filter(Boolean);
+    if (!chapterValues.length) return false;
+    return chapterValues.some((chapterNode) => {
+      if (!chapterNode || typeof chapterNode !== 'object' || Array.isArray(chapterNode)) return false;
+      return Object.values(chapterNode).some((tokens) => Array.isArray(tokens));
+    });
+  }
+
+  function normalizeLxxPayload(data, file) {
+    if (!data || typeof data !== 'object') return { text: {} };
+    if (data.text && typeof data.text === 'object') return data;
+    if (data.books && typeof data.books === 'object') return { ...data, text: data.books };
+    const bookCode = extractLxxBookCodeFromFilename(file);
+    if (bookCode && data[bookCode] && looksLikeLxxChapterTree(data[bookCode])) {
+      return { ...data, text: { [bookCode]: data[bookCode] } };
+    }
+    if (looksLikeLxxChapterTree(data)) {
+      return { text: data };
+    }
+    return { ...data, text: {} };
+  }
+
   async function loadLxxFile(file) {
     if (state.lxxFileCache.has(file)) return state.lxxFileCache.get(file);
-    const res = await fetch(`./LXX/${file}`);
-    if (!res.ok) throw new Error(`No se pudo cargar ${file}`);
-    const data = await res.json();
-    state.lxxFileCache.set(file, data);
-    return data;
+    const candidates = [
+      `${LXX_BASE}/${file}`,
+      `./LXX/${file}`,
+      `${LXX_REMOTE_BASE}/${file}`
+    ].filter(Boolean);
+    let lastError = null;
+    for (const candidate of candidates) {
+      try {
+        const data = candidate.startsWith('http')
+          ? await (async () => {
+              const res = await fetch(candidate, { cache: 'force-cache' });
+              if (!res.ok) throw new Error(`No se pudo cargar ${candidate}`);
+              return await res.json();
+            })()
+          : await loadJson(candidate);
+        const normalized = normalizeLxxPayload(data, file);
+        state.lxxFileCache.set(file, normalized);
+        return normalized;
+      } catch (error) {
+        lastError = error;
+      }
+    }
+    throw lastError || new Error(`No se pudo cargar ${file}`);
   }
 async function loadLxxBookData(bookCode) {
     if (state.lxxBookCache.has(bookCode)) return state.lxxBookCache.get(bookCode);
@@ -2181,61 +2230,7 @@ const esRefs = [];
         word: term,
         transliteration: transliterateHebrew(term)
       };
-    } else if (lang === 'gr') {
-      if (torahDisplay?.he) {
-        const heNorm = normalizeHebrew(torahDisplay.he);
-        if (heNorm) {
-          hebrewCandidate = {
-            normalized: heNorm,
-            word: torahDisplay.he,
-            transliteration: transliterateHebrew(torahDisplay.he)
-          };
-        }
-      }
-      if (!hebrewCandidate && equivalenceTerms.he?.size) {
-        const grEquivalence = state.trilingualByGr.get(normalized);
-        const orderedEs = [...(grEquivalence || [])];
-        const orderedHebrew = orderedEs.flatMap((esWord) =>
-          (state.trilingualByEs.get(esWord)?.heDisplay || []).map((item) => item.normalized)
-        );
-        const seenHebrew = new Set();
-        const mergedHebrew = [...orderedHebrew, ...equivalenceTerms.he]
-          .filter((candidate) => {
-            if (seenHebrew.has(candidate)) return false;
-            seenHebrew.add(candidate);
-            return true;
-          });
-        const orderedMatch = orderedHebrew.find((candidate) => getHebrewRefs(candidate, heIndex).length > 0) || orderedHebrew[0];
-        const preferredHe = orderedMatch
-          ? { candidate: orderedMatch }
-          : mergedHebrew
-              .map((candidate) => ({ candidate, refs: getHebrewRefs(candidate, heIndex).length }))
-              .sort((a, b) => b.refs - a.refs)[0];
-        if (preferredHe?.candidate) {
-          const selected = orderedEs
-            .flatMap((esWord) => state.trilingualByEs.get(esWord)?.heDisplay || [])
-            .find((item) => item.normalized === preferredHe.candidate);
-          hebrewCandidate = {
-            normalized: preferredHe.candidate,
-            word: selected?.display || (await findTorahHebrewDisplayByNormalized(preferredHe.candidate)) || preferredHe.candidate,
-            transliteration: transliterateHebrew(selected?.display || preferredHe.candidate)
-          };
-        }
-      }
-      if (!hebrewCandidate && greekTerm) {
-        const heFromTorah = await findFirstTorahHebrewByGreek(greekTerm);
-        if (heFromTorah?.normalized) {
-          hebrewCandidate = {
-            normalized: heFromTorah.normalized,
-            word: heFromTorah.display,
-            transliteration: transliterateHebrew(heFromTorah.display)
-          };
-        }
-      }
-      if (!hebrewCandidate && lxxMatches.refs.length) {
-        hebrewCandidate = await buildHebrewCandidateFromLxxRefs(lxxMatches.refs);
-      }
-    } else if (lang === 'es') {
+     } else if (lang === 'es') {
       // Prioridad absoluta: si el primer match Torah ya trae hebreo, úsalo (evita '—' injustificado).
       if (!hebrewCandidate && torahDisplay?.he) {
         const heNorm = normalizeHebrew(torahDisplay.he);
@@ -2296,12 +2291,7 @@ const esRefs = [];
     } else if (lxxMatches.refs.length) {
       hebrewCandidate = await buildHebrewCandidateFromLxxRefs(lxxMatches.refs);
     }
-    const bridgedOtRefs = mapLxxRefsToHebrewRefs(lxxMatches.refs);
-    const heDirectRefs = hebrewCandidate ? getHebrewRefs(hebrewCandidate.normalized, heIndex) : [];
-    const heRefs = [...new Set([
-      ...heDirectRefs,
-      ...(lang === 'gr' ? bridgedOtRefs : [])
-    ])];
+    const heRefs = hebrewCandidate ? getHebrewRefs(hebrewCandidate.normalized, heIndex) : [];
 
     // Resumen del lema: ejecutar cuando ya se resolvieron correspondencias y candidatos
     const summaryHighlightQueries = {
@@ -2309,16 +2299,7 @@ const esRefs = [];
       gr: greekLemma !== '—' ? greekLemma : (lang === 'gr' ? term : ''),
       he: hebrewCandidate?.word || (lang === 'he' ? term : '')
     };
-    const summaryRefs = lang === 'gr'
-      ? [...new Set([
-          ...refs,
-          ...lxxMatches.refs,
-          ...heRefs
-        ])]
-      : [...new Set([
-          ...refs,
-          ...bridgedOtRefs
-        ])];
+    const summaryRefs = lang === 'gr' && !refs.length ? lxxMatches.refs : refs;
     await buildSummary(term, lang, entry || greekEntry, hebrewEntry, summaryRefs, summaryHighlightQueries);
 
 
