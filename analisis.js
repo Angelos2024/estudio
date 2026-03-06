@@ -352,7 +352,6 @@
       'https://raw.githubusercontent.com/Angelos2024/estudio/main/dic/trilingue/05Deuteronomio.json'
     ]}
   ];
-  ];
 
   const indexExact = new Map();       // he tal cual (NFC)
   const indexNorm = new Map();        // normalizeText(he)
@@ -583,7 +582,7 @@
   // NUEVO: Validador fonético masorético para la preposición Min (מ)
   function validateMinPreposition(queryRaw) {
     if (!queryRaw) return { ok: false };
-    const cleanQ = String(queryRaw).replace(/[‎‏‪-‮⁦-⁩‌‍﻿\s]/g, "");
+    const cleanQ = String(queryRaw).replace(/[\u200e\u200f\u202a-\u202e\u2066-\u2069\u200c\u200d\ufeff\s]/g, "");
     if (!cleanQ.startsWith('מ')) return { ok: false };
 
     // 1. Alargamiento Compensatorio: Mem + Tsere ante gutural (א, ה, ח, ע) o Resh (ר)
@@ -607,7 +606,7 @@
   // NUEVO: Validador fonético para la Conjunción Vav (ו)
   function validateVavConjunction(queryRaw) {
     if (!queryRaw) return { ok: false };
-    const cleanQ = String(queryRaw).replace(/[‎‏‪-‮⁦-⁩‌‍﻿\s]/g, "");
+    const cleanQ = String(queryRaw).replace(/[\u200e\u200f\u202a-\u202e\u2066-\u2069\u200c\u200d\ufeff\s]/g, "");
     if (!cleanQ.startsWith('ו')) return { ok: false };
 
     // 1. Shurek (וּ): Ante labiales (ב, מ, פ) o ante consonante con Sheva
@@ -1653,9 +1652,7 @@
     resultCountEl.textContent = `${res.matches.length.toLocaleString()} resultado(s)`;
     setTierBadge(res.tier, !!res.ok);
     diagEl.textContent = res.diag;
-    traceEl.textContent = res.trace.join('
-');
-    updateAnalysisPanels(res, queryEl.value);
+    traceEl.textContent = res.trace.join('\n');
     setLoadingState(false);
   }
 
