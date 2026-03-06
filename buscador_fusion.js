@@ -329,35 +329,29 @@
   let lastSearchResult = null;
   const occurrenceDonut = window.AnalisisOccurrenceDonut?.create?.(occurrenceDonutMountEl) || null;
 
+  const ALEFATO_DATA_BASE = (window.ALEFATO_DATA_BASE || './dic/trilingue/').replace(/\/?$/, '/');
   const DEFAULT_REMOTE_FILES = [
     { book:'Génesis', category:'torah', urls:[
-      'https://raw.githubusercontent.com/Angelos2024/estudio/main/dic/trilingue/01genesis.json',
-      'https://raw.githubusercontent.com/Angelos2024/estudio/refs/heads/main/dic/trilingue/01genesis.json'
+      `${ALEFATO_DATA_BASE}01genesis.json`,
+      'https://raw.githubusercontent.com/Angelos2024/estudio/main/dic/trilingue/01genesis.json'
     ]},
     { book:'Éxodo', category:'torah', urls:[
-      'https://raw.githubusercontent.com/Angelos2024/estudio/main/dic/trilingue/02exodo.json',
-      'https://raw.githubusercontent.com/Angelos2024/estudio/main/dic/trilingue/02%C3%89xodo.json',
-      'https://raw.githubusercontent.com/Angelos2024/estudio/refs/heads/main/dic/trilingue/02exodo.json',
-      'https://raw.githubusercontent.com/Angelos2024/estudio/refs/heads/main/dic/trilingue/02%C3%89xodo.json'
+      `${ALEFATO_DATA_BASE}02Éxodo.json`,
+      'https://raw.githubusercontent.com/Angelos2024/estudio/main/dic/trilingue/02%C3%89xodo.json'
     ]},
     { book:'Levítico', category:'torah', urls:[
-      'https://raw.githubusercontent.com/Angelos2024/estudio/main/dic/trilingue/03levitico.json',
-      'https://raw.githubusercontent.com/Angelos2024/estudio/main/dic/trilingue/03Lev%C3%ADtico.json',
-      'https://raw.githubusercontent.com/Angelos2024/estudio/refs/heads/main/dic/trilingue/03levitico.json',
-      'https://raw.githubusercontent.com/Angelos2024/estudio/refs/heads/main/dic/trilingue/03Lev%C3%ADtico.json'
+      `${ALEFATO_DATA_BASE}03Levítico.json`,
+      'https://raw.githubusercontent.com/Angelos2024/estudio/main/dic/trilingue/03Lev%C3%ADtico.json'
     ]},
     { book:'Números', category:'torah', urls:[
-      'https://raw.githubusercontent.com/Angelos2024/estudio/main/dic/trilingue/04numeros.json',
-      'https://raw.githubusercontent.com/Angelos2024/estudio/main/dic/trilingue/04N%C3%BAmeros.json',
-      'https://raw.githubusercontent.com/Angelos2024/estudio/refs/heads/main/dic/trilingue/04numeros.json',
-      'https://raw.githubusercontent.com/Angelos2024/estudio/refs/heads/main/dic/trilingue/04N%C3%BAmeros.json'
+      `${ALEFATO_DATA_BASE}04Números.json`,
+      'https://raw.githubusercontent.com/Angelos2024/estudio/main/dic/trilingue/04N%C3%BAmeros.json'
     ]},
     { book:'Deuteronomio', category:'torah', urls:[
-      'https://raw.githubusercontent.com/Angelos2024/estudio/main/dic/trilingue/05deuteronomio.json',
-      'https://raw.githubusercontent.com/Angelos2024/estudio/main/dic/trilingue/05Deuteronomio.json',
-      'https://raw.githubusercontent.com/Angelos2024/estudio/refs/heads/main/dic/trilingue/05deuteronomio.json',
-      'https://raw.githubusercontent.com/Angelos2024/estudio/refs/heads/main/dic/trilingue/05Deuteronomio.json'
+      `${ALEFATO_DATA_BASE}05Deuteronomio.json`,
+      'https://raw.githubusercontent.com/Angelos2024/estudio/main/dic/trilingue/05Deuteronomio.json'
     ]}
+  ];
   ];
 
   const indexExact = new Map();       // he tal cual (NFC)
@@ -1589,7 +1583,7 @@
 
   async function loadRemoteSources() {
     setLoadingState(true, 'Cargando base remota.');
-    diagEl.textContent = 'Cargando JSON remotos/locales del diccionario…';
+    diagEl.textContent = 'Cargando diccionario desde el repositorio…';
     const sources = Array.isArray(window.ALEFATO_REMOTE_FILES) && window.ALEFATO_REMOTE_FILES.length
       ? window.ALEFATO_REMOTE_FILES
       : DEFAULT_REMOTE_FILES;
@@ -1629,15 +1623,15 @@
     updateDonutFromEntries(entries);
 
     if (errs.length && !entries.length) {
-      diagEl.textContent = 'No se pudo cargar la base remota. Revisa nombres/rutas de los JSON.';
+      diagEl.textContent = 'No se pudo cargar el diccionario del repositorio. Revisa las rutas de los JSON.';
       traceEl.textContent = errs.join('\n');
       setTierBadge('Sin base remota', false);
     } else if (errs.length) {
-      diagEl.textContent = `Base parcial cargada. Fallaron ${errs.length} fuente(s).`;
+      diagEl.textContent = `Base parcial cargada. Fallaron ${errs.length} libro(s).`;
       traceEl.textContent = errs.join('\n');
       setTierBadge('Base parcial', true);
     } else {
-      diagEl.textContent = `Base remota cargada correctamente con ${entries.length.toLocaleString()} entradas deduplicadas.`;
+      diagEl.textContent = `Diccionario cargado correctamente con ${entries.length.toLocaleString()} entradas deduplicadas.`;
       traceEl.textContent = 'Carga automática completada.';
       setTierBadge('Base lista', true);
     }
@@ -1648,7 +1642,7 @@
   function doSearch() {
     if (!entries.length) {
       setTierBadge('Sin base cargada', false);
-      diagEl.textContent = 'La base aún no está disponible. Intenta recargar.';
+      diagEl.textContent = 'La base aún no está disponible. Intenta recargar el diccionario.';
       updateAnalysisPanels({ ok:false, tier:'Sin base cargada', matches:[], diag:'La base aún no está disponible.', trace:['Sin base cargada.'] }, queryEl.value);
       return;
     }
@@ -1673,12 +1667,10 @@
     diagEl.textContent = entries.length ? 'Resultados limpiados. La base permanece cargada.' : 'Base limpiada.';
     traceEl.textContent = '—';
     queryEl.value = '';
-    if (alefatoFilesEl) alefatoFilesEl.value = '';
     updateAnalysisPanels({ ok:false, tier:'Sin búsqueda', matches:[], diag:'Resultados limpiados.', trace:['—'] }, '');
     updateDonutFromEntries(entries);
   }
 
-  alefatoFilesEl?.addEventListener('change', (e) => handleFiles(e.target.files));
   clearBtn?.addEventListener('click', clearAll);
   reloadBtn?.addEventListener('click', loadRemoteSources);
   searchBtn?.addEventListener('click', doSearch);

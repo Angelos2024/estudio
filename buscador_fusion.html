@@ -132,7 +132,7 @@
                 <label class="form-label fw-semibold">Acciones rápidas</label>
                 <div class="d-flex flex-wrap gap-2">
                   <button id="exampleBtn" class="btn btn-soft btn-sm" type="button">Probar ejemplo</button>
-                  <button id="reloadBtn" class="btn btn-soft btn-sm" type="button">Recargar base</button>
+                  <button id="reloadBtn" class="btn btn-soft btn-sm" type="button">Recargar diccionario</button>
                   <button id="clearBtn" class="btn btn-soft btn-sm" type="button">Limpiar resultados</button>
                 </div>
               </div>
@@ -233,7 +233,6 @@
       </div>
     </div>
 
-    <input id="alefatoFiles" type="file" multiple hidden accept=".json,application/json,.txt">
   </main>
 
   <script>
@@ -244,7 +243,18 @@
       document.documentElement.dataset.theme = allowedThemes.has(stored) ? stored : 'cream';
     })();
   </script>
-  <script src="analisis_donut_integrado.js"></script>
-  <script src="buscador_analisis_integrado.js"></script>
+
+  <script>
+    window.ALEFATO_DATA_BASE = './dic/trilingue/';
+    window.ALEFATO_REMOTE_FILES = [
+      { book:'Génesis', category:'torah', urls:['./dic/trilingue/01genesis.json'] },
+      { book:'Éxodo', category:'torah', urls:['./dic/trilingue/02Éxodo.json'] },
+      { book:'Levítico', category:'torah', urls:['./dic/trilingue/03Levítico.json'] },
+      { book:'Números', category:'torah', urls:['./dic/trilingue/04Números.json'] },
+      { book:'Deuteronomio', category:'torah', urls:['./dic/trilingue/05Deuteronomio.json'] }
+    ];
+  </script>
+  <script src="analisis_donut_repo.js"></script>
+  <script src="buscador_repo.js"></script>
 </body>
 </html>
