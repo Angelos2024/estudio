@@ -192,8 +192,19 @@ const TORAH_TRILINGUAL_DICT_URLS = [
   const failedJsonRequests = new Map();
   const JSON_RETRY_COOLDOWN_MS = 15000;
  
-   const queryInput = document.getElementById('queryInput');
-   const analyzeBtn = document.getElementById('analyzeBtn');
+   const queryInput = document.getElementById('queryInput') || document.getElementById('query');
+   const analyzeBtn = document.getElementById('analyzeBtn') || document.getElementById('searchBtn');
+   const exampleBtn = document.getElementById('exampleBtn');
+   const reloadBtn = document.getElementById('reloadBtn');
+   const clearBtn = document.getElementById('clearBtn');
+   const normalizeEl = document.getElementById('normalize');
+   const splitHyphenatedEl = document.getElementById('splitHyphenated');
+   const matchTierEl = document.getElementById('matchTier');
+   const resultCountEl = document.getElementById('resultCount');
+   const loadInfoEl = document.getElementById('loadInfo');
+   const resultsTbody = document.getElementById('resultsTbody');
+   const diagEl = document.getElementById('diag');
+   const traceEl = document.getElementById('trace');
    const lemmaTags = document.getElementById('lemmaTags');
    const lemmaSummary = document.getElementById('lemmaSummary');
   const lemmaCorrespondence = document.getElementById('lemmaCorrespondence');
@@ -218,7 +229,54 @@ const occurrenceDonutMount = document.getElementById('occurrenceDonutMount');
   }
   const occurrenceDonut = window.AnalisisOccurrenceDonut?.create(occurrenceDonutMount)
   
+
   const nextFrame = () => new Promise((resolve) => requestAnimationFrame(resolve));
+
+  function setLegacyStatus({ tier, ok = false, count = null, load = null, diag = null, trace = null } = {}) {
+    if (matchTierEl && typeof tier === 'string') {
+      matchTierEl.textContent = tier;
+      matchTierEl.classList.remove('ok', 'warn');
+      matchTierEl.classList.add(ok ? 'ok' : 'warn');
+    }
+    if (resultCountEl && count != null) {
+      resultCountEl.textContent = `${count} resultado${count === 1 ? '' : 's'}`;
+    }
+    if (loadInfoEl && typeof load === 'string') {
+      loadInfoEl.textContent = load;
+    }
+    if (diagEl && typeof diag === 'string') {
+      diagEl.textContent = diag;
+    }
+    if (traceEl && trace != null) {
+      const lines = Array.isArray(trace) ? trace : [String(trace)];
+      traceEl.textContent = lines.join('\n');
+    }
+  }
+
+  function renderLegacyResultsTable(matches = []) {
+    if (!resultsTbody) return;
+    if (!Array.isArray(matches) || !matches.length) {
+      resultsTbody.innerHTML = '<tr><td colspan="2" class="muted">Sin resultados aún.</td></tr>';
+      return;
+    }
+    resultsTbody.innerHTML = matches.map((match) => {
+      const he = escapeHtml(match?.lemma || match?.word || match?.he || '—');
+      const es = escapeHtml(match?.es || match?.gloss || match?.display || '—');
+      const partial = match?._queryPart ? ' data-partial="true"' : '';
+      return `<tr${partial}><td class="hebrew">${he}</td><td class="es">${es}</td></tr>`;
+    }).join('');
+  }
+
+  function clearLegacyPanels() {
+    renderLegacyResultsTable([]);
+    if (lemmaTags) lemmaTags.innerHTML = '';
+    if (lemmaSummary) lemmaSummary.textContent = 'Escribe un término para generar el resumen del lema.';
+    if (lemmaCorrespondence) lemmaCorrespondence.innerHTML = '';
+    if (lemmaExamples) lemmaExamples.innerHTML = '';
+    if (deepLexicalCorrespondence) deepLexicalCorrespondence.innerHTML = '';
+    if (deepLexicalAnalysis) deepLexicalAnalysis.innerHTML = '<div class="col-12"><div class="small muted">Sin análisis todavía.</div></div>';
+    setLegacyStatus({ tier: 'Sin búsqueda', ok: false, count: 0, load: 'Base lista', diag: 'Resultados limpiados.', trace: ['—'] });
+  }
   function scrollToLemmaSummary() {
     if (!lemmaSummaryPanel) {
       analysisResultsSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -2310,11 +2368,13 @@ const hasDictionaryData = Boolean(
  
   async function analyze() {
     if (state.isLoading) return;
-    const term = queryInput.value.trim();
+    const term = (queryInput?.value || '').trim();
+    setLegacyStatus({ tier: 'Analizando…', ok: false, load: 'Consultando archivos del repositorio…' });
     // Siempre definido para evitar ReferenceError; se rellena si hay match Torah.
     let torahDisplay = { he: '', gr: '', es: '' };
 
     if (!term) {
+      setLegacyStatus({ tier: 'Sin consulta', ok: false, count: 0, load: 'Base lista', diag: 'Escribe un término para analizar.', trace: ['—'] });
       return;
     }
     const detectedLang = detectLang(term);
@@ -2737,9 +2797,25 @@ deepLexicalAnalysis.innerHTML = '<div class="col-12"><div class="small muted">Co
       }
           });
     renderDeepLexicalAnalysis(lexicalModules);
+    const legacyMatches = lang === 'he'
+      ? (hebrewSearchResult?.matches?.length ? hebrewSearchResult.matches : [
+          ...(torahDisplay?.he ? [{ lemma: torahDisplay.he, es: torahDisplay?.es || '—' }] : []),
+          ...(hebrewCandidate?.word ? [{ lemma: hebrewCandidate.word, es: torahDisplay?.es || esDisplayWord || '—' }] : [])
+        ])
+      : (torahDisplay?.he ? [{ lemma: torahDisplay.he, es: torahDisplay?.es || esDisplayWord || term }] : []);
+    renderLegacyResultsTable(legacyMatches);
+    setLegacyStatus({
+      tier: lang === 'he' && hebrewSearchResult?.tier ? hebrewSearchResult.tier : 'Consulta procesada',
+      ok: true,
+      count: Array.isArray(refs) ? refs.length : 0,
+      load: 'Base lista',
+      diag: lang === 'he' && hebrewSearchResult?.diag ? hebrewSearchResult.diag : `Consulta ${term} procesada correctamente.`,
+      trace: lang === 'he' && hebrewSearchResult?.trace?.length ? hebrewSearchResult.trace : [`Consulta: ${term}`, `Idioma: ${lang}`, `Referencias: ${Array.isArray(refs) ? refs.length : 0}`]
+    });
     state.last = { term, lang, refs, lexicalModules };
         } catch (error) {
       console.error('Error en el análisis:', error);
+      setLegacyStatus({ tier: 'Error de carga', ok: false, load: 'Fallo al leer archivos del repositorio', diag: error?.message || 'Error desconocido.', trace: [String(error?.stack || error)] });
     } finally {
       setLoading(false);
     }
