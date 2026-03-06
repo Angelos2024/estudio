@@ -12,8 +12,6 @@ const TORAH_TRILINGUAL_DICT_URLS = [
      he: '../search/index-he.json'
    };
    const TEXT_BASE = '../search/texts';
-   const LXX_BASE = '../LXX';
-   const LXX_REMOTE_BASE = 'https://raw.githubusercontent.com/Angelos2024/estudio/refs/heads/main/LXX';
      const LXX_FILES = [
     'lxx_rahlfs_1935_1Chr.json',
     'lxx_rahlfs_1935_1Esdr.json',
@@ -416,7 +414,7 @@ function normalizeSpanish(text) {
     const letters = [];
     for (const ch of escaped) {
       if (ch === '\\') continue;
-      if (lang === 'gr' && ch === 'σ') {
+      if ((lang === 'gr' || lang === 'lxx') && ch === 'σ') {
         letters.push('[σς]');
       } else {
         letters.push(ch);
@@ -915,60 +913,13 @@ const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
      return data;
    }
  
-  function extractLxxBookCodeFromFilename(file) {
-    const match = String(file || '').match(/_([^_]+)\.json$/i);
-    return match ? match[1] : '';
-  }
-
-  function looksLikeLxxChapterTree(node) {
-    if (!node || typeof node !== 'object' || Array.isArray(node)) return false;
-    const chapterValues = Object.values(node).filter(Boolean);
-    if (!chapterValues.length) return false;
-    return chapterValues.some((chapterNode) => {
-      if (!chapterNode || typeof chapterNode !== 'object' || Array.isArray(chapterNode)) return false;
-      return Object.values(chapterNode).some((tokens) => Array.isArray(tokens));
-    });
-  }
-
-  function normalizeLxxPayload(data, file) {
-    if (!data || typeof data !== 'object') return { text: {} };
-    if (data.text && typeof data.text === 'object') return data;
-    if (data.books && typeof data.books === 'object') return { ...data, text: data.books };
-    const bookCode = extractLxxBookCodeFromFilename(file);
-    if (bookCode && data[bookCode] && looksLikeLxxChapterTree(data[bookCode])) {
-      return { ...data, text: { [bookCode]: data[bookCode] } };
-    }
-    if (looksLikeLxxChapterTree(data)) {
-      return { text: data };
-    }
-    return { ...data, text: {} };
-  }
-
   async function loadLxxFile(file) {
     if (state.lxxFileCache.has(file)) return state.lxxFileCache.get(file);
-    const candidates = [
-      `${LXX_BASE}/${file}`,
-      `./LXX/${file}`,
-      `${LXX_REMOTE_BASE}/${file}`
-    ].filter(Boolean);
-    let lastError = null;
-    for (const candidate of candidates) {
-      try {
-        const data = candidate.startsWith('http')
-          ? await (async () => {
-              const res = await fetch(candidate, { cache: 'force-cache' });
-              if (!res.ok) throw new Error(`No se pudo cargar ${candidate}`);
-              return await res.json();
-            })()
-          : await loadJson(candidate);
-        const normalized = normalizeLxxPayload(data, file);
-        state.lxxFileCache.set(file, normalized);
-        return normalized;
-      } catch (error) {
-        lastError = error;
-      }
-    }
-    throw lastError || new Error(`No se pudo cargar ${file}`);
+    const res = await fetch(`./LXX/${file}`);
+    if (!res.ok) throw new Error(`No se pudo cargar ${file}`);
+    const data = await res.json();
+    state.lxxFileCache.set(file, data);
+    return data;
   }
 async function loadLxxBookData(bookCode) {
     if (state.lxxBookCache.has(bookCode)) return state.lxxBookCache.get(bookCode);
