@@ -7,6 +7,82 @@
     examples: 'lemmaExamples'
   };
 
+  const SEARCH_INDEX = {
+    es: './search/index-es.json',
+    gr: './search/index-gr.json',
+    he: './search/index-he.json'
+  };
+  const TEXT_BASE = './search/texts';
+  const LXX_FILES = [
+    'lxx_rahlfs_1935_1Chr.json',
+    'lxx_rahlfs_1935_1Esdr.json',
+    'lxx_rahlfs_1935_1Kgs.json',
+    'lxx_rahlfs_1935_1Macc.json',
+    'lxx_rahlfs_1935_1Sam.json',
+    'lxx_rahlfs_1935_2Chr.json',
+    'lxx_rahlfs_1935_2Esdr.json',
+    'lxx_rahlfs_1935_2Kgs.json',
+    'lxx_rahlfs_1935_2Macc.json',
+    'lxx_rahlfs_1935_2Sam.json',
+    'lxx_rahlfs_1935_3Macc.json',
+    'lxx_rahlfs_1935_4Macc.json',
+    'lxx_rahlfs_1935_Amos.json',
+    'lxx_rahlfs_1935_Bar.json',
+    'lxx_rahlfs_1935_BelOG.json',
+    'lxx_rahlfs_1935_BelTh.json',
+    'lxx_rahlfs_1935_DanOG.json',
+    'lxx_rahlfs_1935_DanTh.json',
+    'lxx_rahlfs_1935_Deut.json',
+    'lxx_rahlfs_1935_Eccl.json',
+    'lxx_rahlfs_1935_EpJer.json',
+    'lxx_rahlfs_1935_Esth.json',
+    'lxx_rahlfs_1935_Exod.json',
+    'lxx_rahlfs_1935_Ezek.json',
+    'lxx_rahlfs_1935_Gen.json',
+    'lxx_rahlfs_1935_Hab.json',
+    'lxx_rahlfs_1935_Hag.json',
+    'lxx_rahlfs_1935_Hos.json',
+    'lxx_rahlfs_1935_Isa.json',
+    'lxx_rahlfs_1935_Jdt.json',
+    'lxx_rahlfs_1935_Jer.json',
+    'lxx_rahlfs_1935_Job.json',
+    'lxx_rahlfs_1935_Joel.json',
+    'lxx_rahlfs_1935_Jonah.json',
+    'lxx_rahlfs_1935_JoshA.json',
+    'lxx_rahlfs_1935_JoshB.json',
+    'lxx_rahlfs_1935_JudgA.json',
+    'lxx_rahlfs_1935_JudgB.json',
+    'lxx_rahlfs_1935_Lam.json',
+    'lxx_rahlfs_1935_Lev.json',
+    'lxx_rahlfs_1935_Mal.json',
+    'lxx_rahlfs_1935_Mic.json',
+    'lxx_rahlfs_1935_Nah.json',
+    'lxx_rahlfs_1935_Num.json',
+    'lxx_rahlfs_1935_Obad.json',
+    'lxx_rahlfs_1935_Odes.json',
+    'lxx_rahlfs_1935_Prov.json',
+    'lxx_rahlfs_1935_Ps.json',
+    'lxx_rahlfs_1935_PsSol.json',
+    'lxx_rahlfs_1935_Ruth.json',
+    'lxx_rahlfs_1935_Sir.json',
+    'lxx_rahlfs_1935_Song.json',
+    'lxx_rahlfs_1935_SusOG.json',
+    'lxx_rahlfs_1935_SusTh.json',
+    'lxx_rahlfs_1935_TobBA.json',
+    'lxx_rahlfs_1935_TobS.json',
+    'lxx_rahlfs_1935_Wis.json',
+    'lxx_rahlfs_1935_Zech.json',
+    'lxx_rahlfs_1935_Zeph.json'
+  ];
+
+  const state = {
+    indexes: {},
+    textCache: new Map(),
+    lxxFileCache: new Map(),
+    lxxSearchCache: new Map()
+  };
+  const jsonCache = new Map();
+
   function $(id) {
     return document.getElementById(id);
   }
@@ -115,39 +191,13 @@
     return split[0] || trimmed;
   }
 
-  const stopwords = new Set([
-    'de', 'la', 'el', 'los', 'las', 'y', 'o', 'a', 'en', 'por', 'para',
-    'un', 'una', 'unos', 'unas', 'del', 'al', 'que', 'se', 'con', 'como',
-    'su', 'sus', 'es', 'son', 'lo', 'uno', 'tambien', 'también', 'sobre',
-    'desde', 'hacia', 'entre', 'sin', 'segun', 'según'
-  ]);
-
-  function keywordList(text) {
-    if (!text) return [];
-    const cleaned = String(text)
-      .replace(/[()]/g, ' ')
-      .replace(/[^a-zA-ZáéíóúñüÁÉÍÓÚÑÜ\s]/g, ' ')
-      .toLowerCase();
-    const words = cleaned.split(/\s+/).filter(Boolean);
-    const keywords = [];
-    for (const word of words) {
-      if (stopwords.has(word)) continue;
-      if (!keywords.includes(word)) keywords.push(word);
-      if (keywords.length >= 6) break;
-    }
-    return keywords;
-  }
-
   function installLemmaSummaryPanel() {
     const panel = $(PANEL_IDS.panel);
     if (!panel) return null;
-
     const header = panel.querySelector('.panel-header');
     if (header) header.textContent = 'Resumen del lema';
-
     const body = panel.querySelector('.panel-body');
     if (!body) return null;
-
     body.innerHTML = `
       <div class="d-flex flex-column gap-2">
         <div id="${PANEL_IDS.tags}" class="d-flex flex-wrap gap-2"></div>
@@ -158,7 +208,6 @@
         <div id="${PANEL_IDS.examples}" class="d-grid gap-2"></div>
       </div>
     `;
-
     return {
       tags: $(PANEL_IDS.tags),
       summary: $(PANEL_IDS.summary),
@@ -263,7 +312,7 @@
 
   function classForLang(lang) {
     if (lang === 'he') return 'hebrew';
-    if (lang === 'gr') return 'greek';
+    if (lang === 'gr' || lang === 'lxx') return 'greek';
     return '';
   }
 
@@ -285,7 +334,232 @@
     `;
   }
 
-  function summarizeEntry(entry, rawQuery) {
+  function prettifyBookLabel(book) {
+    const raw = String(book || '').replace(/_/g, ' ').trim();
+    if (!raw) return '—';
+    if (/^[1234][A-Z]/.test(raw) || /^[A-Z][a-z]+/.test(raw)) return raw;
+    return raw.replace(/\b\w/g, (m) => m.toUpperCase());
+  }
+
+  function formatRef(book, chapter, verse) {
+    return `${prettifyBookLabel(book)} ${chapter}:${verse}`;
+  }
+
+  async function loadJson(url) {
+    if (jsonCache.has(url)) return jsonCache.get(url);
+    const promise = fetch(url, { cache: 'force-cache' }).then((res) => {
+      if (!res.ok) throw new Error(`No se pudo cargar ${url}`);
+      return res.json();
+    });
+    jsonCache.set(url, promise);
+    try {
+      return await promise;
+    } catch (error) {
+      jsonCache.delete(url);
+      throw error;
+    }
+  }
+
+  async function loadIndex(lang) {
+    if (state.indexes[lang]) return state.indexes[lang];
+    const data = await loadJson(SEARCH_INDEX[lang]);
+    state.indexes[lang] = data;
+    return data;
+  }
+
+  async function loadChapterText(lang, book, chapter) {
+    const key = `${lang}/${book}/${chapter}`;
+    if (state.textCache.has(key)) return state.textCache.get(key);
+    const url = `${TEXT_BASE}/${lang}/${book}/${chapter}.json`;
+    const data = await loadJson(url);
+    state.textCache.set(key, data);
+    return data;
+  }
+
+  async function loadLxxFile(file) {
+    if (state.lxxFileCache.has(file)) return state.lxxFileCache.get(file);
+    const promise = fetch(`./LXX/${file}`, { cache: 'force-cache' }).then((res) => {
+      if (!res.ok) throw new Error(`No se pudo cargar ${file}`);
+      return res.json();
+    });
+    state.lxxFileCache.set(file, promise);
+    try {
+      return await promise;
+    } catch (error) {
+      state.lxxFileCache.delete(file);
+      throw error;
+    }
+  }
+
+  function buildGreekSearchKeys(normalized) {
+    if (!normalized) return [];
+    const variants = new Set();
+    const chars = normalized.split('');
+    const swapMap = { β: 'υ', υ: 'β' };
+    const walk = (index, current) => {
+      if (index >= chars.length) {
+        variants.add(current);
+        return;
+      }
+      const ch = chars[index];
+      walk(index + 1, `${current}${ch}`);
+      if (swapMap[ch]) walk(index + 1, `${current}${swapMap[ch]}`);
+    };
+    walk(0, '');
+    return [...variants];
+  }
+
+  function getGreekRefs(normalized, index) {
+    if (!normalized) return [];
+    const refs = [];
+    const seen = new Set();
+    buildGreekSearchKeys(normalized).forEach((key) => {
+      (index?.tokens?.[key] || []).forEach((ref) => {
+        if (seen.has(ref)) return;
+        seen.add(ref);
+        refs.push(ref);
+      });
+    });
+    return refs;
+  }
+
+  function getHebrewRefs(normalized, index) {
+    if (!normalized) return [];
+    const direct = index?.tokens?.[normalized] || [];
+    if (direct.length) return direct;
+    const refs = [];
+    const seen = new Set();
+    Object.entries(index?.tokens || {}).forEach(([token, matches]) => {
+      if (!token || token === normalized) return;
+      if (!token.endsWith(normalized) && !token.includes(normalized)) return;
+      const prefixLen = token.length - normalized.length;
+      if (prefixLen < 0 || prefixLen > 3) return;
+      (matches || []).forEach((ref) => {
+        if (seen.has(ref)) return;
+        seen.add(ref);
+        refs.push(ref);
+      });
+    });
+    return refs;
+  }
+
+  async function searchRefsInTextIndex(lang, query, maxRefs = 3) {
+    const raw = String(query || '').trim();
+    if (!raw) return [];
+    const index = await loadIndex(lang);
+    let refs = [];
+    if (lang === 'gr') {
+      refs = getGreekRefs(normalizeGreek(raw), index);
+    } else if (lang === 'he') {
+      refs = getHebrewRefs(normalizeHebrew(raw), index);
+    } else {
+      refs = index?.tokens?.[normalizeSpanish(raw).split(/\s+/)[0] || ''] || [];
+    }
+    return refs.slice(0, maxRefs);
+  }
+
+  async function buildSamplesForRefs(refs, lang, max = 3) {
+    const samples = [];
+    for (const ref of (refs || []).slice(0, max)) {
+      const [book, chapterRaw, verseRaw] = String(ref || '').split('|');
+      const chapter = Number(chapterRaw);
+      const verse = Number(verseRaw);
+      if (!book || !Number.isFinite(chapter) || !Number.isFinite(verse)) continue;
+      try {
+        const verses = await loadChapterText(lang, book, chapter);
+        const verseText = verses?.[verse - 1] || '';
+        if (!verseText) continue;
+        samples.push({ ref: formatRef(book, chapter, verse), text: verseText, lang });
+      } catch (_) {
+        continue;
+      }
+    }
+    return samples;
+  }
+
+  async function buildLxxMatches(normalizedGreek, maxRefs = 3) {
+    if (!normalizedGreek) return [];
+    if (state.lxxSearchCache.has(normalizedGreek)) return state.lxxSearchCache.get(normalizedGreek);
+    const samples = [];
+    outer:
+    for (const file of LXX_FILES) {
+      try {
+        const data = await loadLxxFile(file);
+        const text = data?.text || {};
+        for (const [book, chapters] of Object.entries(text)) {
+          for (const [chapter, verses] of Object.entries(chapters || {})) {
+            for (const [verse, tokens] of Object.entries(verses || {})) {
+              const hit = (tokens || []).some((token) => {
+                const lemmaKey = normalizeGreek(token?.lemma || '');
+                const wordKey = normalizeGreek(token?.w || '');
+                return lemmaKey === normalizedGreek || wordKey === normalizedGreek;
+              });
+              if (!hit) continue;
+              const verseText = (tokens || []).map((token) => token?.w || '').filter(Boolean).join(' ');
+              samples.push({
+                ref: formatRef(book, chapter, verse),
+                text: verseText,
+                lang: 'lxx'
+              });
+              if (samples.length >= maxRefs) break outer;
+            }
+          }
+        }
+      } catch (_) {
+        continue;
+      }
+    }
+    state.lxxSearchCache.set(normalizedGreek, samples);
+    return samples;
+  }
+
+  function buildSamplesCard(title, lang, queryWord, samples) {
+    const langClass = classForLang(lang);
+    const rows = (samples || []).length
+      ? samples.map((sample) => `
+          <div class="mt-2">
+            <div class="small fw-semibold">${escapeHtml(sample.ref)}</div>
+            <div class="${langClass}">${escapeHtml(sample.text)}</div>
+          </div>
+        `).join('')
+      : '<div class="small muted">Sin coincidencias en esta fuente.</div>';
+    return `
+      <div class="fw-semibold">${escapeHtml(title)}</div>
+      <div class="small muted">${escapeHtml(queryWord || '—')}</div>
+      ${rows}
+    `;
+  }
+
+  async function buildSourceCards({ esWord, grWord, heWord }) {
+    const tasks = [
+      (async () => {
+        const refs = await searchRefsInTextIndex('es', esWord, 2);
+        const samples = await buildSamplesForRefs(refs, 'es', 2);
+        return buildSamplesCard('RVR1960', 'es', esWord, samples);
+      })(),
+      (async () => {
+        const refs = await searchRefsInTextIndex('gr', grWord, 2);
+        const samples = await buildSamplesForRefs(refs, 'gr', 2);
+        return buildSamplesCard('RKANT', 'gr', grWord, samples);
+      })(),
+      (async () => {
+        const refs = await searchRefsInTextIndex('he', heWord, 2);
+        const samples = await buildSamplesForRefs(refs, 'he', 2);
+        return buildSamplesCard('Texto hebreo', 'he', heWord, samples);
+      })(),
+      (async () => {
+        const samples = await buildLxxMatches(normalizeGreek(grWord), 2);
+        return buildSamplesCard('LXX', 'lxx', grWord, samples);
+      })()
+    ];
+    const settled = await Promise.allSettled(tasks);
+    return settled.map((item, idx) => {
+      if (item.status === 'fulfilled') return item.value;
+      return buildSamplesCard(['RVR1960', 'RKANT', 'Texto hebreo', 'LXX'][idx], ['es', 'gr', 'he', 'lxx'][idx], '', []);
+    });
+  }
+
+  async function summarizeEntry(entry, rawQuery) {
     const lang = detectLang(rawQuery);
     const heb = getHebrew(entry);
     const gr = getGreek(entry);
@@ -301,39 +575,36 @@
       summaryParts.push('No se encontró una glosa directa; se usa la coincidencia principal del buscador para resumir el lema.');
     }
 
-    const tags = [];
     const lemmaText =
       lang === 'he' ? (heb || rawQuery) :
       lang === 'gr' ? (gr || rawQuery) :
       (es || rawQuery);
-    tags.push(`Lema: <span class="fw-semibold ${classForLang(lang)}">${escapeHtml(lemmaText || '—')}</span>`);
 
     const transliteration =
       lang === 'he' ? transliterateHebrew(heb || rawQuery) :
       lang === 'gr' ? transliterateGreek(gr || rawQuery) :
       '—';
 
-    tags.push(`Transliteración: <span class="fw-semibold">${escapeHtml(transliteration || '—')}</span>`);
+    renderTags([
+      `Lema: <span class="fw-semibold ${classForLang(lang)}">${escapeHtml(lemmaText || '—')}</span>`,
+      `Transliteración: <span class="fw-semibold">${escapeHtml(transliteration || '—')}</span>`,
+      'Estado: <span class="fw-semibold">Coincidencia localizada</span>'
+    ]);
 
-    const status = entry ? 'Coincidencia localizada' : 'Sin coincidencia';
-    tags.push(`Estado: <span class="fw-semibold">${escapeHtml(status)}</span>`);
-
-    renderTags(tags);
     renderSummary(escapeHtml(summaryParts.join(' ')));
-
-    const correspondence = [
+    renderCorrespondence([
       buildCorrespondenceCard({
         title: 'Hebreo',
         word: heb || '—',
         transliteration: heb ? transliterateHebrew(heb) : '',
-        detail: heb ? 'Forma hebrea principal encontrada en la tabla.' : 'Sin forma hebrea visible.',
+        detail: heb ? 'Forma hebrea principal encontrada.' : 'Sin forma hebrea visible.',
         lang: 'he'
       }),
       buildCorrespondenceCard({
         title: 'Griego',
         word: gr || '—',
         transliteration: gr ? transliterateGreek(gr) : '',
-        detail: gr ? 'Equivalencia griega principal encontrada en la tabla.' : 'Sin equivalencia griega visible.',
+        detail: gr ? 'Equivalencia griega principal encontrada.' : 'Sin equivalencia griega visible.',
         lang: 'gr'
       }),
       buildCorrespondenceCard({
@@ -343,30 +614,27 @@
         detail: es ? 'Glosa o traducción española principal.' : 'Sin glosa española visible.',
         lang: 'es'
       })
-    ];
-    renderCorrespondence(correspondence);
+    ]);
 
-    const exampleCards = [];
-    const keywords = keywordList(es || candidates.join(', '));
-    if (keywords.length) {
-      exampleCards.push(`
-        <div class="fw-semibold">Campos semánticos</div>
-        <div class="small muted">${escapeHtml(keywords.join(', '))}</div>
-      `);
-    }
+    renderExamples([
+      '<div class="small muted">Cargando muestras de LXX, texto hebreo, RVR1960 y RKANT…</div>'
+    ]);
+
+    const sourceCards = await buildSourceCards({
+      esWord: es || rawQuery,
+      grWord: gr || (lang === 'gr' ? rawQuery : ''),
+      heWord: heb || (lang === 'he' ? rawQuery : '')
+    });
+
+    const extraCards = [];
     if (candidates.length) {
-      exampleCards.push(`
+      extraCards.push(`
         <div class="fw-semibold">Candidatos asociados</div>
         <div class="small muted">${escapeHtml(candidates.slice(0, 8).join(' · '))}</div>
       `);
     }
-    if (!exampleCards.length) {
-      exampleCards.push(`
-        <div class="fw-semibold">Observación</div>
-        <div class="small muted">La entrada no trae candidatos adicionales para ampliar el resumen.</div>
-      `);
-    }
-    renderExamples(exampleCards);
+
+    renderExamples([...sourceCards, ...extraCards]);
   }
 
   function renderEmptySummary(rawQuery, reason = '') {
@@ -385,6 +653,7 @@
     const lang = detectLang(query);
     try {
       if (lang === 'he' && typeof window.searchHebrewWord === 'function') return window.searchHebrewWord(query);
+      if (lang === 'he' && typeof window.searchHebrewWordSingle === 'function') return window.searchHebrewWordSingle(query);
       if (lang === 'gr' && typeof window.searchGreek === 'function') return window.searchGreek(query);
       if (typeof window.searchSpanish === 'function') return window.searchSpanish(query);
     } catch (_) {
@@ -393,7 +662,7 @@
     return null;
   }
 
-  function renderLemmaSummaryForSearch(rawQuery, searchResult) {
+  async function renderLemmaSummaryForSearch(rawQuery, searchResult) {
     ensurePanelNodes();
     const query = String(rawQuery || '').trim();
     if (!query) {
@@ -411,7 +680,7 @@
       renderEmptySummary(query, 'No fue posible resolver una entrada principal para el resumen.');
       return result || null;
     }
-    summarizeEntry(primary, query);
+    await summarizeEntry(primary, query);
     return result || null;
   }
 
@@ -423,10 +692,10 @@
     if (originalDoSearch) {
       window.doSearch = function wrappedDoSearch(...args) {
         const output = originalDoSearch.apply(this, args);
-        try {
+        Promise.resolve().then(() => {
           const query = $('query')?.value || '';
-          renderLemmaSummaryForSearch(query);
-        } catch (_) {}
+          return renderLemmaSummaryForSearch(query).catch(() => {});
+        });
         return output;
       };
     }
@@ -435,7 +704,7 @@
     if (searchBtn) {
       searchBtn.addEventListener('click', () => {
         const query = $('query')?.value || '';
-        setTimeout(() => renderLemmaSummaryForSearch(query), 0);
+        setTimeout(() => { renderLemmaSummaryForSearch(query).catch(() => {}); }, 0);
       }, true);
     }
 
@@ -443,7 +712,7 @@
     if (queryEl) {
       queryEl.addEventListener('keydown', (event) => {
         if (event.key !== 'Enter') return;
-        setTimeout(() => renderLemmaSummaryForSearch(queryEl.value), 0);
+        setTimeout(() => { renderLemmaSummaryForSearch(queryEl.value).catch(() => {}); }, 0);
       }, true);
     }
 
@@ -452,7 +721,7 @@
       exampleBtn.addEventListener('click', () => {
         setTimeout(() => {
           const query = $('query')?.value || '';
-          if (query) renderLemmaSummaryForSearch(query);
+          if (query) renderLemmaSummaryForSearch(query).catch(() => {});
         }, 0);
       }, true);
     }
