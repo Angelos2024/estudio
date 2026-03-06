@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="es" data-theme="cream">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Buscador Alefato · análisis integrado</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root{
+      --bd:#e6e8eb; --muted:#6b7280; --bg:#f8fafc; --surface:#ffffff; --text:#0f172a;
+      --primary:#2563eb; --primary-contrast:#ffffff; --soft-bg:#f1f5f9; --soft-hover:#e9eef5;
+      --outline:#cbd5f5; --ok:#065f46; --warn:#92400e;
+    }
+    [data-theme="cream"]{
+      --bd:#d5c1b1; --muted:#6d5d52; --bg:#edddce; --surface:#cdbaa9; --text:#2c1d1f;
+      --primary:#4b2743; --primary-contrast:#fdf6f2; --soft-bg:#e0cdbd; --soft-hover:#d6c2b2; --outline:#4b2743;
+    }
+    [data-theme="white"]{
+      --bd:#e6e8eb; --muted:#6b7280; --bg:#f8fafc; --surface:#ffffff; --text:#0f172a;
+      --primary:#2563eb; --primary-contrast:#ffffff; --soft-bg:#f1f5f9; --soft-hover:#e9eef5; --outline:#cbd5f5;
+    }
+    *{ box-sizing:border-box; }
+    body{ background:var(--bg); color:var(--text); }
+    .topbar{ background:#fff; border-bottom:1px solid var(--bd); position:sticky; top:0; z-index:1000; }
+    .sitewrap{ max-width:1460px; }
+    .panel{ background:var(--surface); border:1px solid var(--bd); border-radius:12px; }
+    .panel-header{ border-bottom:1px solid var(--bd); padding:.75rem 1rem; font-weight:600; }
+    .panel-body{ padding:1rem; background:var(--surface); }
+    .btn-soft{ background:var(--soft-bg); border:1px solid var(--bd); color:var(--text); }
+    .btn-soft:hover{ background:var(--soft-hover); }
+    .btn-primary{ background:var(--primary); border-color:var(--primary); color:var(--primary-contrast); }
+    .btn-outline-primary{ color:var(--primary); border-color:var(--primary); }
+    [data-theme="cream"] .btn-primary,[data-theme="cream"] .btn-outline-primary{ background:#4b2743; border-color:#4b2743; color:#fff; }
+    [data-theme="cream"] .btn-primary:hover,[data-theme="cream"] .btn-outline-primary:hover{ background:#fff; border-color:#4b2743; color:#000; }
+    [data-theme="white"] .btn-primary,[data-theme="white"] .btn-outline-primary{ background:#fff; border-color:#2563eb; color:#2563eb; }
+    [data-theme="white"] .btn-primary:hover,[data-theme="white"] .btn-outline-primary:hover{ background:#eff6ff; border-color:#2563eb; color:#1d4ed8; }
+    .muted{ color:var(--muted); }
+    .analysis-title{ position:absolute; left:50%; transform:translateX(-50%); text-align:center; line-height:1.2; }
+    .search-row{ display:grid; gap:1rem; grid-template-columns:minmax(0,1.2fr) minmax(290px,.8fr); align-items:start; }
+    .search-controls{ display:grid; gap:.9rem; }
+    .helper-card,.hint,.trace-box,.trilingual-brief,.metric-card,.example-card,.corr-card{
+      border:1px solid color-mix(in srgb, var(--text) 18%, #ffffff);
+      background:#fff; border-radius:12px;
+    }
+    .helper-card,.hint,.metric-card{ padding:.8rem .95rem; }
+    .trace-box{ white-space:pre-wrap; margin:0; font-family:ui-monospace,Consolas,monospace; font-size:.84rem; max-height:420px; overflow:auto; padding:.8rem .95rem; }
+    .pill,.mini-pill{
+      display:inline-flex; align-items:center; gap:.45rem; padding:.25rem .7rem; border-radius:999px; font-size:.85rem;
+      background:#fff; color:#000; border:1px solid color-mix(in srgb, var(--text) 18%, #ffffff);
+    }
+    .mini-pill{ font-size:.78rem; padding:.2rem .55rem; }
+    .badge,.badge-state{ display:inline-flex; align-items:center; border-radius:999px; padding:.3rem .7rem; font-size:.83rem; font-weight:600; border:1px solid transparent; }
+    .badge.ok,.badge-state.ok{ background:#ecfdf5; color:var(--ok); border-color:#a7f3d0; }
+    .badge.warn,.badge-state.warn{ background:#fffbeb; color:var(--warn); border-color:#fde68a; }
+    .results-table-wrap{ border:1px solid color-mix(in srgb, var(--text) 18%, #ffffff); border-radius:12px; overflow:auto; background:#fff; max-height:560px; }
+    .results-table{ width:100%; border-collapse:collapse; }
+    .results-table th,.results-table td{ padding:.75rem .85rem; border-bottom:1px solid color-mix(in srgb, var(--text) 12%, #ffffff); vertical-align:top; background:#fff; }
+    .results-table th{ position:sticky; top:0; z-index:1; font-size:.8rem; text-transform:uppercase; letter-spacing:.02em; background:color-mix(in srgb, var(--soft-bg) 70%, #ffffff); }
+    td.he,.hebrew{ font-size:1.25rem; direction:rtl; text-align:right; font-family:'SBL Hebrew','Ezra SIL','Noto Sans Hebrew',serif; }
+    td.es{ font-size:.95rem; }
+    .form-control,.form-select{ background:#fff; border-color:color-mix(in srgb, var(--text) 55%, #ffffff); color:var(--text); }
+    .form-control::placeholder{ color:color-mix(in srgb, var(--muted) 80%, transparent); }
+    .mono{ font-family:ui-monospace,Consolas,monospace; }
+    .results-loading-stage,.trilingual-brief{ display:flex; align-items:center; gap:.65rem; padding:.75rem .85rem; border-radius:12px; margin-bottom:.9rem; background:color-mix(in srgb, var(--soft-bg) 75%, #ffffff); border:1px solid color-mix(in srgb, var(--text) 16%, #ffffff); }
+    .loading-indicator{ display:inline-flex; align-items:center; gap:.5rem; font-size:.84rem; }
+    .spinner,.big-spinner{ display:inline-block; width:1rem; height:1rem; border-radius:50%; border:2px solid color-mix(in srgb, var(--text) 25%, #ffffff); border-top-color:var(--primary); animation:spin 1s linear infinite; }
+    .big-spinner{ width:1.15rem; height:1.15rem; }
+    .lexicon-grid{ display:grid; gap:.85rem; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); }
+    .metric-card .label{ font-size:.76rem; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); margin-bottom:.2rem; }
+    .metric-card .value{ font-size:1.05rem; font-weight:600; line-height:1.35; word-break:break-word; }
+    .corr-card,.example-card{ padding:.8rem .9rem; }
+    .corr-card-title,.example-card-title{ font-size:.8rem; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); margin-bottom:.35rem; }
+    .donut-column{ min-width:300px; }
+    .occurrence-donut.card-like{ border:1px solid var(--bd); border-radius:12px; padding:.75rem; background:#fff; }
+    .occurrence-donut-layout{ display:grid; grid-template-columns:minmax(230px,1fr) minmax(180px,1fr); gap:.75rem; align-items:center; }
+    .donut-stage{ position:relative; display:grid; place-items:center; }
+    .donut-svg{ width:220px; height:220px; }
+    .donut-center{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; pointer-events:none; }
+    .donut-total{ font-weight:700; font-size:2rem; line-height:1; }
+    .donut-subtitle{ font-size:.8rem; color:#1e293b; margin-top:.25rem; padding:.18rem .5rem; border-radius:999px; background:color-mix(in srgb, #ffffff 55%, #cbd5e1 45%); border:1px solid color-mix(in srgb, #64748b 28%, #ffffff); font-weight:600; box-shadow:0 1px 2px rgba(15, 23, 42, .14); max-width:86%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .donut-center [data-role="reset"]{ pointer-events:auto; }
+    .donut-legend{ display:grid; gap:.45rem; align-content:start; }
+    .legend-row{ width:100%; border:1px solid var(--bd); border-radius:10px; background:#fff; display:flex; align-items:center; gap:.45rem; padding:.35rem .45rem; font-size:.86rem; text-align:left; }
+    .legend-dot{ width:.7rem; height:.7rem; border-radius:50%; flex:0 0 .7rem; }
+    .legend-label{ flex:1; }
+    .legend-value{ font-weight:700; }
+    [data-theme="cream"] .panel-header{ border-bottom:1px solid #7c4f2b; }
+    [data-theme="cream"] .panel-body{ background:#fff; color:#000; }
+    [data-theme="cream"] .panel-body .muted{ color:#000; }
+    @keyframes spin{ to{ transform:rotate(360deg); } }
+    @media (max-width: 767.98px){
+      .analysis-title{ position:static; transform:none; width:100%; margin-top:.5rem; }
+      body{ min-width:768px; overflow-x:auto; }
+      .container.sitewrap{ min-width:768px; }
+    }
+    @media (min-width:768px) and (max-width:1024px){
+      .sitewrap{ max-width:980px; }
+      .panel-header{ padding:.65rem .85rem; }
+      .panel-body{ padding:.85rem; }
+      .search-row{ grid-template-columns:minmax(0,1fr); }
+      .occurrence-donut-layout{ grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container sitewrap py-2 d-flex flex-wrap gap-2 align-items-center position-relative">
+      <a class="btn btn-soft btn-sm" href="index.html">Volver al lector</a>
+      <div class="analysis-title">
+        <div class="fw-semibold">Área de análisis textual · Buscador Alefato</div>
+        <div class="small muted">Carcasa completa de análisis + motor del buscador hebreo → español</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container sitewrap my-3 my-lg-4">
+    <section class="panel mb-3">
+      <div class="panel-header">Buscador y criterio</div>
+      <div class="panel-body">
+        <div class="search-row">
+          <div class="search-column">
+            <div class="search-controls">
+              <div>
+                <label for="query" class="form-label fw-semibold">Buscar palabra o lema</label>
+                <div class="input-group">
+                  <input id="query" class="form-control" placeholder="Ej: מִכְתָּבִים" value="">
+                  <button id="searchBtn" class="btn btn-primary" type="button">Analizar</button>
+                </div>
+                <div class="form-text">Carga automática desde JSON remotos/locales por libro. Ya no necesitas subir archivos manualmente.</div>
+              </div>
+              <div>
+                <label class="form-label fw-semibold">Acciones rápidas</label>
+                <div class="d-flex flex-wrap gap-2">
+                  <button id="exampleBtn" class="btn btn-soft btn-sm" type="button">Probar ejemplo</button>
+                  <button id="reloadBtn" class="btn btn-soft btn-sm" type="button">Recargar base</button>
+                  <button id="clearBtn" class="btn btn-soft btn-sm" type="button">Limpiar resultados</button>
+                </div>
+              </div>
+              <div class="d-flex flex-wrap gap-2">
+                <label class="pill"><input id="normalize" type="checkbox" checked> usar normalización</label>
+                <label class="pill"><input id="splitHyphenated" type="checkbox" checked> separar maqaf / guiones</label>
+              </div>
+            </div>
+          </div>
+          <div class="donut-column" id="occurrenceDonutMount"></div>
+        </div>
+        <div class="d-flex flex-wrap align-items-center gap-2 mt-3">
+          <span id="matchTier" class="badge-state warn">Esperando base</span>
+          <span id="resultCount" class="small muted">0 resultados</span>
+          <span id="loadInfo" class="small muted">Preparando base…</span>
+        </div>
+        <div class="hint mt-3">
+          Secuencia de búsqueda:
+          <b>1)</b> exacta tal cual →
+          <b>2)</b> exacta normalizada →
+          <b>3)</b> morfológica →
+          <b>4)</b> raíz sin vocales.
+        </div>
+      </div>
+    </section>
+
+    <div id="analysisResultsSection" class="row g-3">
+      <div class="col-12 col-lg-4">
+        <section id="lemmaSummaryPanel" class="panel h-100">
+          <div class="panel-header">Resumen del lema</div>
+          <div class="panel-body">
+            <div class="d-flex flex-column gap-2">
+              <div id="lemmaTags" class="d-flex flex-wrap gap-2"></div>
+              <p id="lemmaSummary" class="mb-2 small muted">Escribe un término para generar el resumen del lema.</p>
+              <div id="lemmaCorrespondence" class="d-grid gap-2 mt-2"></div>
+              <div id="lemmaExamples" class="d-grid gap-2"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="col-12 col-lg-8">
+        <section class="panel mb-3">
+          <div class="panel-header">Resultados</div>
+          <div class="panel-body">
+            <div class="results-table-wrap">
+              <table class="results-table">
+                <thead>
+                  <tr>
+                    <th style="width:42%">Texto hebreo</th>
+                    <th>Español (candidato 1)</th>
+                  </tr>
+                </thead>
+                <tbody id="resultsTbody">
+                  <tr><td colspan="2" class="muted">Sin resultados aún.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <span>Análisis Léxico</span>
+            <div id="resultsLoadingIndicator" class="loading-indicator" role="status" aria-live="polite" hidden>
+              <span class="spinner" aria-hidden="true"></span>
+              <span>Construyendo análisis léxico.</span>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div id="deepLexicalCorrespondence" class="trilingual-brief small muted">Correspondencias idiomáticas: —</div>
+            <div id="resultsLoadingStage" class="results-loading-stage" role="status" aria-live="polite" hidden>
+              <span class="big-spinner" aria-hidden="true"></span>
+              <span class="fw-semibold">Cargando análisis.</span>
+            </div>
+            <div id="deepLexicalAnalysis" class="lexicon-grid"></div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="row g-3 mt-1">
+      <div class="col-12 col-xl-4">
+        <section class="panel">
+          <div class="panel-header">Diagnóstico</div>
+          <div class="panel-body">
+            <div id="diag" class="helper-card muted">Cargando base automática…</div>
+          </div>
+        </section>
+      </div>
+      <div class="col-12 col-xl-8">
+        <section class="panel">
+          <div class="panel-header">Trazas</div>
+          <div class="panel-body">
+            <div id="trace" class="trace-box">—</div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <input id="alefatoFiles" type="file" multiple hidden accept=".json,application/json,.txt">
+  </main>
+
+  <script>
+    (function(){
+      const allowedThemes = new Set(['cream', 'white']);
+      let stored = null;
+      try { stored = window.localStorage?.getItem('lectorTheme'); } catch (_) { stored = null; }
+      document.documentElement.dataset.theme = allowedThemes.has(stored) ? stored : 'cream';
+    })();
+  </script>
+  <script src="analisis_donut_integrado.js"></script>
+  <script src="buscador_analisis_integrado.js"></script>
+</body>
+</html>
