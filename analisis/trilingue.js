@@ -14,6 +14,82 @@ function normalizeFuzzy(str) {
         .trim();
 }
 
+function normalizeBookKey(str) {
+    return normalizeFuzzy(str)
+        .replace(/[^a-z0-9]+/g, '');
+}
+
+const CANONICAL_BOOK_ORDER = [
+    { rank: 1, keys: ['01genesis', 'genesis', 'gen', 'génesis', 'gn'] },
+    { rank: 2, keys: ['02exodo', '02éxodo', 'exodo', 'éxodo', 'ex', 'exo'] },
+    { rank: 3, keys: ['03levitico', '03levítico', 'levitico', 'levítico', 'lev', 'lv'] },
+    { rank: 4, keys: ['04numeros', '04números', 'numeros', 'números', 'num', 'nm'] },
+    { rank: 5, keys: ['05deuteronomio', 'deuteronomio', 'deut', 'dt'] }
+];
+
+const entryOrderCache = new WeakMap();
+
+function getEntryLoadOrder(entry) {
+    if (!entry || typeof entry !== 'object') return Number.MAX_SAFE_INTEGER;
+    if (entryOrderCache.has(entry)) return entryOrderCache.get(entry);
+
+    const idx = Array.isArray(entries) ? entries.indexOf(entry) : -1;
+    const safeIdx = idx >= 0 ? idx : Number.MAX_SAFE_INTEGER;
+    entryOrderCache.set(entry, safeIdx);
+    return safeIdx;
+}
+
+function extractBookStrings(entry) {
+    return [
+        entry.book,
+        entry.bookName,
+        entry.book_name,
+        entry.libro,
+        entry.nombre_libro,
+        entry.sourceBook,
+        entry._book,
+        entry.archivo,
+        entry.file,
+        entry.filename,
+        entry.source,
+        entry.ref,
+        entry.referencia,
+        entry.ubicacion
+    ]
+        .filter(Boolean)
+        .map(v => String(v).trim());
+}
+
+function getCanonicalBookRank(entry) {
+    const rawValues = extractBookStrings(entry);
+    for (const raw of rawValues) {
+        const key = normalizeBookKey(raw);
+        for (const book of CANONICAL_BOOK_ORDER) {
+            if (book.keys.some(alias => key.includes(normalizeBookKey(alias)))) {
+                return book.rank;
+            }
+        }
+    }
+    return Number.MAX_SAFE_INTEGER;
+}
+
+function sortMatchesByBookOrderStable(list) {
+    return list
+        .map((entry, index) => ({
+            entry,
+            index,
+            bookRank: getCanonicalBookRank(entry),
+            loadOrder: getEntryLoadOrder(entry)
+        }))
+        .sort((a, b) => {
+            if (a.bookRank !== b.bookRank) return a.bookRank - b.bookRank;
+            if (a.loadOrder !== b.loadOrder) return a.loadOrder - b.loadOrder;
+            return a.index - b.index;
+        })
+        .map(item => item.entry);
+}
+
+
 /**
  * MOTOR DE BÚSQUEDA GRIEGA
  * Permite buscar palabras con o sin acentos.
@@ -50,10 +126,38 @@ function searchGreek(query) {
         return texts.some(t => normalizeFuzzy(t) === token);
     }
 
-    function getGreekSpecificity(entry) {
+    function greekListParts(text) {
+        return String(text || '')
+            .split(/[,;·/]+/)
+            .map(x => String(x || '').trim())
+            .filter(Boolean);
+    }
+
+    function getGreekTokenContextPriority(raw, token) {
+        const cleanRaw = String(raw || '').trim();
+        if (!cleanRaw) return 999;
+
+        const normRaw = normalizeFuzzy(cleanRaw);
+        if (normRaw === token) return 0;
+
+        const listParts = greekListParts(cleanRaw);
+        if (listParts.some(part => normalizeFuzzy(part) === token)) return 1;
+
+        const tokens = greekWordTokens(cleanRaw);
+        const idx = tokens.indexOf(token);
+        if (idx === -1) return 9;
+
+        const hasListSeparator = /[,;·/]/.test(cleanRaw);
+        if (hasListSeparator) return 2;
+
+        return 3;
+    }
+
+    function getGreekSpecificity(entry, token) {
         const raw = String(entry.gr || entry.equivalencia_griega || entry.greek || '').trim();
         const tokens = greekWordTokens(raw);
         return {
+            matchPriority: getGreekTokenContextPriority(raw, token),
             tokenCount: tokens.length || 999,
             charCount: raw.length || 999,
             raw
@@ -75,13 +179,14 @@ function searchGreek(query) {
         return { wordCount, charCount: heb.length };
     }
 
-    function sortGreekMatches(list) {
+    function sortGreekMatches(list, token) {
         return list.sort((a, b) => {
-            const ga = getGreekSpecificity(a);
-            const gb = getGreekSpecificity(b);
+            const ga = getGreekSpecificity(a, token);
+            const gb = getGreekSpecificity(b, token);
             const ha = getHebrewPriority(a);
             const hb = getHebrewPriority(b);
 
+            if (ga.matchPriority !== gb.matchPriority) return ga.matchPriority - gb.matchPriority;
             if (ga.tokenCount !== gb.tokenCount) return ga.tokenCount - gb.tokenCount;
             if (ha.wordCount !== hb.wordCount) return ha.wordCount - hb.wordCount;
             if (ga.charCount !== gb.charCount) return ga.charCount - gb.charCount;
@@ -169,14 +274,14 @@ function searchGreek(query) {
         }
     });
 
-    sortGreekMatches(exactMainFieldMatches);
-    sortGreekMatches(exactCandidateFieldMatches);
-    sortGreekMatches(exactMainTokenMatches);
-    sortGreekMatches(exactCandidateTokenMatches);
-    sortGreekMatches(pluralMainFieldMatches);
-    sortGreekMatches(pluralCandidateFieldMatches);
-    sortGreekMatches(pluralMainTokenMatches);
-    sortGreekMatches(pluralCandidateTokenMatches);
+    sortGreekMatches(exactMainFieldMatches, normQ);
+    sortGreekMatches(exactCandidateFieldMatches, normQ);
+    sortGreekMatches(exactMainTokenMatches, normQ);
+    sortGreekMatches(exactCandidateTokenMatches, normQ);
+    sortGreekMatches(pluralMainFieldMatches, normQ);
+    sortGreekMatches(pluralCandidateFieldMatches, normQ);
+    sortGreekMatches(pluralMainTokenMatches, normQ);
+    sortGreekMatches(pluralCandidateTokenMatches, normQ);
 
     const finalMatches = [
         ...exactMainFieldMatches,
@@ -196,7 +301,7 @@ function searchGreek(query) {
         trace: [
             `Búsqueda exacta griega para: ${query}`,
             `Variantes plurales aceptadas: ${Array.from(pluralVariants).join(', ') || 'ninguna'}`,
-            'Orden: exacto visible completo > exacto en candidatos > exacto como palabra completa > plurales exactos.'
+            'Orden: exacto visible completo > exacto en listas léxicas (coma/punto y coma) > exacto como palabra completa en frase > plurales exactos.'
         ],
         diag: 'Se priorizan primero las coincidencias exactas de campo completo; después las coincidencias exactas como palabra completa; al final, plurales griegos relacionados.'
     };
@@ -249,31 +354,6 @@ function searchSpanish(query) {
         return String(entry.he || entry.hebrew || entry.palabra || '').trim();
     }
 
-    function getGreekMainText(entry) {
-        return String(entry.gr || entry.equivalencia_griega || entry.greek || '').trim();
-    }
-
-    function getGreekPriority(entry) {
-        const raw = getGreekMainText(entry);
-        if (!raw) return { tokenCount: 999, charCount: 999, raw: '' };
-
-        const normalized = normalizeFuzzy(raw)
-            .replace(/[\[\]\{\}\(\)«»"“”'’`]/g, ' ')
-            .replace(/[;,]/g, ' ')
-            .trim();
-
-        const tokens = normalized
-            .split(/[^a-z\u0370-\u03ff\u1f00-\u1fff]+/i)
-            .map(t => t.trim())
-            .filter(Boolean);
-
-        return {
-            tokenCount: tokens.length || 999,
-            charCount: raw.length || 999,
-            raw
-        };
-    }
-
     function getHebrewPriority(entry) {
         const heb = getHebrewText(entry);
         if (!heb) return { wordCount: 999, charCount: 999 };
@@ -288,24 +368,17 @@ function searchSpanish(query) {
         };
     }
 
-    function sortSpanishMatches(list) {
+    function sortByHebrewPriority(list) {
         return list.sort((a, b) => {
-            const ga = getGreekPriority(a);
-            const gb = getGreekPriority(b);
-            const ha = getHebrewPriority(a);
-            const hb = getHebrewPriority(b);
+            const pa = getHebrewPriority(a);
+            const pb = getHebrewPriority(b);
 
-            if (ga.tokenCount !== gb.tokenCount) return ga.tokenCount - gb.tokenCount;
-            if (ga.charCount !== gb.charCount) return ga.charCount - gb.charCount;
-            if (ha.wordCount !== hb.wordCount) return ha.wordCount - hb.wordCount;
-            if (ha.charCount !== hb.charCount) return ha.charCount - hb.charCount;
+            if (pa.wordCount !== pb.wordCount) return pa.wordCount - pb.wordCount;
+            if (pa.charCount !== pb.charCount) return pa.charCount - pb.charCount;
 
-            const greekCmp = ga.raw.localeCompare(gb.raw, 'el');
-            if (greekCmp !== 0) return greekCmp;
-
-            const haText = getHebrewText(a);
-            const hbText = getHebrewText(b);
-            return haText.localeCompare(hbText, 'he');
+            const ha = getHebrewText(a);
+            const hb = getHebrewText(b);
+            return ha.localeCompare(hb, 'he');
         });
     }
 
@@ -341,10 +414,10 @@ function searchSpanish(query) {
         }
     });
 
-    sortSpanishMatches(exactMainMatches);
-    sortSpanishMatches(exactCandidateMatches);
-    sortSpanishMatches(pluralMainMatches);
-    sortSpanishMatches(pluralCandidateMatches);
+    sortByHebrewPriority(exactMainMatches);
+    sortByHebrewPriority(exactCandidateMatches);
+    sortByHebrewPriority(pluralMainMatches);
+    sortByHebrewPriority(pluralCandidateMatches);
 
     const finalMatches = [
         ...exactMainMatches,
@@ -361,9 +434,9 @@ function searchSpanish(query) {
             `Búsqueda exacta para: ${firstWord}`,
             `Variantes plurales aceptadas: ${Array.from(pluralVariants).join(', ') || 'ninguna'}`,
             'Orden: exacto visible > exacto en candidatos > plural visible > plural en candidatos.',
-            'Dentro de cada grupo se prioriza primero el campo griego visible más corto y directo; luego el hebreo más conciso.'
+            'Dentro de cada grupo se prioriza hebreo de una sola palabra.'
         ],
-        diag: 'Se muestran primero las coincidencias exactas de la traducción visible; dentro de cada grupo se prioriza el griego más corto y directo, y luego el hebreo más conciso. Después van candidatos y plurales relacionados.'
+        diag: 'Se muestran primero las coincidencias exactas de la traducción visible; después las coincidencias exactas en candidatos; al final, plurales regulares relacionados.'
     };
 }
 
