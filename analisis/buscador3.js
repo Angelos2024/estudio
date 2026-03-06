@@ -1,3 +1,12 @@
+
+const REMOTE_ALEFATO_SOURCES = [
+  { name: '01genesis.json', url: '../dic/trilingue/01genesis.json' },
+  { name: '02Éxodo.json', url: '../dic/trilingue/02%C3%89xodo.json' },
+  { name: '03Levítico.json', url: '../dic/trilingue/03Lev%C3%ADtico.json' },
+  { name: '04Números.json', url: '../dic/trilingue/04N%C3%BAmeros.json' },
+  { name: '05Deuteronomio.json', url: '../dic/trilingue/05Deuteronomio.json' }
+];
+
 const HE_INFLECTION_MAP = [
   { suffix: 'ַיִם', type: 'dual', label: '(Dual)' },
   { suffix: 'ַיִן', type: 'plural_arameo', label: '(Plur. Arameo)' },
@@ -423,9 +432,49 @@ async function handleFiles(fileList) {
   renderLoadInfo();
 
   if (errs.length) {
-    diagEl.textContent = 'Errores de carga en algunos archivos: ' + errs.join(' | ');
+    diagEl.textContent = 'Errores de carga: ' + errs.join(' | ');
   } else if (collected.length) {
-    diagEl.textContent = `Carga correcta: +${collected.length.toLocaleString()} entradas detectadas (antes de deduplicar).`;
+    diagEl.textContent = '';
+  }
+}
+
+
+async function loadRemoteAlefatoFiles() {
+  const collected = [];
+  const errs = [];
+  let okFiles = 0;
+
+  if (diagEl) diagEl.textContent = 'Cargando diccionario…';
+  if (searchBtn) searchBtn.disabled = true;
+
+  for (const source of REMOTE_ALEFATO_SOURCES) {
+    try {
+      const resp = await fetch(source.url, { cache: 'no-store' });
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const txt = await resp.text();
+      const data = parseAlefatoJsonFlexible(txt);
+      const tmp = [];
+      collectAlefatoEntries(data, source.name, tmp);
+      if (!tmp.length) throw new Error('No se detectaron objetos con texto hebreo');
+      collected.push(...tmp);
+      okFiles++;
+    } catch (e) {
+      errs.push(`${source.name}: ${e?.message || e}`);
+    }
+  }
+
+  entries = collected.length ? dedupeEntries(collected) : [];
+  loadedFiles = okFiles;
+  clearIndexes();
+  if (entries.length) rebuildIndexes();
+  renderLoadInfo();
+
+  if (errs.length) {
+    if (diagEl) diagEl.textContent = 'Se cargó la base con incidencias: ' + errs.join(' | ');
+  } else if (collected.length) {
+    if (diagEl) diagEl.textContent = `Carga automática correcta: ${collected.length.toLocaleString()} entradas detectadas antes de deduplicar.`;
+  } else {
+    if (diagEl) diagEl.textContent = 'No se pudo cargar la base remota.';
   }
 }
 
@@ -451,19 +500,20 @@ function clearAll() {
   renderResults([]);
   setTierBadge('Sin búsqueda', false);
   resultCountEl.textContent = '0 resultados';
-  diagEl.textContent = 'Base limpiada.';
+  diagEl.textContent = 'Base reiniciada.';
   traceEl.textContent = '—';
-  alefatoFilesEl.value = '';
+  if (alefatoFilesEl) alefatoFilesEl.value = '';
 }
 
-alefatoFilesEl.addEventListener('change', (e) => handleFiles(e.target.files));
-clearBtn.addEventListener('click', clearAll);
-searchBtn.addEventListener('click', doSearch);
-exampleBtn.addEventListener('click', () => { queryEl.value = 'מִכְתָּבִים'; doSearch(); });
-queryEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') doSearch(); });
+if (alefatoFilesEl) alefatoFilesEl.addEventListener('change', (e) => handleFiles(e.target.files));
+if (clearBtn) clearBtn.addEventListener('click', clearAll);
+if (searchBtn) searchBtn.addEventListener('click', doSearch);
+if (exampleBtn) exampleBtn.addEventListener('click', () => { queryEl.value = 'מִכְתָּבִים'; doSearch(); });
+if (queryEl) queryEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') doSearch(); });
 
-normalizeEl.addEventListener('change', () => { if (entries.length) rebuildIndexes(); if (queryEl.value.trim()) doSearch(); });
-splitHyphenatedEl.addEventListener('change', () => { if (entries.length) rebuildIndexes(); if (queryEl.value.trim()) doSearch(); });
+if (normalizeEl) normalizeEl.addEventListener('change', () => { if (entries.length) rebuildIndexes(); if (queryEl.value.trim()) doSearch(); });
+if (splitHyphenatedEl) splitHyphenatedEl.addEventListener('change', () => { if (entries.length) rebuildIndexes(); if (queryEl.value.trim()) doSearch(); });
 
 renderLoadInfo();
-searchBtn.disabled = true;
+if (searchBtn) searchBtn.disabled = true;
+loadRemoteAlefatoFiles();

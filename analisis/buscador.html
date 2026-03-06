@@ -174,42 +174,7 @@
     #occurrenceDonutMount .donut-total{ font-size:1.6rem; }
     #occurrenceDonutMount .legend-row{ font-size:.8rem; }
     .helper-list li{ margin-bottom:.35rem; }
-    .loading-indicator{
-      display:inline-flex;
-      align-items:center;
-      gap:.5rem;
-      font-size:.85rem;
-      color:var(--muted);
-    }
-    .loading-indicator .spinner{
-      width:1rem;
-      height:1rem;
-      border:2px solid #cbd5f5;
-      border-top-color:var(--primary);
-      border-radius:50%;
-      animation:spin .8s linear infinite;
-    }
-    .results-loading-stage{
-      min-height:320px;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      gap:.85rem;
-      color:var(--muted);
-      background:color-mix(in srgb, var(--soft-bg) 55%, #ffffff);
-      border:1px solid #000000;
-            border-radius:12px;
-      margin-bottom:1rem;
-    }
-    .results-loading-stage .big-spinner{
-      width:4.5rem;
-      height:4.5rem;
-      border:6px solid color-mix(in srgb, var(--primary) 20%, #ffffff);
-      border-top-color:var(--primary);
-      border-radius:50%;
-      animation:spin .9s linear infinite;
-    }
+
      .trilingual-brief{
       border:1px solid #000000;
       background:var(--soft-bg);
@@ -269,11 +234,6 @@
       background:#ffffff;
     }
 
-    [data-theme="cream"] .results-loading-stage{
-      background:#ffffff;
-      color:#000000;
-      border-color:#4b2743;
-    }
     [data-theme="cream"] .trilingual-brief{
       background:#ffffff;
       color:#000000;
@@ -455,14 +415,6 @@
                 <div class="form-text">Acepta hebreo, griego y español. En español busca una sola palabra.</div>
               </div>
 
-              <div>
-                <label class="form-label fw-semibold">Cargar archivos del alefato</label>
-                <div class="d-flex gap-2 flex-wrap align-items-center">
-                  <input id="alefatoFiles" class="form-control" type="file" multiple accept=".json,application/json,.txt">
-                  <button id="clearBtn" class="btn btn-soft" type="button">Limpiar base</button>
-                </div>
-                <div id="loadInfo" class="form-text d-none">Base sin cargar.</div>
-              </div>
 
               <div>
                 <label class="form-label fw-semibold">Opciones</label>
@@ -537,9 +489,9 @@
       }
     })();
   </script>
-  <script src="buscador.js"></script>
+  <script src="buscador_mod.js"></script>
   <script src="buscador2.js"></script>
-  <script src="buscador3.js"></script>
+  <script src="buscador3_mod.js"></script>
   <script src="trilingue.js"></script>
 
   <script>

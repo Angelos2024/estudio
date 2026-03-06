@@ -2,7 +2,6 @@ const $ = id => document.getElementById(id);
 
 const alefatoFilesEl = $("alefatoFiles");
 const clearBtn = $("clearBtn");
-const loadInfoEl = $("loadInfo");
 const queryEl = $("query");
 const searchBtn = $("searchBtn");
 const exampleBtn = $("exampleBtn");
@@ -528,9 +527,7 @@ function dedupeEntries(list) {
 }
 
 function renderLoadInfo() {
-  const hebCount = entries.length;
-  loadInfoEl.textContent = `Archivos cargados: ${loadedFiles} · entradas deduplicadas: ${hebCount.toLocaleString()}`;
-  searchBtn.disabled = hebCount === 0;
+  if (searchBtn) searchBtn.disabled = entries.length === 0;
 }
 
 function setTierBadge(text, ok=false) {
