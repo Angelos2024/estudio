@@ -12,6 +12,9 @@
     gr: './search/index-gr.json',
     he: './search/index-he.json'
   };
+  const GREEK_MASTER_DICT_URL = '../diccionario/masterdiccionario.json';
+  const GREEK_UNIFIED_DICT_URL = '../diccionario/diccionarioG_unificado.min.json';
+  const HEBREW_DICT_URL = '../diccionario/diccionario_unificado.min.json';
   const TEXT_BASE = './search/texts';
   const LXX_FILES = [
     'lxx_rahlfs_1935_1Chr.json',
@@ -79,8 +82,12 @@
     indexes: {},
     textCache: new Map(),
     lxxFileCache: new Map(),
-    lxxSearchCache: new Map()
-  };
+ lxxSearchCache: new Map(),
+    greekMasterMap: new Map(),
+    greekUnifiedMap: new Map(),
+    hebrewDictMap: new Map(),
+    dictionaryLoaded: false
+      };
   const jsonCache = new Map();
 
   function $(id) {
@@ -391,6 +398,86 @@
     }
   }
 
+   async function loadDictionarySources() {
+    if (state.dictionaryLoaded) return;
+
+    const [master, greekUnified, hebrewUnified] = await Promise.all([
+      loadJson(GREEK_MASTER_DICT_URL),
+      loadJson(GREEK_UNIFIED_DICT_URL),
+      loadJson(HEBREW_DICT_URL)
+    ]);
+
+    const greekMasterMap = new Map();
+    (master?.items || []).forEach((item) => {
+      const key = normalizeGreek(item?.lemma || '');
+      if (!key) return;
+      if (!greekMasterMap.has(key)) greekMasterMap.set(key, item);
+    });
+
+    const greekUnifiedMap = new Map();
+    (greekUnified || []).forEach((row) => {
+      const lemma = normalizeGreek(Array.isArray(row) ? row[0] : '');
+      const gloss = String(Array.isArray(row) ? row[1] : '').trim();
+      if (!lemma || !gloss) return;
+      if (!greekUnifiedMap.has(lemma)) greekUnifiedMap.set(lemma, new Set());
+      greekUnifiedMap.get(lemma).add(gloss);
+    });
+
+    const hebrewMap = new Map();
+    (hebrewUnified || []).forEach((entry) => {
+      const candidates = [
+        normalizeHebrew(entry?.hebreo || ''),
+        normalizeHebrew(entry?.strong_detail?.lemma || ''),
+        ...((entry?.hebreos || []).map((value) => normalizeHebrew(value))),
+        ...((entry?.formas || []).map((value) => normalizeHebrew(value)))
+      ].filter(Boolean);
+      candidates.forEach((key) => {
+        if (!hebrewMap.has(key)) hebrewMap.set(key, entry);
+      });
+    });
+
+    state.greekMasterMap = greekMasterMap;
+    state.greekUnifiedMap = greekUnifiedMap;
+    state.hebrewDictMap = hebrewMap;
+    state.dictionaryLoaded = true;
+  }
+
+  function buildDictionaryCard(title, lines = []) {
+    const clean = lines.filter(Boolean);
+    const content = clean.length
+      ? clean.map((line) => `<div class="small">${escapeHtml(line)}</div>`).join('')
+      : '<div class="small muted">Sin coincidencias en esta fuente.</div>';
+    return `<div class="fw-semibold">${escapeHtml(title)}</div>${content}`;
+  }
+
+  async function buildDictionaryCards({ grWord, heWord }) {
+    await loadDictionarySources();
+
+    const greekKey = normalizeGreek(grWord || '');
+    const greekMasterEntry = state.greekMasterMap.get(greekKey);
+    const greekUnifiedGlosses = [...(state.greekUnifiedMap.get(greekKey) || [])].slice(0, 4);
+
+    const greekLines = [];
+    if (greekMasterEntry?.lemma) greekLines.push(`Lemma: ${greekMasterEntry.lemma}`);
+    if (greekMasterEntry?.['Forma lexica']) greekLines.push(`Transliteración: ${greekMasterEntry['Forma lexica']}`);
+    if (greekMasterEntry?.entrada_impresa) greekLines.push(`Entrada: ${greekMasterEntry.entrada_impresa}`);
+    if (greekMasterEntry?.definicion) greekLines.push(`Definición: ${greekMasterEntry.definicion}`);
+    if (greekUnifiedGlosses.length) greekLines.push(`Glosas (diccionarioG_unificado): ${greekUnifiedGlosses.join('; ')}`);
+
+    const hebrewKey = normalizeHebrew(heWord || '');
+    const hebrewEntry = state.hebrewDictMap.get(hebrewKey);
+    const hebrewLines = [];
+    if (hebrewEntry?.strong_detail?.lemma || hebrewEntry?.hebreo) hebrewLines.push(`Lemma: ${hebrewEntry?.strong_detail?.lemma || hebrewEntry?.hebreo}`);
+    if (hebrewEntry?.strong_detail?.transliteracion) hebrewLines.push(`Transliteración: ${hebrewEntry.strong_detail.transliteracion}`);
+    if (hebrewEntry?.glosa) hebrewLines.push(`Glosa: ${hebrewEntry.glosa}`);
+    if (hebrewEntry?.strong_detail?.definicion) hebrewLines.push(`Definición: ${hebrewEntry.strong_detail.definicion}`);
+
+    return [
+      buildDictionaryCard('Diccionario A (Griego)', greekLines),
+      buildDictionaryCard('Diccionario B (Hebreo)', hebrewLines)
+    ];
+  }
+
   function buildGreekSearchKeys(normalized) {
     if (!normalized) return [];
     const variants = new Set();
@@ -592,6 +679,8 @@
     ]);
 
     renderSummary(escapeHtml(summaryParts.join(' ')));
+        const dictionaryCards = await buildDictionaryCards({ grWord: gr, heWord: heb });
+
     renderCorrespondence([
       buildCorrespondenceCard({
         title: 'Hebreo',
@@ -604,8 +693,7 @@
         title: 'Griego',
         word: gr || '—',
         transliteration: gr ? transliterateGreek(gr) : '',
-        detail: gr ? 'Equivalencia griega principal encontrada.' : 'Sin equivalencia griega visible.',
-        lang: 'gr'
+        detail: gr ? 'Equivalencia griega principal encontrada y contrastada con Diccionario A.' : 'Sin equivalencia griega visible.',        lang: 'gr'
       }),
       buildCorrespondenceCard({
         title: 'Español',
@@ -634,8 +722,8 @@
       `);
     }
 
-    renderExamples([...sourceCards, ...extraCards]);
-  }
+    renderExamples([...dictionaryCards, ...sourceCards, ...extraCards]);
+      }
 
   function renderEmptySummary(rawQuery, reason = '') {
     renderTags([
