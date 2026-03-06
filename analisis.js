@@ -1,17 +1,17 @@
  (() => {
 const TORAH_TRILINGUAL_DICT_URLS = [
-    '../diccionario/pruebas/01Génesis.json',
-    '../diccionario/pruebas/02Éxodo.json',
-    '../diccionario/pruebas/03Levítico.json',
-    '../diccionario/pruebas/04Números.json',
-    '../diccionario/pruebas/05Deuteronomio.json'
+    './diccionario/pruebas/01Génesis.json',
+    './diccionario/pruebas/02Éxodo.json',
+    './diccionario/pruebas/03Levítico.json',
+    './diccionario/pruebas/04Números.json',
+    './diccionario/pruebas/05Deuteronomio.json'
       ];
    const SEARCH_INDEX = {
-     es: '../search/index-es.json',
-     gr: '../search/index-gr.json',
-     he: '../search/index-he.json'
+     es: './search/index-es.json',
+     gr: './search/index-gr.json',
+     he: './search/index-he.json'
    };
-   const TEXT_BASE = '../search/texts';
+   const TEXT_BASE = './search/texts';
      const LXX_FILES = [
     'lxx_rahlfs_1935_1Chr.json',
     'lxx_rahlfs_1935_1Esdr.json',
