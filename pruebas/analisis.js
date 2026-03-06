@@ -2117,15 +2117,6 @@ const esRefs = [];
     if (lang === 'gr') {
       greekTerm = normalized;
     } else if (lang === 'es') {
-      if (!greekTerm && torahDisplay?.gr) {
-        const torahGreekNormalized = normalizeGreek(torahDisplay.gr);
-        if (torahGreekNormalized) {
-          greekTerm = torahGreekNormalized;
-          greekDisplayWord = torahDisplay.gr;
-          await loadDictionary();
-          greekEntry = state.dictMap.get(greekTerm) || greekEntry;
-        }
-      }
          if (!greekTerm && equivalenceTerms.gr?.size) {
         const esEquivalence = state.trilingualByEs.get(normalizeSpanishPhrase(term));
         const orderedGreek = (esEquivalence?.grDisplay || []).map((item) => item.normalized);
@@ -2164,28 +2155,14 @@ const esRefs = [];
         }
       }
     } else if (lang === 'he') {
-      if (torahDisplay?.gr) {
-        const torahGreekNormalized = normalizeGreek(torahDisplay.gr);
-        if (torahGreekNormalized) {
-          greekTerm = torahGreekNormalized;
-          greekDisplayWord = torahDisplay.gr;
-          await loadDictionary();
-          greekEntry = state.dictMap.get(greekTerm) || greekEntry;
-        }
-      }
-      if (!greekTerm) {
-        greekCandidate = await buildGreekCandidateFromHebrewRefs(refs);
-        if (greekCandidate) {
-          greekTerm = greekCandidate.normalized;
-          await loadDictionary();
-          greekEntry = state.dictMap.get(greekTerm) || greekEntry;
-        }
+      greekCandidate = await buildGreekCandidateFromHebrewRefs(refs);
+      if (greekCandidate) {
+        greekTerm = greekCandidate.normalized;
+        await loadDictionary();
+        greekEntry = state.dictMap.get(greekTerm) || greekEntry;
       }
     }
 
-    if (!greekDisplayWord && torahDisplay?.gr && (lang === 'he' || lang === 'es')) {
-      greekDisplayWord = torahDisplay.gr;
-    }
 
     const greekLemma = greekEntry?.lemma || greekCandidate?.lemma || greekDisplayWord || (lang === 'gr' ? term : '—');
     const greekTranslit = greekEntry?.['Forma lexica'] || (greekTerm ? transliterateGreek(greekLemma || term) : '—');
@@ -2204,7 +2181,61 @@ const esRefs = [];
         word: term,
         transliteration: transliterateHebrew(term)
       };
-     } else if (lang === 'es') {
+    } else if (lang === 'gr') {
+      if (torahDisplay?.he) {
+        const heNorm = normalizeHebrew(torahDisplay.he);
+        if (heNorm) {
+          hebrewCandidate = {
+            normalized: heNorm,
+            word: torahDisplay.he,
+            transliteration: transliterateHebrew(torahDisplay.he)
+          };
+        }
+      }
+      if (!hebrewCandidate && equivalenceTerms.he?.size) {
+        const grEquivalence = state.trilingualByGr.get(normalized);
+        const orderedEs = [...(grEquivalence || [])];
+        const orderedHebrew = orderedEs.flatMap((esWord) =>
+          (state.trilingualByEs.get(esWord)?.heDisplay || []).map((item) => item.normalized)
+        );
+        const seenHebrew = new Set();
+        const mergedHebrew = [...orderedHebrew, ...equivalenceTerms.he]
+          .filter((candidate) => {
+            if (seenHebrew.has(candidate)) return false;
+            seenHebrew.add(candidate);
+            return true;
+          });
+        const orderedMatch = orderedHebrew.find((candidate) => getHebrewRefs(candidate, heIndex).length > 0) || orderedHebrew[0];
+        const preferredHe = orderedMatch
+          ? { candidate: orderedMatch }
+          : mergedHebrew
+              .map((candidate) => ({ candidate, refs: getHebrewRefs(candidate, heIndex).length }))
+              .sort((a, b) => b.refs - a.refs)[0];
+        if (preferredHe?.candidate) {
+          const selected = orderedEs
+            .flatMap((esWord) => state.trilingualByEs.get(esWord)?.heDisplay || [])
+            .find((item) => item.normalized === preferredHe.candidate);
+          hebrewCandidate = {
+            normalized: preferredHe.candidate,
+            word: selected?.display || (await findTorahHebrewDisplayByNormalized(preferredHe.candidate)) || preferredHe.candidate,
+            transliteration: transliterateHebrew(selected?.display || preferredHe.candidate)
+          };
+        }
+      }
+      if (!hebrewCandidate && greekTerm) {
+        const heFromTorah = await findFirstTorahHebrewByGreek(greekTerm);
+        if (heFromTorah?.normalized) {
+          hebrewCandidate = {
+            normalized: heFromTorah.normalized,
+            word: heFromTorah.display,
+            transliteration: transliterateHebrew(heFromTorah.display)
+          };
+        }
+      }
+      if (!hebrewCandidate && lxxMatches.refs.length) {
+        hebrewCandidate = await buildHebrewCandidateFromLxxRefs(lxxMatches.refs);
+      }
+    } else if (lang === 'es') {
       // Prioridad absoluta: si el primer match Torah ya trae hebreo, úsalo (evita '—' injustificado).
       if (!hebrewCandidate && torahDisplay?.he) {
         const heNorm = normalizeHebrew(torahDisplay.he);
@@ -2265,7 +2296,12 @@ const esRefs = [];
     } else if (lxxMatches.refs.length) {
       hebrewCandidate = await buildHebrewCandidateFromLxxRefs(lxxMatches.refs);
     }
-    const heRefs = hebrewCandidate ? getHebrewRefs(hebrewCandidate.normalized, heIndex) : [];
+    const bridgedOtRefs = mapLxxRefsToHebrewRefs(lxxMatches.refs);
+    const heDirectRefs = hebrewCandidate ? getHebrewRefs(hebrewCandidate.normalized, heIndex) : [];
+    const heRefs = [...new Set([
+      ...heDirectRefs,
+      ...(lang === 'gr' ? bridgedOtRefs : [])
+    ])];
 
     // Resumen del lema: ejecutar cuando ya se resolvieron correspondencias y candidatos
     const summaryHighlightQueries = {
@@ -2273,10 +2309,16 @@ const esRefs = [];
       gr: greekLemma !== '—' ? greekLemma : (lang === 'gr' ? term : ''),
       he: hebrewCandidate?.word || (lang === 'he' ? term : '')
     };
-    const bridgedOtRefs = mapLxxRefsToHebrewRefs(lxxMatches.refs);
     const summaryRefs = lang === 'gr'
-      ? (refs.length ? refs : lxxMatches.refs)
-      : [...new Set([...refs, ...bridgedOtRefs])];
+      ? [...new Set([
+          ...refs,
+          ...lxxMatches.refs,
+          ...heRefs
+        ])]
+      : [...new Set([
+          ...refs,
+          ...bridgedOtRefs
+        ])];
     await buildSummary(term, lang, entry || greekEntry, hebrewEntry, summaryRefs, summaryHighlightQueries);
 
 
@@ -2285,8 +2327,7 @@ const esRefs = [];
     updateTrilingualBrief({
       esWord: esDisplayWord || term,
       heWord: hebrewCandidate?.word || (lang === 'he' ? term : (torahDisplay?.he || '—')),
-      grWord: greekDisplayWord || greekLemma || torahDisplay?.gr || (lang === 'gr' ? term : '—')
-    });
+  grWord: (greekDisplayWord || greekLemma || (lang === 'gr' ? term : '—'))    });
        occurrenceDonut?.setData({
       es: buildBookCountRows(esRefs),
       he: buildBookCountRows(heRefs),
