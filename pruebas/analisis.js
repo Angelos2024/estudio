@@ -285,9 +285,29 @@ function normalizeGreek(text) {
       .replace(/[\u200C-\u200F\u202A-\u202E]/g, '')
        .replace(/[\u0591-\u05BD\u05BF\u05C1-\u05C2\u05C4-\u05C7]/g, '')
        .replace(/[\s\u05BE\-\u2010-\u2015\u2212]/g, '')
-       .replace(/[׃.,;:!?()"“”'׳״]/g, '');
+       .replace(/[׃.,;:!?()\"“”'׳״]/g, '');
    }
- 
+
+function cleanTorahHebrewDisplay(text) {
+    const raw = String(text || '').trim();
+    if (!raw) return '';
+    const cleaned = raw.replace(/^([\u05D0-\u05EA]{1,2}|\d+)\s+(?=[\u05D0-\u05EA])/u, '').trim();
+    return cleaned || raw;
+  }
+
+function getTorahHebrewKeys(text) {
+    const raw = String(text || '').trim();
+    const cleaned = cleanTorahHebrewDisplay(raw);
+    return [...new Set([normalizeHebrew(raw), normalizeHebrew(cleaned)].filter(Boolean))];
+  }
+
+function getPrimarySpanishCandidate(entry) {
+    const candidates = Array.isArray(entry?.candidatos) ? entry.candidatos : [];
+    const firstCandidate = String(candidates[0] || '').trim();
+    if (firstCandidate) return firstCandidate;
+    return String(entry?.equivalencia_espanol || entry?.equivalencia_español || '').trim();
+  }
+
 function normalizeSpanish(text) {
     return String(text || '')
       .trim()
@@ -509,15 +529,13 @@ function detectLang(text) {
     };
 
     (data?.entries || []).forEach((item) => {
-      const es = String(item?.candidatos?.[0] || item?.equivalencia_espanol || '').trim();
-      const esAlternates = Array.isArray(item?.candidatos) ? item.candidatos : [];
+      const es = String(item?.equivalencia_espanol || '').trim();
       const gr = String(item?.equivalencia_griega || '')
         .split(',')
         .map((part) => String(part || '').trim())
         .filter(Boolean);
-      const he = [cleanTorahHebrewDisplay(String(item?.texto_hebreo || '').trim())].filter(Boolean);
+      const he = [String(item?.texto_hebreo || '').trim()].filter(Boolean);
       register(es, gr, he);
-      esAlternates.forEach((candidate) => register(String(candidate || '').trim(), gr, he));
     });
 
     state.trilingualByEs = byEs;
@@ -600,19 +618,20 @@ function detectLang(text) {
           const esRaw = String(entry?.equivalencia_espanol || entry?.equivalencia_español || '').trim();
           const candidatos = Array.isArray(entry?.candidatos) ? entry.candidatos : [];
 
-          const heKeys = [normalizeTorahHebrewHeadword(heRaw), normalizeHebrew(heRaw)].filter(Boolean);
+          const heKeys = getTorahHebrewKeys(heRaw);
           const grKeys = splitGrVariants(grRaw).map(normalizeGreek).filter(Boolean);
           const esKeys = [
-            ...candidatos,
-            ...splitEsVariants(esRaw)
+            ...splitEsVariants(esRaw),
+            ...candidatos
           ].map(normalizeSpanishPhrase).filter(Boolean);
 
-          const enriched = { ...entry, __torahBookIndex: i, __hebrewDisplay: heDisplay || heRaw };
+          const enriched = { ...entry, texto_hebreo: heDisplay || heRaw, __torahBookIndex: i };
 
           heKeys.forEach((k) => pushMap(byHe, k, enriched));
           grKeys.forEach((k) => pushMap(byGr, k, enriched));
           esKeys.forEach((k) => pushMap(byEs, k, enriched));
         });
+
 
         state.torahTri.push({ byEs, byGr, byHe, entries });
       }
@@ -669,8 +688,8 @@ function detectLang(text) {
       const hits = book.byGr.get(grKey) || [];
       const withHebrew = hits.find((e) => String(e?.texto_hebreo || '').trim());
       if (withHebrew) {
-        const heDisplay = withHebrew.__hebrewDisplay || cleanTorahHebrewDisplay(withHebrew.texto_hebreo || '');
-        const heNorm = normalizeTorahHebrewHeadword(heDisplay);
+        const heDisplay = String(withHebrew.texto_hebreo || '').trim();
+        const heNorm = normalizeHebrew(heDisplay);
         if (heNorm) return { normalized: heNorm, display: heDisplay };
       }
     }
@@ -685,7 +704,7 @@ function detectLang(text) {
     for (const book of (state.torahTri || [])) {
       const hits = book.byHe.get(heKey) || [];
       if (hits.length) {
-        const heDisplay = hits[0]?.__hebrewDisplay || cleanTorahHebrewDisplay(hits[0]?.texto_hebreo || '');
+        const heDisplay = String(hits[0]?.texto_hebreo || '').trim();
         if (heDisplay) return heDisplay;
       }
     }
@@ -1991,21 +2010,20 @@ const hasDictionaryData = Boolean(
 
     let torahEquivalenceTerms = { es: new Set(), gr: new Set(), he: new Set() };
     if (torahEntry) {
-      const heRaw = String(torahEntry?.texto_hebreo || '').trim();
-      const heDisplay = cleanTorahHebrewDisplay(heRaw);
+      const heRaw = cleanTorahHebrewDisplay(String(torahEntry?.texto_hebreo || '').trim());
       const grRaw = String(torahEntry?.equivalencia_griega || '').trim();
       const esRaw = String(torahEntry?.equivalencia_espanol || torahEntry?.equivalencia_español || '').trim();
       const candidatos = Array.isArray(torahEntry?.candidatos) ? torahEntry.candidatos : [];
-      const preferredEs = String(candidatos[0] || esRaw).trim();
+      const esPrimary = getPrimarySpanishCandidate(torahEntry);
 
-      if (heDisplay) torahEquivalenceTerms.he.add(normalizeHebrew(heDisplay));
+      if (heRaw) torahEquivalenceTerms.he.add(normalizeHebrew(heRaw));
       splitGrVariants(grRaw).map(normalizeGreek).filter(Boolean).forEach((x) => torahEquivalenceTerms.gr.add(x));
-      [...candidatos, ...splitEsVariants(esRaw)].map(normalizeSpanishPhrase).filter(Boolean).forEach((x) => torahEquivalenceTerms.es.add(x));
+      [esPrimary, ...splitEsVariants(esRaw), ...candidatos].map(normalizeSpanishPhrase).filter(Boolean).forEach((x) => torahEquivalenceTerms.es.add(x));
     // Guardar hebreo/griego/español "display" directo del primer match Torah (si existe).
     torahDisplay = {
-      he: torahEntry ? (torahEntry.__hebrewDisplay || heDisplay || heRaw) : '',
-      gr: torahEntry ? String(torahEntry?.equivalencia_griega || '').trim() : '',
-      es: preferredEs || esRaw || ''
+      he: heRaw,
+      gr: grRaw,
+      es: esPrimary || esRaw
     };
 
 }
@@ -2076,8 +2094,7 @@ const hasDictionaryData = Boolean(
       ...esSearchTokens,
       ...[...(equivalenceTerms.es || [])].flatMap((item) => normalizeSpanishPhrase(item).split(/\s+/)).filter(Boolean)
     ])];
-     const preferredSpanishFromTorah = String(torahEntry?.candidatos?.[0] || torahDisplay?.es || '').trim();
-    const esDisplayWord = preferredSpanishFromTorah || (lang === 'es' ? term : (esSearchTokens[0] || term));
+     const esDisplayWord = lang === 'es' ? term : (esSearchTokens[0] || term);
     let greekEntry = entry;
     let greekTerm = null;
     let greekCandidate = null;
@@ -2122,6 +2139,16 @@ const esRefs = [];
 
     if (lang === 'gr') {
       greekTerm = normalized;
+    } else if (lang === 'he') {
+      if (!greekTerm && torahDisplay?.gr) {
+        const torahGreekNormalized = normalizeGreek(torahDisplay.gr);
+        if (torahGreekNormalized) {
+          greekTerm = torahGreekNormalized;
+          greekDisplayWord = torahDisplay.gr;
+          await loadDictionary();
+          greekEntry = state.dictMap.get(greekTerm) || greekEntry;
+        }
+      }
     } else if (lang === 'es') {
          if (!greekTerm && equivalenceTerms.gr?.size) {
         const esEquivalence = state.trilingualByEs.get(normalizeSpanishPhrase(term));
@@ -2161,31 +2188,11 @@ const esRefs = [];
         }
       }
     } else if (lang === 'he') {
-      if (torahDisplay?.gr) {
-        const preferredGreek = normalizeGreek(torahDisplay.gr);
-        if (preferredGreek) {
-          greekTerm = preferredGreek;
-          greekDisplayWord = torahDisplay.gr;
-          await loadDictionary();
-          greekEntry = state.dictMap.get(greekTerm) || greekEntry;
-        }
-      }
-      if (!greekTerm && equivalenceTerms.gr?.size) {
-        const mergedGreek = [...new Set([...(equivalenceTerms.gr || [])].filter(Boolean))];
-        const preferredGreek = mergedGreek.find((candidate) => getGreekRefs(candidate, grIndex).length > 0) || mergedGreek[0];
-        if (preferredGreek) {
-          greekTerm = preferredGreek;
-          await loadDictionary();
-          greekEntry = state.dictMap.get(greekTerm) || greekEntry;
-        }
-      }
-      if (!greekTerm) {
-        greekCandidate = await buildGreekCandidateFromHebrewRefs(refs);
-        if (greekCandidate) {
-          greekTerm = greekCandidate.normalized;
-          await loadDictionary();
-          greekEntry = state.dictMap.get(greekTerm) || greekEntry;
-        }
+      greekCandidate = await buildGreekCandidateFromHebrewRefs(refs);
+      if (greekCandidate) {
+        greekTerm = greekCandidate.normalized;
+        await loadDictionary();
+        greekEntry = state.dictMap.get(greekTerm) || greekEntry;
       }
     }
 
@@ -2204,7 +2211,7 @@ const esRefs = [];
     if (lang === 'he') {
       hebrewCandidate = {
         normalized,
-        word: term,
+        word: cleanTorahHebrewDisplay(term),
         transliteration: transliterateHebrew(term)
       };
      } else if (lang === 'es') {
@@ -2283,9 +2290,10 @@ const esRefs = [];
      const posTag = lang === 'gr' ? extractPos(entry) : '—';
     const lemmaLabel = lang === 'gr' ? (entry?.lemma || term) : term;
     updateTrilingualBrief({
-      esWord: esDisplayWord || term,
+      esWord: esDisplayWord || torahDisplay?.es || term,
       heWord: hebrewCandidate?.word || (lang === 'he' ? term : (torahDisplay?.he || '—')),
-  grWord: (greekDisplayWord || greekLemma || (lang === 'gr' ? term : '—'))    });
+      grWord: greekDisplayWord || greekLemma || torahDisplay?.gr || (lang === 'gr' ? term : '—')
+    });
        occurrenceDonut?.setData({
       es: buildBookCountRows(esRefs),
       he: buildBookCountRows(heRefs),
