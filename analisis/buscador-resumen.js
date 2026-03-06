@@ -12,9 +12,7 @@
     gr: './search/index-gr.json',
     he: './search/index-he.json'
   };
-  const GREEK_MASTER_DICT_URL = '../diccionario/masterdiccionario.json';
-  const GREEK_UNIFIED_DICT_URL = '../diccionario/diccionarioG_unificado.min.json';
-  const HEBREW_DICT_URL = '../diccionario/diccionario_unificado.min.json';
+
   const TEXT_BASE = './search/texts';
   const LXX_FILES = [
     'lxx_rahlfs_1935_1Chr.json',
@@ -83,10 +81,6 @@
     textCache: new Map(),
     lxxFileCache: new Map(),
  lxxSearchCache: new Map(),
-    greekMasterMap: new Map(),
-    greekUnifiedMap: new Map(),
-    hebrewDictMap: new Map(),
-    dictionaryLoaded: false
       };
   const jsonCache = new Map();
 
@@ -191,12 +185,7 @@
     return output || normalizeHebrew(word) || '—';
   }
 
-  function shortDefinition(text) {
-    if (!text) return '';
-    const trimmed = String(text).replace(/\s+/g, ' ').trim();
-    const split = trimmed.split('. ');
-    return split[0] || trimmed;
-  }
+ 
 
   function installLemmaSummaryPanel() {
     const panel = $(PANEL_IDS.panel);
@@ -311,11 +300,7 @@
     ).trim();
   }
 
-  function getCandidateList(entry) {
-    return Array.isArray(entry?.candidatos)
-      ? entry.candidatos.map((item) => String(item || '').trim()).filter(Boolean)
-      : [];
-  }
+
 
   function classForLang(lang) {
     if (lang === 'he') return 'hebrew';
@@ -398,49 +383,6 @@
     }
   }
 
-   async function loadDictionarySources() {
-    if (state.dictionaryLoaded) return;
-
-    const [master, greekUnified, hebrewUnified] = await Promise.all([
-      loadJson(GREEK_MASTER_DICT_URL),
-      loadJson(GREEK_UNIFIED_DICT_URL),
-      loadJson(HEBREW_DICT_URL)
-    ]);
-
-    const greekMasterMap = new Map();
-    (master?.items || []).forEach((item) => {
-      const key = normalizeGreek(item?.lemma || '');
-      if (!key) return;
-      if (!greekMasterMap.has(key)) greekMasterMap.set(key, item);
-    });
-
-    const greekUnifiedMap = new Map();
-    (greekUnified || []).forEach((row) => {
-      const lemma = normalizeGreek(Array.isArray(row) ? row[0] : '');
-      const gloss = String(Array.isArray(row) ? row[1] : '').trim();
-      if (!lemma || !gloss) return;
-      if (!greekUnifiedMap.has(lemma)) greekUnifiedMap.set(lemma, new Set());
-      greekUnifiedMap.get(lemma).add(gloss);
-    });
-
-    const hebrewMap = new Map();
-    (hebrewUnified || []).forEach((entry) => {
-      const candidates = [
-        normalizeHebrew(entry?.hebreo || ''),
-        normalizeHebrew(entry?.strong_detail?.lemma || ''),
-        ...((entry?.hebreos || []).map((value) => normalizeHebrew(value))),
-        ...((entry?.formas || []).map((value) => normalizeHebrew(value)))
-      ].filter(Boolean);
-      candidates.forEach((key) => {
-        if (!hebrewMap.has(key)) hebrewMap.set(key, entry);
-      });
-    });
-
-    state.greekMasterMap = greekMasterMap;
-    state.greekUnifiedMap = greekUnifiedMap;
-    state.hebrewDictMap = hebrewMap;
-    state.dictionaryLoaded = true;
-  }
 
   function buildDictionaryCard(title, lines = []) {
     const clean = lines.filter(Boolean);
@@ -620,30 +562,30 @@
   async function buildSourceCards({ esWord, grWord, heWord }) {
     const tasks = [
       (async () => {
-        const refs = await searchRefsInTextIndex('es', esWord, 2);
-        const samples = await buildSamplesForRefs(refs, 'es', 2);
-        return buildSamplesCard('RVR1960', 'es', esWord, samples);
+const refs = await searchRefsInTextIndex('es', esWord, 3);
+        const samples = await buildSamplesForRefs(refs, 'es', 3);
+        return buildSamplesCard('RVR1960 (AT/NT)', 'es', esWord, samples);
       })(),
       (async () => {
-        const refs = await searchRefsInTextIndex('gr', grWord, 2);
-        const samples = await buildSamplesForRefs(refs, 'gr', 2);
-        return buildSamplesCard('RKANT', 'gr', grWord, samples);
+        const refs = await searchRefsInTextIndex('gr', grWord, 3);
+        const samples = await buildSamplesForRefs(refs, 'gr', 3);
+        return buildSamplesCard('RKANT (NT)', 'gr', grWord, samples);
       })(),
       (async () => {
-        const refs = await searchRefsInTextIndex('he', heWord, 2);
-        const samples = await buildSamplesForRefs(refs, 'he', 2);
-        return buildSamplesCard('Texto hebreo', 'he', heWord, samples);
+        const refs = await searchRefsInTextIndex('he', heWord, 3);
+        const samples = await buildSamplesForRefs(refs, 'he', 3);
+        return buildSamplesCard('Hebreo (AT)', 'he', heWord, samples);
       })(),
       (async () => {
-        const samples = await buildLxxMatches(normalizeGreek(grWord), 2);
-        return buildSamplesCard('LXX', 'lxx', grWord, samples);
+        const samples = await buildLxxMatches(normalizeGreek(grWord), 3);
+        return buildSamplesCard('LXX (AT)', 'lxx', grWord, samples);
       })()
     ];
     const settled = await Promise.allSettled(tasks);
     return settled.map((item, idx) => {
       if (item.status === 'fulfilled') return item.value;
-      return buildSamplesCard(['RVR1960', 'RKANT', 'Texto hebreo', 'LXX'][idx], ['es', 'gr', 'he', 'lxx'][idx], '', []);
-    });
+      return buildSamplesCard(['RVR1960 (AT/NT)', 'RKANT (NT)', 'Hebreo (AT)', 'LXX (AT)'][idx], ['es', 'gr', 'he', 'lxx'][idx], '', []);
+          });
   }
 
   async function summarizeEntry(entry, rawQuery) {
@@ -651,16 +593,7 @@
     const heb = getHebrew(entry);
     const gr = getGreek(entry);
     const es = getSpanish(entry);
-    const candidates = getCandidateList(entry);
-
-    const definitionBase = es || candidates[0] || '';
-    const shortDef = shortDefinition(definitionBase);
-    const summaryParts = [];
-    if (shortDef) summaryParts.push(shortDef);
-    if (definitionBase && definitionBase !== shortDef) summaryParts.push(definitionBase);
-    if (!summaryParts.length) {
-      summaryParts.push('No se encontró una glosa directa; se usa la coincidencia principal del buscador para resumir el lema.');
-    }
+    
 
     const lemmaText =
       lang === 'he' ? (heb || rawQuery) :
@@ -678,8 +611,7 @@
       'Estado: <span class="fw-semibold">Coincidencia localizada</span>'
     ]);
 
-    renderSummary(escapeHtml(summaryParts.join(' ')));
-        const dictionaryCards = await buildDictionaryCards({ grWord: gr, heWord: heb });
+        renderSummary(`Palabra buscada: <span class="fw-semibold">${escapeHtml(rawQuery)}</span>`);
 
     renderCorrespondence([
       buildCorrespondenceCard({
@@ -693,8 +625,7 @@
         title: 'Griego',
         word: gr || '—',
         transliteration: gr ? transliterateGreek(gr) : '',
-        detail: gr ? 'Equivalencia griega principal encontrada y contrastada con Diccionario A.' : 'Sin equivalencia griega visible.',        lang: 'gr'
-      }),
+        detail: gr ? 'Equivalencia griega principal encontrada.' : 'Sin equivalencia griega visible.',        lang: 'gr'      }),
       buildCorrespondenceCard({
         title: 'Español',
         word: es || '—',
@@ -714,15 +645,7 @@
       heWord: heb || (lang === 'he' ? rawQuery : '')
     });
 
-    const extraCards = [];
-    if (candidates.length) {
-      extraCards.push(`
-        <div class="fw-semibold">Candidatos asociados</div>
-        <div class="small muted">${escapeHtml(candidates.slice(0, 8).join(' · '))}</div>
-      `);
-    }
-
-    renderExamples([...dictionaryCards, ...sourceCards, ...extraCards]);
+        renderExamples(sourceCards);
       }
 
   function renderEmptySummary(rawQuery, reason = '') {
