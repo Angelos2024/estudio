@@ -694,12 +694,143 @@ function normalizeHebrewLemmaForLookup(text) {
         .trim();
 }
 
+function hasHebrewDiacritics(text) {
+    return /[\u0591-\u05C7]/.test(String(text || ''));
+}
+
+function extractDisplayHebrewLemma(entry, rawQuery = '') {
+    const original = String(rawQuery || '').trim();
+    if (original && hasHebrewDiacritics(original)) return original;
+
+    const candidates = [
+        entry?.display_lemma,
+        entry?.headword,
+        entry?.lemma_display,
+        entry?.lemma,
+        original
+    ].filter(Boolean);
+
+    for (const candidate of candidates) {
+        const value = String(candidate).trim();
+        if (value && /[\u0590-\u05FF]/.test(value)) return value;
+    }
+
+    return String(entry?.lemma || original || '—').trim();
+}
+
+function cleanDictionaryParagraph(paragraph) {
+    return String(paragraph || '')
+        .replace(/\r/g, '')
+        .replace(/\n+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+function splitParagraphsFromDictionaryText(text) {
+    return String(text || '')
+        .replace(/\r/g, '')
+        .split(/\n{2,}/)
+        .map(cleanDictionaryParagraph)
+        .filter(Boolean);
+}
+
+function stripTechnicalHeaderFromFirstParagraph(paragraph) {
+    let value = String(paragraph || '').trim();
+    if (!value) return '';
+
+    value = value.replace(/^\[[^\]]{0,220}\]\s*/, '').trim();
+    value = value.replace(/^[^\]]{12,220}\]\s+/, '').trim();
+
+    return value;
+}
+
+function extractStructuredHebrewSections(entry) {
+    const paragraphs = splitParagraphsFromDictionaryText(entry?.text || '');
+    if (!paragraphs.length) return [];
+
+    const normalizedParagraphs = paragraphs
+        .map((paragraph, index) => index === 0 ? stripTechnicalHeaderFromFirstParagraph(paragraph) : paragraph)
+        .filter(Boolean);
+
+    const sections = [];
+
+    normalizedParagraphs.forEach((paragraph, index) => {
+        const text = paragraph.trim();
+        if (!text) return;
+
+        if (/^Nota\./i.test(text)) {
+            sections.push({ type: 'note', title: 'Nota.', text: text.replace(/^Nota\.\s*/i, '').trim() });
+            return;
+        }
+
+        const mainHeading = text.match(/^([A-ZÁÉÍÓÚÑ])\.\s+(.+)$/);
+        if (mainHeading) {
+            sections.push({ type: 'heading', level: 'major', label: `${mainHeading[1]}.`, title: mainHeading[2].trim() });
+            return;
+        }
+
+        const numericHeading = text.match(/^(\d+)\.\s+(.+)$/);
+        if (numericHeading) {
+            sections.push({ type: 'heading', level: 'minor', label: `${numericHeading[1]}.`, title: numericHeading[2].trim() });
+            return;
+        }
+
+        const alphaHeading = text.match(/^([a-z])\)\s+(.+)$/i);
+        if (alphaHeading) {
+            sections.push({ type: 'heading', level: 'micro', label: `${alphaHeading[1]})`, title: alphaHeading[2].trim() });
+            return;
+        }
+
+        sections.push({ type: index === 0 ? 'lead' : 'paragraph', text });
+    });
+
+    return sections;
+}
+
+function formatReferencesInline(text) {
+    return escapeHtml(String(text || ''))
+        .replace(/\b((?:Gn|Ex|Lv|Nm|Dt|Jos|Jue|Rut|1\s?Sm|2\s?Sm|1\s?Re|2\s?Re|1\s?Cr|2\s?Cr|Esd|Neh|Est|Job|Sal|Prov|Ecl|Cant|Is|Jr|Lam|Ez|Dn|Os|Jl|Am|Abd|Jon|Miq|Nah|Hab|Sof|Ag|Zac|Mal|Eclo)\s+\d+(?:,\d+)?(?:s)?(?:\s+\d+(?:,\d+)?)*)/g, '<span class="tag">$1</span>');
+}
+
+function renderStructuredHebrewEntry(entry, rawQuery = '') {
+    const displayLemma = extractDisplayHebrewLemma(entry, rawQuery);
+    const sections = extractStructuredHebrewSections(entry);
+    const pages = [entry?.page_start, entry?.page_end].filter(v => v !== undefined && v !== null);
+    const pageText = pages.length === 2 && pages[0] !== pages[1] ? `${pages[0]}–${pages[1]}` : (pages[0] ?? '');
+
+    const bodyHtml = sections.length ? sections.map(section => {
+        if (section.type === 'heading') {
+            const cls = section.level === 'major'
+                ? 'dict-heading dict-heading--major'
+                : (section.level === 'minor' ? 'dict-heading dict-heading--minor' : 'dict-heading dict-heading--micro');
+            return `<div class="${cls}"><span class="dict-heading-label">${escapeHtml(section.label)}</span> ${formatReferencesInline(section.title)}</div>`;
+        }
+
+        if (section.type === 'note') {
+            return `<div class="dict-note"><span class="dict-note-label">${escapeHtml(section.title)}</span> ${formatReferencesInline(section.text)}</div>`;
+        }
+
+        const pClass = section.type === 'lead' ? 'dict-paragraph dict-paragraph--lead' : 'dict-paragraph';
+        return `<p class="${pClass}">${formatReferencesInline(section.text)}</p>`;
+    }).join('') : `<p class="dict-paragraph">${escapeHtml(entry?.text || 'Sin texto disponible.')}</p>`;
+
+    return `
+        <article class="dict-entry">
+          <header class="dict-entry-header">
+            <div class="dict-entry-title hebrew">${escapeHtml(displayLemma)}</div>
+            ${pageText ? `<div class="dict-entry-pages">pp. ${escapeHtml(String(pageText))}</div>` : ''}
+          </header>
+          <div class="dict-entry-body">${bodyHtml}</div>
+        </article>
+    `;
+}
+
 async function ensureHebrewDictionaryLoaded() {
     if (HEBREW_DICT_STATE.loaded) return HEBREW_DICT_STATE;
     try {
         const [entriesRes, indexRes] = await Promise.all([
-            fetch('../dic/hebrewdic.json'),
-           fetch('../dic/diccionario_index_by_lemma.json')
+            fetch('./hebrewdic.json'),
+            fetch('./diccionario_index_by_lemma.json')
         ]);
         if (!entriesRes.ok || !indexRes.ok) throw new Error('No se pudieron cargar los archivos del diccionario hebreo.');
         HEBREW_DICT_STATE.entries = await entriesRes.json();
@@ -740,108 +871,10 @@ function findHebrewDictionaryEntries(rawHebrew) {
     return headwordHits.slice(0, 4);
 }
 
-function splitParagraphsFromDictionaryText(text) {
-    return String(text || '')
-        .replace(/\r/g, '')
-        .split(/\n{2,}/)
-        .map(block => block.replace(/\n+/g, ' ').replace(/\s+/g, ' ').trim())
-        .filter(Boolean);
-}
 
-function extractStructuredHebrewSections(entry) {
-    const paragraphs = splitParagraphsFromDictionaryText(entry?.text || '');
-    const sections = [];
-    let currentSection = null;
-    let currentSubsection = null;
 
-    function ensureSection(title) {
-        currentSection = { title, paragraphs: [], children: [] };
-        sections.push(currentSection);
-        currentSubsection = null;
-    }
 
-    function ensureSubsection(title) {
-        if (!currentSection) ensureSection('Entrada');
-        currentSubsection = { title, paragraphs: [] };
-        currentSection.children.push(currentSubsection);
-    }
 
-    paragraphs.forEach((paragraph, idx) => {
-        const cleaned = paragraph.trim();
-        if (!cleaned) return;
-
-        if (/^[A-ZÁÉÍÓÚÑ]\.\s+/.test(cleaned)) {
-            ensureSection(cleaned);
-            return;
-        }
-
-        if (/^\d+\.\s+/.test(cleaned)) {
-            ensureSubsection(cleaned);
-            return;
-        }
-
-        if (/^Nota\./i.test(cleaned)) {
-            ensureSubsection('Nota');
-            currentSubsection.paragraphs.push(cleaned);
-            return;
-        }
-
-        if (idx === 0 && !currentSection) {
-            ensureSection('Cabecera léxica');
-            currentSection.paragraphs.push(cleaned);
-            return;
-        }
-
-        if (currentSubsection) {
-            currentSubsection.paragraphs.push(cleaned);
-        } else if (currentSection) {
-            currentSection.paragraphs.push(cleaned);
-        } else {
-            ensureSection('Entrada');
-            currentSection.paragraphs.push(cleaned);
-        }
-    });
-
-    return sections;
-}
-
-function formatReferencesInline(text) {
-    return escapeHtml(String(text || ''))
-        .replace(/\b((?:Gn|Ex|Lv|Nm|Dt|Jos|Jue|Rut|1\s?Sm|2\s?Sm|1\s?Re|2\s?Re|1\s?Cr|2\s?Cr|Esd|Neh|Est|Job|Sal|Prov|Ecl|Cant|Is|Jr|Lam|Ez|Dn|Os|Jl|Am|Abd|Jon|Miq|Nah|Hab|Sof|Ag|Zac|Mal|Eclo)\s+\d+(?:,\d+)?(?:s)?(?:\s+\d+(?:,\d+)?)*)/g, '<span class="tag">$1</span>');
-}
-
-function renderStructuredHebrewEntry(entry) {
-    const sections = extractStructuredHebrewSections(entry);
-    const sectionHtml = sections.map(section => {
-        const sectionParagraphs = (section.paragraphs || []).map(p => `<p class="mb-2">${formatReferencesInline(p)}</p>`).join('');
-        const subsectionHtml = (section.children || []).map(child => `
-            <div class="mb-3">
-              <div class="fw-semibold mb-1">${escapeHtml(child.title)}</div>
-              ${(child.paragraphs || []).map(p => `<p class="mb-2">${formatReferencesInline(p)}</p>`).join('')}
-            </div>
-        `).join('');
-        return `
-            <div class="mb-3">
-              <div class="fw-bold mb-2">${escapeHtml(section.title)}</div>
-              ${sectionParagraphs}
-              ${subsectionHtml}
-            </div>
-        `;
-    }).join('');
-
-    const pages = [entry.page_start, entry.page_end].filter(v => v !== undefined && v !== null);
-    const pageText = pages.length === 2 && pages[0] !== pages[1] ? `${pages[0]}–${pages[1]}` : (pages[0] ?? '—');
-
-    return `
-        <div class="trilingual-brief mb-3">
-          <div class="trilingual-title hebrew">${escapeHtml(entry.lemma || '—')}</div>
-          <div class="trilingual-line"><strong>Cabecera:</strong> ${escapeHtml(entry.headword_line || '—')}</div>
-          <div class="trilingual-line"><strong>Glosa:</strong> ${escapeHtml(entry.gloss_es || '—')}</div>
-          <div class="trilingual-line"><strong>Página(s):</strong> ${escapeHtml(String(pageText))}</div>
-        </div>
-        <div>${sectionHtml || `<pre class="comparison-pre comparison-pre--hebrew">${escapeHtml(entry.text || 'Sin texto disponible.')}</pre>`}</div>
-    `;
-}
 
 function renderGreekComparisonCell(entry, rawQuery) {
     const heb = entry?.he || entry?.hebrew || entry?.palabra || '—';
@@ -849,25 +882,21 @@ function renderGreekComparisonCell(entry, rawQuery) {
     const spanish = entry?.es || entry?.equivalencia_espanol || entry?.equivalencia || '—';
     const candidates = Array.isArray(entry?.candidatos) ? entry.candidatos.filter(Boolean).slice(0, 6) : [];
     return `
-      <div class="trilingual-brief mb-3">
-        <div class="trilingual-title">Candidato trilingüe seleccionado</div>
-        <div class="trilingual-line"><strong>Consulta:</strong> ${escapeHtml(rawQuery || '—')}</div>
-        <div class="trilingual-line"><strong>Hebreo candidato final:</strong> <span class="hebrew">${escapeHtml(heb)}</span></div>
-        <div class="trilingual-line"><strong>Griego (LXX):</strong> <span class="greek">${escapeHtml(greek)}</span></div>
-        <div class="trilingual-line"><strong>Español:</strong> ${escapeHtml(spanish)}</div>
-      </div>
-      <div class="mb-3">
-        <div class="fw-bold mb-2">A. Griego</div>
-        <p class="mb-2">Esta columna toma la equivalencia griega de la fila principal del buscador trilingüe. Si luego agregas un diccionario griego en JSON, aquí se puede sustituir por su artículo estructurado completo.</p>
-        <pre class="comparison-pre comparison-pre--greek">${escapeHtml(greek)}</pre>
-      </div>
-      ${candidates.length ? `
-      <div>
-        <div class="fw-bold mb-2">Candidatos léxicos visibles</div>
-        <div class="d-flex flex-wrap gap-2">${candidates.map(item => `<span class="tag">${escapeHtml(item)}</span>`).join('')}</div>
-      </div>` : ''}
+      <article class="dict-entry dict-entry--greek">
+        <header class="dict-entry-header">
+          <div class="dict-entry-kicker">Candidato trilingüe principal</div>
+          <div class="dict-entry-title greek">${escapeHtml(greek)}</div>
+        </header>
+        <div class="dict-entry-body">
+          <p class="dict-paragraph"><strong>Consulta:</strong> ${escapeHtml(rawQuery || '—')}</p>
+          <p class="dict-paragraph"><strong>Hebreo candidato final:</strong> <span class="hebrew">${escapeHtml(heb)}</span></p>
+          <p class="dict-paragraph"><strong>Español:</strong> ${escapeHtml(spanish)}</p>
+          ${candidates.length ? `<div class="dict-chip-row">${candidates.map(item => `<span class="tag">${escapeHtml(item)}</span>`).join('')}</div>` : ''}
+        </div>
+      </article>
     `;
 }
+
 
 async function updateDictionaryComparison(items, rawQuery) {
     const tbody = document.getElementById('dictionaryComparisonTbody');
@@ -890,12 +919,16 @@ async function updateDictionaryComparison(items, rawQuery) {
     await ensureHebrewDictionaryLoaded();
     const hebrewEntries = findHebrewDictionaryEntries(hebrewCandidate);
     const hebrewHtml = hebrewEntries.length
-        ? hebrewEntries.map(renderStructuredHebrewEntry).join('<hr class="my-3">')
-        : `<div class="trilingual-brief mb-3">
-             <div class="trilingual-title">B. Hebreo</div>
-             <div class="trilingual-line"><strong>Consulta normalizada:</strong> <span class="hebrew">${escapeHtml(normalizeHebrewLemmaForLookup(hebrewCandidate) || hebrewCandidate)}</span></div>
-           </div>
-           <div class="comparison-pre comparison-pre--hebrew">No se encontró una entrada exacta en hebrewdic.json para este candidato. Se puede añadir un fallback morfológico más fuerte si compartes la lógica exacta de lematización final.</div>`;
+        ? hebrewEntries.map(entry => renderStructuredHebrewEntry(entry, rawQuery)).join('<hr class="my-3">')
+        : `<article class="dict-entry">
+             <header class="dict-entry-header">
+               <div class="dict-entry-title hebrew">${escapeHtml(rawQuery || hebrewCandidate)}</div>
+             </header>
+             <div class="dict-entry-body">
+               <p class="dict-paragraph"><strong>Consulta normalizada:</strong> <span class="hebrew">${escapeHtml(normalizeHebrewLemmaForLookup(hebrewCandidate) || hebrewCandidate)}</span></p>
+               <p class="dict-paragraph">No se encontró una entrada exacta en <code>hebrewdic.json</code> para este candidato.</p>
+             </div>
+           </article>`;
 
     tbody.innerHTML = `
       <tr>

@@ -208,6 +208,80 @@
       unicode-bidi:plaintext;
       border-left:5px solid color-mix(in srgb, var(--text) 25%, #ffffff);
     }
+
+    .dict-entry{
+      padding:.35rem 0;
+    }
+    .dict-entry + .dict-entry{
+      margin-top:.75rem;
+    }
+    .dict-entry-header{
+      margin-bottom:.6rem;
+      padding-bottom:.35rem;
+      border-bottom:1px solid color-mix(in srgb, var(--text) 12%, #ffffff);
+    }
+    .dict-entry-kicker{
+      font-size:.78rem;
+      text-transform:uppercase;
+      letter-spacing:.03em;
+      color:var(--muted);
+      margin-bottom:.2rem;
+    }
+    .dict-entry-title{
+      font-size:1.5rem;
+      font-weight:700;
+      line-height:1.2;
+    }
+    .dict-entry-pages{
+      margin-top:.2rem;
+      font-size:.82rem;
+      color:var(--muted);
+    }
+    .dict-entry-body{
+      font-size:.96rem;
+      line-height:1.72;
+    }
+    .dict-paragraph{
+      margin:0 0 .7rem 0;
+    }
+    .dict-paragraph--lead{
+      font-size:1rem;
+    }
+    .dict-heading{
+      margin:1rem 0 .45rem;
+      font-weight:700;
+      line-height:1.4;
+    }
+    .dict-heading--major{
+      font-size:1.02rem;
+    }
+    .dict-heading--minor{
+      font-size:.98rem;
+    }
+    .dict-heading--micro{
+      font-size:.95rem;
+    }
+    .dict-heading-label{
+      margin-right:.2rem;
+    }
+    .dict-note{
+      margin-top:.95rem;
+      padding:.65rem .75rem;
+      border-radius:10px;
+      background:color-mix(in srgb, var(--soft-bg) 65%, #ffffff);
+      border:1px solid color-mix(in srgb, var(--text) 12%, #ffffff);
+      line-height:1.65;
+    }
+    .dict-note-label{
+      font-weight:700;
+      margin-right:.3rem;
+    }
+    .dict-chip-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.4rem;
+      margin-top:.7rem;
+    }
     .dictionary-comparison-table td + td{
       border-left:1px solid color-mix(in srgb, var(--text) 16%, #ffffff);
     }
