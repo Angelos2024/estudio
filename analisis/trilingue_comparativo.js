@@ -698,8 +698,8 @@ async function ensureHebrewDictionaryLoaded() {
     if (HEBREW_DICT_STATE.loaded) return HEBREW_DICT_STATE;
     try {
         const [entriesRes, indexRes] = await Promise.all([
-            fetch('./hebrewdic.json'),
-            fetch('./diccionario_index_by_lemma.json')
+            fetch('../dic/hebrewdic.json'),
+           fetch('../dic/diccionario_index_by_lemma.json')
         ]);
         if (!entriesRes.ok || !indexRes.ok) throw new Error('No se pudieron cargar los archivos del diccionario hebreo.');
         HEBREW_DICT_STATE.entries = await entriesRes.json();
