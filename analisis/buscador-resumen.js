@@ -8,13 +8,13 @@
   };
 
   const SEARCH_INDEX = {
-    es: './search/index-es.json',
-    gr: './search/index-gr.json',
-    he: './search/index-he.json'
+    es: '../search/index-es.json',
+    gr: '../search/index-gr.json',
+    he: '../search/index-he.json'
   };
 
-  const TEXT_BASE = './search/texts';
-  const NT_BOOKS = new Set([
+  const TEXT_BASE = '../search/texts';
+    const NT_BOOKS = new Set([
     'mateo', 'marcos', 'lucas', 'juan', 'hechos', 'romanos',
     '1_corintios', '2_corintios', 'galatas', 'efesios', 'filipenses', 'colosenses',
     '1_tesalonicenses', '2_tesalonicenses', '1_timoteo', '2_timoteo', 'tito', 'filemon',
@@ -487,7 +487,7 @@ function getSpanishEquivalences(entry, fallback = '') {
 
   async function loadLxxFile(file) {
     if (state.lxxFileCache.has(file)) return state.lxxFileCache.get(file);
-    const promise = fetch(`./LXX/${file}`, { cache: 'force-cache' }).then((res) => {
+    const promise = fetch(`../LXX/${file}`, { cache: 'force-cache' }).then((res) => {
       if (!res.ok) throw new Error(`No se pudo cargar ${file}`);
       return res.json();
     });
