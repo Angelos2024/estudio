@@ -354,14 +354,7 @@ function searchSpanish(query) {
         return String(entry.gr || entry.equivalencia_griega || entry.greek || '').trim();
     }
 
-    function getGreekParts(entry) {
-        const raw = getGreekText(entry);
-        return String(raw || '')
-            .split(/[,;·/]+/)
-            .map(v => String(v || '').trim())
-            .filter(Boolean);
-    }
-
+ 
     const GREEK_BIBLICAL_STOPWORDS = new Set([
         'ο', 'η', 'το', 'του', 'της', 'τω', 'τη', 'τον', 'την',
         'οι', 'αι', 'τα', 'των', 'τοις', 'ταις', 'τους', 'τας',
@@ -417,19 +410,20 @@ function searchSpanish(query) {
 
     function getGreekPriority(entry) {
         const raw = getGreekText(entry);
-        const parts = getGreekParts(entry);
-        const firstPart = extractFirstGreekEntryForSpanish(raw) || parts[0] || raw;
+        const firstPart = extractFirstGreekEntryForSpanish(raw) || raw;
         const firstPartTokens = tokenizeGreekEntry(firstPart);
         const preferredToken = pickMeaningfulGreekTokenForSpanish(firstPart);
-        const rawTokenCount = normalizeFuzzy(raw).split(/\s+/).filter(Boolean).length || 999;
+const firstPartTokenCount = normalizeFuzzy(firstPart).split(/\s+/).filter(Boolean).length || 999;
 
         return {
-            singleWordPriority: parts.length <= 1 && firstPartTokens.length === 1 ? 0 : 1,
-            partCount: parts.length || (raw ? 1 : 999),
+           // Para búsquedas en español, la prioridad solo evalúa la primera entrada griega.
+            singleWordPriority: firstPartTokens.length === 1 ? 0 : 1,
+            partCount: firstPart ? 1 : 999,
             bestTokenCount: firstPartTokens.length || 999,
             bestCharCount: preferredToken ? preferredToken.length : (firstPart ? firstPart.length : 999),
-            rawTokenCount,
-            rawCharCount: raw ? raw.length : 999,
+           
+           rawTokenCount: firstPartTokenCount,
+            rawCharCount: firstPart ? firstPart.length : 999,
             bestPart: preferredToken || firstPart,
             raw
         };
