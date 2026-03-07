@@ -350,6 +350,45 @@ function searchSpanish(query) {
         return variants;
     }
 
+    function getGreekText(entry) {
+        return String(entry.gr || entry.equivalencia_griega || entry.greek || '').trim();
+    }
+
+    function getGreekParts(entry) {
+        const raw = getGreekText(entry);
+        return String(raw || '')
+            .split(/[,;·/]+/)
+            .map(v => String(v || '').trim())
+            .filter(Boolean);
+    }
+
+    function getGreekPriority(entry) {
+        const raw = getGreekText(entry);
+        const parts = getGreekParts(entry);
+        const bestPart = parts.length
+            ? parts.slice().sort((a, b) => {
+                const aTokens = normalizeFuzzy(a).split(/\s+/).filter(Boolean).length || 999;
+                const bTokens = normalizeFuzzy(b).split(/\s+/).filter(Boolean).length || 999;
+                if (aTokens !== bTokens) return aTokens - bTokens;
+                if (a.length !== b.length) return a.length - b.length;
+                return a.localeCompare(b, 'el');
+            })[0]
+            : raw;
+
+        const bestTokenCount = normalizeFuzzy(bestPart).split(/\s+/).filter(Boolean).length || 999;
+        const rawTokenCount = normalizeFuzzy(raw).split(/\s+/).filter(Boolean).length || 999;
+
+        return {
+            partCount: parts.length || (raw ? 1 : 999),
+            bestTokenCount,
+            bestCharCount: bestPart ? bestPart.length : 999,
+            rawTokenCount,
+            rawCharCount: raw ? raw.length : 999,
+            bestPart,
+            raw
+        };
+    }
+
     function getHebrewText(entry) {
         return String(entry.he || entry.hebrew || entry.palabra || '').trim();
     }
@@ -368,17 +407,33 @@ function searchSpanish(query) {
         };
     }
 
-    function sortByHebrewPriority(list) {
+    function sortSpanishMatches(list) {
         return list.sort((a, b) => {
-            const pa = getHebrewPriority(a);
-            const pb = getHebrewPriority(b);
+            const ga = getGreekPriority(a);
+            const gb = getGreekPriority(b);
+            const ha = getHebrewPriority(a);
+            const hb = getHebrewPriority(b);
+            const ba = getCanonicalBookRank(a);
+            const bb = getCanonicalBookRank(b);
+            const la = getEntryLoadOrder(a);
+            const lb = getEntryLoadOrder(b);
 
-            if (pa.wordCount !== pb.wordCount) return pa.wordCount - pb.wordCount;
-            if (pa.charCount !== pb.charCount) return pa.charCount - pb.charCount;
+            if (ga.bestTokenCount !== gb.bestTokenCount) return ga.bestTokenCount - gb.bestTokenCount;
+            if (ga.bestCharCount !== gb.bestCharCount) return ga.bestCharCount - gb.bestCharCount;
+            if (ga.partCount !== gb.partCount) return ga.partCount - gb.partCount;
+            if (ga.rawTokenCount !== gb.rawTokenCount) return ga.rawTokenCount - gb.rawTokenCount;
+            if (ga.rawCharCount !== gb.rawCharCount) return ga.rawCharCount - gb.rawCharCount;
+            if (ha.wordCount !== hb.wordCount) return ha.wordCount - hb.wordCount;
+            if (ha.charCount !== hb.charCount) return ha.charCount - hb.charCount;
+            if (ba !== bb) return ba - bb;
+            if (la !== lb) return la - lb;
 
-            const ha = getHebrewText(a);
-            const hb = getHebrewText(b);
-            return ha.localeCompare(hb, 'he');
+            const greekCmp = ga.bestPart.localeCompare(gb.bestPart, 'el');
+            if (greekCmp !== 0) return greekCmp;
+
+            const haText = getHebrewText(a);
+            const hbText = getHebrewText(b);
+            return haText.localeCompare(hbText, 'he');
         });
     }
 
@@ -414,10 +469,10 @@ function searchSpanish(query) {
         }
     });
 
-    sortByHebrewPriority(exactMainMatches);
-    sortByHebrewPriority(exactCandidateMatches);
-    sortByHebrewPriority(pluralMainMatches);
-    sortByHebrewPriority(pluralCandidateMatches);
+    sortSpanishMatches(exactMainMatches);
+    sortSpanishMatches(exactCandidateMatches);
+    sortSpanishMatches(pluralMainMatches);
+    sortSpanishMatches(pluralCandidateMatches);
 
     const finalMatches = [
         ...exactMainMatches,
@@ -434,9 +489,9 @@ function searchSpanish(query) {
             `Búsqueda exacta para: ${firstWord}`,
             `Variantes plurales aceptadas: ${Array.from(pluralVariants).join(', ') || 'ninguna'}`,
             'Orden: exacto visible > exacto en candidatos > plural visible > plural en candidatos.',
-            'Dentro de cada grupo se prioriza hebreo de una sola palabra.'
+            'Dentro de cada grupo se prioriza primero el griego más breve y directo; después, el hebreo más conciso; por último, el orden canónico del libro.'
         ],
-        diag: 'Se muestran primero las coincidencias exactas de la traducción visible; después las coincidencias exactas en candidatos; al final, plurales regulares relacionados.'
+        diag: 'Se muestran primero las coincidencias exactas de la traducción visible; dentro de cada grupo se prioriza el campo griego más corto y directo, luego el hebreo más conciso y finalmente el orden de libro.'
     };
 }
 

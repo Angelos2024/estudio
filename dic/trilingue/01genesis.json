@@ -17290,8 +17290,7 @@
   {
     "id": 2162,
     "texto_hebreo": "יְהוָה",
-    "equivalencia_griega": "κύριος, κυρίου, κυρίῳ, τῷ κυρίῳ,  {..ππαρὰ} κυρίου, {..πὑπὸ} κυρίου, τῷ θεῷ σου",
-    "equivalencia_espanol": "Jehová / El Señor",
+    "equivalencia_griega": "κύριος, κυρίου, κυρίῳ, τῷ κυρίῳ, παρὰ κυρίου, ὑπὸ κυρίου, τῷ θεῷ σου",    "equivalencia_espanol": "Jehová / El Señor",
     "candidatos": ["Dios"],
     "frecuencia_versos": 1500
   },
