@@ -443,6 +443,21 @@
       ''
     ).trim();
   }
+
+   function buildEquivalenceTag(lang, entry, rawQuery = '') {
+    const heb = getHebrew(entry) || (lang === 'he' ? String(rawQuery || '').trim() : '');
+    const gr = getGreek(entry) || (lang === 'gr' ? String(rawQuery || '').trim() : '');
+    const es = getSpanish(entry) || (lang === 'es' ? String(rawQuery || '').trim() : '');
+
+    if (lang === 'he') {
+      return `Equivalencia (lema): <span class="fw-semibold hebrew">${escapeHtml(heb || '—')}</span> → Griego: <span class="fw-semibold greek">${escapeHtml(gr || '—')}</span> · Español: <span class="fw-semibold">${escapeHtml(es || '—')}</span>`;
+    }
+    if (lang === 'gr') {
+      return `Equivalencia (lema): <span class="fw-semibold greek">${escapeHtml(gr || '—')}</span> → Hebreo: <span class="fw-semibold hebrew">${escapeHtml(heb || '—')}</span> · Español: <span class="fw-semibold">${escapeHtml(es || '—')}</span>`;
+    }
+    return `Equivalencia (lema): <span class="fw-semibold">${escapeHtml(es || '—')}</span> → Hebreo: <span class="fw-semibold hebrew">${escapeHtml(heb || '—')}</span> · Griego: <span class="fw-semibold greek">${escapeHtml(gr || '—')}</span>`;
+  }
+
 function getSpanishEquivalences(entry, fallback = '') {
     const values = [
       entry?.es,
@@ -900,12 +915,7 @@ const samples = await buildLxxMatches(normalizeGreek(greekLookup), 3);
       lang === 'gr' ? transliterateGreek(gr || rawQuery) :
       '—';
 
-  const dictionaryEquivalence =
-      lang === 'gr'
-        ? 'Equivalencia: Si buscas en griego, carga <span class="fw-semibold">DICT_URL = ./diccionario/masterdiccionario.json</span>'
-        : lang === 'he'
-          ? 'Equivalencia: Si buscas en hebreo, carga <span class="fw-semibold">HEBREW_DICT_URL = ./diccionario/diccionario_unificado.min.json</span>'
-          : 'Equivalencia: Si buscas en español, primero intenta conseguir una entrada griega con <span class="fw-semibold">findGreekEntryFromSpanish(term)</span>. Esa función usa <span class="fw-semibold">state.dictTranslitMap</span>, que se construye desde <span class="fw-semibold">masterdiccionario.json</span> con Forma léxica y Forma flexionada.';
+    const dictionaryEquivalence = buildEquivalenceTag(lang, entry, rawQuery);
 
 
     renderTags([
