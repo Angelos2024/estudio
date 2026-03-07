@@ -131,6 +131,29 @@ function getGreekPriority(entry) {
     };
 }
 
+function getGreekMatchPriorityForSpanish(entry) {
+    const raw = getGreekText(entry);
+    const parts = getGreekParts(entry);
+    const rawTokens = normalizeFuzzy(raw).split(/\s+/).filter(Boolean);
+    const bestPart = getGreekPriority(entry).bestPart || raw;
+    const bestPartTokens = normalizeFuzzy(bestPart).split(/\s+/).filter(Boolean);
+
+    const hasStandaloneSingle = parts.some((part) => {
+        const tokens = normalizeFuzzy(part).split(/\s+/).filter(Boolean);
+        return tokens.length === 1;
+    }) || rawTokens.length === 1;
+
+    return {
+        standaloneRank: hasStandaloneSingle ? 0 : 1,
+        bestTokenCount: bestPartTokens.length || 999,
+        bestCharCount: bestPart ? bestPart.length : 999,
+        rawTokenCount: rawTokens.length || 999,
+        partCount: parts.length || (raw ? 1 : 999),
+        rawCharCount: raw ? raw.length : 999,
+        bestPart,
+        raw
+    };
+}
 function getHebrewPriority(entry) {
     const heb = getHebrewText(entry);
     if (!heb) return { wordCount: 999, charCount: 999 };
@@ -176,17 +199,18 @@ function getHebrewExactness(entry, queryRaw) {
 
 function sortSpanishMatches(list) {
     return list.sort((a, b) => {
-        const ga = getGreekPriority(a);
-        const gb = getGreekPriority(b);
+ const ga = getGreekMatchPriorityForSpanish(a);
+        const gb = getGreekMatchPriorityForSpanish(b);
         const ba = getCanonicalBookRank(a);
         const bb = getCanonicalBookRank(b);
         const la = getEntryLoadOrder(a);
         const lb = getEntryLoadOrder(b);
 
+        if (ga.standaloneRank !== gb.standaloneRank) return ga.standaloneRank - gb.standaloneRank;
         if (ga.bestTokenCount !== gb.bestTokenCount) return ga.bestTokenCount - gb.bestTokenCount;
         if (ga.bestCharCount !== gb.bestCharCount) return ga.bestCharCount - gb.bestCharCount;
-        if (ga.partCount !== gb.partCount) return ga.partCount - gb.partCount;
         if (ga.rawTokenCount !== gb.rawTokenCount) return ga.rawTokenCount - gb.rawTokenCount;
+        if (ga.partCount !== gb.partCount) return ga.partCount - gb.partCount;
         if (ga.rawCharCount !== gb.rawCharCount) return ga.rawCharCount - gb.rawCharCount;
         if (ba !== bb) return ba - bb;
         if (la !== lb) return la - lb;
@@ -577,8 +601,8 @@ function searchSpanish(query) {
 
     function sortSpanishMatches(list) {
         return list.sort((a, b) => {
-            const ga = getGreekPriority(a);
-            const gb = getGreekPriority(b);
+            const ga = getGreekMatchPriorityForSpanish(a);
+            const gb = getGreekMatchPriorityForSpanish(b);
             const ha = getHebrewPriority(a);
             const hb = getHebrewPriority(b);
             const ba = getCanonicalBookRank(a);
@@ -586,10 +610,11 @@ function searchSpanish(query) {
             const la = getEntryLoadOrder(a);
             const lb = getEntryLoadOrder(b);
 
+            if (ga.standaloneRank !== gb.standaloneRank) return ga.standaloneRank - gb.standaloneRank;
             if (ga.bestTokenCount !== gb.bestTokenCount) return ga.bestTokenCount - gb.bestTokenCount;
             if (ga.bestCharCount !== gb.bestCharCount) return ga.bestCharCount - gb.bestCharCount;
-            if (ga.partCount !== gb.partCount) return ga.partCount - gb.partCount;
             if (ga.rawTokenCount !== gb.rawTokenCount) return ga.rawTokenCount - gb.rawTokenCount;
+                        if (ga.partCount !== gb.partCount) return ga.partCount - gb.partCount;  
             if (ga.rawCharCount !== gb.rawCharCount) return ga.rawCharCount - gb.rawCharCount;
             if (ha.wordCount !== hb.wordCount) return ha.wordCount - hb.wordCount;
             if (ha.charCount !== hb.charCount) return ha.charCount - hb.charCount;
@@ -762,5 +787,5 @@ function doSearch() {
 // Inicialización: Asegurarnos de que el botón use esta nueva función
 if (searchBtn) {
     searchBtn.onclick = doSearch;
-    
+
 }

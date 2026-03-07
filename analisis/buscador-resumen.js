@@ -329,6 +329,18 @@ function getSpanishEquivalences(entry, fallback = '') {
     return output.slice(0, 3);
   }
 
+function extractPrimaryGreekLookup(rawText, fallback = '') {
+    const source = String(rawText || fallback || '').trim();
+    if (!source) return '';
+    const firstSegment = source
+      .split(/[\/,:;·]+/)
+      .map((part) => String(part || '').trim())
+      .filter(Boolean)[0] || '';
+    if (!firstSegment) return '';
+
+    return firstSegment.split(/\s+/).filter(Boolean)[0] || '';
+  }
+
 
   function extractPrimarySpanishLookup(rawText, fallback = '') {
     const source = String(rawText || fallback || '').trim();
@@ -725,21 +737,23 @@ function getRvrCardTitle() {
   }
 
   async function buildSourceCards({ esWord, grWord, heWord }) {
+        const greekLookup = extractPrimaryGreekLookup(grWord);
       const tasks = [
+
       buildRvrCard(esWord),
       (async () => {
-        const refs = await searchRefsInTextIndex('gr', grWord, 3);
-        const samples = await buildSamplesForRefs(refs, 'gr', 3);
-        return buildSamplesCard('RKANT (NT)', 'gr', grWord, samples);
-      })(),
+        const refs = await searchRefsInTextIndex('gr', greekLookup, 3);
+                const samples = await buildSamplesForRefs(refs, 'gr', 3);
+        return buildSamplesCard('RKANT (NT)', 'gr', greekLookup, samples);
+              })(),
       (async () => {
         const refs = await searchRefsInTextIndex('he', heWord, 3);
         const samples = await buildSamplesForRefs(refs, 'he', 3);
         return buildSamplesCard('Hebreo (AT)', 'he', heWord, samples);
       })(),
       (async () => {
-        const samples = await buildLxxMatches(normalizeGreek(grWord), 3);
-        return buildSamplesCard('LXX (AT)', 'lxx', grWord, samples);
+const samples = await buildLxxMatches(normalizeGreek(greekLookup), 3);
+        return buildSamplesCard('LXX (AT)', 'lxx', greekLookup, samples);
       })()
     ];
     const settled = await Promise.allSettled(tasks);
