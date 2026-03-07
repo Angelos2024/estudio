@@ -737,38 +737,28 @@ async function ensureHebrewDictionaryLoaded() {
     return HEBREW_DICT_STATE;
 }
 
-function findHebrewDictionaryEntries(rawHebrew) {
+function findHebrewDictionaryEntry(rawHebrew) {
     const state = HEBREW_DICT_STATE;
     const source = Array.isArray(state.entries) ? state.entries : [];
     const index = state.index && typeof state.index === 'object' ? state.index : {};
     const query = normalizeHebrewSpacing(rawHebrew);
     const compactQuery = normalizeHebrewCompact(rawHebrew);
-    if (!compactQuery) return [];
+    if (!compactQuery) return null;
 
     const byId = new Map(source.map(entry => [entry.id, entry]));
+    const byLemma = new Map(source.map(entry => [normalizeHebrewCompact(entry?.lemma), entry]));
+    const byHeadword = new Map(source.map(entry => [normalizeHebrewCompact(entry?.headword_line), entry]));
 
-    const exactLemma = source.filter(entry => normalizeHebrewSpacing(entry?.lemma) === query);
-    if (exactLemma.length) return exactLemma;
-
-    const exactHeadword = source.filter(entry => normalizeHebrewSpacing(entry?.headword_line) === query);
-    if (exactHeadword.length) return exactHeadword;
-
-    const startsWithHeadword = source.filter(entry => normalizeHebrewSpacing(entry?.headword_line).startsWith(query));
-    if (startsWithHeadword.length) return startsWithHeadword.slice(0, 8);
-
-    const idList = index[compactQuery] || index[query] || [];
-    if (Array.isArray(idList) && idList.length) {
-        return idList.map(id => byId.get(id)).filter(Boolean);
+    const indexedIds = index[compactQuery] || index[query] || [];
+    if (Array.isArray(indexedIds) && indexedIds.length) {
+        const exactById = byId.get(indexedIds[0]);
+        if (exactById) return exactById;
     }
 
-    const tokenHits = source.filter(entry =>
-        Array.isArray(entry?.headword_tokens) &&
-        entry.headword_tokens.some(token => normalizeHebrewCompact(token) === compactQuery)
-    );
-    if (tokenHits.length) return tokenHits.slice(0, 8);
+    if (byLemma.has(compactQuery)) return byLemma.get(compactQuery);
+    if (byHeadword.has(compactQuery)) return byHeadword.get(compactQuery);
 
-    const containsLemma = source.filter(entry => normalizeHebrewSpacing(entry?.lemma).includes(query));
-    return containsLemma.slice(0, 8);
+   return null;
 }
 
 function splitParagraphsFromDictionaryText(text) {
@@ -842,35 +832,17 @@ function formatReferencesInline(text) {
 }
 
 function renderStructuredHebrewEntry(entry) {
-    const sections = extractStructuredHebrewSections(entry);
-    const sectionHtml = sections.map(section => {
-        const sectionParagraphs = (section.paragraphs || []).map(p => `<p class="mb-2">${formatReferencesInline(p)}</p>`).join('');
-        const subsectionHtml = (section.children || []).map(child => `
-            <div class="mb-3">
-              <div class="fw-semibold mb-1">${escapeHtml(child.title)}</div>
-              ${(child.paragraphs || []).map(p => `<p class="mb-2">${formatReferencesInline(p)}</p>`).join('')}
-            </div>
-        `).join('');
-        return `
-            <div class="mb-3">
-              <div class="fw-bold mb-2">${escapeHtml(section.title)}</div>
-              ${sectionParagraphs}
-              ${subsectionHtml}
-            </div>
-        `;
-    }).join('');
-
-    const pages = [entry.page_start, entry.page_end].filter(v => v !== undefined && v !== null);
-    const pageText = pages.length === 2 && pages[0] !== pages[1] ? `${pages[0]}–${pages[1]}` : (pages[0] ?? '—');
+    
 
     return `
         <div class="trilingual-brief mb-3">
           <div class="trilingual-title hebrew">${escapeHtml(entry.lemma || '—')}</div>
-          <div class="trilingual-line"><strong>Cabecera:</strong> ${escapeHtml(entry.headword_line || '—')}</div>
-          <div class="trilingual-line"><strong>Glosa:</strong> ${escapeHtml(entry.gloss_es || '—')}</div>
-          <div class="trilingual-line"><strong>Página(s):</strong> ${escapeHtml(String(pageText))}</div>
+           <div class="trilingual-line"><strong>lema:</strong> ${escapeHtml(entry.lemma || '—')}</div>
+          <div class="trilingual-line"><strong>headword_line:</strong> ${escapeHtml(entry.headword_line || '—')}</div>
+          <div class="trilingual-line"><strong>gloss_es:</strong> ${escapeHtml(entry.gloss_es || '—')}</div>
+          <div class="trilingual-line"><strong>text:</strong> ${escapeHtml(entry.text || 'Sin texto disponible.')}</div>
         </div>
-        <div>${sectionHtml || `<pre class="comparison-pre comparison-pre--hebrew">${escapeHtml(entry.text || 'Sin texto disponible.')}</pre>`}</div>
+        
     `;
 }
 
@@ -919,15 +891,15 @@ async function updateDictionaryComparison(items, rawQuery) {
     tbody.innerHTML = '<tr><td colspan="2" class="muted">Consultando diccionario hebreo…</td></tr>';
 
     await ensureHebrewDictionaryLoaded();
-    const hebrewEntries = findHebrewDictionaryEntries(hebrewCandidate);
-    const hebrewHtml = hebrewEntries.length
-        ? hebrewEntries.map(renderStructuredHebrewEntry).join('<hr class="my-3">')
+     const hebrewEntry = findHebrewDictionaryEntry(hebrewCandidate);
+    const hebrewHtml = hebrewEntry
+        ? renderStructuredHebrewEntry(hebrewEntry)
         : `<div class="trilingual-brief mb-3">
              <div class="trilingual-title">B. Hebreo</div>
              <div class="trilingual-line"><strong>Consulta normalizada:</strong> <span class="hebrew">${escapeHtml(normalizeHebrewLemmaForLookup(hebrewCandidate) || hebrewCandidate)}</span></div>
            </div>
-           <div class="comparison-pre comparison-pre--hebrew">No se encontró una entrada exacta en hebrewdic.json para este candidato. Se puede añadir un fallback morfológico más fuerte si compartes la lógica exacta de lematización final.</div>`;
-
+ <div class="comparison-pre comparison-pre--hebrew">No se encontró un id correspondiente en hebrewdic.json para este candidato.</div>`;
+   
     tbody.innerHTML = `
       <tr>
         <td>${renderGreekComparisonCell(primary, rawQuery)}</td>
