@@ -89,6 +89,173 @@ function sortMatchesByBookOrderStable(list) {
         .map(item => item.entry);
 }
 
+function getHebrewText(entry) {
+    return String(entry?.he || entry?.hebrew || entry?.palabra || '').trim();
+}
+
+function getGreekText(entry) {
+    return String(entry?.gr || entry?.equivalencia_griega || entry?.greek || '').trim();
+}
+
+function getGreekParts(entry) {
+    return String(getGreekText(entry) || '')
+        .split(/[,;·/]+/)
+        .map(v => String(v || '').trim())
+        .filter(Boolean);
+}
+
+function getGreekPriority(entry) {
+    const raw = getGreekText(entry);
+    const parts = getGreekParts(entry);
+    const bestPart = parts.length
+        ? parts.slice().sort((a, b) => {
+            const aTokens = normalizeFuzzy(a).split(/\s+/).filter(Boolean).length || 999;
+            const bTokens = normalizeFuzzy(b).split(/\s+/).filter(Boolean).length || 999;
+            if (aTokens !== bTokens) return aTokens - bTokens;
+            if (a.length !== b.length) return a.length - b.length;
+            return a.localeCompare(b, 'el');
+        })[0]
+        : raw;
+
+    const bestTokenCount = normalizeFuzzy(bestPart).split(/\s+/).filter(Boolean).length || 999;
+    const rawTokenCount = normalizeFuzzy(raw).split(/\s+/).filter(Boolean).length || 999;
+
+    return {
+        partCount: parts.length || (raw ? 1 : 999),
+        bestTokenCount,
+        bestCharCount: bestPart ? bestPart.length : 999,
+        rawTokenCount,
+        rawCharCount: raw ? raw.length : 999,
+        bestPart,
+        raw
+    };
+}
+
+function getHebrewPriority(entry) {
+    const heb = getHebrewText(entry);
+    if (!heb) return { wordCount: 999, charCount: 999 };
+
+    const clean = heb.replace(/[\u05BE]/g, ' ').trim();
+    const words = clean ? clean.split(/\s+/).filter(Boolean) : [];
+    const wordCount = words.length || 999;
+
+    return {
+        wordCount,
+        charCount: heb.length
+    };
+}
+
+function normalizeHebrewForSort(text) {
+    const value = String(text || '');
+    if (typeof stripHebrewMarksAnywhere === 'function' && typeof normalizeText === 'function') {
+        return normalizeText(stripHebrewMarksAnywhere(value));
+    }
+    return value
+        .normalize('NFD')
+        .replace(/[\u0591-\u05C7]/g, '')
+        .replace(/[\s\u05BE\-\u2010-\u2015\u2212]/g, '')
+        .trim();
+}
+
+function getHebrewExactness(entry, queryRaw) {
+    const query = String(queryRaw || '').trim();
+    const heb = getHebrewText(entry);
+    if (!query || !heb) return 999;
+
+    const queryCompact = query.replace(/[\s\u05BE\-\u2010-\u2015\u2212]+/g, '');
+    const hebCompact = heb.replace(/[\s\u05BE\-\u2010-\u2015\u2212]+/g, '');
+    const queryNorm = normalizeHebrewForSort(query);
+    const hebNorm = normalizeHebrewForSort(heb);
+
+    if (heb === query) return 0;
+    if (hebCompact === queryCompact) return 1;
+    if (hebNorm === queryNorm) return 2;
+    if (hebNorm.includes(queryNorm) || queryNorm.includes(hebNorm)) return 3;
+    return 9;
+}
+
+function sortSpanishMatches(list) {
+    return list.sort((a, b) => {
+        const ga = getGreekPriority(a);
+        const gb = getGreekPriority(b);
+        const ba = getCanonicalBookRank(a);
+        const bb = getCanonicalBookRank(b);
+        const la = getEntryLoadOrder(a);
+        const lb = getEntryLoadOrder(b);
+
+        if (ga.bestTokenCount !== gb.bestTokenCount) return ga.bestTokenCount - gb.bestTokenCount;
+        if (ga.bestCharCount !== gb.bestCharCount) return ga.bestCharCount - gb.bestCharCount;
+        if (ga.partCount !== gb.partCount) return ga.partCount - gb.partCount;
+        if (ga.rawTokenCount !== gb.rawTokenCount) return ga.rawTokenCount - gb.rawTokenCount;
+        if (ga.rawCharCount !== gb.rawCharCount) return ga.rawCharCount - gb.rawCharCount;
+        if (ba !== bb) return ba - bb;
+        if (la !== lb) return la - lb;
+
+        const ha = getHebrewPriority(a);
+        const hb = getHebrewPriority(b);
+        if (ha.wordCount !== hb.wordCount) return ha.wordCount - hb.wordCount;
+        if (ha.charCount !== hb.charCount) return ha.charCount - hb.charCount;
+
+        const greekCmp = ga.bestPart.localeCompare(gb.bestPart, 'el');
+        if (greekCmp !== 0) return greekCmp;
+
+        const haText = getHebrewText(a);
+        const hbText = getHebrewText(b);
+        return haText.localeCompare(hbText, 'he');
+    });
+}
+
+function sortGreekMatches(list, token, getGreekSpecificity) {
+    return list.sort((a, b) => {
+        const ga = getGreekSpecificity(a, token);
+        const gb = getGreekSpecificity(b, token);
+        const ba = getCanonicalBookRank(a);
+        const bb = getCanonicalBookRank(b);
+        const la = getEntryLoadOrder(a);
+        const lb = getEntryLoadOrder(b);
+
+        if (ga.matchPriority !== gb.matchPriority) return ga.matchPriority - gb.matchPriority;
+        if (ga.tokenCount !== gb.tokenCount) return ga.tokenCount - gb.tokenCount;
+        if (ga.charCount !== gb.charCount) return ga.charCount - gb.charCount;
+        if (ba !== bb) return ba - bb;
+        if (la !== lb) return la - lb;
+
+        const ha = getHebrewPriority(a);
+        const hb = getHebrewPriority(b);
+        if (ha.wordCount !== hb.wordCount) return ha.wordCount - hb.wordCount;
+        if (ha.charCount !== hb.charCount) return ha.charCount - hb.charCount;
+
+        const rawCmp = ga.raw.localeCompare(gb.raw, 'el');
+        if (rawCmp !== 0) return rawCmp;
+
+        return getHebrewText(a).localeCompare(getHebrewText(b), 'he');
+    });
+}
+
+function sortHebrewMatches(list, queryRaw) {
+    return (Array.isArray(list) ? list : []).sort((a, b) => {
+        const ea = getHebrewExactness(a, queryRaw);
+        const eb = getHebrewExactness(b, queryRaw);
+        const ha = getHebrewPriority(a);
+        const hb = getHebrewPriority(b);
+        const ba = getCanonicalBookRank(a);
+        const bb = getCanonicalBookRank(b);
+        const la = getEntryLoadOrder(a);
+        const lb = getEntryLoadOrder(b);
+
+        if (ea !== eb) return ea - eb;
+        if (ha.wordCount !== hb.wordCount) return ha.wordCount - hb.wordCount;
+        if (ha.charCount !== hb.charCount) return ha.charCount - hb.charCount;
+        if (ba !== bb) return ba - bb;
+        if (la !== lb) return la - lb;
+
+        const hebCmp = getHebrewText(a).localeCompare(getHebrewText(b), 'he');
+        if (hebCmp !== 0) return hebCmp;
+
+        return getGreekText(a).localeCompare(getGreekText(b), 'el');
+    });
+}
+
 
 /**
  * MOTOR DE BÚSQUEDA GRIEGA
@@ -274,14 +441,14 @@ function searchGreek(query) {
         }
     });
 
-    sortGreekMatches(exactMainFieldMatches, normQ);
-    sortGreekMatches(exactCandidateFieldMatches, normQ);
-    sortGreekMatches(exactMainTokenMatches, normQ);
-    sortGreekMatches(exactCandidateTokenMatches, normQ);
-    sortGreekMatches(pluralMainFieldMatches, normQ);
-    sortGreekMatches(pluralCandidateFieldMatches, normQ);
-    sortGreekMatches(pluralMainTokenMatches, normQ);
-    sortGreekMatches(pluralCandidateTokenMatches, normQ);
+    sortGreekMatchesLocal(exactMainFieldMatches, normQ);
+    sortGreekMatchesLocal(exactCandidateFieldMatches, normQ);
+    sortGreekMatchesLocal(exactMainTokenMatches, normQ);
+    sortGreekMatchesLocal(exactCandidateTokenMatches, normQ);
+    sortGreekMatchesLocal(pluralMainFieldMatches, normQ);
+    sortGreekMatchesLocal(pluralCandidateFieldMatches, normQ);
+    sortGreekMatchesLocal(pluralMainTokenMatches, normQ);
+    sortGreekMatchesLocal(pluralCandidateTokenMatches, normQ);
 
     const finalMatches = [
         ...exactMainFieldMatches,
@@ -301,9 +468,10 @@ function searchGreek(query) {
         trace: [
             `Búsqueda exacta griega para: ${query}`,
             `Variantes plurales aceptadas: ${Array.from(pluralVariants).join(', ') || 'ninguna'}`,
-            'Orden: exacto visible completo > exacto en listas léxicas (coma/punto y coma) > exacto como palabra completa en frase > plurales exactos.'
+            'Orden: exacto visible completo > exacto en listas léxicas (coma/punto y coma) > exacto como palabra completa en frase > plurales exactos.',
+            'Dentro de cada grupo se prioriza primero la forma griega más corta y después el orden canónico del libro.'
         ],
-        diag: 'Se priorizan primero las coincidencias exactas de campo completo; después las coincidencias exactas como palabra completa; al final, plurales griegos relacionados.'
+        diag: 'Se priorizan primero las coincidencias griegas más exactas; dentro de cada grupo va primero la forma griega más corta y después el orden canónico del libro.'
     };
 }
 
@@ -469,10 +637,10 @@ function searchSpanish(query) {
         }
     });
 
-    sortSpanishMatches(exactMainMatches);
-    sortSpanishMatches(exactCandidateMatches);
-    sortSpanishMatches(pluralMainMatches);
-    sortSpanishMatches(pluralCandidateMatches);
+    sortSpanishMatchesLocal(exactMainMatches);
+    sortSpanishMatchesLocal(exactCandidateMatches);
+    sortSpanishMatchesLocal(pluralMainMatches);
+    sortSpanishMatchesLocal(pluralCandidateMatches);
 
     const finalMatches = [
         ...exactMainMatches,
@@ -489,9 +657,9 @@ function searchSpanish(query) {
             `Búsqueda exacta para: ${firstWord}`,
             `Variantes plurales aceptadas: ${Array.from(pluralVariants).join(', ') || 'ninguna'}`,
             'Orden: exacto visible > exacto en candidatos > plural visible > plural en candidatos.',
-            'Dentro de cada grupo se prioriza primero el griego más breve y directo; después, el hebreo más conciso; por último, el orden canónico del libro.'
+            'Dentro de cada grupo se prioriza primero la entrada griega más corta; después, el orden canónico del libro; y al final el hebreo más conciso solo como desempate.'
         ],
-        diag: 'Se muestran primero las coincidencias exactas de la traducción visible; dentro de cada grupo se prioriza el campo griego más corto y directo, luego el hebreo más conciso y finalmente el orden de libro.'
+        diag: 'Se muestran primero las coincidencias exactas de la traducción visible; dentro de cada grupo se prioriza la entrada griega más corta y luego el orden canónico del libro.'
     };
 }
 
@@ -556,6 +724,12 @@ function doSearch() {
     if (isHebrew) {
         // Mantiene la lógica avanzada de morfología de buscador3.js
         res = searchHebrewWord(rawQuery);
+        if (res && Array.isArray(res.matches)) {
+            res.matches = sortHebrewMatches(res.matches, rawQuery);
+            if (Array.isArray(res.trace)) {
+                res.trace.push('Reordenado final hebreo: exactitud hebrea > hebreo más corto > orden canónico del libro.');
+            }
+        }
     } else if (isGreek) {
         // Nuevo motor para palabras como κατασπερεῖς
         res = searchGreek(rawQuery);
