@@ -13,6 +13,11 @@
     he: '../search/index-he.json'
   };
 
+ const DICTIONARY_SOURCES = {
+    hebrew: '../diccionario/lexico_hebreo.json',
+    greek: '../diccionario/diccionarioG_unificado.min.json'
+  };
+
   const TEXT_BASE = '../search/texts';
     const NT_BOOKS = new Set([
     'mateo', 'marcos', 'lucas', 'juan', 'hechos', 'romanos',
@@ -87,8 +92,12 @@
     indexes: {},
     textCache: new Map(),
     lxxFileCache: new Map(),
- lxxSearchCache: new Map(),
-      };
+lxxSearchCache: new Map(),
+    hebrewLexiconMap: null,
+    greekSpanishMap: null,
+    dictionaryLoadPromise: null
+  };
+
   const jsonCache = new Map();
 
   function $(id) {
@@ -444,19 +453,104 @@
     ).trim();
   }
 
-   function buildEquivalenceTag(lang, entry, rawQuery = '') {
-    const heb = getHebrew(entry) || (lang === 'he' ? String(rawQuery || '').trim() : '');
-    const gr = getGreek(entry) || (lang === 'gr' ? String(rawQuery || '').trim() : '');
-    const es = getSpanish(entry) || (lang === 'es' ? String(rawQuery || '').trim() : '');
+   async function loadDefinitionSources() {
+    if (state.hebrewLexiconMap && state.greekSpanishMap) return;
+    if (state.dictionaryLoadPromise) {
+      await state.dictionaryLoadPromise;
+      return;
+    }
+
+    state.dictionaryLoadPromise = (async () => {
+      const [hebrewEntries, greekEntries] = await Promise.all([
+        loadJson(DICTIONARY_SOURCES.hebrew).catch(() => []),
+        loadJson(DICTIONARY_SOURCES.greek).catch(() => [])
+      ]);
+
+      const hebrewMap = new Map();
+      (Array.isArray(hebrewEntries) ? hebrewEntries : []).forEach((item) => {
+        const palabra = String(item?.palabra || '').trim();
+        if (!palabra) return;
+        const key = normalizeHebrew(palabra);
+        if (!key) return;
+        if (!hebrewMap.has(key)) hebrewMap.set(key, []);
+        hebrewMap.get(key).push(item);
+      });
+
+      const greekMap = new Map();
+      (Array.isArray(greekEntries) ? greekEntries : []).forEach((pair) => {
+        if (!Array.isArray(pair) || pair.length < 2) return;
+        const lemma = String(pair[0] || '').trim();
+        const meaning = String(pair[1] || '').trim();
+        if (!lemma || !meaning) return;
+        const key = normalizeGreek(lemma);
+        if (!key) return;
+        if (!greekMap.has(key)) greekMap.set(key, new Set());
+        greekMap.get(key).add(meaning);
+      });
+
+      state.hebrewLexiconMap = hebrewMap;
+      state.greekSpanishMap = greekMap;
+    })();
+
+    try {
+      await state.dictionaryLoadPromise;
+    } finally {
+      state.dictionaryLoadPromise = null;
+    }
+  }
+
+  function getHebrewDefinitionLines(word = '', max = 2) {
+    const key = normalizeHebrew(word);
+    if (!key || !state.hebrewLexiconMap) return [];
+    const entries = state.hebrewLexiconMap.get(key) || [];
+    const lines = [];
+    for (const entry of entries) {
+      const definition = String(entry?.descripcion || '').replace(/\s+/g, ' ').trim();
+      if (!definition) continue;
+      lines.push(definition);
+      if (lines.length >= max) break;
+    }
+    return lines;
+  }
+
+  function getGreekDefinitionLines(word = '', max = 6) {
+    const key = normalizeGreek(word);
+    if (!key || !state.greekSpanishMap) return [];
+    return [...(state.greekSpanishMap.get(key) || [])].slice(0, max);
+  }
+
+  function buildDefinitionCard(title, lines = []) {
+    const clean = lines.filter(Boolean);
+    const content = clean.length
+      ? clean.map((line) => `<div class="small">${escapeHtml(line)}</div>`).join('')
+      : '<div class="small muted">Sin definición disponible en el diccionario seleccionado.</div>';
+    return `<div class="fw-semibold">${escapeHtml(title)}</div>${content}`;
+  }
+
+  async function buildDefinitionCards({ lang, entry, rawQuery }) {
+    await loadDefinitionSources();
+    const heb = getHebrew(entry) || (lang === 'he' ? rawQuery : '');
+    const gr = getGreek(entry) || (lang === 'gr' ? rawQuery : '');
 
     if (lang === 'he') {
-      return `Equivalencia (lema): <span class="fw-semibold hebrew">${escapeHtml(heb || '—')}</span> → Griego: <span class="fw-semibold greek">${escapeHtml(gr || '—')}</span> · Español: <span class="fw-semibold">${escapeHtml(es || '—')}</span>`;
-    }
+     return [
+        buildDefinitionCard('Definición (Hebreo → Español · lexico_hebreo)', getHebrewDefinitionLines(heb))
+      ];
     if (lang === 'gr') {
-      return `Equivalencia (lema): <span class="fw-semibold greek">${escapeHtml(gr || '—')}</span> → Hebreo: <span class="fw-semibold hebrew">${escapeHtml(heb || '—')}</span> · Español: <span class="fw-semibold">${escapeHtml(es || '—')}</span>`;
-    }
-    return `Equivalencia (lema): <span class="fw-semibold">${escapeHtml(es || '—')}</span> → Hebreo: <span class="fw-semibold hebrew">${escapeHtml(heb || '—')}</span> · Griego: <span class="fw-semibold greek">${escapeHtml(gr || '—')}</span>`;
-  }
+return [
+        buildDefinitionCard('Definición (Griego → Español · diccionarioG_unificado)', getGreekDefinitionLines(gr))
+      ];
+          }
+ return [
+      buildDefinitionCard(
+        'Definición ampliada (Español · fusión Hebreo + Griego)',
+        [
+          ...getHebrewDefinitionLines(heb).map((line) => `Hebreo: ${line}`),
+          ...getGreekDefinitionLines(gr).map((line) => `Griego: ${line}`)
+        ]
+      )
+    ];
+      }
 
 function getSpanishEquivalences(entry, fallback = '') {
     const values = [
@@ -915,14 +1009,10 @@ const samples = await buildLxxMatches(normalizeGreek(greekLookup), 3);
       lang === 'gr' ? transliterateGreek(gr || rawQuery) :
       '—';
 
-    const dictionaryEquivalence = buildEquivalenceTag(lang, entry, rawQuery);
-
-
     renderTags([
       `Lema: <span class="fw-semibold ${classForLang(lang)}">${escapeHtml(lemmaText || '—')}</span>`,
-      `Transliteración: <span class="fw-semibold">${escapeHtml(transliteration || '—')}</span>`,
-      dictionaryEquivalence
-          ]);
+       `Transliteración: <span class="fw-semibold">${escapeHtml(transliteration || '—')}</span>`
+    ]);
 
  const palabrasBuscadas = [
       es || (lang === 'es' ? rawQuery : '—'),
@@ -931,24 +1021,29 @@ const samples = await buildLxxMatches(normalizeGreek(greekLookup), 3);
     ].map((word) => escapeHtml(word || '—')).join(' / ');
 
     renderSummary(`Palabra buscada: <span class="fw-semibold">${palabrasBuscadas}</span>`);
-    renderCorrespondence([]);
-
+ renderCorrespondence([
+      '<div class="small muted">Cargando definición del diccionario…</div>'
+    ]);
     renderExamples([
       '<div class="small muted">Cargando muestras de LXX, texto hebreo, RVR1960 y RKANT…</div>'
     ]);
 
-    const sourceCards = await buildSourceCards({
-      esWord: esLookupWord || es || rawQuery,
+ const [definitionCards, sourceCards] = await Promise.all([
+      buildDefinitionCards({ lang, entry, rawQuery }).catch(() => []),
+      buildSourceCards({
+            esWord: esLookupWord || es || rawQuery,
       grWord: gr || (lang === 'gr' ? rawQuery : ''),
 heWord: heb || (lang === 'he' ? rawQuery : ''),
       highlightEs: es || (lang === 'es' ? rawQuery : ''),
       highlightGr: gr || (lang === 'gr' ? rawQuery : ''),
       highlightHe: heb || (lang === 'he' ? rawQuery : '')
-          });
+           })
+    ]);
 
-        renderExamples(sourceCards);
-      }
-
+            renderCorrespondence(definitionCards);
+    renderExamples(sourceCards);
+  }
+  
   function renderEmptySummary(rawQuery, reason = '') {
     renderTags([
       `Entrada: <span class="fw-semibold">${escapeHtml(rawQuery || '—')}</span>`,
