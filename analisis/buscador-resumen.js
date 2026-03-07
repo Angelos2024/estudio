@@ -251,10 +251,8 @@
     const nodes = ensurePanelNodes();
     if (!nodes?.correspondence) return;
     nodes.correspondence.innerHTML = '';
-    if (!cards.length) {
-      nodes.correspondence.innerHTML = '<div class="small muted">Sin correspondencias disponibles.</div>';
-      return;
-    }
+    
+        if (!cards.length) return;
     cards.forEach((card) => {
       const div = document.createElement('div');
       div.className = 'example-card';
@@ -437,23 +435,7 @@ function getSpanishEquivalences(entry, fallback = '') {
     return '';
   }
 
-  function buildCorrespondenceCard({ title, word, transliteration, detail, lang }) {
-    const wordLine = word
-      ? `<div class="${classForLang(lang)} fw-semibold">${escapeHtml(word)}</div>`
-      : '<div class="small muted">—</div>';
-    const translitLine = transliteration
-      ? `<div class="small muted">Transliteración: ${escapeHtml(transliteration)}</div>`
-      : '';
-    const detailLine = detail
-      ? `<div class="small muted">${escapeHtml(detail)}</div>`
-      : '';
-    return `
-      <div class="fw-semibold">${escapeHtml(title)}</div>
-      ${wordLine}
-      ${translitLine}
-      ${detailLine}
-    `;
-  }
+
 
   function prettifyBookLabel(book) {
     const raw = String(book || '').replace(/_/g, ' ').trim();
@@ -786,30 +768,15 @@ const samples = await buildLxxMatches(normalizeGreek(greekLookup), 3);
       'Estado: <span class="fw-semibold">Coincidencia localizada</span>'
     ]);
 
-        renderSummary(`Palabra buscada: <span class="fw-semibold">${escapeHtml(rawQuery)}</span>`);
+ const palabrasBuscadas = [
+      es || (lang === 'es' ? rawQuery : '—'),
+      heb || (lang === 'he' ? rawQuery : '—'),
+      gr || (lang === 'gr' ? rawQuery : '—')
+    ].map((word) => escapeHtml(word || '—')).join(' / ');
 
-    renderCorrespondence([
-      buildCorrespondenceCard({
-        title: 'Hebreo',
-        word: heb || '—',
-        transliteration: heb ? transliterateHebrew(heb) : '',
-        detail: heb ? 'Forma hebrea principal encontrada.' : 'Sin forma hebrea visible.',
-        lang: 'he'
-      }),
-      buildCorrespondenceCard({
-        title: 'Griego',
-        word: gr || '—',
-        transliteration: gr ? transliterateGreek(gr) : '',
-        detail: gr ? 'Equivalencia griega principal encontrada.' : 'Sin equivalencia griega visible.',        lang: 'gr'      }),
-      buildCorrespondenceCard({
-        title: 'Español',
-        word: es || '—',
-        transliteration: '',
-        detail: es ? 'Glosa o traducción española principal.' : 'Sin glosa española visible.',
-        lang: 'es'
-      })
-    ]);
-
+    renderSummary(`Palabra buscada: <span class="fw-semibold">${palabrasBuscadas}</span>`);
+    renderCorrespondence([]);
+    
     renderExamples([
       '<div class="small muted">Cargando muestras de LXX, texto hebreo, RVR1960 y RKANT…</div>'
     ]);

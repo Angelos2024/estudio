@@ -107,6 +107,7 @@ function getGreekParts(entry) {
 function getGreekPriority(entry) {
     const raw = getGreekText(entry);
     const parts = getGreekParts(entry);
+        const hasListSeparator = /[,;·/]/.test(raw);
     const bestPart = parts.length
         ? parts.slice().sort((a, b) => {
             const aTokens = normalizeFuzzy(a).split(/\s+/).filter(Boolean).length || 999;
