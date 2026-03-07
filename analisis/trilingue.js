@@ -407,16 +407,23 @@ function searchSpanish(query) {
 
  
     const GREEK_BIBLICAL_STOPWORDS = new Set([
-        'ο', 'η', 'το', 'του', 'της', 'τω', 'τη', 'τον', 'την',
-        'οι', 'αι', 'τα', 'των', 'τοις', 'ταις', 'τους', 'τας',
-        'εν', 'εις', 'εκ', 'εξ', 'απο', 'δια', 'επι', 'κατα',
-        'μετα', 'μεθ', 'μετ', 'παρα', 'περι', 'προ', 'προς', 'συν',
-        'υπο', 'υπερ', 'αντι', 'ανα', 'ενωπιον', 'εμπροσθεν', 'οπισω', 'εως',
-        'και', 'δε', 'γαρ', 'ουν', 'αλλα', 'αλλ', 'εαν', 'ει',
-        'οτι', 'ως', 'ωσπερ', 'ωστε', 'διο', 'διοτι', 'επει', 'τε',
-        'επειδη', 'οπως', 'ινα', 'καθως', 'μεν', 'ουδε', 'ουτε', 'μητε',
-        'μη', 'ου', 'ουκ', 'ουχ', 'αν', 'ιδου', 'ιδε', 'ουαι', 'αμην',
-        'ποθεν', 'πως', 'ποτε', 'γε', 'αρα'
+        // Artículos
+        'ο', 'η', 'το', 'του', 'τησ', 'τω', 'τη', 'τον', 'την',
+        'οι', 'αι', 'τα', 'των', 'τοισ', 'ταισ', 'τουσ', 'τασ',
+        // Preposiciones (y sus variaciones por elisión)
+        'εν', 'εισ', 'εκ', 'εξ', 'απο', 'απ', 'αφ', 'δια', 'δι', 'επι', 'επ', 'εφ',
+        'κατα', 'κατ', 'καθ', 'μετα', 'μετ', 'μεθ', 'παρα', 'παρ', 'περι', 'προ', 
+        'προσ', 'συν', 'υπο', 'υπ', 'υφ', 'υπερ', 'αντι', 'αντ', 'ανθ', 'ανα', 'αν',
+        'αχρι', 'αχρισ', 'μεχρι', 'μεχρισ', 'εωσ', 'αμα', 'ανευ', 'ενεκα', 'ενεκεν', 
+        'ενωπιον', 'εμπροσθεν', 'οπισω', 'εξω', 'εσω', 'χωρισ', 'περαν',
+        // Conjunciones y Partículas Funcionales
+        'και', 'δε', 'δ', 'γαρ', 'ουν', 'αλλα', 'αλλ', 'εαν', 'ει',
+        'οτι', 'ωσ', 'ωσει', 'ωσπερ', 'ωστε', 'διο', 'διοτι', 'επει', 'τε',
+        'επειδη', 'οπωσ', 'ινα', 'καθωσ', 'καθαπερ', 'μεν', 'ουδε', 'ουτε', 
+        'μηδε', 'μητε', 'μη', 'ου', 'ουκ', 'ουχ', 'ουχι', 'αν', 'καν', 'αρα', 
+        'αραγε', 'γε', 'ειτε', 'πλην',
+        // Interjecciones y adverbios de uso común funcional
+        'ιδου', 'ιδε', 'ουαι', 'αμην', 'ποθεν', 'πωσ', 'ποτε', 'ναι', 'νυν', 'τοτε'
     ]);
 
     function normalizeGreekStopword(text) {
@@ -571,9 +578,13 @@ const firstPartTokenCount = normalizeFuzzy(firstPart).split(/\s+/).filter(Boolea
         ...exactCandidateMatches,
         ...pluralMainMatches,
         ...pluralCandidateMatches
-    ].map(entry => {
+    ];
+
+    const finalMatchesAdjusted = finalMatches.map((entry, index) => {
+        if (index !== 0) return entry;
+
         const greekOriginal = getGreekText(entry);
-        const greekToUse = getUsefulGreekWord(greekOriginal);
+        const greekToUse = pickMeaningfulGreekTokenForSpanish(greekOriginal);
 
         return {
             ...entry,
@@ -583,9 +594,9 @@ const firstPartTokenCount = normalizeFuzzy(firstPart).split(/\s+/).filter(Boolea
     });
 
     return {
-        ok: finalMatches.length > 0,
+        ok: finalMatchesAdjusted.length > 0,
         tier: 'Búsqueda Español (Exacta)',
-        matches: finalMatches,
+        matches: finalMatchesAdjusted,
         trace: [
             `Búsqueda exacta para: ${firstWord}`,
             `Variantes plurales aceptadas: ${Array.from(pluralVariants).join(', ') || 'ninguna'}`,
