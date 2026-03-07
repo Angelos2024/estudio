@@ -14,6 +14,13 @@
   };
 
   const TEXT_BASE = './search/texts';
+  const NT_BOOKS = new Set([
+    'mateo', 'marcos', 'lucas', 'juan', 'hechos', 'romanos',
+    '1_corintios', '2_corintios', 'galatas', 'efesios', 'filipenses', 'colosenses',
+    '1_tesalonicenses', '2_tesalonicenses', '1_timoteo', '2_timoteo', 'tito', 'filemon',
+    'hebreos', 'santiago', '1_pedro', '2_pedro', '1_juan', '2_juan', '3_juan',
+    'judas', 'apocalipsis'
+  ]);
   const LXX_FILES = [
     'lxx_rahlfs_1935_1Chr.json',
     'lxx_rahlfs_1935_1Esdr.json',
@@ -299,6 +306,28 @@
       ''
     ).trim();
   }
+function getSpanishEquivalences(entry, fallback = '') {
+    const values = [
+      entry?.es,
+      entry?.equivalencia_espanol,
+      entry?.equivalencia,
+      entry?.glosa,
+      ...(Array.isArray(entry?.candidatos) ? entry.candidatos : [])
+    ];
+    if (fallback) values.push(fallback);
+
+    const uniq = new Set();
+    const output = [];
+    values.forEach((value) => {
+      const text = String(value || '').trim();
+      if (!text) return;
+      const key = normalizeSpanish(text);
+      if (!key || uniq.has(key)) return;
+      uniq.add(key);
+      output.push(text);
+    });
+    return output.slice(0, 3);
+  }
 
 
 
@@ -498,7 +527,12 @@
         const verses = await loadChapterText(lang, book, chapter);
         const verseText = verses?.[verse - 1] || '';
         if (!verseText) continue;
-        samples.push({ ref: formatRef(book, chapter, verse), text: verseText, lang });
+ samples.push({
+          ref: formatRef(book, chapter, verse),
+          rawRef: `${book}|${chapter}|${verse}`,
+          text: verseText,
+          lang
+        });
       } catch (_) {
         continue;
       }
@@ -559,13 +593,71 @@
     `;
   }
 
-  async function buildSourceCards({ esWord, grWord, heWord }) {
-    const tasks = [
-      (async () => {
-const refs = await searchRefsInTextIndex('es', esWord, 3);
-        const samples = await buildSamplesForRefs(refs, 'es', 3);
-        return buildSamplesCard('RVR1960 (AT/NT)', 'es', esWord, samples);
-      })(),
+function getRvrCardTitleFromSections(sections) {
+    let hasAT = false;
+    let hasNT = false;
+
+    (sections || []).forEach((section) => {
+      (section?.samples || []).forEach((sample) => {
+        const rawRef = String(sample?.rawRef || '');
+        const [book] = rawRef.split('|');
+        if (!book) return;
+        if (NT_BOOKS.has(book)) hasNT = true;
+        else hasAT = true;
+      });
+    });
+
+    const suffix = hasAT && hasNT ? 'AT/NT' : (hasNT ? 'NT' : 'AT');
+    return `RVR1960 (${suffix})`;
+  }
+
+  function buildRvrSectionsHtml(sections) {
+    const blocks = (sections || []).map((section) => {
+      const eq = escapeHtml(section?.equivalence || '—');
+      const rows = (section?.samples || []).length
+        ? section.samples.map((sample) => `
+            <div class="mt-2">
+              <div class="small fw-semibold">${escapeHtml(sample.ref)}</div>
+              <div>${escapeHtml(sample.text)}</div>
+            </div>
+          `).join('')
+        : '<div class="small muted">Sin versos para esta equivalencia.</div>';
+      return `
+        <div class="mt-2">
+          <div class="small fw-semibold">Equivalencia: ${eq}</div>
+          ${rows}
+        </div>
+      `;
+    });
+
+    return blocks.length
+      ? blocks.join('')
+      : '<div class="small muted">Sin coincidencias en esta fuente.</div>';
+  }
+
+  async function buildRvrCard(esEquivalences = []) {
+    const sections = [];
+    for (const equivalence of (esEquivalences || []).slice(0, 3)) {
+      const refs = await searchRefsInTextIndex('es', equivalence, 3);
+      const samples = await buildSamplesForRefs(refs, 'es', 3);
+      sections.push({ equivalence, samples });
+    }
+
+    const title = getRvrCardTitleFromSections(sections);
+    const renderedEquivalences = sections.length
+      ? sections.map((section) => section.equivalence).join(' · ')
+      : '—';
+
+    return `
+      <div class="fw-semibold">${escapeHtml(title)}</div>
+      <div class="small muted">${escapeHtml(renderedEquivalences)}</div>
+      ${buildRvrSectionsHtml(sections)}
+    `;
+  }
+
+  async function buildSourceCards({ esWord, esEquivalences = [], grWord, heWord }) {
+      const tasks = [
+      buildRvrCard(esEquivalences.length ? esEquivalences : [esWord]),
       (async () => {
         const refs = await searchRefsInTextIndex('gr', grWord, 3);
         const samples = await buildSamplesForRefs(refs, 'gr', 3);
@@ -593,7 +685,7 @@ const refs = await searchRefsInTextIndex('es', esWord, 3);
     const heb = getHebrew(entry);
     const gr = getGreek(entry);
     const es = getSpanish(entry);
-    
+    const esEquivalences = getSpanishEquivalences(entry, lang === 'es' ? rawQuery : es);
 
     const lemmaText =
       lang === 'he' ? (heb || rawQuery) :
@@ -641,6 +733,7 @@ const refs = await searchRefsInTextIndex('es', esWord, 3);
 
     const sourceCards = await buildSourceCards({
       esWord: es || rawQuery,
+            esEquivalences,
       grWord: gr || (lang === 'gr' ? rawQuery : ''),
       heWord: heb || (lang === 'he' ? rawQuery : '')
     });
