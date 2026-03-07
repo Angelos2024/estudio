@@ -104,6 +104,69 @@
       .replace(/'/g, '&#39;');
   }
 
+ function escapeRegExp(text) {
+    return String(text || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  function buildHighlightRegex(token, lang = 'es') {
+    const raw = String(token || '').trim();
+    if (!raw) return null;
+    if (lang === 'es') {
+      const plain = normalizeSpanish(raw);
+      if (!plain) return null;
+      const chars = plain.split('').map((ch) => {
+        if (ch === 'n') return '[nñ]';
+        if (ch === ' ') return '\\s+';
+        return ch;
+      }).join('');
+      const accentMap = {
+        a: '[aáàäâã]',
+        e: '[eéèëê]',
+        i: '[iíìïî]',
+        o: '[oóòöôõ]',
+        u: '[uúùüû]'
+      };
+      const pattern = chars.replace(/[aeiou]/g, (m) => accentMap[m] || m);
+      return new RegExp(`\\b${pattern}\\b`, 'giu');
+    }
+    if (lang === 'gr') {
+      const letters = String(raw || '').split('').map((ch) => {
+        if (ch === 'σ' || ch === 'ς') return '(?:σ|ς)';
+        return escapeRegExp(ch);
+      }).join('');
+      return letters ? new RegExp(letters, 'giu') : null;
+    }
+    if (lang === 'he') {
+      const cleaned = String(raw || '').replace(/[֑-ׇ]/g, '').trim();
+      if (!cleaned) return null;
+      const pattern = cleaned.split('').map((ch) => `${escapeRegExp(ch)}[\u0591-\u05C7]*`).join('');
+      return new RegExp(pattern, 'gu');
+    }
+    return null;
+  }
+
+  function highlightText(value, token, lang = 'es') {
+    const text = String(value || '');
+    const regex = buildHighlightRegex(token, lang);
+    if (!regex || !text) return escapeHtml(text);
+    let lastIndex = 0;
+    let html = '';
+    let match;
+    while ((match = regex.exec(text)) !== null) {
+      if (!match[0]) {
+        regex.lastIndex += 1;
+        continue;
+      }
+      const start = match.index;
+      const end = start + match[0].length;
+      html += escapeHtml(text.slice(lastIndex, start));
+      html += `<mark class="search-hit">${escapeHtml(match[0])}</mark>`;
+      lastIndex = end;
+    }
+    html += escapeHtml(text.slice(lastIndex));
+    return html;
+  }
+
   function normalizeSpanish(text) {
     return String(text || '')
       .trim()
@@ -658,14 +721,14 @@ function getSpanishEquivalences(entry, fallback = '') {
     return samples;
   }
 
-  function buildSamplesCard(title, lang, queryWord, samples) {
-    const langClass = classForLang(lang);
+  function buildSamplesCard(title, lang, queryWord, samples, highlightToken = '') {
+      const langClass = classForLang(lang);
     const rows = (samples || []).length
       ? samples.map((sample) => `
           <div class="mt-2">
             <div class="small fw-semibold">${escapeHtml(sample.ref)}</div>
-            <div class="${langClass}">${escapeHtml(sample.text)}</div>
-          </div>
+            <div class="${langClass}">${highlightText(sample.text, highlightToken || queryWord, lang === 'lxx' ? 'gr' : lang)}</div>
+                      </div>
         `).join('')
       : '<div class="small muted">Sin coincidencias en esta fuente.</div>';
     return `
@@ -679,15 +742,15 @@ function getRvrCardTitle() {
     return 'RVR1960 (AT/NT)';
   }
 
-  function buildRvrSectionsHtml(sections) {
-    const blocks = (sections || []).map((section) => {
+  function buildRvrSectionsHtml(sections, highlightToken = '') {
+      const blocks = (sections || []).map((section) => {
       const label = escapeHtml(section?.title || '—');
       const rows = (section?.samples || []).length
         ? section.samples.map((sample) => `
             <div class="mt-2">
               <div class="small fw-semibold">${escapeHtml(sample.ref)}</div>
-              <div>${escapeHtml(sample.text)}</div>
-            </div>
+              <div>${highlightText(sample.text, highlightToken, 'es')}</div>
+                          </div>
           `).join('')
         : '<div class="small muted">Sin versos en esta sección.</div>';
       return `
@@ -703,8 +766,8 @@ function getRvrCardTitle() {
       : '<div class="small muted">Sin coincidencias en esta fuente.</div>';
   }
 
-  async function buildRvrCard(esLookupWord = '') {
-    const lookup = extractPrimarySpanishLookup(esLookupWord);
+  async function buildRvrCard(esLookupWord = '', highlightWord = '') {
+      const lookup = extractPrimarySpanishLookup(esLookupWord);
     const atSamples = lookup ? await searchSpanishRefsByScope(lookup, 'at', 2) : [];
     const ntSamples = lookup ? await searchSpanishRefsByScope(lookup, 'nt', 2) : [];
 
@@ -714,29 +777,27 @@ function getRvrCardTitle() {
       ${buildRvrSectionsHtml([
         { title: 'AT', samples: atSamples },
         { title: 'NT', samples: ntSamples }
-      ])}
-    `;
+      ], highlightWord || lookup)}
+          `;
   }
 
-  async function buildSourceCards({ esWord, grWord, heWord }) {
-        const greekLookup = extractPrimaryGreekLookup(grWord);
+  async function buildSourceCards({ esWord, grWord, heWord, highlightEs = '', highlightGr = '', highlightHe = '' }) {
+          const greekLookup = extractPrimaryGreekLookup(grWord);
       const tasks = [
 
-      buildRvrCard(esWord),
-      (async () => {
+      buildRvrCard(esWord, highlightEs),
+            (async () => {
         const refs = await searchRefsInTextIndex('gr', greekLookup, 3);
                 const samples = await buildSamplesForRefs(refs, 'gr', 3);
-        return buildSamplesCard('RKANT (NT)', 'gr', greekLookup, samples);
-              })(),
+        return buildSamplesCard('RKANT (NT)', 'gr', greekLookup, samples, highlightGr || greekLookup);
+                      })(),
       (async () => {
         const refs = await searchRefsInTextIndex('he', heWord, 3);
         const samples = await buildSamplesForRefs(refs, 'he', 3);
-        return buildSamplesCard('Hebreo (AT)', 'he', heWord, samples);
-      })(),
+        return buildSamplesCard('Hebreo (AT)', 'he', heWord, samples, highlightHe || heWord);      })(),
       (async () => {
 const samples = await buildLxxMatches(normalizeGreek(greekLookup), 3);
-        return buildSamplesCard('LXX (AT)', 'lxx', greekLookup, samples);
-      })()
+        return buildSamplesCard('LXX (AT)', 'lxx', greekLookup, samples, highlightGr || greekLookup);      })()
     ];
     const settled = await Promise.allSettled(tasks);
     return settled.map((item, idx) => {
@@ -776,7 +837,7 @@ const samples = await buildLxxMatches(normalizeGreek(greekLookup), 3);
 
     renderSummary(`Palabra buscada: <span class="fw-semibold">${palabrasBuscadas}</span>`);
     renderCorrespondence([]);
-    
+
     renderExamples([
       '<div class="small muted">Cargando muestras de LXX, texto hebreo, RVR1960 y RKANT…</div>'
     ]);
@@ -784,8 +845,11 @@ const samples = await buildLxxMatches(normalizeGreek(greekLookup), 3);
     const sourceCards = await buildSourceCards({
       esWord: esLookupWord || es || rawQuery,
       grWord: gr || (lang === 'gr' ? rawQuery : ''),
-      heWord: heb || (lang === 'he' ? rawQuery : '')
-    });
+heWord: heb || (lang === 'he' ? rawQuery : ''),
+      highlightEs: es || (lang === 'es' ? rawQuery : ''),
+      highlightGr: gr || (lang === 'gr' ? rawQuery : ''),
+      highlightHe: heb || (lang === 'he' ? rawQuery : '')
+          });
 
         renderExamples(sourceCards);
       }
