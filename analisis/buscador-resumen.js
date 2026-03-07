@@ -536,6 +536,7 @@ lxxSearchCache: new Map(),
      return [
         buildDefinitionCard('Definición (Hebreo → Español · lexico_hebreo)', getHebrewDefinitionLines(heb))
       ];
+      }
     if (lang === 'gr') {
 return [
         buildDefinitionCard('Definición (Griego → Español · diccionarioG_unificado)', getGreekDefinitionLines(gr))
@@ -1043,7 +1044,7 @@ heWord: heb || (lang === 'he' ? rawQuery : ''),
             renderCorrespondence(definitionCards);
     renderExamples(sourceCards);
   }
-  
+
   function renderEmptySummary(rawQuery, reason = '') {
     renderTags([
       `Entrada: <span class="fw-semibold">${escapeHtml(rawQuery || '—')}</span>`,
