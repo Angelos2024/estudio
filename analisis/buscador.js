@@ -531,6 +531,7 @@ function renderLoadInfo() {
 }
 
 function setTierBadge(text, ok=false) {
+    if (!matchTierEl) return;
   matchTierEl.textContent = text;
   matchTierEl.className = 'badge ' + (ok ? 'ok' : 'warn');
 }
