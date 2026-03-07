@@ -694,20 +694,45 @@ function normalizeHebrewLemmaForLookup(text) {
         .trim();
 }
 
+function normalizeHebrewSpacing(text) {
+    return normalizeHebrewLemmaForLookup(text);
+}
+
+function normalizeHebrewCompact(text) {
+    return normalizeHebrewLemmaForLookup(text).replace(/\s+/g, '');
+}
+
+async function fetchJsonWithFallback(urls) {
+    let lastError = null;
+    for (const url of urls) {
+        try {
+            const response = await fetch(url, { cache: 'force-cache' });
+            if (!response.ok) {
+                lastError = new Error(`No se pudo cargar ${url} (HTTP ${response.status}).`);
+                continue;
+            }
+            return await response.json();
+        } catch (error) {
+            lastError = error;
+        }
+    }
+    throw lastError || new Error('No se pudo cargar el recurso JSON solicitado.');
+}
+
+
 async function ensureHebrewDictionaryLoaded() {
     if (HEBREW_DICT_STATE.loaded) return HEBREW_DICT_STATE;
     try {
-        const [entriesRes, indexRes] = await Promise.all([
-            fetch('./hebrewdic.json'),
-            fetch('./diccionario_index_by_lemma.json')
+        const [entriesData, indexData] = await Promise.all([
+            fetchJsonWithFallback(['../dic/hebrewdic.json', './hebrewdic.json', '/dic/hebrewdic.json']),
+            fetchJsonWithFallback(['../dic/diccionario_index_by_lemma.json', './diccionario_index_by_lemma.json', '/dic/diccionario_index_by_lemma.json'])
         ]);
-        if (!entriesRes.ok || !indexRes.ok) throw new Error('No se pudieron cargar los archivos del diccionario hebreo.');
-        HEBREW_DICT_STATE.entries = await entriesRes.json();
-        HEBREW_DICT_STATE.index = await indexRes.json();
+         HEBREW_DICT_STATE.entries = entriesData;
+        HEBREW_DICT_STATE.index = indexData;
         HEBREW_DICT_STATE.loaded = true;
     } catch (error) {
-        console.error(error);
-        HEBREW_DICT_STATE.loaded = false;
+        console.error('No se pudieron cargar los archivos del diccionario hebreo.', error);
+                HEBREW_DICT_STATE.loaded = false;
     }
     return HEBREW_DICT_STATE;
 }

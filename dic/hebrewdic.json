@@ -5998,5 +5998,2005 @@
     "page_end": 193,
     "gloss_es": "Arrojados.",
     "text": "הוּטְלוּ. Hofal de טוּל: Arrojados, lanzados (Jr 22:28)."
+  },
+  {
+    "id": "heb-000601",
+    "lemma": "הוּכָּה",
+    "headword_line": "הוּכָּה / הוֹלֵלוּת / הִים",
+    "headword_tokens": ["הוכה", "הוללות", "הים"],
+    "page_start": 193,
+    "page_end": 193,
+    "gloss_es": "Ser herido / Necedad / Alborotar.",
+    "text": "הוּכָּה: (Hofal de נכה) Ser herido (Sal 102:5). הוֹלֵלוּת: Necedad, locura (Ecl 1:17). הִים: (Variante de המם) Q. Desbaratar. Ni. Alborotarse. Hi. Turbar."
+  },
+  {
+    "id": "heb-000602",
+    "lemma": "וַתָּהִינוּ",
+    "headword_line": "הוּן (Hifil)",
+    "headword_tokens": ["ותהינו"],
+    "page_start": 193,
+    "page_end": 193,
+    "gloss_es": "Osar, atreverse.",
+    "text": "הוּן. Hi. Impf. וַתָּהִינוּ: Osar, atreverse (Dt 1:41)."
+  },
+  {
+    "id": "heb-000603",
+    "lemma": "הוֹן",
+    "headword_line": "הוֹן",
+    "headword_tokens": ["הון"],
+    "page_start": 193,
+    "page_end": 193,
+    "gloss_es": "Fortuna, riquezas, bienes.",
+    "text": "הוֹן. Fortuna, hacienda, caudal, riquezas. Sin.: עֹשֶׁר. Usado frecuentemente en Proverbios (8:18)."
+  },
+  {
+    "id": "heb-000604",
+    "lemma": "הוּנַח",
+    "headword_line": "הוּנַח / הוּנַף / הוּסַר / הוּעַד",
+    "headword_tokens": ["הונח", "הונף", "הוסר", "הועד"],
+    "page_start": 193,
+    "page_end": 193,
+    "gloss_es": "Puesto / Meceado / Quitado / Atestiguado.",
+    "text": "Formas en Hofal: הוּנַח (de נוח: puesto). הוּנַף (de נוף: meceado). הוּסַר (de סור: quitado). הוּעַD (de עוד: atestiguado)."
+  },
+  {
+    "id": "heb-000605",
+    "lemma": "הוּת",
+    "headword_line": "הוּת (Polel)",
+    "headword_tokens": ["תהותתו"],
+    "page_start": 193,
+    "page_end": 193,
+    "gloss_es": "Arremeter, embestir.",
+    "text": "הוּת. Polel. תְּהוֹתְתוּ: Arremeter, embestir contra alguien (Sal 62:4)."
+  },
+  {
+    "id": "heb-000606",
+    "lemma": "הִיא",
+    "headword_line": "הִיא / הֵי",
+    "headword_tokens": ["היא", "הי"],
+    "page_start": 193,
+    "page_end": 193,
+    "gloss_es": "Ella / Lamento.",
+    "text": "הִיא. Pronombre personal femenino: ella, ello. הֵי: Lamento, gemido (Ez 2:10)."
+  },
+  {
+    "id": "heb-000607",
+    "lemma": "הָיָה",
+    "headword_line": "הָיָה (Qal)",
+    "headword_tokens": ["הייתי"],
+    "page_start": 193,
+    "page_end": 193,
+    "gloss_es": "Ser, estar, suceder.",
+    "text": "הָיָה. Q. Pf. הָיִיתִי: Fui, he sido, estuve. Verbo fundamental de existencia y suceso."
+  },
+  {
+    "id": "heb-000608",
+    "lemma": "הָיָה",
+    "headword_line": "הָיָה (Funciones y Preposiciones)",
+    "headword_tokens": ["היה"],
+    "page_start": 194,
+    "page_end": 197,
+    "gloss_es": "Existir, haber, convertirse en.",
+    "text": "הָיָה. Q. 1. Existir, durar. 2. Haber (impersonal). 3. Suceder, cumplirse. 4. Cópula: ser, estar. 5. Devenir: hacerse, convertirse en (con preposición ל)."
+  },
+  {
+    "id": "heb-000609",
+    "lemma": "בְּתוֹךְ",
+    "headword_line": "הָיָה בְּתוֹךְ",
+    "headword_tokens": ["בתלך"],
+    "page_start": 197,
+    "page_end": 197,
+    "gloss_es": "Pertenecer, estar en medio.",
+    "text": "הָיָה בְּתוֹךְ: Estar en medio de, pertenecer a una comunidad (Nm 27:3)."
+  },
+  {
+    "id": "heb-000610",
+    "lemma": "לְ־",
+    "headword_line": "הָיָה לְ־",
+    "headword_tokens": ["האופן"],
+    "page_start": 197,
+    "page_end": 197,
+    "gloss_es": "Tener, pertenecer; convertirse en.",
+    "text": "הָיָה לְ־: 1. Posesión: tener (Gn 33:9). 2. Destino: corresponder (Lv 5:13). 3. Transformación: convertirse en, servir de (Gn 2:24)."
+  },
+  {
+    "id": "heb-000611",
+    "lemma": "הָיָה",
+    "headword_line": "הָיָה (Continuación)",
+    "headword_tokens": ["היה"],
+    "page_start": 198,
+    "page_end": 198,
+    "gloss_es": "Hacer de, servir como.",
+    "text": "הָיָה לְ־: Servir de, emplear como. הָיָה לְאָב: actuar como padre (1 Cr 17:13). הָיָה לְפֶה: servir de boca o portavoz (Ex 4:16)."
+  },
+  {
+    "id": "heb-000612",
+    "lemma": "עַל",
+    "headword_line": "הָיָה עַל",
+    "headword_tokens": ["על"],
+    "page_start": 198,
+    "page_end": 198,
+    "gloss_es": "Estar al frente, caer sobre.",
+    "text": "הָיָה עַל: Estar al frente de, encargarse. Caer sobre (terror, mano de Dios) (Gn 35:5; Ez 1:3)."
+  },
+  {
+    "id": "heb-000613",
+    "lemma": "הָיָה",
+    "headword_line": "הָיָה עִם / הָיָה תַּחַת",
+    "headword_tokens": ["היה"],
+    "page_start": 199,
+    "page_end": 199,
+    "gloss_es": "Acompañar / Estar al cuidado.",
+    "text": "הָיָה עִם: Acompañar, ayudar, asistir (Gn 26:3). הָיָה תַּחַת: Estar al cuidado de, bajo la potestad de."
+  },
+  {
+    "id": "heb-000614",
+    "lemma": "הָיָה",
+    "headword_line": "הָיָה (Auxiliar y Expletivo)",
+    "headword_tokens": ["החת", "נפשף"],
+    "page_start": 199,
+    "page_end": 201,
+    "gloss_es": "Verbo auxiliar; fórmulas narrativas.",
+    "text": "הָיָה. Auxiliar con participio: estar haciendo (Gn 4:2). Función expletiva en fórmulas narrativas: וַיְהִי (y sucedió que) para el pasado; וְהָיָה para el futuro."
+  },
+  {
+    "id": "heb-000615",
+    "lemma": "הֵילֵיל",
+    "headword_line": "הֵילֵיל / הֵילֵל",
+    "headword_tokens": ["היליכי", "הלר"],
+    "page_start": 201,
+    "page_end": 201,
+    "gloss_es": "Aullar / Lucero.",
+    "text": "הֵילֵיל: (Hifil de ילל) Aullar. הֵילֵל: Lucero del alba, estrella de la mañana (Is 14:12)."
+  },
+  {
+    "id": "heb-000616",
+    "lemma": "הִין",
+    "headword_line": "הִין / הִכָּה",
+    "headword_tokens": ["הין"],
+    "page_start": 201,
+    "page_end": 201,
+    "gloss_es": "Medida (7 litros) / Herido.",
+    "text": "הִין: Medida de capacidad para líquidos (Ex 29:40). הִכָּה: (Hofal de נכה) Ser herido o golpeado."
+  },
+  {
+    "id": "heb-000617",
+    "lemma": "הָלְאָה",
+    "headword_line": "הָלְאָה / נֶהְלָאָה",
+    "headword_tokens": ["הכרה"],
+    "page_start": 201,
+    "page_end": 201,
+    "gloss_es": "Más allá / Alejado.",
+    "text": "הָלְאָה: Adverbio de lugar y tiempo: más allá, en adelante (Gn 19:9). נֶהְלָאָה: Ni. Ptc. Estar lejos o desterrado (Miq 4:7)."
+  },
+  {
+    "id": "heb-000618",
+    "lemma": "הֵלּוּ",
+    "headword_line": "הֵלּוּ (Hifil)",
+    "headword_tokens": ["הלו"],
+    "page_start": 201,
+    "page_end": 201,
+    "gloss_es": "Brillar, resplandecer.",
+    "text": "הֵלּוּ. Hifil de הלל: Brillar, lucir (Job 29:3)."
+  },
+  {
+    "id": "heb-000619",
+    "lemma": "הִלּוּלִים",
+    "headword_line": "הִלּוּלִים / הַלָּז",
+    "headword_tokens": ["הלולים"],
+    "page_start": 201,
+    "page_end": 201,
+    "gloss_es": "Festejos / Aquel, ese.",
+    "text": "הִלּוּלִים: Fiesta de alabanza o festejos (Jue 9:27). הַלָּז / הַלָּזֶה: Pronombre demostrativo: ese, aquel (1 Sm 17:26)."
+  },
+  {
+    "id": "heb-000620",
+    "lemma": "הָלַךְ",
+    "headword_line": "הָלַךְ (Qal, Nifal, Hifil, Hitpael)",
+    "headword_tokens": ["הליכי"],
+    "page_start": 201,
+    "page_end": 203,
+    "gloss_es": "Ir, caminar, marchar.",
+    "text": "הָלַךְ. Q. Ir, caminar, avanzar. Hi. Llevar, conducir, guiar. Hitp. Pasearse, merodear, proceder. הָלַךְ רָכִיל: andar con chismes."
+  },
+  {
+    "id": "heb-000621",
+    "lemma": "אָחוֹר",
+    "headword_line": "הָלַךְ אָחוֹר",
+    "headword_tokens": ["אחור", "נטש"],
+    "page_start": 203,
+    "page_end": 203,
+    "gloss_es": "Retroceder.",
+    "text": "הָלַךְ אָחוֹר: Retroceder, volverse atrás (Jr 15:6)."
+  },
+  {
+    "id": "heb-000622",
+    "lemma": "בְּקֶרֶב",
+    "headword_line": "הָלַךְ בְּקֶרֶב",
+    "headword_tokens": ["בלןךב", "בקרב"],
+    "page_start": 203,
+    "page_end": 203,
+    "gloss_es": "Ir en medio de.",
+    "text": "הָלַךְ בְּקֶרֶב: Ir o caminar en medio de un grupo (Ex 34:9)."
+  },
+  {
+    "id": "heb-000623",
+    "lemma": "הָלַךְ",
+    "headword_line": "הָלַךְ (Preposiciones ל y לִפְנֵי)",
+    "headword_tokens": ["בתוך"],
+    "page_start": 203,
+    "page_end": 204,
+    "gloss_es": "Irse / Preceder.",
+    "text": "הָלַךְ לְ־: Irse, marcharse. הָלַךְ לִפְנֵי: Preceder, ir delante de (Gn 32:21). Abrir camino."
+  },
+  {
+    "id": "heb-000624",
+    "lemma": "מִן",
+    "headword_line": "הָלַךְ מִן",
+    "headword_tokens": ["לנגד"],
+    "page_start": 204,
+    "page_end": 204,
+    "gloss_es": "Salir de, alejarse.",
+    "text": "הָלַךְ מִן: Salir de, alejarse o retirarse de un lugar o persona (Gn 12:1)."
+  },
+  {
+    "id": "heb-000625",
+    "lemma": "מֵאֵת",
+    "headword_line": "הָלַךְ מֵאֵת",
+    "headword_tokens": ["מאת"],
+    "page_start": 204,
+    "page_end": 204,
+    "gloss_es": "Alejarse de parte de.",
+    "text": "הָלַךְ מֵאֵת: Marcharse o alejarse de alguien (Gn 26:31)."
+  },
+  {
+    "id": "heb-000626",
+    "lemma": "מִנֶּגֶד",
+    "headword_line": "הָלַךְ מִנֶּגֶד",
+    "headword_tokens": ["מןגד"],
+    "page_start": 204,
+    "page_end": 204,
+    "gloss_es": "Alejarse de la presencia.",
+    "text": "הָלַךְ מִנֶּגֶד: Alejarse, dejar la compañía de alguien (Gn 21:16)."
+  },
+  {
+    "id": "heb-000627",
+    "lemma": "מֵעִם",
+    "headword_line": "הָלַךְ מֵעִם",
+    "headword_tokens": ["מעם"],
+    "page_start": 204,
+    "page_end": 204,
+    "gloss_es": "Separarse.",
+    "text": "הָלַךְ מֵעִם: Separarse o apartarse de alguien (1 Sm 10:9)."
+  },
+  {
+    "id": "heb-000628",
+    "lemma": "מֵעִמָּד",
+    "headword_line": "הָלַךְ מֵעִמָּד",
+    "headword_tokens": ["מעמד"],
+    "page_start": 204,
+    "page_end": 204,
+    "gloss_es": "Separarse de.",
+    "text": "הָלַךְ מֵעִמָּד: Separarse de la presencia de uno (1 Sm 10:2)."
+  },
+  {
+    "id": "heb-000629",
+    "lemma": "מֵעֵינֵי",
+    "headword_line": "הָלַךְ מֵעֵינֵי",
+    "headword_tokens": ["מעיני"],
+    "page_start": 204,
+    "page_end": 204,
+    "gloss_es": "Desaparecer de la vista.",
+    "text": "הָלַךְ מֵעֵינֵי: Desaparecer de la presencia de alguien (Jue 6:21)."
+  },
+  {
+    "id": "heb-000630",
+    "lemma": "הָלַךְ",
+    "headword_line": "הָלַךְ (Auxiliar y Hitpael)",
+    "headword_tokens": ["מפני", "ברח"],
+    "page_start": 204,
+    "page_end": 205,
+    "gloss_es": "Ir haciendo; merodear.",
+    "text": "הָלַךְ. Auxiliar: ir + gerundio (Gn 8:5). Hitp. Pasearse, merodear, rondar (Job 1:7). Proceder éticamente."
+  },
+  {
+    "id": "heb-000631",
+    "lemma": "הָלַל",
+    "headword_line": "הָלַל (Piel, Hifil)",
+    "headword_tokens": ["הלך"],
+    "page_start": 205,
+    "page_end": 205,
+    "gloss_es": "Iluminar / Brillar.",
+    "text": "הָלַל. Pi. Iluminar (Eclo 36:27). Hi. Brillar, resplandecer, destellar (Is 13:10)."
+  },
+  {
+    "id": "heb-000632",
+    "lemma": "הָלַל",
+    "headword_line": "הָלַל (Piel, Pual, Hitpael)",
+    "headword_tokens": ["ה", "ל", "ל"],
+    "page_start": 205,
+    "page_end": 206,
+    "gloss_es": "Alabar, glorificar.",
+    "text": "הָלַל. Pi. Alabar, elogiar, ensalzar (frecuente en Salmos). הַלְלוּ־יָהּ: alabad al Señor. Pu. Ser loable. Hitp. Gloriarse, jactarse."
+  },
+  {
+    "id": "heb-000633",
+    "lemma": "הָלַם",
+    "headword_line": "הָלַם (Qal)",
+    "headword_tokens": ["הלם"],
+    "page_start": 206,
+    "page_end": 206,
+    "gloss_es": "Golpear, martillear.",
+    "text": "הָלַם. Q. Martillear, machacar, golpear (Jue 5:22; Sal 74:6)."
+  },
+  {
+    "id": "heb-000634",
+    "lemma": "הֲלֹם",
+    "headword_line": "הֲלֹם / הַלְמוּת",
+    "headword_tokens": ["הלומי"],
+    "page_start": 206,
+    "page_end": 206,
+    "gloss_es": "Aquí, acá / Martillo.",
+    "text": "הֲלֹם: Adverbio: aquí, acá (Ex 3:5). הַלְמוּת: Martillo (Jue 5:26)."
+  },
+  {
+    "id": "heb-000635",
+    "lemma": "הֵמָּה",
+    "headword_line": "הֵמָּה [הֵם]",
+    "headword_tokens": ["הלם"],
+    "page_start": 206,
+    "page_end": 207,
+    "gloss_es": "Ellos, aquellos.",
+    "text": "הֵמָּה o הֵם. Pronombre personal masculino plural: ellos. También demostrativo o cópula."
+  },
+  {
+    "id": "heb-000636",
+    "lemma": "הָמָה",
+    "headword_line": "הָמָה (Qal)",
+    "headword_tokens": ["המה"],
+    "page_start": 207,
+    "page_end": 207,
+    "gloss_es": "Mugir, resonar, turbarse.",
+    "text": "הָמָה. Q. Agitarse con ruido: mugir, bramar, aullar (Is 59:11). Resonar el mar. Turbarse el corazón."
+  },
+  {
+    "id": "heb-000637",
+    "lemma": "הֶמְיָה",
+    "headword_line": "הֶמְיָה / הִמּוּלָה",
+    "headword_tokens": ["המ", "ולה"],
+    "page_start": 207,
+    "page_end": 207,
+    "gloss_es": "Sonido / Griterío.",
+    "text": "הֶמְיָה: Son de arpas o música (Is 14:11). הִמּוּלָה: Griterío estrepitoso (Jr 11:16)."
+  },
+  {
+    "id": "heb-000638",
+    "lemma": "הָמוֹן",
+    "headword_line": "הָמוֹן",
+    "headword_tokens": ["המון"],
+    "page_start": 207,
+    "page_end": 207,
+    "gloss_es": "Multitud, alboroto, estruendo.",
+    "text": "הָמוֹן. Muchedumbre, tropel, hueste. Alboroto, vocerío o estruendo (1 Sm 4:14). Riquezas."
+  },
+  {
+    "id": "heb-000639",
+    "lemma": "הָמַם",
+    "headword_line": "הָמַם (Qal)",
+    "headword_tokens": ["המית"],
+    "page_start": 207,
+    "page_end": 207,
+    "gloss_es": "Desbaratar, espantar.",
+    "text": "הָמַם. Q. Desbaratar, trastornar, sembrar el pánico (Ex 14:24; Jos 10:10). Contexto bélico."
+  },
+  {
+    "id": "heb-000640",
+    "lemma": "הֲמָסִים",
+    "headword_line": "הֲמָסִים / הֶמֶס",
+    "headword_tokens": ["המלה", "קול"],
+    "page_start": 207,
+    "page_end": 208,
+    "gloss_es": "Sarmientos / Poder.",
+    "text": "הֲמָסִים: Sarmientos o leña seca (Is 64:1). הֶמֶס: Poder o soberanía (Job 25:2)."
+  },
+  {
+    "id": "heb-000641",
+    "lemma": "הֵן",
+    "headword_line": "הֵן / הִנֵּה",
+    "headword_tokens": ["המם"],
+    "page_start": 208,
+    "page_end": 208,
+    "gloss_es": "Mira, he aquí; si.",
+    "text": "הֵן. Partícula deíctica: mira, fíjate. También condicional: si, aunque (Job 13:15)."
+  },
+  {
+    "id": "heb-000642",
+    "lemma": "הִנֵּה",
+    "headword_line": "הִנֵּה [הִנְנִי]",
+    "headword_tokens": ["המסים"],
+    "page_start": 208,
+    "page_end": 208,
+    "gloss_es": "Mira, aquí estoy.",
+    "text": "הִנֵּה. Mira, fíjate, he aquí. הִנְנִי: Aquí estoy (respuesta a una llamada o desafío) (Gn 22:1)."
+  },
+  {
+    "id": "heb-000643",
+    "lemma": "הֵנָּה",
+    "headword_line": "הֵנָּה [הֵן]",
+    "headword_tokens": ["הנה"],
+    "page_start": 208,
+    "page_end": 208,
+    "gloss_es": "Ellas (pronombre).",
+    "text": "הֵנָּה o הֵן. Pronombre personal femenino plural: ellas. Aquellas."
+  },
+  {
+    "id": "heb-000644",
+    "lemma": "הֵנָּה",
+    "headword_line": "הֵנָּה (Lugar/Tiempo)",
+    "headword_tokens": ["ה", "ה"],
+    "page_start": 208,
+    "page_end": 209,
+    "gloss_es": "Aquí, acá; hasta ahora.",
+    "text": "הֵנָּה. Acá, aquí. עַד־הֵנָּה: hasta ahora, hasta aquí (Gn 15:16; 1 Sm 1:16)."
+  },
+  {
+    "id": "heb-000645",
+    "lemma": "הֲנָחָה",
+    "headword_line": "הֲנָחָה / הַנָּפָה",
+    "headword_tokens": ["׳"],
+    "page_start": 209,
+    "page_end": 209,
+    "gloss_es": "Indulto / Criba.",
+    "text": "הֲנָחָה: Indulto o descanso (Est 2:18). הַנָּפָה: Criba o sacudida (Is 30:28)."
+  },
+  {
+    "id": "heb-000646",
+    "lemma": "הַס",
+    "headword_line": "הַס / הָסָה",
+    "headword_tokens": ["הסה"],
+    "page_start": 209,
+    "page_end": 209,
+    "gloss_es": "¡Silencio! / Acallar.",
+    "text": "הַס: ¡Silencio!, ¡chitón! (Am 6:10). הָסָה: Hi. Acallar, imponer silencio (Nm 13:30)."
+  },
+  {
+    "id": "heb-000647",
+    "lemma": "הֲפָגָה",
+    "headword_line": "הֲפָגָה",
+    "headword_tokens": ["הפגות"],
+    "page_start": 209,
+    "page_end": 209,
+    "gloss_es": "Descanso, alivio.",
+    "text": "הֲפָגָה. Descanso, alivio o tregua (Lam 3:49)."
+  },
+  {
+    "id": "heb-000648",
+    "lemma": "הָפַךְ",
+    "headword_line": "הָפַךְ (Qal, Nifal, Hofal, Hitpael)",
+    "headword_tokens": ["הפך"],
+    "page_start": 209,
+    "page_end": 210,
+    "gloss_es": "Dar vuelta, cambiar, trastornar.",
+    "text": "הָפַךְ. Q. Dar vuelta, cambiar, arrasar. Ni. Convertirse en, mudarse. Ho. Volverse contra. Hitp. Agitarse."
+  },
+  {
+    "id": "heb-000649",
+    "lemma": "הַפֶךְ",
+    "headword_line": "הַפֶךְ / הֲפֵכָה / הֲפַכְפַּךְ",
+    "headword_tokens": ["הצלה"],
+    "page_start": 210,
+    "page_end": 210,
+    "gloss_es": "Contrario / Catástrofe / Tortuoso.",
+    "text": "הַפֶךְ: Lo contrario. הֲפֵכָה: Catástrofe, destrucción (Gn 19:29). הֲפַכְפַּךְ: Tortuoso, zigzagueante (Prov 21:8)."
+  },
+  {
+    "id": "heb-000650",
+    "lemma": "הַר",
+    "headword_line": "הַר [הָרִים]",
+    "headword_tokens": ["הר"],
+    "page_start": 210,
+    "page_end": 211,
+    "gloss_es": "Monte, montaña, sierra.",
+    "text": "הַר. Monte, montaña, cerro, sierra. Componente frecuente de topónimos (Líbano, Hermón, etc.)."
+  },
+  {
+    "id": "heb-000651",
+    "lemma": "הֲרֵגָה",
+    "headword_line": "הֲרֵגָה",
+    "headword_tokens": ["הרגה"],
+    "page_start": 211,
+    "page_end": 212,
+    "gloss_es": "Matanza, degüello.",
+    "text": "הֲרֵגָה. Matanza, degüello. יוֹם הַהֲרֵגָה: día de la matanza (Jr 12,3). צֹאן הַהֲרֵגָה: ovejas de matanza (Zac 11,4)."
+  },
+  {
+    "id": "heb-000652",
+    "lemma": "הָרָה",
+    "headword_line": "הָרָה (Qal, Pual) / הָרֶה",
+    "headword_tokens": ["הרה"],
+    "page_start": 212,
+    "page_end": 212,
+    "gloss_es": "Concebir / Embarazada.",
+    "text": "הָרָה. Q. Concebir, quedar encinta o embarazada. Pu. Ser concebido. הָרֶה: Adj. Embarazada, encinta, preñada (Gn 16,11)."
+  },
+  {
+    "id": "heb-000653",
+    "lemma": "הֶרֶס",
+    "headword_line": "הֶרֶס / הֵרָיוֹן",
+    "headword_tokens": ["הרס", "הריון"],
+    "page_start": 212,
+    "page_end": 212,
+    "gloss_es": "Sol / Preñez.",
+    "text": "הֶרֶס. En עִיר הַהֶרֶס: Ciudad del Sol o Heliópolis (Is 19,18). הֵרָיוֹן: Preñez, embarazo (Os 9,11)."
+  },
+  {
+    "id": "heb-000654",
+    "lemma": "הֲרִיסָה",
+    "headword_line": "הֲרִיסָה [הֲרִיסוֹת]",
+    "headword_tokens": ["הריסה"],
+    "page_start": 212,
+    "page_end": 212,
+    "gloss_es": "Ruina, desolación.",
+    "text": "הֲרִיסָה. Ruina o destrucción (Am 9,11). הֲרִיסוֹתֶיךָ: tus ruinas o desolación (Is 49,19)."
+  },
+  {
+    "id": "heb-000655",
+    "lemma": "הֲרָרִי",
+    "headword_line": "הֲרָרִי / הֲרִמּוֹן",
+    "headword_tokens": ["הררי", "הרמון"],
+    "page_start": 212,
+    "page_end": 212,
+    "gloss_es": "Montañoso / Topónimo.",
+    "text": "הֲרָרִי: Adj. Montañoso o habitante de la montaña. הֲרִמּוֹן: Topónimo o término dudoso en Am 4,3."
+  },
+  {
+    "id": "heb-000656",
+    "lemma": "הָרַס",
+    "headword_line": "הָרַס (Qal, Nifal, Piel)",
+    "headword_tokens": ["הרס"],
+    "page_start": 212,
+    "page_end": 212,
+    "gloss_es": "Destruir, demoler, derribar.",
+    "text": "הָרַס. Q. Destruir, demoler, derribar muros o altares (Jue 6,25). Ni. Ser derruido o arrasado. Pi. Arrasar o destruir por completo."
+  },
+  {
+    "id": "heb-000657",
+    "lemma": "הַשְׁמָעוּת",
+    "headword_line": "הַשְׁמָעוּת / הַשְׁפּוֹת",
+    "headword_tokens": ["השמעות"],
+    "page_start": 212,
+    "page_end": 212,
+    "gloss_es": "Noticia / Basura.",
+    "text": "הַשְׁמָעוּת: Noticia, información (Ez 24,26). הַשְׁפּוֹת: Puerta de la Basura (Neh 3,13)."
+  },
+  {
+    "id": "heb-000658",
+    "lemma": "הַשְׁקֵט",
+    "headword_line": "הַשְׁקֵט / הַתּוּךְ",
+    "headword_tokens": ["השקט"],
+    "page_start": 212,
+    "page_end": 213,
+    "gloss_es": "Tranquilidad / Fundición.",
+    "text": "הַשְׁקֵט: Tranquilidad, calma, sosiego (Is 32,17). הַתּוּךְ: Fundición o licuefacción (Ez 22,22). הִתְחַבְּרוּת: Alianza o complicidad."
+  },
+  {
+    "id": "heb-000659",
+    "lemma": "הִתֵּל",
+    "headword_line": "הִתֵּל (Piel, Pual)",
+    "headword_tokens": ["התל"],
+    "page_start": 213,
+    "page_end": 213,
+    "gloss_es": "Burlarse, engañar.",
+    "text": "הִתֵּל. Pi. Burlarse, reírse de, engañar (1 Re 18,27). Pu. Ser engañado o hacerse ilusiones."
+  },
+  {
+    "id": "heb-000660",
+    "lemma": "וְ־",
+    "headword_line": "וְ־ (Conjunción)",
+    "headword_tokens": ["ו"],
+    "page_start": 213,
+    "page_end": 213,
+    "gloss_es": "Y, o, pero, pues.",
+    "text": "וְ־. Conjunción copulativa. Puede significar: 1. Y. 2. O (en leyes). 3. Es decir (explicativo). 4. Pero (adversativo). 5. Pues (causal)."
+  },
+  {
+    "id": "heb-000661",
+    "lemma": "וָו",
+    "headword_line": "וָו [וָוִים]",
+    "headword_tokens": ["וו"],
+    "page_start": 214,
+    "page_end": 214,
+    "gloss_es": "Escarpia, clavo.",
+    "text": "וָו. Escarpia, gancho o clavo del tabernáculo (Ex 26,32; 38,17)."
+  },
+  {
+    "id": "heb-000662",
+    "lemma": "וָלָד",
+    "headword_line": "וָלָד",
+    "headword_tokens": ["ולד"],
+    "page_start": 214,
+    "page_end": 214,
+    "gloss_es": "Hijo, niño.",
+    "text": "וָלָד. Hijo, vástago (Gn 11,30)."
+  },
+  {
+    "id": "heb-000663",
+    "lemma": "זְאֵב",
+    "headword_line": "זְאֵב [זְאֵבִים]",
+    "headword_tokens": ["זאב"],
+    "page_start": 214,
+    "page_end": 214,
+    "gloss_es": "Lobo.",
+    "text": "זְאֵב. Lobo (Gn 49,27). זְאֵבֵי עֶרֶב: lobos esteparios o nocturnos (Hab 1,8)."
+  },
+  {
+    "id": "heb-000664",
+    "lemma": "זָבַד",
+    "headword_line": "זָבַד (Qal) / זֶבֶד",
+    "headword_tokens": ["זבד"],
+    "page_start": 214,
+    "page_end": 215,
+    "gloss_es": "Regalar / Regalo.",
+    "text": "זָבַD. Q. Regalar, dotar (Gn 30,20). זֶבֶד: Regalo, dote o don."
+  },
+  {
+    "id": "heb-000665",
+    "lemma": "זְבוּב",
+    "headword_line": "זְבוּב",
+    "headword_tokens": ["זבוב"],
+    "page_start": 215,
+    "page_end": 215,
+    "gloss_es": "Mosca, tábano.",
+    "text": "זְבוּב. Mosca o insecto volador. בַּעַל זְבוּב: Belcebú (2 Re 1,2)."
+  },
+  {
+    "id": "heb-000666",
+    "lemma": "זָבַח",
+    "headword_line": "זָבַח (Qal, Piel)",
+    "headword_tokens": ["זבח"],
+    "page_start": 215,
+    "page_end": 216,
+    "gloss_es": "Sacrificar, inmolar.",
+    "text": "זָבַח. Q. Matar, inmolar, ofrecer sacrificio de animales (1 Sm 1,3). Pi. Sacrificar habitualmente (1 Re 3,2)."
+  },
+  {
+    "id": "heb-000667",
+    "lemma": "זֶבַח",
+    "headword_line": "זֶבַח [זְבָחִים]",
+    "headword_tokens": ["זבח"],
+    "page_start": 215,
+    "page_end": 216,
+    "gloss_es": "Sacrificio, víctima, banquete.",
+    "text": "זֶבַח. Sacrificio cruento, víctima o banquete ritual (Ex 12,27). זֶבַח שְׁלָמִים: sacrificio de comunión."
+  },
+  {
+    "id": "heb-000668",
+    "lemma": "זָבַל",
+    "headword_line": "זָבַל (Qal) / זְבֻל",
+    "headword_tokens": ["זבל"],
+    "page_start": 216,
+    "page_end": 216,
+    "gloss_es": "Honrar / Mansión, palacio.",
+    "text": "זָבַל. Q. Tratar como a una princesa, honrar (Gn 30,20). זְבֻל: Mansión principesca, palacio o morada divina (Hab 3,11)."
+  },
+  {
+    "id": "heb-000669",
+    "lemma": "זָג",
+    "headword_line": "זָג / זֵד",
+    "headword_tokens": ["זד"],
+    "page_start": 216,
+    "page_end": 216,
+    "gloss_es": "Pellejo / Orgulloso.",
+    "text": "זָג: Pellejo de la uva (Nm 6,4). זֵד: Adj. Orgulloso, arrogante, insolente (Sal 119,51)."
+  },
+  {
+    "id": "heb-000670",
+    "lemma": "זָדוֹן",
+    "headword_line": "זָדוֹן",
+    "headword_tokens": ["זדון"],
+    "page_start": 216,
+    "page_end": 216,
+    "gloss_es": "Orgullo, arrogancia, insolencia.",
+    "text": "זָדוֹן. Orgullo, presunción o insolencia (Jr 49,16; Prov 11,2)."
+  },
+  {
+    "id": "heb-000671",
+    "lemma": "זֶה",
+    "headword_line": "זֶה / זֹאת",
+    "headword_tokens": ["זה", "זאת"],
+    "page_start": 216,
+    "page_end": 216,
+    "gloss_es": "Este, esta, esto.",
+    "text": "זֶה / זֹאת. Pronombre o adjetivo demostrativo. También funciona como relativo: 'el que', 'lo que'."
+  },
+  {
+    "id": "heb-000672",
+    "lemma": "זָהָב",
+    "headword_line": "זָהָב",
+    "headword_tokens": ["זהב"],
+    "page_start": 217,
+    "page_end": 217,
+    "gloss_es": "Oro.",
+    "text": "זָהָב. Oro, objeto de oro. זָהָב טָהוֹר: oro puro de ley (Ex 25,11)."
+  },
+  {
+    "id": "heb-000673",
+    "lemma": "זָהַר",
+    "headword_line": "זָהַר (Nifal, Hifil) / זֹהַר",
+    "headword_tokens": ["זהר"],
+    "page_start": 217,
+    "page_end": 217,
+    "gloss_es": "Vigilar / Avisar / Brillo.",
+    "text": "זָהַר. Ni. Estar alerta, guardarse. Hi. Avisar, amonestar, poner en guardia (Ez 3,17). זֹהַר: Brillo, resplandor (Ez 8,2)."
+  },
+  {
+    "id": "heb-000674",
+    "lemma": "זוּ",
+    "headword_line": "זוּ / זִיו / זוֹב",
+    "headword_tokens": ["זו"],
+    "page_start": 217,
+    "page_end": 218,
+    "gloss_es": "Este / Brillo / Flujo.",
+    "text": "זוּ: Demostrativo o relativo (poético). זִיו: Nombre de un mes (1 Re 6,1). זוֹב: Flujo, menstruación o hemorragia."
+  },
+  {
+    "id": "heb-000675",
+    "lemma": "זוּב",
+    "headword_line": "זוּב (Qal, Hifil)",
+    "headword_tokens": ["זוב"],
+    "page_start": 217,
+    "page_end": 218,
+    "gloss_es": "Manar, fluir.",
+    "text": "זוּב. Q. Manar, destilar, fluir (Ex 3,8). Hi. Derramar (Eclo 38,16)."
+  },
+  {
+    "id": "heb-000676",
+    "lemma": "זוּד",
+    "headword_line": "זוּD (Qal, Hifil)",
+    "headword_tokens": ["זוד"],
+    "page_start": 217,
+    "page_end": 218,
+    "gloss_es": "Hervir / Ser arrogante.",
+    "text": "זוּD. Q. Ser arrogante o insolente. Hi. Hervir, guisar (Gn 25,29); actuar con soberbia (Dt 1,43)."
+  },
+  {
+    "id": "heb-000677",
+    "lemma": "זָוִית",
+    "headword_line": "זָוִית [זָוִיּוֹת]",
+    "headword_tokens": ["זוית"],
+    "page_start": 218,
+    "page_end": 218,
+    "gloss_es": "Ángulo, esquina, columna.",
+    "text": "זָוִית. Ángulo, saliente o columna decorativa (Sal 144,12; Zac 9,15)."
+  },
+  {
+    "id": "heb-000678",
+    "lemma": "זוּל",
+    "headword_line": "זוּל (Qal) / זוּלָה",
+    "headword_tokens": ["זול"],
+    "page_start": 218,
+    "page_end": 218,
+    "gloss_es": "Sacar / Excepto.",
+    "text": "זוּL. Q. Sacar, extraer (Is 46,6). זוּלָה: Preposición: excepto, salvo, fuera de (Dt 1,36)."
+  },
+  {
+    "id": "heb-000679",
+    "lemma": "זוֹלֵל",
+    "headword_line": "זוֹלֵל / זוּן",
+    "headword_tokens": ["זוללי"],
+    "page_start": 218,
+    "page_end": 218,
+    "gloss_es": "Comilón / Alimentar.",
+    "text": "זוֹלֵל: Comilón, glotón o disoluto (Prov 23,20). זוּן: Ho. Ptc. Estar bien alimentado o cebado (Jr 5,8)."
+  },
+  {
+    "id": "heb-000680",
+    "lemma": "זוֹנָה",
+    "headword_line": "זוֹנָה",
+    "headword_tokens": ["זונה"],
+    "page_start": 218,
+    "page_end": 218,
+    "gloss_es": "Prostituta, ramera.",
+    "text": "זוֹנָה. Prostituta, ramera, meretriz. Usado frecuentemente como metáfora de la idolatría (Gn 38,15)."
+  },
+  {
+    "id": "heb-000681",
+    "lemma": "זוּעַ",
+    "headword_line": "זוּעַ (Qal, Pilpel) / זְוָעָה",
+    "headword_tokens": ["זוע"],
+    "page_start": 218,
+    "page_end": 219,
+    "gloss_es": "Temblar / Escarmiento.",
+    "text": "זוּעַ. Q. Temblar, estremecerse. Pilp. Asustar. זְוָעָה: Escarmiento, objeto de terror (Jr 15,4)."
+  },
+  {
+    "id": "heb-000682",
+    "lemma": "זוּר",
+    "headword_line": "זוּR (Qal, Nifal, Hofal)",
+    "headword_tokens": ["זור"],
+    "page_start": 219,
+    "page_end": 219,
+    "gloss_es": "Exprimir / Apartarse / Extraño.",
+    "text": "זוּR. 1. Q. Exprimir, hollar. 2. Q. Apartarse, extraviarse. Ni. Desertar. Ho. Ser un extraño (Sal 69,9). 3. Q. Repugnar."
+  },
+  {
+    "id": "heb-000683",
+    "lemma": "זָחַל",
+    "headword_line": "זָחַל (Qal) / זֹחֶלֶת",
+    "headword_tokens": ["זחל"],
+    "page_start": 219,
+    "page_end": 219,
+    "gloss_es": "Reptar / Culebra.",
+    "text": "זָחַל. Q. Reptar, deslizarse, arrastrarse (Dt 32,24). זֹחֶלֶת: Culebra, serpiente (1 Re 1:9)."
+  },
+  {
+    "id": "heb-000684",
+    "lemma": "זִיז",
+    "headword_line": "זִיז / זִיקוֹת",
+    "headword_tokens": ["זיז", "זיקות"],
+    "page_start": 219,
+    "page_end": 219,
+    "gloss_es": "Bichos / Teas, rayos.",
+    "text": "זִיז: Alimañas, bichos; pezón o ubre. זִיקוֹת: Teas, antorchas o rayos (Is 50,11; Eclo 43,13)."
+  },
+  {
+    "id": "heb-000685",
+    "lemma": "זַיִת",
+    "headword_line": "זַיִת [זֵיתִים]",
+    "headword_tokens": ["זית"],
+    "page_start": 219,
+    "page_end": 219,
+    "gloss_es": "Olivo, aceituna, aceite.",
+    "text": "זַיִת. Olivo (árbol), aceituna (fruto) o aceite (Zac 4,11; Sal 128,3)."
+  },
+  {
+    "id": "heb-000686",
+    "lemma": "זַךְ",
+    "headword_line": "זַךְ / זָכָה",
+    "headword_tokens": ["זך", "זכה"],
+    "page_start": 219,
+    "page_end": 219,
+    "gloss_es": "Puro, limpio / Ser puro.",
+    "text": "זַךְ: Adj. Puro, limpio, refinado (Ex 27,20). זָכָה: Q. Ser puro o inocente. Pi. Purificar (Sal 73,13)."
+  },
+  {
+    "id": "heb-000687",
+    "lemma": "זְכוּכִית",
+    "headword_line": "זְכוּכִית / זָכוּר",
+    "headword_tokens": ["זכו", "זכורה"],
+    "page_start": 219,
+    "page_end": 219,
+    "gloss_es": "Vidrio / Varones.",
+    "text": "זְכוּכִית: Vidrio o cristal (Job 28,17). זָכוּר: Colectivo: varones, hombres (Ex 23,17)."
+  },
+  {
+    "id": "heb-000688",
+    "lemma": "זָכַר",
+    "headword_line": "זָכַר (Qal, Nifal, Hifil)",
+    "headword_tokens": ["זכר"],
+    "page_start": 219,
+    "page_end": 221,
+    "gloss_es": "Recordar, mencionar, invocar.",
+    "text": "זָכַר. Q. Recordar, conmemorar, tener en cuenta. Ni. Ser recordado o mencionado. Hi. Invocar el nombre, denunciar, narrar o celebrar (Sal 71,16)."
+  },
+  {
+    "id": "heb-000689",
+    "lemma": "זָכָר",
+    "headword_line": "זָכָר [זְכָרִים]",
+    "headword_tokens": ["זכר"],
+    "page_start": 221,
+    "page_end": 221,
+    "gloss_es": "Varón, macho.",
+    "text": "זָכָר. Varón o macho (Gn 1,27). Opuesto a נְקֵבָה (hembra)."
+  },
+  {
+    "id": "heb-000690",
+    "lemma": "זֵכֶר",
+    "headword_line": "זֵכֶר / זִכָּרוֹן",
+    "headword_tokens": ["זכר", "זכרון"],
+    "page_start": 221,
+    "page_end": 221,
+    "gloss_es": "Recuerdo, memoria / Recordatorio.",
+    "text": "זֵכֶר: Recuerdo, fama, nombre (Ex 3,15). זִכָּרוֹן: Memorial, recordatorio o señal conmemorativa (Ex 13,9)."
+  },
+  {
+    "id": "heb-000691",
+    "lemma": "זַלְזַלִּים",
+    "headword_line": "זַלְזַלִּים / זָלַל",
+    "headword_tokens": ["זלזלים", "זלל"],
+    "page_start": 221,
+    "page_end": 221,
+    "gloss_es": "Zarcillos / Temblar.",
+    "text": "זַלְזַלִּים: Zarcillos de la vid (Is 18,5). זָלַל: Ni. Temblar (Jue 5,5). Hi. Despreciar (Lam 1,8)."
+  },
+  {
+    "id": "heb-000692",
+    "lemma": "זַלְעָפָה",
+    "headword_line": "זַלְעָפָה / זִמָּה",
+    "headword_tokens": ["זלעפה", "זמה"],
+    "page_start": 221,
+    "page_end": 221,
+    "gloss_es": "Violencia / Infamia.",
+    "text": "זַלְעָפָה: Violencia, ardor o tormenta (Sal 11,6). זִמָּה: Proyecto, intriga; infamia o depravación (Jue 20,6)."
+  },
+  {
+    "id": "heb-000693",
+    "lemma": "זְמוֹרָה",
+    "headword_line": "זְמוֹרָה / זָמִיר",
+    "headword_tokens": ["זמורה", "זמיר"],
+    "page_start": 221,
+    "page_end": 221,
+    "gloss_es": "Sarmiento / Poda; música.",
+    "text": "זְמוֹרָה: Ramo, sarmiento (Is 17,10). זָמִיר: 1. Poda. 2. Música o canción (Is 24,16)."
+  },
+  {
+    "id": "heb-000694",
+    "lemma": "זָמַם",
+    "headword_line": "זָמַם (Qal) / זָמָם",
+    "headword_tokens": ["זמם", "זמם"],
+    "page_start": 221,
+    "page_end": 222,
+    "gloss_es": "Planear, tramar / Plan.",
+    "text": "זָמַם. Q. Planear, proyectar, tramar o intrigar (Dt 19,19). זָמָם: Plan o proyecto del malvado (Sal 140,9)."
+  },
+  {
+    "id": "heb-000695",
+    "lemma": "זָמַן",
+    "headword_line": "זָמַן (Pual) / זְמָן",
+    "headword_tokens": ["זמן", "זמן"],
+    "page_start": 222,
+    "page_end": 222,
+    "gloss_es": "Definido / Tiempo.",
+    "text": "זָמַן. Pu. Ptc. Estar definido o establecido. זְמָן: Fecha, época o tiempo determinado (Ecl 3,1)."
+  },
+  {
+    "id": "heb-000696",
+    "lemma": "זָמַר",
+    "headword_line": "זָמַר (Qal, Nifal, Piel)",
+    "headword_tokens": ["זמר"],
+    "page_start": 222,
+    "page_end": 222,
+    "gloss_es": "Podar / Tañer, cantar.",
+    "text": "זָמַר. 1. Q. Podar (Lv 25,3). Ni. Ser podado. 2. Pi. Tañer, tocar música o cantar alabanzas al Señor (Sal 33,2)."
+  },
+  {
+    "id": "heb-000697",
+    "lemma": "זֶמֶר",
+    "headword_line": "זֶמֶר / זִמְרָה",
+    "headword_tokens": ["זמר", "זמרה"],
+    "page_start": 222,
+    "page_end": 222,
+    "gloss_es": "Gacela / Música; fuerza.",
+    "text": "זֶמֶר: Tipo de gacela o rebeco. זִמְרָה: 1. Música, tañido. 2. Fuerza, poder (Sal 118,14). 3. Mejores frutos (Gn 43,11)."
+  },
+  {
+    "id": "heb-000698",
+    "lemma": "זַן",
+    "headword_line": "זַן / זָנָב",
+    "headword_tokens": ["זן", "זנב"],
+    "page_start": 222,
+    "page_end": 222,
+    "gloss_es": "Especie / Cola.",
+    "text": "זַן: Especie, clase o tipo (Sal 144,13). זָנָב: Cola, rabo; figuradamente: cabo o lo último (Dt 28,13)."
+  },
+  {
+    "id": "heb-000699",
+    "lemma": "זִנֵּב",
+    "headword_line": "זִנֵּב (Piel) / זָנָה",
+    "headword_tokens": ["יופב", "זנה"],
+    "page_start": 222,
+    "page_end": 222,
+    "gloss_es": "Atacar por detrás / Fornicar.",
+    "text": "זִנֵּב. Pi. Atacar por la retaguardia (Dt 25,18). זָנָה: Q. Fornicar, prostituirse; figuradamente: ser infiel a Dios (idolatría)."
+  },
+  {
+    "id": "heb-000700",
+    "lemma": "זְנוּנִים",
+    "headword_line": "זְנוּנִים / זְנוּת / זָנַח",
+    "headword_tokens": ["זנונים", "זנות", "זנח"],
+    "page_start": 222,
+    "page_end": 223,
+    "gloss_es": "Fornicación / Lascivia / Heder.",
+    "text": "זְנוּנִים: Prostitución, infidelidad (Os 2,4). זְנוּת: Lascivia, fornicación (Jr 3,2). זָנַח: Hi. Heder, apestar (Is 19,6)."
+  },
+  {
+    "id": "heb-000701",
+    "lemma": "זָנַח",
+    "headword_line": "זָנַח (Qal, Hifil)",
+    "headword_tokens": ["זנח"],
+    "page_start": 223,
+    "page_end": 223,
+    "gloss_es": "Aborrecer, rechazar, repudiar.",
+    "text": "זָנַח. Q. Aborrecer, rechazar, repudiar. Sin.: מָאַס. Se usa para expresar el alejamiento divino o el enojo (Sal 43,2; Lam 2,7). Hi. Idem Q., de uso tardío (1 Cr 28,9)."
+  },
+  {
+    "id": "heb-000702",
+    "lemma": "זָנַק",
+    "headword_line": "זָנַק (Piel)",
+    "headword_tokens": ["זנק"],
+    "page_start": 223,
+    "page_end": 223,
+    "gloss_es": "Saltar.",
+    "text": "זָנַק. Pi. Saltar, lanzarse (Dt 33,22)."
+  },
+  {
+    "id": "heb-000703",
+    "lemma": "זֵעָה",
+    "headword_line": "זֵעָה",
+    "headword_tokens": ["זעת"],
+    "page_start": 223,
+    "page_end": 223,
+    "gloss_es": "Sudor.",
+    "text": "זֵעָה. Sudor. Usado en la expresión 'con el sudor de tu frente' (Gn 3,19)."
+  },
+  {
+    "id": "heb-000704",
+    "lemma": "זַעֲוָה",
+    "headword_line": "זַעֲוָה / זְעֵיר",
+    "headword_tokens": ["זעוה"],
+    "page_start": 223,
+    "page_end": 223,
+    "gloss_es": "Espanto / Un poco.",
+    "text": "זַעֲוָה: Espanto, terror o escarmiento (Dt 28,25). זְעֵיר: Un poco, un rato, una pequeña cantidad (Is 28,10)."
+  },
+  {
+    "id": "heb-000705",
+    "lemma": "זָעַךְ",
+    "headword_line": "זָעַךְ (Nifal)",
+    "headword_tokens": ["נזעכר׳"],
+    "page_start": 223,
+    "page_end": 223,
+    "gloss_es": "Apagarse.",
+    "text": "זָעַךְ. Ni. Apagarse o extinguirse (Job 17,1). Variante de דָּעַךְ."
+  },
+  {
+    "id": "heb-000706",
+    "lemma": "זָעַם",
+    "headword_line": "זָעַם (Qal, Nifal, Hifil) / זַעַם",
+    "headword_tokens": ["זעם"],
+    "page_start": 223,
+    "page_end": 223,
+    "gloss_es": "Irritarse / Cólera, indignación.",
+    "text": "זָעַם. Q. Estar irritado, descargar la cólera. Ni. Gesto de indignación. Hi. Sacudir indignado. זַעַם: Cólera, indignación, furor. Sin.: חֵמָה, עֶבְרָה."
+  },
+  {
+    "id": "heb-000707",
+    "lemma": "זָעַף",
+    "headword_line": "זָעַף (Qal)",
+    "headword_tokens": ["זעפים"],
+    "page_start": 223,
+    "page_end": 223,
+    "gloss_es": "Indignarse, estar deprimido.",
+    "text": "זָעַף. Q. Indignarse (2 Cr 26,19). Ptc. Deprimido, de mala cara (Gn 40,6)."
+  },
+  {
+    "id": "heb-000708",
+    "lemma": "זַעַף",
+    "headword_line": "זַעַף",
+    "headword_tokens": ["זעף"],
+    "page_start": 223,
+    "page_end": 224,
+    "gloss_es": "Cólera, furia.",
+    "text": "זַַעַף. Cólera, furia o saña (Jon 1,15; Miq 7,9). Ant.: רָצוֹן (favor)."
+  },
+  {
+    "id": "heb-000709",
+    "lemma": "זָעַק",
+    "headword_line": "זָעַק (Qal)",
+    "headword_tokens": ["זעק"],
+    "page_start": 224,
+    "page_end": 224,
+    "gloss_es": "Gritar, clamar.",
+    "text": "זָעַק. Q. Gritar, clamar como expresión de sentimiento o petición de auxilio (1 Sm 4,13)."
+  },
+  {
+    "id": "heb-000710",
+    "lemma": "זָקַן",
+    "headword_line": "זָקַן (Qal, Hifil)",
+    "headword_tokens": ["זעק", "זקן"],
+    "page_start": 224,
+    "page_end": 224,
+    "gloss_es": "Envejecer, ser viejo.",
+    "text": "זָקַן. Q. Ser o estar viejo, anciano; envejecer. Hi. Envejecer (Job 14,8). Ant.: נַעַר (joven)."
+  },
+  {
+    "id": "heb-000711",
+    "lemma": "זָקָן",
+    "headword_line": "זָקָן",
+    "headword_tokens": ["זק", "ן"],
+    "page_start": 224,
+    "page_end": 224,
+    "gloss_es": "Barba, melena.",
+    "text": "זָקָן. Barba del hombre o melena del león (1 Sm 17,35; Sal 133,2)."
+  },
+  {
+    "id": "heb-000712",
+    "lemma": "זְעָקָה",
+    "headword_line": "זְעָקָה / זֶפֶת / זִקִּים",
+    "headword_tokens": ["זעקה"],
+    "page_start": 224,
+    "page_end": 224,
+    "gloss_es": "Clamor / Pez / Cadenas.",
+    "text": "זְעָקָה: Grito, clamor de queja o auxilio. זֶפֶת: Pez o resina (Ex 2,3). זִקִּים: Cadenas, argollas (Is 45,14) o venablos (Prov 26,18)."
+  },
+  {
+    "id": "heb-000713",
+    "lemma": "זָקֵן",
+    "headword_line": "זָקֵן",
+    "headword_tokens": ["זק", "ן"],
+    "page_start": 224,
+    "page_end": 225,
+    "gloss_es": "Viejo, anciano, senador, notable.",
+    "text": "זָקֵן. Anciano, entrado en años. b) Autoridad: senador, concejal, notable o dirigente (Nm 11,24; Dt 21,19)."
+  },
+  {
+    "id": "heb-000714",
+    "lemma": "זָקֵן",
+    "headword_line": "זָקֵן (Títulos)",
+    "headword_tokens": ["ישראל"],
+    "page_start": 225,
+    "page_end": 225,
+    "gloss_es": "Ancianos de Israel/del pueblo.",
+    "text": "זָקֵן. Usado frecuentemente para el liderazgo: זִקְנֵי יִשְׂרָאֵל (Ancianos de Israel) o זִקְנֵי הָעִיר (Ancianos de la ciudad)."
+  },
+  {
+    "id": "heb-000715",
+    "lemma": "זֹקֶן",
+    "headword_line": "זֹקֶן / זִקְנָה / זְקֻנִים",
+    "headword_tokens": ["ולן"],
+    "page_start": 225,
+    "page_end": 225,
+    "gloss_es": "Vejez.",
+    "text": "זֹקֶן / זִקְנָה: Vejez, ancianidad (Gn 48,10). זְקֻנִים: Tiempo de la vejez. בֶּן־זְקֻנִים: hijo de la vejez."
+  },
+  {
+    "id": "heb-000716",
+    "lemma": "זָקַף",
+    "headword_line": "זָקַף (Qal)",
+    "headword_tokens": ["זקף"],
+    "page_start": 225,
+    "page_end": 225,
+    "gloss_es": "Enderezar.",
+    "text": "זָקַף. Q. Enderezar al que está encorvado o caído (Sal 145,14)."
+  },
+  {
+    "id": "heb-000717",
+    "lemma": "זָקַק",
+    "headword_line": "זָקַק (Qal, Piel, Pual)",
+    "headword_tokens": ["זקק"],
+    "page_start": 225,
+    "page_end": 225,
+    "gloss_es": "Refinar, purificar.",
+    "text": "זָקַק. Q. Refinar metales, purificar, filtrar. Pi. Acrisolar. Pu. Ser refinado (Is 25,6; Sal 12,7)."
+  },
+  {
+    "id": "heb-000718",
+    "lemma": "זָר",
+    "headword_line": "זָר / זֵר",
+    "headword_tokens": ["זר"],
+    "page_start": 225,
+    "page_end": 226,
+    "gloss_es": "Extraño, extranjero / Listón.",
+    "text": "זָר: Extraño, ajeno, extranjero; profano (Lv 10,1). זֵר: Listón, borde decorativo (Ex 25,11)."
+  },
+  {
+    "id": "heb-000719",
+    "lemma": "זָרָה",
+    "headword_line": "זָרָה (Qal, Nifal, Piel, Pual)",
+    "headword_tokens": ["זרב"],
+    "page_start": 226,
+    "page_end": 226,
+    "gloss_es": "Aventar, esparcir.",
+    "text": "זָרָה. Q. Aventar el grano, esparcir, desparramar (Is 30,24). Ni. Ser aventado. Pi. Dispersar pueblos (Ez 5,10). Pu. Ser esparcido."
+  },
+  {
+    "id": "heb-000720",
+    "lemma": "זְרוֹעַ",
+    "headword_line": "זְרוֹעַ",
+    "headword_tokens": ["ז", "ר", "ע"],
+    "page_start": 226,
+    "page_end": 226,
+    "gloss_es": "Brazo; fuerza.",
+    "text": "זְרוֹעַ. Brazo (femenino). b) Sede y emblema de la fuerza o el poder (Is 40,11). c) Pernil de animal."
+  },
+  {
+    "id": "heb-000721",
+    "lemma": "זְרוֹעַ",
+    "headword_line": "זְרוֹעַ (Metáfora de poder)",
+    "headword_tokens": ["זרעים"],
+    "page_start": 226,
+    "page_end": 227,
+    "gloss_es": "Fuerza de Dios, ayuda.",
+    "text": "זְרוֹעַ. Metáfora de protección y acción divina: זְרוֹעַ נְטוּיָה (brazo extendido) (Dt 4,34). También ayuda o refuerzos militares."
+  },
+  {
+    "id": "heb-000722",
+    "lemma": "זַרְזִיף",
+    "headword_line": "זַרְזִיף",
+    "headword_tokens": ["זרזיף"],
+    "page_start": 227,
+    "page_end": 227,
+    "gloss_es": "Llovizna, orvallo.",
+    "text": "זַרְזִיף. Llovizna suave, lluvia menuda (Sal 72,6)."
+  },
+  {
+    "id": "heb-000723",
+    "lemma": "זַרְזִיר",
+    "headword_line": "זַרְזִיר",
+    "headword_tokens": ["זרזיר"],
+    "page_start": 227,
+    "page_end": 227,
+    "gloss_es": "Gallo o chivo (animal gallardo).",
+    "text": "זַרְזִיר. Animal de andar gallardo, posiblemente un gallo o un chivo (Prov 30,31)."
+  },
+  {
+    "id": "heb-000724",
+    "lemma": "זָרַח",
+    "headword_line": "זָרַח (Qal) / זֶרַח",
+    "headword_tokens": ["זרח"],
+    "page_start": 227,
+    "page_end": 227,
+    "gloss_es": "Salir el sol / Resplandor.",
+    "text": "זָרַח: Q. Salir, brillar el sol o la luz (Gn 32,32). זֶרַח: Resplandor, brillo de la aurora (Is 60,3)."
+  },
+  {
+    "id": "heb-000725",
+    "lemma": "זָרַם",
+    "headword_line": "זָרַם (Poel) / זֶרֶם",
+    "headword_tokens": ["זרמה"],
+    "page_start": 227,
+    "page_end": 227,
+    "gloss_es": "Derramar lluvia / Aguacero.",
+    "text": "זָרַם: Poel: Hacer llover o derramar agua (Sal 77,18). זֶרֶם: Lluvia intensa, aguacero, chubasco (Is 25,4)."
+  },
+  {
+    "id": "heb-000726",
+    "lemma": "זִרְמָה",
+    "headword_line": "זִרְמָה",
+    "headword_tokens": ["זרמתם"],
+    "page_start": 227,
+    "page_end": 227,
+    "gloss_es": "Semen, flujo seminal.",
+    "text": "זִרְמָה. Flujo seminal o esperma (Ez 23,20)."
+  },
+  {
+    "id": "heb-000727",
+    "lemma": "זָרַע",
+    "headword_line": "זָרַע (Qal, Nifal, Pual, Hifil)",
+    "headword_tokens": ["זרע"],
+    "page_start": 227,
+    "page_end": 228,
+    "gloss_es": "Sembrar, concebir.",
+    "text": "זָרַע. Q. Sembrar grano o tierra. Ni. Ser sembrado o concebir (mujer). Pu. Ser sembrado. Hi. Producir semilla o preñar."
+  },
+  {
+    "id": "heb-000728",
+    "lemma": "זֶרַע",
+    "headword_line": "זֶרַע [זֵרְעֹנִים]",
+    "headword_tokens": ["זלעי", "זרעניט"],
+    "page_start": 228,
+    "page_end": 228,
+    "gloss_es": "Semilla, linaje; legumbres.",
+    "text": "זֶרַע. Semilla, siembra. b) Linaje, descendencia, posteridad. זֵרְעֹנִים: Semillas comestibles, legumbres (Dn 1,12)."
+  },
+  {
+    "id": "heb-000729",
+    "lemma": "זָרַק",
+    "headword_line": "זָרַק (Qal, Pual)",
+    "headword_tokens": ["זרק"],
+    "page_start": 228,
+    "page_end": 229,
+    "gloss_es": "Rociar, salpicar.",
+    "text": "זָרַק. Q. Rociar sangre o agua (Ex 24,6); esparcir ceniza o semillas. Pu. Ser rociado."
+  },
+  {
+    "id": "heb-000730",
+    "lemma": "זֶרֶת",
+    "headword_line": "זֶרֶת / חֹב / חָבָא",
+    "headword_tokens": ["זרת"],
+    "page_start": 229,
+    "page_end": 229,
+    "gloss_es": "Palmo / Seno / Esconderse.",
+    "text": "זֶרֶת: Medida de longitud, palmo (Ex 28,16). חֹב: Seno, pecho (Job 31,33). חָבָא: Ni. Esconderse, ocultarse (Gn 3,10)."
+  },
+  {
+    "id": "heb-000731",
+    "lemma": "חָבַב",
+    "headword_line": "חָבַב (Qal) / חָבָה",
+    "headword_tokens": ["חבב"],
+    "page_start": 229,
+    "page_end": 229,
+    "gloss_es": "Amar / Esconderse.",
+    "text": "חָבַב: Q. Amar, preferir o favorecer. חָבָה: Q. Variante de חָבָא (esconderse)."
+  },
+  {
+    "id": "heb-000732",
+    "lemma": "חַבּוּרָה",
+    "headword_line": "חַבּוּרָה / חָבַט",
+    "headword_tokens": ["חבורה", "חבט"],
+    "page_start": 229,
+    "page_end": 229,
+    "gloss_es": "Herida / Varear.",
+    "text": "חַבּוּרָה: Herida, llaga, cardenal o moretón (Is 1,6). חָבַט: Q. Varear frutos o trillar (Jue 6,11)."
+  },
+  {
+    "id": "heb-000733",
+    "lemma": "חָבַל",
+    "headword_line": "חָבַל (Qal, Nifal, Piel, Pual)",
+    "headword_tokens": ["יחבל"],
+    "page_start": 229,
+    "page_end": 229,
+    "gloss_es": "Tomar en prenda / Dañar / Concebir.",
+    "text": "חָבַל. 1. Q. Tomar en prenda o garantía (Ex 22,25). 2. Q. Concebir (feto). 3. Q. Portarse mal. Pi. Dañar, destrozar, arruinar."
+  },
+  {
+    "id": "heb-000734",
+    "lemma": "חֶבֶל",
+    "headword_line": "חֶבֶל [חֲבָלִים]",
+    "headword_tokens": ["חבל"],
+    "page_start": 229,
+    "page_end": 230,
+    "gloss_es": "Cuerda, soga; lote, región.",
+    "text": "חֶבֶל. Cuerda, cordel, maroma. b) Porción de tierra medida, lote, parcela o comarca (Dt 3,4). c) Lazos o redes (Sal 18,5)."
+  },
+  {
+    "id": "heb-000735",
+    "lemma": "חֵבֶל",
+    "headword_line": "חֵבֶל / חֲבָל",
+    "headword_tokens": ["חבל"],
+    "page_start": 230,
+    "page_end": 230,
+    "gloss_es": "Dolor de parto / Destrucción.",
+    "text": "חֵבֶל: Dolores de parto, espasmos o trance (Is 13,8). חֲבָל: Destrucción o destrozo (Job 21,17)."
+  },
+  {
+    "id": "heb-000736",
+    "lemma": "חֹבֵל",
+    "headword_line": "חֹבֵל / חֲבַצֶּלֶת",
+    "headword_tokens": ["חבל"],
+    "page_start": 230,
+    "page_end": 230,
+    "gloss_es": "Piloto / Flor.",
+    "text": "חֹבֵל: Piloto, timonel o marino (Ez 27,8). חֲבַצֶּלֶת: Flor, posiblemente narciso o azucena (Is 35,1)."
+  },
+  {
+    "id": "heb-000737",
+    "lemma": "חָבַק",
+    "headword_line": "חָבַק (Qal, Piel) / חִבֻּק",
+    "headword_tokens": ["חבל"],
+    "page_start": 230,
+    "page_end": 230,
+    "gloss_es": "Abrazar / Cruzamiento.",
+    "text": "חָבַק: Abrazar, estrechar (2 Re 4,16). חִבֻּק: Cruzamiento de brazos (Prov 6,10)."
+  },
+  {
+    "id": "heb-000738",
+    "lemma": "חָבַר",
+    "headword_line": "חָבַר (Qal, Piel, Hifil, Hitpael)",
+    "headword_tokens": ["חבלה"],
+    "page_start": 230,
+    "page_end": 231,
+    "gloss_es": "Unir, aliar, juntar.",
+    "text": "חָבַר. Q. Unir, enlazar, asociar. Pi. Sujetar, empalmar. Hi. Enlazar palabras. Hitp. Aliarse o confederarse (Dn 11,6)."
+  },
+  {
+    "id": "heb-000739",
+    "lemma": "חָבֵר",
+    "headword_line": "חֵָבר [חֲבֵרִים] / חֶבֶר",
+    "headword_tokens": ["חבלי"],
+    "page_start": 231,
+    "page_end": 231,
+    "gloss_es": "Compañero, socio / Sociedad.",
+    "text": "חָבֵר: Compañero, amigo, aliado o colega. חֶבֶר: Sociedad, compañía o banda (Os 6,9). Encantamiento (Dt 18,11)."
+  },
+  {
+    "id": "heb-000740",
+    "lemma": "חָבַרְבֻּרָה",
+    "headword_line": "חָבַרְבֻּרָה / חֶבְרָה / חֹבֶרֶת",
+    "headword_tokens": ["ר"],
+    "page_start": 231,
+    "page_end": 231,
+    "gloss_es": "Manchas / Compañía / Empalme.",
+    "text": "חָבַרְבֻּרָה: Manchas o pelaje abigarrado (Jr 13,23). חֶבְרָה: Compañía (Job 34,8). חֹבֶרֶת: Empalme o enlace (Ex 26,4)."
+  },
+  {
+    "id": "heb-000741",
+    "lemma": "חָבַשׁ",
+    "headword_line": "חָבַשׁ (Qal, Piel, Pual)",
+    "headword_tokens": ["חבךים"],
+    "page_start": 231,
+    "page_end": 231,
+    "gloss_es": "Vendar, ceñir, aparejar.",
+    "text": "חָבַשׁ. Q. Vendar heridas; aparejar animales (burros); ceñir o liar (Is 61,1). Pi. Represar agua. Pu. Ser vendado."
+  },
+  {
+    "id": "heb-000742",
+    "lemma": "חָבִית",
+    "headword_line": "חָבִית / חָג",
+    "headword_tokens": ["חברברתיו"],
+    "page_start": 231,
+    "page_end": 231,
+    "gloss_es": "Fritos / Fiesta.",
+    "text": "חָבִית: Sartén o cosa frita (1 Cr 9,31). חָג: Fiesta, solemnidad, celebración (Ex 12,14). Ant.: אֵבֶל (luto)."
+  },
+  {
+    "id": "heb-000743",
+    "lemma": "חָגָא",
+    "headword_line": "חָגָא / חָגָב",
+    "headword_tokens": ["חברה"],
+    "page_start": 231,
+    "page_end": 232,
+    "gloss_es": "Espanto / Langosta.",
+    "text": "חָגָא: Espanto o temor (Is 19,17). חָגָב: Saltamontes o langosta pequeña (Nm 13,33)."
+  },
+  {
+    "id": "heb-000744",
+    "lemma": "חָגַג",
+    "headword_line": "חָגַג (Qal)",
+    "headword_tokens": ["חברתך"],
+    "page_start": 232,
+    "page_end": 232,
+    "gloss_es": "Celebrar, festejar.",
+    "text": "חָגַג. Q. Celebrar una fiesta, ir en romería o peregrinación (Lv 23,39)."
+  },
+  {
+    "id": "heb-000745",
+    "lemma": "חֲגָוִים",
+    "headword_line": "חֲגָוִים / חָגוֹר",
+    "headword_tokens": ["חבש"],
+    "page_start": 232,
+    "page_end": 232,
+    "gloss_es": "Grietas / Cinto.",
+    "text": "חֲגָוִים: Rendijas, huecos o grutas (Cant 2,14). חָגוֹר: Cinto, ceñidor o faja (1 Sm 18,4)."
+  },
+  {
+    "id": "heb-000746",
+    "lemma": "חֲגוֹרָה",
+    "headword_line": "חֲגוֹרָה / חָגַר",
+    "headword_tokens": ["חבהים"],
+    "page_start": 232,
+    "page_end": 233,
+    "gloss_es": "Cinturón / Ceñir, armarse.",
+    "text": "חֲגוֹרָה: Cinturón o faja (Gn 3,7). חָגַר: Q. Ceñir, fajar o sujetar; armarse la espada (1 Sm 25,13)."
+  },
+  {
+    "id": "heb-000747",
+    "lemma": "חַד",
+    "headword_line": "חַד / חָדַד",
+    "headword_tokens": ["חג"],
+    "page_start": 232,
+    "page_end": 232,
+    "gloss_es": "Agudo / Afilar.",
+    "text": "חַד: Adj. Agudo, cortante (Is 49,2). חָדַד: Q. Ser agudo. Hi. Afilar, aguzar. Ho. Estar afilado."
+  },
+  {
+    "id": "heb-000748",
+    "lemma": "חָדָה",
+    "headword_line": "חָדָה (Qal, Piel) / חֶדְוָה",
+    "headword_tokens": ["חגב"],
+    "page_start": 232,
+    "page_end": 232,
+    "gloss_es": "Alegrarse / Gozo.",
+    "text": "חָדָה: Q. Alegrarse (Ex 18,9). Pi. Alegrar. חֶדְוָה: Gozo, alegría o festejo (1 Cr 16,27)."
+  },
+  {
+    "id": "heb-000749",
+    "lemma": "חֲדּוּדִים",
+    "headword_line": "חֲדּוּדִים / חָזַל",
+    "headword_tokens": ["חדה"],
+    "page_start": 232,
+    "page_end": 233,
+    "gloss_es": "Puntas / Cesar.",
+    "text": "חֲדּוּדִים: Puntas o filos (Job 41,22). חָדַל: Q. Cesar, dejar de, desistir, interrumpir (Gn 11,8)."
+  },
+  {
+    "id": "heb-000750",
+    "lemma": "חָדֵל",
+    "headword_line": "חָדֵל / חֶלֶד",
+    "headword_tokens": ["חדר"],
+    "page_start": 233,
+    "page_end": 233,
+    "gloss_es": "Caduco / Mundo.",
+    "text": "חָדֵל: Adj. Que cesa, caduco o abandonado (Is 53,3). חֶלֶד: Mundo, tierra de los vivos."
+  },
+  {
+    "id": "heb-000751",
+    "lemma": "חֵדֶק",
+    "headword_line": "חֵדֶק / חָדַר",
+    "headword_tokens": ["החדחו"],
+    "page_start": 233,
+    "page_end": 234,
+    "gloss_es": "Espino / Acorralar.",
+    "text": "חֵדֶק: Espino o maleza (Miq 7,4). חָדַר: Q. Ptc. Cercar, acorralar o estrechar (Ez 21,19)."
+  },
+  {
+    "id": "heb-000752",
+    "lemma": "חֶדֶר",
+    "headword_line": "חֶדֶר [חֲדָרִים]",
+    "headword_tokens": ["חתה"],
+    "page_start": 234,
+    "page_end": 234,
+    "gloss_es": "Habitación, cámara.",
+    "text": "חֶדֶר. Habitación, aposento, sala o alcoba. חֶדֶר מִשְׁכָּב: dormitorio (Ex 7,28)."
+  },
+  {
+    "id": "heb-000753",
+    "lemma": "חָדַשׁ",
+    "headword_line": "חָדַשׁ (Piel, Hitpael)",
+    "headword_tokens": ["חגר"],
+    "page_start": 234,
+    "page_end": 234,
+    "gloss_es": "Renovar, restaurar.",
+    "text": "חָדַשׁ. Pi. Innovar, renovar, restaurar o reparar (Sal 51,12). Hitp. Renovarse (Sal 103,5)."
+  },
+  {
+    "id": "heb-000754",
+    "lemma": "חָדָשׁ",
+    "headword_line": "חָדָשׁ / חֹדֶשׁ",
+    "headword_tokens": ["חדרת"],
+    "page_start": 234,
+    "page_end": 234,
+    "gloss_es": "Nuevo / Mes.",
+    "text": "חָדָשׁ: Adj. Nuevo, reciente, fresco (Is 42,9). חֹדֶשׁ: Luna nueva, novilunio; mes (como fecha o duración)."
+  },
+  {
+    "id": "heb-000755",
+    "lemma": "חָי",
+    "headword_line": "חָי [חַיִּים]",
+    "headword_tokens": ["ח"],
+    "page_start": 240,
+    "page_end": 243,
+    "gloss_es": "Vivo, viviente, sano.",
+    "text": "חָי. Vivo, con vida. אֶרֶץ הַחַיִּים: tierra de los vivos. מַיִם חַיִּים: agua corriente (Gn 2,7; Sal 42,3)."
+  },
+  {
+    "id": "heb-000756",
+    "lemma": "חַי",
+    "headword_line": "חַי (Juramento)",
+    "headword_tokens": ["חוג"],
+    "page_start": 243,
+    "page_end": 243,
+    "gloss_es": "Vive (Dios), por vida de.",
+    "text": "חַי. Usado en exclamaciones y juramentos: חַי־יְהוָה (vive Dios) o חַי־אָנִי (por mi vida)."
+  },
+  {
+    "id": "heb-000757",
+    "lemma": "חִידָה",
+    "headword_line": "חִידָה / חָיָה",
+    "headword_tokens": ["חוד"],
+    "page_start": 243,
+    "page_end": 243,
+    "gloss_es": "Enigma / Vivir.",
+    "text": "חִידָה: Acertijo, adivinanza, enigma (Ez 17,2). חָיָה: Q. Vivir, estar vivo, revivir o curarse."
+  },
+  {
+    "id": "heb-000758",
+    "lemma": "חָיָה",
+    "headword_line": "חָיָה (Piel, Hifil)",
+    "headword_tokens": ["חוה"],
+    "page_start": 244,
+    "page_end": 245,
+    "gloss_es": "Dar vida, hacer revivir.",
+    "text": "חָיָה. Pi. Dejar vivo, criar, dar la vida o restaurar (Sal 80,19). Hi. Hacer vivir, resucitar o perdonar la vida."
+  },
+  {
+    "id": "heb-000759",
+    "lemma": "חַיָּה",
+    "headword_line": "חַיָּה [חַיּוֹת]",
+    "headword_tokens": ["חוו"],
+    "page_start": 245,
+    "page_end": 245,
+    "gloss_es": "Viviente, animal, fiera.",
+    "text": "חַיָּה. Ser vivo. b) Animal salvaje, fiera o bestia feroz (Gn 1,24). c) Banda o tropa."
+  },
+  {
+    "id": "heb-000760",
+    "lemma": "חַיָּה",
+    "headword_line": "חַיָּה (Abstracto)",
+    "headword_tokens": ["חוט"],
+    "page_start": 245,
+    "page_end": 245,
+    "gloss_es": "Vida, fuerza vital, hambre.",
+    "text": "חַיָּה. Vida, vitalidad o fuerza. También: hambre como necesidad vital (Job 38,39)."
+  },
+  {
+    "id": "heb-000761",
+    "lemma": "חוֹמָה",
+    "headword_line": "חוֹמָה [חוֹמוֹת]",
+    "headword_tokens": ["חום"],
+    "page_start": 235,
+    "page_end": 235,
+    "gloss_es": "Muralla, muro.",
+    "text": "חוֹמָה. Muralla, murallón o barbacana de una ciudad (Dt 28,52; Is 2,15)."
+  },
+  {
+    "id": "heb-000762",
+    "lemma": "חוּס",
+    "headword_line": "חוּס (Qal)",
+    "headword_tokens": ["חוף"],
+    "page_start": 235,
+    "page_end": 235,
+    "gloss_es": "Tener compasión, apiadarse.",
+    "text": "חוּס. Q. Tener compasión, piedad o perdonar. Sujeto frecuente: הָעַיִן (el ojo) (Ez 5,11)."
+  },
+  {
+    "id": "heb-000763",
+    "lemma": "חוּץ",
+    "headword_line": "חוּץ",
+    "headword_tokens": ["חוץ"],
+    "page_start": 235,
+    "page_end": 236,
+    "gloss_es": "Fuera, calle, exterior.",
+    "text": "חוּץ. Adverbio: fuera, afuera. Sustantivo: calle, afueras o intemperie (Is 5,25; Lam 4,8)."
+  },
+  {
+    "id": "heb-000764",
+    "lemma": "חוּר",
+    "headword_line": "חוּר (Qal)",
+    "headword_tokens": ["ל"],
+    "page_start": 236,
+    "page_end": 236,
+    "gloss_es": "Palidecer, blanquear.",
+    "text": "חוּR. Q. Estar o ponerse pálido, quedarse blanco (Is 29,22)."
+  },
+  {
+    "id": "heb-000765",
+    "lemma": "חוּר",
+    "headword_line": "חוּר / חוֹר",
+    "headword_tokens": ["חור"],
+    "page_start": 236,
+    "page_end": 236,
+    "gloss_es": "Blanco / Agujero.",
+    "text": "חוּR: Blanco (Est 1,6). חוֹR: Agujero, hueco o gruta (1 Sm 13,6)."
+  },
+  {
+    "id": "heb-000766",
+    "lemma": "חוּשׁ",
+    "headword_line": "חוּשׁ (Qal, Hifil)",
+    "headword_tokens": ["ל"],
+    "page_start": 236,
+    "page_end": 237,
+    "gloss_es": "Apresurarse, urgir.",
+    "text": "חוּשׁ. Q. Apresurarse, precipitarse o estar impaciente. Hi. Apresurar, acelerar o meter prisa (Is 5,19)."
+  },
+  {
+    "id": "heb-000767",
+    "lemma": "חוֹתָם",
+    "headword_line": "חוֹתָם / חָזָה",
+    "headword_tokens": ["שית"],
+    "page_start": 237,
+    "page_end": 237,
+    "gloss_es": "Sello / Mirar, ver.",
+    "text": "חוֹתָם: Sello, timbre o anillo de sellar (Gn 38,18). חָזָה: Q. Mirar, contemplar, observar; tener visiones proféticas."
+  },
+  {
+    "id": "heb-000768",
+    "lemma": "חָזוֹן",
+    "headword_line": "חָזוֹן / חָזוּת",
+    "headword_tokens": ["יזזינרת"],
+    "page_start": 237,
+    "page_end": 237,
+    "gloss_es": "Visión, profecía.",
+    "text": "חָזוֹן: Visión profética, aparición o profecía (Is 1,1). חָזוּת: Visión, apariencia o pacto."
+  },
+  {
+    "id": "heb-000769",
+    "lemma": "חֲזִיז",
+    "headword_line": "חֲזִיז / חֲזִיר",
+    "headword_tokens": ["חזיר"],
+    "page_start": 237,
+    "page_end": 237,
+    "gloss_es": "Relámpago / Cerdo.",
+    "text": "חֲזִיז: Relámpago o exhalación (Zac 10,1). חֲזִיר: Cerdo, puerco o jabalí (Lv 11,7)."
+  },
+  {
+    "id": "heb-000770",
+    "lemma": "חָזַק",
+    "headword_line": "חָזַק (Qal, Piel, Hifil, Hitpael)",
+    "headword_tokens": ["מיער", "יז"],
+    "page_start": 237,
+    "page_end": 240,
+    "gloss_es": "Fortalecerse, agarrar, reparar.",
+    "text": "חָזַק. Q. Arreciar, afianzarse, ser fuerte. Pi. Fortalecer, animar, reparar muros. Hi. Agarrar, retener, empuñar. Hitp. Esforzarse, cobrar fuerzas."
+  },
+  {
+    "id": "heb-000771",
+    "lemma": "חָזָק",
+    "headword_line": "חָזָק",
+    "headword_tokens": ["חזק"],
+    "page_start": 240,
+    "page_end": 240,
+    "gloss_es": "Fuerte, robusto, duro.",
+    "text": "חָזָק. Adj. Fuerte, poderoso, intenso o violento. חָזָק בְּיָד: con mano fuerte (Ex 3,19)."
+  },
+  {
+    "id": "heb-000772",
+    "lemma": "חֹזֶק",
+    "headword_line": "חֹזֶק / חֶזְקָה / חָזַר",
+    "headword_tokens": ["ח", "זה"],
+    "page_start": 240,
+    "page_end": 240,
+    "gloss_es": "Fuerza / Violencia / Girar.",
+    "text": "חֹזֶק: Fuerza, fortaleza o poder (Sal 18,2). חֶזְקָה: Fuerza, violencia o consolidación. חָזַר: Q. Girar, dar vueltas."
+  },
+  {
+    "id": "heb-000773",
+    "lemma": "חָח",
+    "headword_line": "חָח [חַחִים] / חָטָא",
+    "headword_tokens": ["חזות"],
+    "page_start": 240,
+    "page_end": 241,
+    "gloss_es": "Gancho / Pecar, fallar.",
+    "text": "חָח: Gancho, garfio, arpón o argolla (Ez 19,4). חָטָא: Q. Fallar, pecar, ofender, ser culpable (Gn 39,9)."
+  },
+  {
+    "id": "heb-000774",
+    "lemma": "חֵטְא",
+    "headword_line": "חֵטְא / חַטָּא",
+    "headword_tokens": ["חטא"],
+    "page_start": 241,
+    "page_end": 241,
+    "gloss_es": "Pecado, culpa / Pecador.",
+    "text": "חֵטְא: Error, pecado, culpa o reato (Is 1,18). חַטָּא: Adj./Sust. Pecador (Sal 1,1)."
+  },
+  {
+    "id": "heb-000775",
+    "lemma": "חֲטָאָה",
+    "headword_line": "חֲטָאָה / חַטָּאת",
+    "headword_tokens": ["רזןקי"],
+    "page_start": 241,
+    "page_end": 242,
+    "gloss_es": "Pecado / Sacrificio expiatorio.",
+    "text": "חֲטָאָה: Pecado, crimen o fallo. חַטָּאת: Pecado, transgresión. b) Sacrificio o víctima expiatoria (Lv 4,3)."
+  },
+  {
+    "id": "heb-000776",
+    "lemma": "חָטַב",
+    "headword_line": "חָטַב (Qal, Pual) / חִטָּה",
+    "headword_tokens": ["חזקנו"],
+    "page_start": 242,
+    "page_end": 242,
+    "gloss_es": "Cortar leña / Trigo.",
+    "text": "חָטַב: Q. Cortar leña. Pu. Ser tallado. חֹטֵב: Leñador. חִטָּה: Trigo, grano (Dt 8,8)."
+  },
+  {
+    "id": "heb-000777",
+    "lemma": "חָטַם",
+    "headword_line": "חָטַם (Qal) / חָטַף",
+    "headword_tokens": ["ה"],
+    "page_start": 242,
+    "page_end": 242,
+    "gloss_es": "Retener / Raptar.",
+    "text": "חָטַם: Q. Retener, cohibir o contener (Is 48,9). חָטַף: Q. Raptar, secuestrar o arrebatar (Sal 10,9)."
+  },
+  {
+    "id": "heb-000778",
+    "lemma": "חֹטֶר",
+    "headword_line": "חֹטֶר / חָי",
+    "headword_tokens": ["חוזר"],
+    "page_start": 242,
+    "page_end": 243,
+    "gloss_es": "Renuevo / Vivo.",
+    "text": "חֹטֶר: Renuevo, brote o vástago (Is 11,1). חָי: Adj. Vivo, viviente; sano; fértil (Gn 9,3)."
+  },
+  {
+    "id": "heb-000779",
+    "lemma": "חַיָּה",
+    "headword_line": "חַיָּה / חִידָה",
+    "headword_tokens": ["חחים"],
+    "page_start": 243,
+    "page_end": 243,
+    "gloss_es": "Animal / Enigma.",
+    "text": "חַיָּה: Ser vivo, animal o fiera. b) Vida o vitalidad. חִידָה: Acertijo, adivinanza o enigma (Sal 78,2)."
+  },
+  {
+    "id": "heb-000780",
+    "lemma": "חָיָה",
+    "headword_line": "חָיָה (Qal, Piel, Hifil)",
+    "headword_tokens": ["יחט"],
+    "page_start": 243,
+    "page_end": 245,
+    "gloss_es": "Vivir, revivir, dar vida.",
+    "text": "חָיָה. Q. Vivir, estar vivo, curarse o revivir. Pi. Conservar vivo, criar, dar vida. Hi. Hacer vivir, resucitar o perdonar la vida (Gn 50,20)."
+  },
+  {
+    "id": "heb-000781",
+    "lemma": "חָי",
+    "headword_line": "חָי (Adjetivo/Sustantivo)",
+    "headword_tokens": ["חטא"],
+    "page_start": 241,
+    "page_end": 241,
+    "gloss_es": "Viviente / Mundo de los vivos.",
+    "text": "חָי. El vivo o los que viven. אֶרֶץ הַחַיִּים: el mundo de los vivos (Is 38,11). חַי־אָנִי: juramento 'por mi vida'."
+  },
+  {
+    "id": "heb-000782",
+    "lemma": "חַטָּא",
+    "headword_line": "חַטָּא",
+    "headword_tokens": ["חטאי"],
+    "page_start": 241,
+    "page_end": 241,
+    "gloss_es": "Pecador.",
+    "text": "חַטָּא. Adj. Pecador, alguien que vive en pecado (Gn 13,13; Sal 1,1)."
+  },
+  {
+    "id": "heb-000783",
+    "lemma": "חַטָּאָה",
+    "headword_line": "חַטָּאָה",
+    "headword_tokens": ["חטאה"],
+    "page_start": 241,
+    "page_end": 241,
+    "gloss_es": "Pecado, crimen.",
+    "text": "חַטָּאָה. Pecado, crimen, falta grave. También: sacrificio expiatorio (Ex 32,30; Sal 40,7)."
+  },
+  {
+    "id": "heb-000784",
+    "lemma": "חֲטָאָה",
+    "headword_line": "חֲטָאָה",
+    "headword_tokens": ["חטאה"],
+    "page_start": 241,
+    "page_end": 241,
+    "gloss_es": "Fallo, pecado.",
+    "text": "חֲטָאָה. Error o pecado (Sal 109,7). Ver nota en ID heb-000781."
+  },
+  {
+    "id": "heb-000785",
+    "lemma": "חַטָּאָה",
+    "headword_line": "חַטָּאָה",
+    "headword_tokens": ["חטאה"],
+    "page_start": 241,
+    "page_end": 241,
+    "gloss_es": "Pecado, delito.",
+    "text": "חַטָּאָה. Pecado o delito (Ex 34,7)."
+  },
+  {
+    "id": "heb-000786",
+    "lemma": "חַטָּאת",
+    "headword_line": "חַטָּאת",
+    "headword_tokens": ["חטא"],
+    "page_start": 241,
+    "page_end": 242,
+    "gloss_es": "Pecado, transgresión; sacrificio expiatorio.",
+    "text": "חַטָּאת. Pecado, culpa o delito. b) Sacrificio por el pecado o víctima expiatoria (Lv 4,28; Nm 18,19)."
+  },
+  {
+    "id": "heb-000787",
+    "lemma": "חִטָּה",
+    "headword_line": "חִטָּה [חִטִּים]",
+    "headword_tokens": ["חטי"],
+    "page_start": 242,
+    "page_end": 242,
+    "gloss_es": "Trigo, grano.",
+    "text": "חִטָּה. Grano de trigo o planta de trigo (Ex 29,2). קְצִיר חִטִּים: cosecha de trigo."
+  },
+  {
+    "id": "heb-000788",
+    "lemma": "חָטַף",
+    "headword_line": "חָטַף (Qal)",
+    "headword_tokens": ["לח"],
+    "page_start": 242,
+    "page_end": 242,
+    "gloss_es": "Raptar, secuestrar.",
+    "text": "חָטַף. Q. Raptar, secuestrar o atrapar a alguien (Jue 21,21; Sal 10,9)."
+  },
+  {
+    "id": "heb-000789",
+    "lemma": "חַי",
+    "headword_line": "חַי",
+    "headword_tokens": ["חי"],
+    "page_start": 243,
+    "page_end": 243,
+    "gloss_es": "Vivo, viviente.",
+    "text": "חַי. Adj. Que tiene vida. Usado para Dios (אֵל חַי) o animales. בָּשָׂר חַי: carne cruda (1 Sm 2,15)."
+  },
+  {
+    "id": "heb-000790",
+    "lemma": "חַיִּים",
+    "headword_line": "חַיִּים",
+    "headword_tokens": ["קבר"],
+    "page_start": 243,
+    "page_end": 243,
+    "gloss_es": "Vida, vivientes.",
+    "text": "חַיִּים. Vida. כָּל־הַחַיִּים: todos los vivientes. אֶרֶץ הַחַיִּים: tierra de los vivos."
+  },
+  {
+    "id": "heb-000791",
+    "lemma": "חִידָה",
+    "headword_line": "חִידָה [חִידוֹת]",
+    "headword_tokens": ["חידתם"],
+    "page_start": 243,
+    "page_end": 243,
+    "gloss_es": "Acertijo, enigma.",
+    "text": "חִיDָה. Acertijo, adivinanza o enigma difícil (Jue 14,12; Sal 49,5)."
+  },
+  {
+    "id": "heb-000792",
+    "lemma": "חָיָה",
+    "headword_line": "חָיָה (Qal)",
+    "headword_tokens": ["תסיה"],
+    "page_start": 243,
+    "page_end": 243,
+    "gloss_es": "Vivir, curarse.",
+    "text": "חָיָה. Q. Estar vivo, tener vida; salvar la vida o curarse de una enfermedad (2 Re 20,1)."
+  },
+  {
+    "id": "heb-000793",
+    "lemma": "חָיָה",
+    "headword_line": "חָיָה (Diferenciación)",
+    "headword_tokens": ["מות", "אבד"],
+    "page_start": 243,
+    "page_end": 243,
+    "gloss_es": "Seguir viviendo / Revivir.",
+    "text": "חָיָה. Q. 2. Seguir vivo o sobrevivir (Gn 20,7). 3. Revivir o resucitar de la muerte (2 Re 13,21)."
+  },
+  {
+    "id": "heb-000794",
+    "lemma": "חָיָה",
+    "headword_line": "חָיָה (Salud)",
+    "headword_tokens": ["נרפא", "מלט"],
+    "page_start": 243,
+    "page_end": 243,
+    "gloss_es": "Saneado, salvado.",
+    "text": "חָיָה. Q. Saneado o recuperado. Salvar la vida (נֶפֶשׁ) frente a la muerte (Sal 89,49)."
+  },
+  {
+    "id": "heb-000795",
+    "lemma": "חָיָה",
+    "headword_line": "חָיָה (Duración)",
+    "headword_tokens": ["חיה"],
+    "page_start": 244,
+    "page_end": 244,
+    "gloss_es": "Cumplir años, durar.",
+    "text": "חָיָה. Expresiones de duración: cumplir días o años. לְעוֹלָם יִחְיֶה: viva para siempre (Job 7,16)."
+  },
+  {
+    "id": "heb-000796",
+    "lemma": "חִיָּה",
+    "headword_line": "חִיָּה (Piel)",
+    "headword_tokens": ["לבב"],
+    "page_start": 244,
+    "page_end": 244,
+    "gloss_es": "Dejar con vida, alimentar.",
+    "text": "חִיָּה. Pi. Respetar la vida, dejar vivo (Ex 1,17). Criar, alimentar o reanimar (Sal 119,37)."
+  },
+  {
+    "id": "heb-000797",
+    "lemma": "הֶחֱיָה",
+    "headword_line": "הֶחֱיָה (Hifil)",
+    "headword_tokens": ["חיה"],
+    "page_start": 245,
+    "page_end": 245,
+    "gloss_es": "Hacer vivir, resucitar.",
+    "text": "הֶחֱיָה. Hi. Dar vida, hacer revivir o resucitar. Conservar o perdonar la vida (Gn 45,7)."
+  },
+  {
+    "id": "heb-000798",
+    "lemma": "חַיָּה",
+    "headword_line": "חַיָּה",
+    "headword_tokens": ["חי"],
+    "page_start": 245,
+    "page_end": 245,
+    "gloss_es": "Viviente, animal, fiera.",
+    "text": "חַיָּה. Ser vivo. b) Animal salvaje o fiera (חַיַּת הַשָּׂדֶה). c) Tropa o destacamento (2 Sm 23,13)."
+  },
+  {
+    "id": "heb-000799",
+    "lemma": "חַיָּה",
+    "headword_line": "חַיָּה (Acciones)",
+    "headword_tokens": ["צפור"],
+    "page_start": 245,
+    "page_end": 245,
+    "gloss_es": "Actividades animales.",
+    "text": "חַיָּה. Fieras que destrozan (הֵמִית) o pisotean (רָמַס). Aves de rapiña (צִפּוֹר)."
+  },
+  {
+    "id": "heb-000800",
+    "lemma": "חַיָּה",
+    "headword_line": "חַיָּה (Vida)",
+    "headword_tokens": ["טרף", "ציד"],
+    "page_start": 245,
+    "page_end": 245,
+    "gloss_es": "Fuerza vital, sustento.",
+    "text": "חַיָּה. 2. Vida o vitalidad. Necesidad vital o hambre (Job 33,20). Sustento o presa (טֶרֶף)."
   }
 ]
