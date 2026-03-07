@@ -748,8 +748,8 @@ function doSearch() {
         return;
     }
 
-    const rawQuery = queryEl.value.trim();
-    if (!rawQuery) return;
+    const rawQuery = queryEl?.value?.trim() || '';
+        if (!rawQuery) return;
 
     // Rangos Unicode para detección
     const isHebrew = /[\u0590-\u05FF]/.test(rawQuery);
@@ -775,12 +775,13 @@ function doSearch() {
     }
 
     // Actualizar Interfaz
-    renderResults(res.matches, rawQuery);
-    
-    resultCountEl.textContent = `${res.matches.length} resultado(s)`;
-    setTierBadge(res.tier, !!res.ok);
-    diagEl.textContent = res.diag;
-    traceEl.textContent = (res.trace || []).join('\n');
+     const matches = Array.isArray(res?.matches) ? res.matches : [];
+    renderResults(matches, rawQuery);
+
+    if (resultCountEl) resultCountEl.textContent = `${matches.length} resultado(s)`;
+    setTierBadge(res?.tier || 'Sin resultados', !!res?.ok);
+    if (diagEl) diagEl.textContent = res?.diag || '';
+    if (traceEl) traceEl.textContent = (res?.trace || []).join('\n');
 }
 
 // Inicialización: Asegurarnos de que el botón use esta nueva función
