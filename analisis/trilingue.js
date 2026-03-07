@@ -392,6 +392,7 @@ function searchSpanish(query) {
 
     function tokenizeGreekEntry(entryText) {
         return String(entryText || '')
+            .replace(/[\[\]\{\}\(\)«»"“”'’`]/g, ' ')
             .split(/\s+/)
             .map(v => String(v || '').trim())
             .filter(Boolean);
@@ -400,7 +401,8 @@ function searchSpanish(query) {
     function pickMeaningfulGreekTokenForSpanish(text) {
         const firstEntry = extractFirstGreekEntryForSpanish(text);
         const tokens = tokenizeGreekEntry(firstEntry);
-        if (tokens.length < 2) return String(tokens[0] || firstEntry || text || '').trim();
+ // Si la primera entrada griega ya es una sola palabra, no se altera.
+        if (tokens.length <= 1) return String(firstEntry || tokens[0] || text || '').trim();
 
         for (const token of tokens) {
             const normalized = normalizeGreekStopword(token);
@@ -408,6 +410,8 @@ function searchSpanish(query) {
             if (!GREEK_BIBLICAL_STOPWORDS.has(normalized)) return token;
         }
 
+ // Fallback: si toda la primera entrada son partículas/funcionales,
+        // conservar la primera palabra original de esa entrada.
         return tokens[0] || '';
     }
 
@@ -614,7 +618,7 @@ function doSearch() {
     setTierBadge(res.tier, !!res.ok);
     if (diagEl) diagEl.textContent = res.diag;
     if (traceEl) traceEl.textContent = (res.trace || []).join('\n');
-    
+
 }
 
 // Inicialización: Asegurarnos de que el botón use esta nueva función
