@@ -28,6 +28,7 @@ const CANONICAL_BOOK_ORDER = [
 ];
 
 const entryOrderCache = new WeakMap();
+const MAX_EQUIVALENT_RESULTS = 5;
 
 function getEntryLoadOrder(entry) {
     if (!entry || typeof entry !== 'object') return Number.MAX_SAFE_INTEGER;
@@ -485,7 +486,7 @@ function searchGreek(query) {
         ...pluralCandidateFieldMatches,
         ...pluralMainTokenMatches,
         ...pluralCandidateTokenMatches
-    ].slice(0, 4);
+        ].slice(0, MAX_EQUIVALENT_RESULTS);
 
     return {
         ok: finalMatches.length > 0,
@@ -704,8 +705,9 @@ function renderResults(items, rawQuery = '') {
         return;
     }
 
-    const limitedItems = displayItems.slice(0, 4);
-
+    const primaryItems = displayItems.filter(item => !item?._isSynthetic);
+    const derivedItems = displayItems.filter(item => item?._isSynthetic);
+    const limitedItems = [...primaryItems, ...derivedItems].slice(0, MAX_EQUIVALENT_RESULTS);
     if (!resultsTbodyEl) return;
 
     const normalizeDisplayText = (value) => {
