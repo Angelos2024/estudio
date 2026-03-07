@@ -900,11 +900,19 @@ const samples = await buildLxxMatches(normalizeGreek(greekLookup), 3);
       lang === 'gr' ? transliterateGreek(gr || rawQuery) :
       '—';
 
+  const dictionaryEquivalence =
+      lang === 'gr'
+        ? 'Equivalencia: Si buscas en griego, carga <span class="fw-semibold">DICT_URL = ./diccionario/masterdiccionario.json</span>'
+        : lang === 'he'
+          ? 'Equivalencia: Si buscas en hebreo, carga <span class="fw-semibold">HEBREW_DICT_URL = ./diccionario/diccionario_unificado.min.json</span>'
+          : 'Equivalencia: Si buscas en español, primero intenta conseguir una entrada griega con <span class="fw-semibold">findGreekEntryFromSpanish(term)</span>. Esa función usa <span class="fw-semibold">state.dictTranslitMap</span>, que se construye desde <span class="fw-semibold">masterdiccionario.json</span> con Forma léxica y Forma flexionada.';
+
+
     renderTags([
       `Lema: <span class="fw-semibold ${classForLang(lang)}">${escapeHtml(lemmaText || '—')}</span>`,
       `Transliteración: <span class="fw-semibold">${escapeHtml(transliteration || '—')}</span>`,
-      'Estado: <span class="fw-semibold">Coincidencia localizada</span>'
-    ]);
+      dictionaryEquivalence
+          ]);
 
  const palabrasBuscadas = [
       es || (lang === 'es' ? rawQuery : '—'),
