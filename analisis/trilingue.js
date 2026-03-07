@@ -135,6 +135,7 @@ function getGreekPriority(entry) {
 function getGreekMatchPriorityForSpanish(entry) {
     const raw = getGreekText(entry);
     const parts = getGreekParts(entry);
+        const hasListSeparator = /[,;·/]/.test(raw);
     const rawTokens = normalizeFuzzy(raw).split(/\s+/).filter(Boolean);
     const bestPart = getGreekPriority(entry).bestPart || raw;
     const bestPartTokens = normalizeFuzzy(bestPart).split(/\s+/).filter(Boolean);

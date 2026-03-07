@@ -432,10 +432,10 @@ async function handleFiles(fileList) {
   renderLoadInfo();
 
   if (errs.length) {
-    diagEl.textContent = 'Errores de carga: ' + errs.join(' | ');
-  } else if (collected.length) {
-    diagEl.textContent = '';
-  }
+    if (diagEl) diagEl.textContent = 'Errores de carga: ' + errs.join(' | ');
+      } else if (collected.length) {
+    if (diagEl) diagEl.textContent = '';
+      }
 }
 
 
@@ -481,15 +481,15 @@ async function loadRemoteAlefatoFiles() {
 function doSearch() {
   if (!entries.length) {
     setTierBadge('Sin base cargada', false);
-    diagEl.textContent = 'Primero cargue uno o más archivos JSON del alefato.';
-    return;
+    if (diagEl) diagEl.textContent = 'Primero cargue uno o más archivos JSON del alefato.';    return;
   }
-  const res = searchHebrewWord(queryEl.value);
-  renderResults(res.matches, queryEl.value);
-  resultCountEl.textContent = `${res.matches.length.toLocaleString()} resultado(s)`;
+const query = queryEl ? queryEl.value : '';
+  const res = searchHebrewWord(query);
+  renderResults(res.matches, query);
+  if (resultCountEl) resultCountEl.textContent = `${res.matches.length.toLocaleString()} resultado(s)`;
   setTierBadge(res.tier, !!res.ok);
-  diagEl.textContent = res.diag;
-  traceEl.textContent = res.trace.join('\n');
+if (diagEl) diagEl.textContent = res.diag;
+  if (traceEl) traceEl.textContent = res.trace.join('\n');
 }
 
 function clearAll() {
@@ -499,20 +499,19 @@ function clearAll() {
   renderLoadInfo();
   renderResults([]);
   setTierBadge('Sin búsqueda', false);
-  resultCountEl.textContent = '0 resultados';
-  diagEl.textContent = 'Base reiniciada.';
-  traceEl.textContent = '—';
+if (resultCountEl) resultCountEl.textContent = '0 resultados';
+  if (diagEl) diagEl.textContent = 'Base reiniciada.';
+  if (traceEl) traceEl.textContent = '—';
   if (alefatoFilesEl) alefatoFilesEl.value = '';
 }
 
 if (alefatoFilesEl) alefatoFilesEl.addEventListener('change', (e) => handleFiles(e.target.files));
 if (clearBtn) clearBtn.addEventListener('click', clearAll);
 if (searchBtn) searchBtn.addEventListener('click', doSearch);
-if (exampleBtn) exampleBtn.addEventListener('click', () => { queryEl.value = 'מִכְתָּבִים'; doSearch(); });
-if (queryEl) queryEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') doSearch(); });
+if (exampleBtn) exampleBtn.addEventListener('click', () => { if (queryEl) queryEl.value = 'מִכְתָּבִים'; doSearch(); });if (queryEl) queryEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') doSearch(); });
 
-if (normalizeEl) normalizeEl.addEventListener('change', () => { if (entries.length) rebuildIndexes(); if (queryEl.value.trim()) doSearch(); });
-if (splitHyphenatedEl) splitHyphenatedEl.addEventListener('change', () => { if (entries.length) rebuildIndexes(); if (queryEl.value.trim()) doSearch(); });
+if (normalizeEl) normalizeEl.addEventListener('change', () => { if (entries.length) rebuildIndexes(); if (queryEl && queryEl.value.trim()) doSearch(); });
+if (splitHyphenatedEl) splitHyphenatedEl.addEventListener('change', () => { if (entries.length) rebuildIndexes(); if (queryEl && queryEl.value.trim()) doSearch(); });
 
 renderLoadInfo();
 if (searchBtn) searchBtn.disabled = true;
