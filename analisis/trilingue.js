@@ -143,13 +143,14 @@ function getGreekMatchPriorityForSpanish(entry) {
         return tokens.length === 1;
     }) || rawTokens.length === 1;
 
+    const isSingleWordWholeGreekField = !hasListSeparator && rawTokens.length === 1;
+
     return {
-        standaloneRank: hasStandaloneSingle ? 0 : 1,
-        bestTokenCount: bestPartTokens.length || 999,
-        bestCharCount: bestPart ? bestPart.length : 999,
-        rawTokenCount: rawTokens.length || 999,
+        singleWordFieldRank: isSingleWordWholeGreekField ? 0 : 1,
+        standaloneRank: hasStandaloneSingle ? 0 : 1,  
         partCount: parts.length || (raw ? 1 : 999),
-        rawCharCount: raw ? raw.length : 999,
+         tokenCount: bestPartTokens.length || 999,
+        charCount: bestPart ? bestPart.length : 999,
         bestPart,
         raw
     };
@@ -206,12 +207,11 @@ function sortSpanishMatches(list) {
         const la = getEntryLoadOrder(a);
         const lb = getEntryLoadOrder(b);
 
+        if (ga.singleWordFieldRank !== gb.singleWordFieldRank) return ga.singleWordFieldRank - gb.singleWordFieldRank;
         if (ga.standaloneRank !== gb.standaloneRank) return ga.standaloneRank - gb.standaloneRank;
-        if (ga.bestTokenCount !== gb.bestTokenCount) return ga.bestTokenCount - gb.bestTokenCount;
-        if (ga.bestCharCount !== gb.bestCharCount) return ga.bestCharCount - gb.bestCharCount;
-        if (ga.rawTokenCount !== gb.rawTokenCount) return ga.rawTokenCount - gb.rawTokenCount;
         if (ga.partCount !== gb.partCount) return ga.partCount - gb.partCount;
-        if (ga.rawCharCount !== gb.rawCharCount) return ga.rawCharCount - gb.rawCharCount;
+         if (ga.tokenCount !== gb.tokenCount) return ga.tokenCount - gb.tokenCount;
+        if (ga.charCount !== gb.charCount) return ga.charCount - gb.charCount;
         if (ba !== bb) return ba - bb;
         if (la !== lb) return la - lb;
 
@@ -610,12 +610,11 @@ function searchSpanish(query) {
             const la = getEntryLoadOrder(a);
             const lb = getEntryLoadOrder(b);
 
+            if (ga.singleWordFieldRank !== gb.singleWordFieldRank) return ga.singleWordFieldRank - gb.singleWordFieldRank;
             if (ga.standaloneRank !== gb.standaloneRank) return ga.standaloneRank - gb.standaloneRank;
-            if (ga.bestTokenCount !== gb.bestTokenCount) return ga.bestTokenCount - gb.bestTokenCount;
-            if (ga.bestCharCount !== gb.bestCharCount) return ga.bestCharCount - gb.bestCharCount;
-            if (ga.rawTokenCount !== gb.rawTokenCount) return ga.rawTokenCount - gb.rawTokenCount;
-                        if (ga.partCount !== gb.partCount) return ga.partCount - gb.partCount;  
-            if (ga.rawCharCount !== gb.rawCharCount) return ga.rawCharCount - gb.rawCharCount;
+             if (ga.partCount !== gb.partCount) return ga.partCount - gb.partCount;
+            if (ga.tokenCount !== gb.tokenCount) return ga.tokenCount - gb.tokenCount;
+            if (ga.charCount !== gb.charCount) return ga.charCount - gb.charCount;           
             if (ha.wordCount !== hb.wordCount) return ha.wordCount - hb.wordCount;
             if (ha.charCount !== hb.charCount) return ha.charCount - hb.charCount;
             if (ba !== bb) return ba - bb;
@@ -682,10 +681,8 @@ sortSpanishMatches(exactMainMatches);
             `Búsqueda exacta para: ${firstWord}`,
             `Variantes plurales aceptadas: ${Array.from(pluralVariants).join(', ') || 'ninguna'}`,
             'Orden: exacto visible > exacto en candidatos > plural visible > plural en candidatos.',
-            'Dentro de cada grupo se prioriza primero la entrada griega más corta; después, el orden canónico del libro; y al final el hebreo más conciso solo como desempate.'
-        ],
-        diag: 'Se muestran primero las coincidencias exactas de la traducción visible; dentro de cada grupo se prioriza la entrada griega más corta y luego el orden canónico del libro.'
-    };
+            'Dentro de cada grupo se prioriza: campo griego de una sola palabra (sin listas) > presencia de palabra aislada > menos variantes griegas > menos tokens > menor longitud; después, orden canónico/carga y desempates hebreos.'        ],
+        diag: 'Se muestran primero las coincidencias exactas de la traducción visible; dentro de cada grupo se prioriza la equivalencia griega de una sola palabra (sin lista), luego formas más compactas y finalmente el orden canónico del libro.'    };
 }
 
 /**

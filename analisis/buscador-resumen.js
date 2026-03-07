@@ -329,7 +329,7 @@ function getSpanishEquivalences(entry, fallback = '') {
     return output.slice(0, 3);
   }
 
-function extractPrimaryGreekLookup(rawText, fallback = '') {
+  function extractPrimaryGreekLookup(rawText, fallback = '') {
     const source = String(rawText || fallback || '').trim();
     if (!source) return '';
     const firstSegment = source
