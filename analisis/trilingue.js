@@ -19,6 +19,57 @@ function normalizeBookKey(str) {
         .replace(/[^a-z0-9]+/g, '');
 }
 
+// Lista de Stopwords Bíblicas Griegas (sin acentos para facilitar el matcheo)
+const GREEK_BIBLICAL_STOPWORDS = new Set([
+    // Artículos
+    'ο', 'η', 'το', 'του', 'τησ', 'τω', 'τη', 'τον', 'την',
+    'οι', 'αι', 'τα', 'των', 'τοισ', 'ταισ', 'τουσ', 'τασ',
+    // Preposiciones (y sus variaciones por elisión)
+    'εν', 'εισ', 'εκ', 'εξ', 'απο', 'απ', 'αφ', 'δια', 'δι', 'επι', 'επ', 'εφ',
+    'κατα', 'κατ', 'καθ', 'μετα', 'μετ', 'μεθ', 'παρα', 'παρ', 'περι', 'προ',
+    'προσ', 'συν', 'υπο', 'υπ', 'υφ', 'υπερ', 'αντι', 'αντ', 'ανθ', 'ανα', 'αν',
+    'αχρι', 'αχρισ', 'μεχρι', 'μεχρισ', 'εωσ', 'αμα', 'ανευ', 'ενεκα', 'ενεκεν',
+    'ενωπιον', 'εμπροσθεν', 'οπισω', 'εξω', 'εσω', 'χωρισ', 'περαν',
+    // Conjunciones y Partículas Funcionales
+    'και', 'δε', 'δ', 'γαρ', 'ουν', 'αλλα', 'αλλ', 'εαν', 'ει',
+    'οτι', 'ωσ', 'ωσει', 'ωσπερ', 'ωστε', 'διο', 'διοτι', 'επει', 'τε',
+    'επειδη', 'οπωσ', 'ινα', 'καθωσ', 'καθαπερ', 'μεν', 'ουδε', 'ουτε',
+    'μηδε', 'μητε', 'μη', 'ου', 'ουκ', 'ουχ', 'ουχι', 'αν', 'καν', 'αρα',
+    'αραγε', 'γε', 'ειτε', 'πλην',
+    // Interjecciones y adverbios de uso común funcional
+    'ιδου', 'ιδε', 'ουαι', 'αμην', 'ποθεν', 'πωσ', 'ποτε', 'ναι', 'νυν', 'τοτε'
+]);
+
+/**
+ * Extrae la primera palabra útil de una frase griega, ignorando stopwords.
+ * Solo procesa la primera entrada (antes de comas/puntos y comas).
+ */
+function getUsefulGreekWord(rawGreek) {
+    if (!rawGreek) return '';
+
+    const firstEntry = String(rawGreek).split(/[,;\/]/)[0].trim();
+    const words = firstEntry.split(/\s+/).filter(Boolean);
+
+    if (words.length <= 1) {
+        return firstEntry;
+    }
+
+    for (const word of words) {
+        const cleanWord = word.replace(/[.,;·!?:'’"()\[\]]/g, '');
+        const normalizedForCheck = cleanWord
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .toLowerCase()
+            .replace(/ς/g, 'σ');
+
+        if (!GREEK_BIBLICAL_STOPWORDS.has(normalizedForCheck)) {
+            return cleanWord;
+        }
+    }
+
+    return words[0].replace(/[.,;·!?:'’"()\[\]]/g, '');
+}
+
 const CANONICAL_BOOK_ORDER = [
     { rank: 1, keys: ['01genesis', 'genesis', 'gen', 'génesis', 'gn'] },
     { rank: 2, keys: ['02exodo', '02éxodo', 'exodo', 'éxodo', 'ex', 'exo'] },
@@ -520,7 +571,16 @@ const firstPartTokenCount = normalizeFuzzy(firstPart).split(/\s+/).filter(Boolea
         ...exactCandidateMatches,
         ...pluralMainMatches,
         ...pluralCandidateMatches
-    ];
+    ].map(entry => {
+        const greekOriginal = getGreekText(entry);
+        const greekToUse = getUsefulGreekWord(greekOriginal);
+
+        return {
+            ...entry,
+            _grOriginal: greekOriginal,
+            gr: greekToUse || greekOriginal || entry.gr || entry.equivalencia_griega || entry.greek || ''
+        };
+    });
 
     return {
         ok: finalMatches.length > 0,
