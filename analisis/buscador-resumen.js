@@ -330,6 +330,94 @@ function getSpanishEquivalences(entry, fallback = '') {
   }
 
 
+  function extractPrimarySpanishLookup(rawText, fallback = '') {
+    const source = String(rawText || fallback || '').trim();
+    if (!source) return '';
+    const firstSegment = source
+      .split(/[\/,;]+/)
+      .map((part) => String(part || '').trim())
+      .filter(Boolean)[0] || '';
+    if (!firstSegment) return '';
+
+    const words = firstSegment.split(/\s+/).filter(Boolean);
+    if (words.length <= 2) return words.join(' ');
+    return words[0];
+  }
+
+  function isNtBook(book) {
+    return NT_BOOKS.has(String(book || '').trim().toLowerCase());
+  }
+
+  function getSpanishIndexRefs(index, normalizedTokens) {
+    if (!normalizedTokens.length) return [];
+    const tokenMap = index?.tokens || {};
+    const tokenLists = normalizedTokens
+      .map((token) => Array.isArray(tokenMap[token]) ? tokenMap[token] : [])
+      .filter((list) => list.length);
+
+    if (!tokenLists.length) return [];
+
+    const [firstList, ...rest] = tokenLists;
+    const restSets = rest.map((list) => new Set(list));
+    return firstList.filter((ref) => restSets.every((set) => set.has(ref)));
+  }
+
+  async function searchSpanishRefsByScope(query, scope = 'all', maxRefs = 2) {
+    const normalizedQuery = normalizeSpanish(query || '');
+    const tokens = normalizedQuery.split(/\s+/).filter(Boolean);
+    if (!tokens.length) return [];
+
+    const index = await loadIndex('es');
+    const candidateRefs = getSpanishIndexRefs(index, tokens);
+    if (!candidateRefs.length) return [];
+
+    const exactMatches = [];
+    const tokenMatches = [];
+
+    for (const ref of candidateRefs) {
+      const [book, chapterRaw, verseRaw] = String(ref || '').split('|');
+      const chapter = Number(chapterRaw);
+      const verse = Number(verseRaw);
+      if (!book || !Number.isFinite(chapter) || !Number.isFinite(verse)) continue;
+
+      const bookIsNt = isNtBook(book);
+      if (scope === 'at' && bookIsNt) continue;
+      if (scope === 'nt' && !bookIsNt) continue;
+
+      try {
+        const verses = await loadChapterText('es', book, chapter);
+        const verseText = verses?.[verse - 1] || '';
+        if (!verseText) continue;
+
+        const normalizedVerse = normalizeSpanish(verseText);
+        const containsAllTokens = tokens.every((token) => normalizedVerse.includes(token));
+        if (!containsAllTokens) continue;
+
+        const sample = {
+          ref: formatRef(book, chapter, verse),
+          rawRef: `${book}|${chapter}|${verse}`,
+          text: verseText,
+          lang: 'es'
+        };
+
+        if (normalizedVerse.includes(normalizedQuery)) {
+          exactMatches.push(sample);
+        } else {
+          tokenMatches.push(sample);
+        }
+
+        if ((exactMatches.length + tokenMatches.length) >= maxRefs * 3 && exactMatches.length >= maxRefs) {
+          break;
+        }
+      } catch (_) {
+        continue;
+      }
+    }
+
+    return [...exactMatches, ...tokenMatches].slice(0, maxRefs);
+  }
+
+
 
   function classForLang(lang) {
     if (lang === 'he') return 'hebrew';
@@ -593,27 +681,13 @@ function getSpanishEquivalences(entry, fallback = '') {
     `;
   }
 
-function getRvrCardTitleFromSections(sections) {
-    let hasAT = false;
-    let hasNT = false;
-
-    (sections || []).forEach((section) => {
-      (section?.samples || []).forEach((sample) => {
-        const rawRef = String(sample?.rawRef || '');
-        const [book] = rawRef.split('|');
-        if (!book) return;
-        if (NT_BOOKS.has(book)) hasNT = true;
-        else hasAT = true;
-      });
-    });
-
-    const suffix = hasAT && hasNT ? 'AT/NT' : (hasNT ? 'NT' : 'AT');
-    return `RVR1960 (${suffix})`;
+function getRvrCardTitle() {
+    return 'RVR1960 (AT/NT)';
   }
 
   function buildRvrSectionsHtml(sections) {
     const blocks = (sections || []).map((section) => {
-      const eq = escapeHtml(section?.equivalence || '—');
+      const label = escapeHtml(section?.title || '—');
       const rows = (section?.samples || []).length
         ? section.samples.map((sample) => `
             <div class="mt-2">
@@ -621,10 +695,10 @@ function getRvrCardTitleFromSections(sections) {
               <div>${escapeHtml(sample.text)}</div>
             </div>
           `).join('')
-        : '<div class="small muted">Sin versos para esta equivalencia.</div>';
+        : '<div class="small muted">Sin versos en esta sección.</div>';
       return `
         <div class="mt-2">
-          <div class="small fw-semibold">Equivalencia: ${eq}</div>
+          <div class="small fw-semibold">${label}</div>
           ${rows}
         </div>
       `;
@@ -635,29 +709,24 @@ function getRvrCardTitleFromSections(sections) {
       : '<div class="small muted">Sin coincidencias en esta fuente.</div>';
   }
 
-  async function buildRvrCard(esEquivalences = []) {
-    const sections = [];
-    for (const equivalence of (esEquivalences || []).slice(0, 3)) {
-      const refs = await searchRefsInTextIndex('es', equivalence, 3);
-      const samples = await buildSamplesForRefs(refs, 'es', 3);
-      sections.push({ equivalence, samples });
-    }
-
-    const title = getRvrCardTitleFromSections(sections);
-    const renderedEquivalences = sections.length
-      ? sections.map((section) => section.equivalence).join(' · ')
-      : '—';
+  async function buildRvrCard(esLookupWord = '') {
+    const lookup = extractPrimarySpanishLookup(esLookupWord);
+    const atSamples = lookup ? await searchSpanishRefsByScope(lookup, 'at', 2) : [];
+    const ntSamples = lookup ? await searchSpanishRefsByScope(lookup, 'nt', 2) : [];
 
     return `
-      <div class="fw-semibold">${escapeHtml(title)}</div>
-      <div class="small muted">${escapeHtml(renderedEquivalences)}</div>
-      ${buildRvrSectionsHtml(sections)}
+      <div class="fw-semibold">${escapeHtml(getRvrCardTitle())}</div>
+      <div class="small muted">${escapeHtml(lookup || '—')}</div>
+      ${buildRvrSectionsHtml([
+        { title: 'AT', samples: atSamples },
+        { title: 'NT', samples: ntSamples }
+      ])}
     `;
   }
 
-  async function buildSourceCards({ esWord, esEquivalences = [], grWord, heWord }) {
+  async function buildSourceCards({ esWord, grWord, heWord }) {
       const tasks = [
-      buildRvrCard(esEquivalences.length ? esEquivalences : [esWord]),
+      buildRvrCard(esWord),
       (async () => {
         const refs = await searchRefsInTextIndex('gr', grWord, 3);
         const samples = await buildSamplesForRefs(refs, 'gr', 3);
@@ -685,7 +754,7 @@ function getRvrCardTitleFromSections(sections) {
     const heb = getHebrew(entry);
     const gr = getGreek(entry);
     const es = getSpanish(entry);
-    const esEquivalences = getSpanishEquivalences(entry, lang === 'es' ? rawQuery : es);
+    const esLookupWord = extractPrimarySpanishLookup(getSpanish(entry), lang === 'es' ? rawQuery : es);
 
     const lemmaText =
       lang === 'he' ? (heb || rawQuery) :
@@ -732,8 +801,7 @@ function getRvrCardTitleFromSections(sections) {
     ]);
 
     const sourceCards = await buildSourceCards({
-      esWord: es || rawQuery,
-            esEquivalences,
+      esWord: esLookupWord || es || rawQuery,
       grWord: gr || (lang === 'gr' ? rawQuery : ''),
       heWord: heb || (lang === 'he' ? rawQuery : '')
     });

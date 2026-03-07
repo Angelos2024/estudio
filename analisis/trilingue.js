@@ -637,10 +637,10 @@ function searchSpanish(query) {
         }
     });
 
-    sortSpanishMatchesLocal(exactMainMatches);
-    sortSpanishMatchesLocal(exactCandidateMatches);
-    sortSpanishMatchesLocal(pluralMainMatches);
-    sortSpanishMatchesLocal(pluralCandidateMatches);
+sortSpanishMatches(exactMainMatches);
+    sortSpanishMatches(exactCandidateMatches);
+    sortSpanishMatches(pluralMainMatches);
+    sortSpanishMatches(pluralCandidateMatches);
 
     const finalMatches = [
         ...exactMainMatches,
