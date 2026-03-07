@@ -130,10 +130,15 @@
       return new RegExp(`\\b${pattern}\\b`, 'giu');
     }
     if (lang === 'gr') {
-      const letters = String(raw || '').split('').map((ch) => {
-        if (ch === 'σ' || ch === 'ς') return '(?:σ|ς)';
-        return escapeRegExp(ch);
-      }).join('');
+      const letters = String(raw || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .split('')
+        .map((ch) => {
+          if (ch === 'σ' || ch === 'ς') return '(?:σ|ς)';
+          return `${escapeRegExp(ch)}[\u0300-\u036f]*`;
+        }).join('');
       return letters ? new RegExp(letters, 'giu') : null;
     }
     if (lang === 'he') {
@@ -147,6 +152,7 @@
 
   function highlightText(value, token, lang = 'es') {
     const text = String(value || '');
+    if (lang === 'gr') return highlightGreekText(text, token);
     const regex = buildHighlightRegex(token, lang);
     if (!regex || !text) return escapeHtml(text);
     let lastIndex = 0;
@@ -164,6 +170,76 @@
       lastIndex = end;
     }
     html += escapeHtml(text.slice(lastIndex));
+    return html;
+  }
+
+  function foldGreekTextWithMap(text) {
+    let folded = '';
+    const map = [];
+    let offset = 0;
+    for (const char of String(text || '')) {
+      const start = offset;
+      const end = start + char.length;
+      offset = end;
+      const foldedChunk = char
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase();
+      for (const foldedCharRaw of foldedChunk) {
+        const foldedChar = foldedCharRaw === 'ς' ? 'σ' : foldedCharRaw;
+        folded += foldedChar;
+        map.push({ start, end });
+      }
+    }
+    return { folded, map };
+  }
+
+  function foldGreekToken(token) {
+    return String(token || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/ς/g, 'σ')
+      .trim();
+  }
+
+  function highlightGreekText(text, token) {
+    const source = String(text || '');
+    const foldedToken = foldGreekToken(token);
+    if (!source || !foldedToken) return escapeHtml(source);
+
+    const { folded, map } = foldGreekTextWithMap(source);
+    if (!folded || !map.length) return escapeHtml(source);
+
+    const ranges = [];
+    let from = 0;
+    while (from < folded.length) {
+      const hit = folded.indexOf(foldedToken, from);
+      if (hit === -1) break;
+      const endIdx = hit + foldedToken.length - 1;
+      const startPos = map[hit]?.start;
+      const endPos = map[endIdx]?.end;
+      if (Number.isFinite(startPos) && Number.isFinite(endPos) && endPos > startPos) {
+        const prev = ranges[ranges.length - 1];
+        if (prev && startPos <= prev.end) {
+          prev.end = Math.max(prev.end, endPos);
+        } else {
+          ranges.push({ start: startPos, end: endPos });
+        }
+      }
+      from = hit + Math.max(1, foldedToken.length);
+    }
+
+    if (!ranges.length) return escapeHtml(source);
+
+    let html = '';
+    let cursor = 0;
+    for (const range of ranges) {
+      html += escapeHtml(source.slice(cursor, range.start));
+      html += `<mark class="search-hit">${escapeHtml(source.slice(range.start, range.end))}</mark>`;
+      cursor = range.end;
+    }
+    html += escapeHtml(source.slice(cursor));
     return html;
   }
 
@@ -783,13 +859,14 @@ function getRvrCardTitle() {
 
   async function buildSourceCards({ esWord, grWord, heWord, highlightEs = '', highlightGr = '', highlightHe = '' }) {
           const greekLookup = extractPrimaryGreekLookup(grWord);
+    const greekHighlight = extractPrimaryGreekLookup(highlightGr, greekLookup) || greekLookup;
       const tasks = [
 
       buildRvrCard(esWord, highlightEs),
             (async () => {
         const refs = await searchRefsInTextIndex('gr', greekLookup, 3);
                 const samples = await buildSamplesForRefs(refs, 'gr', 3);
-        return buildSamplesCard('RKANT (NT)', 'gr', greekLookup, samples, highlightGr || greekLookup);
+        return buildSamplesCard('RKANT (NT)', 'gr', greekLookup, samples, greekHighlight);
                       })(),
       (async () => {
         const refs = await searchRefsInTextIndex('he', heWord, 3);
@@ -797,7 +874,7 @@ function getRvrCardTitle() {
         return buildSamplesCard('Hebreo (AT)', 'he', heWord, samples, highlightHe || heWord);      })(),
       (async () => {
 const samples = await buildLxxMatches(normalizeGreek(greekLookup), 3);
-        return buildSamplesCard('LXX (AT)', 'lxx', greekLookup, samples, highlightGr || greekLookup);      })()
+        return buildSamplesCard('LXX (AT)', 'lxx', greekLookup, samples, greekHighlight);      })()
     ];
     const settled = await Promise.allSettled(tasks);
     return settled.map((item, idx) => {
