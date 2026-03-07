@@ -684,10 +684,22 @@ function renderResults(items, rawQuery = '') {
 
     if (!resultsTbodyEl) return;
 
+    const normalizeDisplayText = (value) => {
+        const txt = String(value ?? '');
+        return txt
+            .replace(/\s*\/n\s*/gi, ' ')
+            .replace(/\s*\\n\s*/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+    };
+
+
     resultsTbodyEl.innerHTML = limitedItems.map(e => {
         // Extraer griego de cualquier posible llave en el JSON
-        const griego = e.gr || e.equivalencia_griega || e.greek || '—';
-        return `
+const griegoRaw = e.gr || e.equivalencia_griega || e.greek || '—';
+        const griego = normalizeDisplayText(griegoRaw) || '—';
+        const espanol = normalizeDisplayText(e.es || '—') || '—';
+                return `
         <tr>
             <td class="he">${escapeHtml(e.he)}</td>
             <td class="gr" style="font-family: 'Times New Roman', serif; font-size: 1.2rem; color: #1e3a8a;">
@@ -695,8 +707,8 @@ function renderResults(items, rawQuery = '') {
             </td>
             <td class="es">
                 ${e._isSynthetic ? `<small style="color:var(--muted)">[Sintético]</small> ` : ''}
-                ${escapeHtml(e.es || '—')}
-            </td>
+                ${escapeHtml(espanol)}
+                            </td>
         </tr>
     `}).join('');
 }
@@ -750,4 +762,5 @@ function doSearch() {
 // Inicialización: Asegurarnos de que el botón use esta nueva función
 if (searchBtn) {
     searchBtn.onclick = doSearch;
+    
 }
