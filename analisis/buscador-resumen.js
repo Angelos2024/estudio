@@ -534,17 +534,17 @@ lxxSearchCache: new Map(),
 
     if (lang === 'he') {
      return [
-        buildDefinitionCard('Definición (Hebreo → Español · lexico_hebreo)', getHebrewDefinitionLines(heb))
+        buildDefinitionCard('Definición:', getHebrewDefinitionLines(heb))
       ];
       }
     if (lang === 'gr') {
 return [
-        buildDefinitionCard('Definición (Griego → Español · diccionarioG_unificado)', getGreekDefinitionLines(gr))
+        buildDefinitionCard('Definición:', getGreekDefinitionLines(gr))
       ];
           }
  return [
       buildDefinitionCard(
-        'Definición ampliada (Español · fusión Hebreo + Griego)',
+        'Definición:',
         [
           ...getHebrewDefinitionLines(heb).map((line) => `Hebreo: ${line}`),
           ...getGreekDefinitionLines(gr).map((line) => `Griego: ${line}`)
