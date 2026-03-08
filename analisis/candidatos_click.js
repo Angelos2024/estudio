@@ -257,13 +257,14 @@
     if (!items.length) {
       state.rows = [];
       window.AnalisisComparativoOccurrenceDonut?.setData?.({ es: [], he: [], gr: [] });
-            return;
-    }
+      return;
+      }
 
     state.rows = items.map((entry) => createSelectableRow(entry));
     ensureInitialSelection();
     renderRows();
     refreshComparisonAndSummary();
+    updateDonutFromSelection();
   }
 
   function onResultsClick(event) {
@@ -288,6 +289,7 @@
 
     renderRows();
     refreshComparisonAndSummary();
+    updateDonutFromSelection();
   }
 
   function init() {

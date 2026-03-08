@@ -23568,4 +23568,1254 @@
     "gloss_es": "Extranjero, forastero, ajeno",
     "text": "Extranjero, forastero, advenedizo. Refiriéndose a personas, tierras o lenguas. Ex 2,22; Prov 2,16. En femenino puede significar ramera o mujer ajena."
   },
-  
+  {
+    "id": "heb-002001",
+    "lemma": "נָסַח",
+    "headword_line": "נָסַח Q. impf. יִסַּח; Ni. נִסַּח",
+    "headword_tokens": ["נסח"],
+    "page_start": 498,
+    "page_end": 498,
+    "gloss_es": "Arrancar, arrojar",
+    "text": "Q. Arrancar. Prov 15,25; Sal 52,7. Ni. Ser arrancado, arrojado. Dt 28,63; Prov 2,22."
+  },
+  {
+    "id": "heb-002002",
+    "lemma": "נִסָּיוֹן",
+    "headword_line": "נִסָּיוֹן [Sustantivo]",
+    "headword_tokens": ["נסיון"],
+    "page_start": 498,
+    "page_end": 498,
+    "gloss_es": "Tentación, prueba",
+    "text": "Tentación, prueba, tiento, tanteo. Eclo 4,17; 6,7."
+  },
+  {
+    "id": "heb-002003",
+    "lemma": "נֶסֶךְ",
+    "headword_line": "נֶסֶךְ [pl. נְסָכִים; c. suf. נִסְכּוֹ]",
+    "headword_tokens": ["נסך"],
+    "page_start": 498,
+    "page_end": 499,
+    "gloss_es": "Libación, ídolo de fundición",
+    "text": "a) Libación, asociado a מִנְחָה (ofrenda). Nm 28,7; Sal 16,4. b) Ídolo de fundición. Is 41,29. c) Caudillo, jefe (sobre el que se ha derramado la unción). Jos 13,21; Miq 5,4."
+  },
+  {
+    "id": "heb-002005",
+    "lemma": "נָסַע",
+    "headword_line": "נָסַע Q. pf. נָסַע; impf. יִסַּע; Hi. הִסִּיעַ",
+    "headword_tokens": ["נסע"],
+    "page_start": 499,
+    "page_end": 499,
+    "gloss_es": "Partir, ponerse en marcha, arrancar",
+    "text": "Q. 1. Arrancar (puertas, estacas). Jue 16,3; Is 33,20. 2. Ponerse en marcha, partir, emprender la marcha, trasladarse por etapas. Gn 12,9; Ex 13,20. Hi. Hacer partir, conducir, guiar. Ex 15,22; Sal 78,52."
+  },
+  {
+    "id": "heb-002011",
+    "lemma": "נַעַר",
+    "headword_line": "נַעַר [pl. נְעָרִים; c. suf. נַעֲרוֹ]",
+    "headword_tokens": ["נער"],
+    "page_start": 500,
+    "page_end": 501,
+    "gloss_es": "Niño, joven, criado",
+    "text": "Varón no adulto. a) Niño, infante, bebé. Gn 21,12; Ex 2,6. b) Joven, muchacho, adolescente. Gn 19,4; 37,2. c) Criado, mancebo, asistente, soldado. Gn 18,7; 2 Sm 1,15."
+  },
+  {
+    "id": "heb-002011-2",
+    "lemma": "נַעֲרָה",
+    "headword_line": "נַעֲרָה [pl. נְעָרוֹת; c. suf. נַעֲרָתִי]",
+    "headword_tokens": ["נערה"],
+    "page_start": 501,
+    "page_end": 501,
+    "gloss_es": "Muchacha, joven, criada",
+    "text": "a) Muchacha, joven, moza. Gn 24,14; Rut 2,6. b) Criada, esclava, empleada. Ex 2,5; Prov 31,15."
+  },
+  {
+    "id": "heb-002015",
+    "lemma": "נָפַח",
+    "headword_line": "נָפַח Q. pf. נָפַח; impf. יִפַּח",
+    "headword_tokens": ["נפח"],
+    "page_start": 501,
+    "page_end": 501,
+    "gloss_es": "Soplar, atizar, exhalar",
+    "text": "Q. Soplar, resoplar, exhalar; atizar el fuego. Gn 2,7; Ez 22,20. נָפַח נֶפֶשׁ: exhalar el alma, morir. Jr 15,9."
+  },
+  {
+    "id": "heb-002016",
+    "lemma": "נָפַל",
+    "headword_line": "נָפַל Q. pf. נָפַל; impf. יִפֹּל; Hi. הִפִּיל",
+    "headword_tokens": ["נפל"],
+    "page_start": 501,
+    "page_end": 503,
+    "gloss_es": "Caer, echarse, derrumbarse, abatir",
+    "text": "Q. 1. Aspecto activo: bajarse, apearse, postrarse, echarse (sobre alguien o rostro en tierra). Gn 24,64; Nm 14,5. 2. Aspecto pasivo: caer, caerse, venirse abajo, derrumbarse, morir en combate. Jos 6,5; 1 Sm 31,8. Hi. Hacer caer, echar a suertes (sortear), derribar, abatir. Jos 23,4; Sal 37,14."
+  },
+  {
+    "id": "heb-002017",
+    "lemma": "נֶפֶשׁ",
+    "headword_line": "נֶפֶשׁ [pl. נְפָשׁוֹת; c. suf. נַפְשִׁי]",
+    "headword_tokens": ["נפש"],
+    "page_start": 503,
+    "page_end": 506,
+    "gloss_es": "Alma, vida, garganta, deseo, persona",
+    "text": "1. Respiración, aliento, vida. Gn 35,18; Ex 21,23. 2. Garganta, cuello (órgano del apetito). Is 5,14; Sal 69,2. 3. Deseo, afán, voluntad, apetito. Dt 18,6; Prov 13,4. 4. Individuo, persona, ser humano, uno mismo (frecuente como pronombre reflexivo). Gn 1,20; Lv 2,1."
+  },
+  {
+    "id": "heb-002020",
+    "lemma": "נָצַב",
+    "headword_line": "נָצַב Ni. נִצַּב; Hi. הִצִּיב",
+    "headword_tokens": ["נצב"],
+    "page_start": 506,
+    "page_end": 507,
+    "gloss_es": "Estar en pie, firme, erigir",
+    "text": "Ni. Ponerse o estar en pie, firme, erguido; presentarse. Ex 33,8; Sal 82,1. Hi. Poner, levantar, erigir (una estela, un altar), establecer fronteras. Gn 33,20; 1 Sm 15,12."
+  },
+  {
+    "id": "heb-002023",
+    "lemma": "נֶצַח",
+    "headword_line": "נֶצַח [Sustantivo/Adverbio]",
+    "headword_tokens": ["נצח"],
+    "page_start": 507,
+    "page_end": 508,
+    "gloss_es": "Esplendor, gloria, eternidad",
+    "text": "1. Esplendor, gloria, majestad. 1 Sm 15,29. 2. Duración, perpetuidad. לָנֶצַח: por siempre, eternamente. Is 25,8; Sal 44,24."
+  },
+  {
+    "id": "heb-002026",
+    "lemma": "נָצַל",
+    "headword_line": "נָצַל Ni. נִצַּל; Pi. נִצֵּל; Hi. הִצִּיל",
+    "headword_tokens": ["נצל"],
+    "page_start": 508,
+    "page_end": 509,
+    "gloss_es": "Librar, salvar, despojar",
+    "text": "Ni. Librarse, salvarse, escapar. Gn 32,31. Pi. Saquear, despojar. Ex 3,22. Hi. Librar, salvar, rescatar, recuperar, proteger. Muy frecuente con מִיַּד (de la mano de). Ex 3,8; 1 Sm 17,35."
+  },
+  {
+    "id": "heb-002028",
+    "lemma": "נָצַר",
+    "headword_line": "נָצַר Q. pf. נָצַר; impf. יִצֹּר",
+    "headword_tokens": ["נצר"],
+    "page_start": 509,
+    "page_end": 509,
+    "gloss_es": "Guardar, vigilar, proteger",
+    "text": "Guardar, preservar, defender, vigilar, observar (la ley o mandamientos). Sal 119,34; Prov 2,8; Is 49,8. Ptc. נֹצֵר: guardián, centinela."
+  },
+  {
+    "id": "heb-002029",
+    "lemma": "נָקַב",
+    "headword_line": "נָקַב Q. pf. נָקַב; impf. יִקֹּב",
+    "headword_tokens": ["נקב"],
+    "page_start": 509,
+    "page_end": 510,
+    "gloss_es": "Perforar, designar, maldecir",
+    "text": "Q. 1. Perforar, agujerear, atravesar. 2 Re 18,21. 2. Designar, señalar, nombrar. Is 62,2; Nm 1,17. 3. Maldecir, blasfemar. Lv 24,16."
+  },
+  {
+    "id": "heb-002030",
+    "lemma": "נְקֵבָה",
+    "headword_line": "נְקֵבָה [Sustantivo femenino]",
+    "headword_tokens": ["נקבה"],
+    "page_start": 510,
+    "page_end": 510,
+    "gloss_es": "Hembra, mujer",
+    "text": "Hembra (de seres humanos o animales). Correlativo a זָכָר (macho). Gn 1,27; 6,19."
+  },
+  {
+    "id": "heb-002034",
+    "lemma": "נָקָה",
+    "headword_line": "נָקָה Ni. נִקָּה; Pi. נִקָּה",
+    "headword_tokens": ["נקה"],
+    "page_start": 510,
+    "page_end": 510,
+    "gloss_es": "Ser libre de culpa, inocente, absolver",
+    "text": "Ni. Estar libre de culpa, ser inocente, quedar impune. Nm 5,31; Jr 49,12. Pi. Absolver, declarar inocente. Sal 19,13. Con negación: castigar, no dejar impune. Ex 20,7."
+  },
+  {
+    "id": "heb-002035",
+    "lemma": "נָקִי",
+    "headword_line": "נָקִי [cstr. נְקִי; pl. נְקִיִּים]",
+    "headword_tokens": ["נקי"],
+    "page_start": 510,
+    "page_end": 511,
+    "gloss_es": "Inocente, limpio de culpa",
+    "text": "Inocente, sin culpa. דָּם נָקִי: sangre inocente. Dt 27,25; Sal 94,21."
+  },
+  {
+    "id": "heb-002038",
+    "lemma": "נָקַם",
+    "headword_line": "נָקַם Q. pf. נָקַם; Ni. נִקַּם",
+    "headword_tokens": ["נקם"],
+    "page_start": 511,
+    "page_end": 511,
+    "gloss_es": "Vengar, tomar venganza",
+    "text": "Q. Vengar, tomar venganza, hacer justicia. Nm 31,2; Jos 10,13. Ni. Vengarse. Jue 15,7. Sust. נָקָם: venganza, desquite. Is 59,17."
+  },
+  {
+    "id": "heb-002039",
+    "lemma": "נָקַף",
+    "headword_line": "נָקַף Q. יִנְקֹף; Hi. הִקִּיף",
+    "headword_tokens": ["נקף"],
+    "page_start": 511,
+    "page_end": 512,
+    "gloss_es": "Rodear, cercar, cumplir el ciclo",
+    "text": "Q. Girar, cumplir el ciclo (de las fiestas). Is 29,1. Hi. Rodear, cercar, envolver, dar la vuelta. Jos 6,3; 2 Re 11,8."
+  },
+  {
+    "id": "heb-002041",
+    "lemma": "נָקַר",
+    "headword_line": "נָקַר Q. impf. יִקֹּר; Pi. נִקֵּר",
+    "headword_tokens": ["נקר"],
+    "page_start": 512,
+    "page_end": 512,
+    "gloss_es": "Arrancar, vaciar el ojo",
+    "text": "Q. Sacar, vaciar el ojo. 1 Sm 11,2. Pi. Vaciar los ojos, taladrar. Nm 16,14; Jue 16,21."
+  },
+  {
+    "id": "heb-002042",
+    "lemma": "נֵר",
+    "headword_line": "נֵר [pl. נֵרוֹת]",
+    "headword_tokens": ["נר"],
+    "page_start": 512,
+    "page_end": 512,
+    "gloss_es": "Lámpara, candil",
+    "text": "Lámpara, candil, velón. Ex 25,37. Metafóricamente referido a Dios, a su palabra o a la vida y prosperidad. 2 Sm 22,9; Sal 119,105; Job 21,17."
+  },
+  {
+    "id": "heb-002043",
+    "lemma": "נָשָׂא",
+    "headword_line": "נָשָׂא Q. pf. נָשָׂא; impf. יִשָּׂא; Ni. נִשָּׂא",
+    "headword_tokens": ["נשא"],
+    "page_start": 512,
+    "page_end": 516,
+    "gloss_es": "Levantar, llevar, cargar, perdonar",
+    "text": "Q. A. Sentido propio: levantar, alzar, cargar, llevar, transportar, robar, arrebatar. Gn 7,17; 31,17. B. Sentido figurado: perdonar (pecado), soportar, tolerar, entonar (una voz o canto). Gn 18,24; Ex 28,38. Ni. Levantarse, alzarse, ser elevado, excelso, sublime. Is 2,2; 6,1. Pi. Ayudar, elevar de categoría, proporcionar. Est 9,3; 1 Re 9,11. Hitp. Alzarse, ensoberbecerse. Nm 23,24."
+  },
+  {
+    "id": "heb-002050",
+    "lemma": "נָשַׂג",
+    "headword_line": "נָשַׂג Hi. הִשִּׂיג",
+    "headword_tokens": ["נשג"],
+    "page_start": 516,
+    "page_end": 516,
+    "gloss_es": "Alcanzar, pillar, encontrar",
+    "text": "Hi. Alcanzar, dar alcance, acercarse, pillar, atajar. Frecuentemente asociado a רָדַף (perseguir). Gn 31,25; Dt 19,6. הִשִּׂיגָה יָדוֹ: tener recursos/posibilidades. Lv 14,21."
+  },
+  {
+    "id": "heb-002051",
+    "lemma": "נָשִׂיא",
+    "headword_line": "נָשִׂיא [pl. נְשִׂיאִים]",
+    "headword_tokens": ["נשיא"],
+    "page_start": 516,
+    "page_end": 516,
+    "gloss_es": "Príncipe, jefe / Nubes",
+    "text": "a) Príncipe, jefe, jeque, representante. Muy frecuente en Nm y Ez. Nm 1,16; Gn 23,6. b) Plural: nubes, nublado (vapores que se elevan). Jr 10,13; Sal 135,7."
+  },
+  {
+    "id": "heb-002055",
+    "lemma": "נָשָׁה",
+    "headword_line": "נָשָׁה Q. pf. נָשָׁה; impf. יִשֶּׁה",
+    "headword_tokens": ["נשה"],
+    "page_start": 517,
+    "page_end": 517,
+    "gloss_es": "Prestar, cobrar intereses",
+    "text": "Q. Prestar, dar un préstamo, exigir. Dt 24,11. Ptc. נֹשֶׁה: acreedor, usurero. Ex 22,24; 2 Re 4,1. Hi. Cargar intereses, prestar a usura. Dt 23,20."
+  },
+  {
+    "id": "heb-002057",
+    "lemma": "נָשַׁב",
+    "headword_line": "נָשַׁב Q. pf. נָשַׁב; Hi. הִשִּׁיב",
+    "headword_tokens": ["נשב"],
+    "page_start": 517,
+    "page_end": 517,
+    "gloss_es": "Soplar, ahuyentar",
+    "text": "Q. Soplar (viento). Is 40,7. Hi. Hacer soplar; ahuyentar, espantar. Gn 15,11; Sal 147,18."
+  },
+  {
+    "id": "heb-002058",
+    "lemma": "נָשַׁךְ",
+    "headword_line": "נָשַׁךְ Q. pf. נָשַׁךְ; impf. יִשַּׁךְ",
+    "headword_tokens": ["נשך"],
+    "page_start": 517,
+    "page_end": 517,
+    "gloss_es": "Morder, picar",
+    "text": "Morder, picar (generalmente de serpiente o culebra). Gn 49,17; Nm 21,8; Am 5,19."
+  },
+  {
+    "id": "heb-002059",
+    "lemma": "נֶשֶׁךְ",
+    "headword_line": "נֶשֶׁךְ [Sustantivo]",
+    "headword_tokens": ["נשך"],
+    "page_start": 517,
+    "page_end": 517,
+    "gloss_es": "Interés, usura",
+    "text": "Interés, usura. Expresión bĕ-nešek (a interés). Dt 23,20; Prov 28,8."
+  },
+  {
+    "id": "heb-002061",
+    "lemma": "נָשַׁל",
+    "headword_line": "נָשַׁל Q. impf. יִשַּׁל; Pi. נִשֵּׁל",
+    "headword_tokens": ["נשל"],
+    "page_start": 518,
+    "page_end": 518,
+    "gloss_es": "Quitar, soltar, expulsar",
+    "text": "Q. Quitar (calzado), soltar; expulsar (pueblos), caerse (olivas). Ex 3,5; Dt 7,1; 28,40. Pi. Expulsar, arrojar. 2 Re 16,6."
+  },
+  {
+    "id": "heb-002064",
+    "lemma": "נְשָׁמָה",
+    "headword_line": "נְשָׁמָה [pl. נְשָׁמוֹת]",
+    "headword_tokens": ["נשמה"],
+    "page_start": 518,
+    "page_end": 518,
+    "gloss_es": "Aliento, soplo, espíritu",
+    "text": "Aliento, respiro, soplo; espíritu, conciencia; ser vivo, persona. Gn 2,7; Is 42,5; Prov 20,27."
+  },
+  {
+    "id": "heb-002065",
+    "lemma": "נֶשֶׁף",
+    "headword_line": "נֶשֶׁף [Sustantivo]",
+    "headword_tokens": ["נשף"],
+    "page_start": 518,
+    "page_end": 518,
+    "gloss_es": "Crepúsculo, alba, anochecer",
+    "text": "Crepúsculo matutino (alba) o vespertino (anochecer). 1 Sm 30,17; 2 Re 7,5; Job 7,4."
+  },
+  {
+    "id": "heb-002066",
+    "lemma": "נָשַׁק",
+    "headword_line": "נָשַׁק Q. pf. נָשַׁק; Pi. נִשֵּׁק",
+    "headword_tokens": ["נשק"],
+    "page_start": 518,
+    "page_end": 518,
+    "gloss_es": "Besar / Ir armado",
+    "text": "Q. Besar (gesto de afecto o adoración). Gn 27,26; 1 Re 19,20. Pi. Besar. Gn 29,13. Q. ptc. נֹשְׁקֵי: ir armado, pertrechado. Sal 78,9. Sust. נֶשֶׁק: arma, arsenal. Is 22,8."
+  },
+  {
+    "id": "heb-002066-2",
+    "lemma": "נֶשֶׁר",
+    "headword_line": "נֶשֶׁר [pl. נְשָׁרִים]",
+    "headword_tokens": ["נשר"],
+    "page_start": 518,
+    "page_end": 518,
+    "gloss_es": "Águila, buitre",
+    "text": "Águila, ave de presa; en algunos contextos probablemente buitre. Frecuente término de comparación por agilidad y altura. Ex 19,4; Dt 32,11; Is 40,31."
+  },
+  {
+    "id": "heb-002068",
+    "lemma": "נֵתַח",
+    "headword_line": "נֵתַח [pl. נְתָחִים]",
+    "headword_tokens": ["נתח"],
+    "page_start": 519,
+    "page_end": 519,
+    "gloss_es": "Trozo de carne, tajada",
+    "text": "Trozo de carne, pedazo, porción sacrificial. Ex 29,17; Ez 24,4. Verbo נִתַּח: despedazar, descuartizar. Jue 20,6."
+  },
+  {
+    "id": "heb-002069",
+    "lemma": "נָתִיב",
+    "headword_line": "נָתִיב [pl. נְתִיבוֹת]",
+    "headword_tokens": ["נתיב"],
+    "page_start": 519,
+    "page_end": 519,
+    "gloss_es": "Senda, camino, vereda",
+    "text": "Senda, sendero, vereda, camino. Frecuente en sentido figurado de conducta o proceder. Jue 5,6; Sal 119,105; Prov 8,2."
+  },
+  {
+    "id": "heb-002070",
+    "lemma": "נָתַךְ",
+    "headword_line": "נָתַךְ Q. impf. יִתַּךְ; Ni. נִתַּךְ; Hi. הִתִּיךְ",
+    "headword_tokens": ["נתך"],
+    "page_start": 519,
+    "page_end": 519,
+    "gloss_es": "Derramarse, fundirse, verter",
+    "text": "Q. Derramarse, volcarse, estallar (cólera). Jr 42,18; Job 3,24. Ni. Derramarse (lluvia), fundirse (metales). Ex 9,33; Ez 22,21. Hi. Verter, derramar, fundir, recoger dinero. Job 10,10; 2 Re 22,9."
+  },
+  {
+    "id": "heb-002071",
+    "lemma": "נָתַן",
+    "headword_line": "נָתַן Q. pf. נָתַן; impf. יִתֵּן; imptv. תֵּן; inf. לָתֵת",
+    "headword_tokens": ["נתן"],
+    "page_start": 519,
+    "page_end": 522,
+    "gloss_es": "Dar, poner, nombrar, permitir",
+    "text": "1. Dar, entregar, otorgar, regalar, pagar, proveer, enviar. Gn 1,29; 23,11. 2. Poner, echar, colocar, depositar, meter, imponer. Gn 1,17; Ex 25,12. 3. Nombrar, convertir en, hacer de. Ex 7,1; Is 3,4. 4. Permitir, dejar / prohibir, impedir (con negación). Gn 20,6; Job 9,18. Ni. Ser dado, entregado, puesto, promulgado. Ex 5,18; Est 3,14."
+  },
+  {
+    "id": "heb-002074",
+    "lemma": "נָתַץ",
+    "headword_line": "נָתַץ Q. pf. נָתַץ; impf. יִתֹּץ; Pi. נִתֵּץ",
+    "headword_tokens": ["נתץ"],
+    "page_start": 522,
+    "page_end": 523,
+    "gloss_es": "Derribar, demoler, destruir",
+    "text": "Q. Derribar, derruir, demoler, destruir, arrasar, quebrar. Ex 34,13; Jue 6,30; Jr 1,10. Ni. Ser arrasado o demolido. Jr 4,26. Pi. Demoler, derribar. Dt 12,3."
+  },
+  {
+    "id": "heb-002074-2",
+    "lemma": "נָתַק",
+    "headword_line": "נָתַק Q. pf. נָתַק; Ni. נִתַּק; Pi. נִתֵּק",
+    "headword_tokens": ["נתק"],
+    "page_start": 523,
+    "page_end": 523,
+    "gloss_es": "Arrancar, soltar, romper",
+    "text": "Q. Arrancar, quitar, alejar. Lv 22,24; Jue 20,32. Ni. Arrancarse, soltarse, romperse, fracasar. Is 33,20; Jue 16,9. Pi. Romper, hacer saltar, lacerar. Jue 16,9; Jr 2,20. Hi. Apartar, separar. Jr 12,3."
+  },
+  {
+    "id": "heb-002075",
+    "lemma": "נָתַר",
+    "headword_line": "נָתַר Q. יִתַּר; Pi. נִתֵּר; Hi. הִתִּיר",
+    "headword_tokens": ["נתר"],
+    "page_start": 523,
+    "page_end": 523,
+    "gloss_es": "Saltar, desatar, soltar",
+    "text": "Q. Saltarse, salirse. Job 37,1. Pi. Saltar. Lv 11,21. Hi. Hacer saltar, desatar, soltar, desbaratar. Is 58,6; Sal 105,20; Job 6,9."
+  },
+  {
+    "id": "heb-002077",
+    "lemma": "סָבַב",
+    "headword_line": "סָבַב Q. pf. סָבַב; impf. יָסֹב; Hi. הֵסֵב",
+    "headword_tokens": ["סבב"],
+    "page_start": 524,
+    "page_end": 524,
+    "gloss_es": "Rodear, girar, dar la vuelta",
+    "text": "Q. Movimiento circular: rodear, cercar, bordear, girar. Volverse, dar un rodeo, recorrer, pasar a. Gn 37,7; Jos 6,3. Ni. Cercar, torcer, girar. Gn 19,4. Hi. Rodear, hacer girar, transportar, trasladar, cambiar (de nombre o actitud). Ex 13,18; 1 Sm 5,8."
+  },
+  {
+    "id": "heb-002078",
+    "lemma": "סָבִיב",
+    "headword_line": "סָבִיב [pl. סְבִיבוֹת]",
+    "headword_tokens": ["סביב"],
+    "page_start": 524,
+    "page_end": 525,
+    "gloss_es": "Alrededor, contorno, vecinos",
+    "text": "1. Adverbio: alrededor, en torno, en derredor. 2. Sustantivo: contorno, entorno, comarca, circuito, cerco, límites. 3. Adjetivo: vecinos, limítrofes. Ex 27,17; Dt 12,10; Ez 1,27."
+  },
+  {
+    "id": "heb-002081",
+    "lemma": "סָבַל",
+    "headword_line": "סָבַל Q. pf. סָבַל; impf. יִסְבֹּל",
+    "headword_tokens": ["סבל"],
+    "page_start": 525,
+    "page_end": 525,
+    "gloss_es": "Cargar con, llevar, transportar",
+    "text": "Q. Cargar con, llevar, transportar. Gn 49,15; Is 46,4. Hitp. Arrastrarse. Ecl 12,5. Sust. סֵבֶל: carga, trabajos forzados. Ex 1,11; Sal 81,7."
+  },
+  {
+    "id": "heb-002088",
+    "lemma": "סָגַר",
+    "headword_line": "סָגַר Q. pf. סָגַר; impf. יִסְגֹּר; Hi. הִסְגִּיר",
+    "headword_tokens": ["סגר"],
+    "page_start": 526,
+    "page_end": 526,
+    "gloss_es": "Cerrar, encerrar, entregar",
+    "text": "Q. Cerrar, clausurar, trancar, candar; encerrar, rellenar. Gn 7,16; Is 22,22. Ni. Ser cerrado, encerrarse. Is 45,1. Pi. Entregar, consignar. 1 Sm 17,46. Hi. Aislar, confinar, encarcelar; entregar, hacer entrega. Lv 13,4; Am 1,6."
+  },
+  {
+    "id": "heb-002091",
+    "lemma": "סוּג",
+    "headword_line": "סוּג Q. pf. סָג; Ni. נָסוֹג; Hi. הִסִּיג",
+    "headword_tokens": ["סוג"],
+    "page_start": 526,
+    "page_end": 527,
+    "gloss_es": "Apartarse, retroceder, desertar",
+    "text": "Q. Apartarse, alejarse. Sal 53,4. Ni. Desertar, volverse atrás, retroceder, batirse en retirada. Is 42,17; Sal 78,57. Hi. Apartar, remover linderos (גְּבוּל). Dt 19,14; Job 24,2."
+  },
+  {
+    "id": "heb-002093",
+    "lemma": "סוּס",
+    "headword_line": "סוּס [pl. סוּסִים]",
+    "headword_tokens": ["סוס"],
+    "page_start": 527,
+    "page_end": 527,
+    "gloss_es": "Caballo",
+    "text": "Caballo, caballería, bridón, corcel. Frecuente con פָּרָשׁ (jinete) y רֶכֶב (carro). Gn 47,17; Is 2,7. Sust. f. סוּסָה: yegua, jaca. Cant 1,9."
+  },
+  {
+    "id": "heb-002095",
+    "lemma": "סוֹד",
+    "headword_line": "סוֹד [c. suf. סוֹדוֹ]",
+    "headword_tokens": ["סוד"],
+    "page_start": 527,
+    "page_end": 528,
+    "gloss_es": "Consejo, secreto, intimidad",
+    "text": "Consejo, deliberación, reunión; plan, secreto, confianza, intimidad. Gn 49,6; Am 3,7; Sal 25,14."
+  },
+  {
+    "id": "heb-002095-2",
+    "lemma": "סוּף",
+    "headword_line": "סוּף Q. pf. סָפוּ; Hi. הֵסִיף",
+    "headword_tokens": ["סוף"],
+    "page_start": 528,
+    "page_end": 528,
+    "gloss_es": "Acabar, terminar, perecer",
+    "text": "Q. Acabar, terminar, perecer. Is 66,17; Am 3,15. Hi. Acabar con. Sof 1,2. Sust. סוֹף: fin, término, retaguardia. Ecl 3,11; Jl 2,20."
+  },
+  {
+    "id": "heb-002097",
+    "lemma": "סוּפָה",
+    "headword_line": "סוּפָה [Sustantivo femenino]",
+    "headword_tokens": ["סופה"],
+    "page_start": 528,
+    "page_end": 529,
+    "gloss_es": "Huracán, torbellino, ciclón",
+    "text": "Huracán, vendaval, torbellino, ciclón. Frecuente elemento teofánico. Is 5,28; Am 1,14; Job 37,9."
+  },
+  {
+    "id": "heb-002097-2",
+    "lemma": "סוֹפֵר",
+    "headword_line": "סוֹפֵר [pl. סוֹפְרִים]",
+    "headword_tokens": ["סופר"],
+    "page_start": 529,
+    "page_end": 529,
+    "gloss_es": "Escribano, secretario, letrado",
+    "text": "El que se dedica por oficio a escribir: escribano, secretario, notario, cronista, letrado. 2 Sm 8,17; Jr 36,10; Esd 7,6."
+  },
+  {
+    "id": "heb-002097-3",
+    "lemma": "סוּר",
+    "headword_line": "סוּר Q. pf. סָר; impf. יָסוּר; Hi. הֵסִיר",
+    "headword_tokens": ["סור"],
+    "page_start": 529,
+    "page_end": 530,
+    "gloss_es": "Apartarse, alejarse, quitar, eliminar",
+    "text": "Q. Apartarse (de lugar, persona o conducta), alejarse, desaparecer, desviarse, evitar, cesar. Gn 49,10; Jue 14,8; Sal 101,4. Hi. Apartar, retirar, remover, eliminar, quitar, despojar, arrancar, abolir. Gn 38,14; 1 Sm 17,46; 2 Re 18,4. Ho. Ser retirado o suprimido. Lv 4,31."
+  },
+  {
+    "id": "heb-002098",
+    "lemma": "סָחַב",
+    "headword_line": "סָחַב Q. impf. יִסְחַב",
+    "headword_tokens": ["סחב"],
+    "page_start": 529,
+    "page_end": 529,
+    "gloss_es": "Arrastrar, jalar, arrebatar",
+    "text": "Arrastrar, tirar de, jalar, arrebatar; despedazar. 2 Sm 17,13; Jr 22,19. b) Injuriar. Eclo 3,16."
+  },
+  {
+    "id": "heb-002100",
+    "lemma": "סָחַר",
+    "headword_line": "סָחַר Q. pf. סָחַר; ptc. סֹחֵר",
+    "headword_tokens": ["סחר"],
+    "page_start": 530,
+    "page_end": 530,
+    "gloss_es": "Recorrer, comerciar",
+    "text": "Q. Recorrer, comerciar. Gn 34,10; Jr 14,18. Ptc. סֹחֵר: comerciante, mercader. Is 23,2."
+  },
+  {
+    "id": "heb-002101",
+    "lemma": "סַחַר",
+    "headword_line": "סַחַר [cstr. סְחַר; c. suf. סַחְרָהּ]",
+    "headword_tokens": ["סחר"],
+    "page_start": 530,
+    "page_end": 530,
+    "gloss_es": "Ganancia, lucro, rendimiento",
+    "text": "Ganancia, lucro, rendimiento, beneficio, granjería. Is 23,3.18; Prov 3,14. Ptc. סֹחֵר: Mercader, comerciante, traficante. Gn 23,16; Ez 27,12."
+  },
+  {
+    "id": "heb-002102",
+    "lemma": "סְחֹרָה",
+    "headword_line": "סְחֹרָה [Sólo cstr. סְחֹרַת]",
+    "headword_tokens": ["סחרת"],
+    "page_start": 530,
+    "page_end": 530,
+    "gloss_es": "Mercancía, mercadería",
+    "text": "Mercancía, mercadería. Ez 27,15."
+  },
+  {
+    "id": "heb-002103",
+    "lemma": "סֹחֵרָה",
+    "headword_line": "סֹחֵרָה [Sustantivo]",
+    "headword_tokens": ["סחרה"],
+    "page_start": 530,
+    "page_end": 530,
+    "gloss_es": "Armadura, escudo",
+    "text": "Armadura, rodela. Sal 91,4. Asociado a צִנָּה (escudo)."
+  },
+  {
+    "id": "heb-002105",
+    "lemma": "סִיג",
+    "headword_line": "סִיג [pl. סִיגִים]",
+    "headword_tokens": ["סיג"],
+    "page_start": 530,
+    "page_end": 530,
+    "gloss_es": "Escoria, barniz",
+    "text": "Escoria. Is 1,22.25; Ez 22,18. Barniz. Prov 26,23."
+  },
+  {
+    "id": "heb-002106",
+    "lemma": "סִיר",
+    "headword_line": "סִיר [pl. סִירוֹת]",
+    "headword_tokens": ["סיר"],
+    "page_start": 530,
+    "page_end": 530,
+    "gloss_es": "Olla, caldero / Espino",
+    "text": "1. Olla, caldero, marmita. Ex 16,3; 2 Re 4,39. סִיר רַחַץ: jofaina. Sal 60,10. 2. Espino, zarza. Is 34,13; Ecl 7,6."
+  },
+  {
+    "id": "heb-002109",
+    "lemma": "סֻכָּה",
+    "headword_line": "סֻכָּה [cstr. סֻכַּת; pl. סֻכּוֹת]",
+    "headword_tokens": ["סכה"],
+    "page_start": 530,
+    "page_end": 530,
+    "gloss_es": "Cabaña, choza, pabellón",
+    "text": "Cabaña, choza, sombrajo. Is 1,8; Am 9,11. חַג הַסֻּכּוֹת: Fiesta de las Chozas. Lv 23,34. Tienda, pabellón. Sal 18,12."
+  },
+  {
+    "id": "heb-002110",
+    "lemma": "סָכַךְ",
+    "headword_line": "סָכַךְ Q. pf. סַכֹּתָ; Hi. הֵסֵךְ",
+    "headword_tokens": ["סכך"],
+    "page_start": 530,
+    "page_end": 531,
+    "gloss_es": "Cubrir, tapar, proteger",
+    "text": "Q. Cubrir, tapar, envolver, proteger. Ex 25,20; 40,3. Hi. Tapar, cubrir. Ex 40,21. הֵסֵךְ רַגְלָיו: (eufemismo) hacer sus necesidades. Jue 3,24."
+  },
+  {
+    "id": "heb-002111",
+    "lemma": "סָכַל",
+    "headword_line": "סָכַל Ni. pf. נִסְכַּל; Pi. סִכֵּל; Hi. הִסְכִּיל",
+    "headword_tokens": ["סכל"],
+    "page_start": 531,
+    "page_end": 531,
+    "gloss_es": "Ser necio, obrar neciamente",
+    "text": "Ni. Ser insensato, necio, hacer locuras. 1 Sm 13,13. Pi. Frustrar, mostrar la necedad. 2 Sm 15,31. Hi. Obrar neciamente. Gn 31,28."
+  },
+  {
+    "id": "heb-002112",
+    "lemma": "סָכָל",
+    "headword_line": "סָכָל [pl. סְכָלִים]",
+    "headword_tokens": ["סכל"],
+    "page_start": 531,
+    "page_end": 531,
+    "gloss_es": "Necio, tonto, estúpido",
+    "text": "Necio, tonto, mentecato, insensato, estúpido. Jr 4,22; Ecl 2,19. Sustantivo: necedad. Ecl 10,6."
+  },
+  {
+    "id": "heb-002114",
+    "lemma": "סָכַן",
+    "headword_line": "סָכַן Q. impf. יִסְכֹּן; Hi. הִסְכִּין",
+    "headword_tokens": ["סכן"],
+    "page_start": 531,
+    "page_end": 531,
+    "gloss_es": "Ser útil, aprovechar / Acostumbrar",
+    "text": "Q. Ser útil, de provecho, valer. Job 22,2. Hi. Soler, acostumbrar, ser familiar. Nm 22,30; Sal 139,3."
+  },
+  {
+    "id": "heb-002116",
+    "lemma": "סָכַת",
+    "headword_line": "סָכַת Hi. imptv. הַסְכֵּת",
+    "headword_tokens": ["סכת"],
+    "page_start": 531,
+    "page_end": 531,
+    "gloss_es": "Guardar silencio, callarse",
+    "text": "Hi. Guardar silencio, callarse. Dt 27,9. Ni. Permanecer en silencio. Eclo 13,23."
+  },
+  {
+    "id": "heb-002116-2",
+    "lemma": "סַל",
+    "headword_line": "סַל [pl. סַלִּים]",
+    "headword_tokens": ["סל"],
+    "page_start": 531,
+    "page_end": 531,
+    "gloss_es": "Cesta, cesto",
+    "text": "Cesta, cesto, canasta. Gn 40,16; Ex 29,3."
+  },
+  {
+    "id": "heb-002118",
+    "lemma": "סָלַח",
+    "headword_line": "סָלַח Q. pf. סָלַח; Ni. נִסְלַח",
+    "headword_tokens": ["סלח"],
+    "page_start": 531,
+    "page_end": 532,
+    "gloss_es": "Perdonar, condonar",
+    "text": "Q. Perdonar, condonar, remitir, indultar. Ex 34,9; Sal 25,11. Ni. Ser o quedar perdonado. Lv 4,26. Adj. סַלָּח: Clemente, indulgente. Sal 86,5."
+  },
+  {
+    "id": "heb-002118-2",
+    "lemma": "סָלַל",
+    "headword_line": "סָלַל Q. imptv. סֹלּוּ; Pilpel סַלְסֵל",
+    "headword_tokens": ["סלל"],
+    "page_start": 532,
+    "page_end": 532,
+    "gloss_es": "Allanar, apisonar, exaltar",
+    "text": "Q. Allanar, aplanar, rellenar, apilar (el camino). Is 57,14; Jr 18,15. Pilpel. Asentar, realzar, exaltar. Prov 4,8. Sust. סוֹלְלָה: Talud, terraplén. Jr 6,6."
+  },
+  {
+    "id": "heb-002120",
+    "lemma": "סֶלַע",
+    "headword_line": "סֶלַע [c. suf. סַלְעִי; pl. סְלָעִים]",
+    "headword_tokens": ["סלע"],
+    "page_start": 532,
+    "page_end": 532,
+    "gloss_es": "Peña, peñasco, roca",
+    "text": "Peña, peñasco, peñón, roca. Nm 20,8; Is 22,16. Título divino: Mi Roca. Sal 18,3."
+  },
+  {
+    "id": "heb-002122",
+    "lemma": "סָלַף",
+    "headword_line": "סָלַף Pi. pf. סִלֵּף; impf. יְסַלֵּף",
+    "headword_tokens": ["סלף"],
+    "page_start": 532,
+    "page_end": 533,
+    "gloss_es": "Falsear, trastornar, torcer",
+    "text": "Pi. Falsear una causa, trastornar, desbaratar, torcer el camino. Ex 23,8; Prov 13,6; 19,3. Sust. סֶלֶף: Falsedad. Prov 11,3."
+  },
+  {
+    "id": "heb-002122-2",
+    "lemma": "סֹלֶת",
+    "headword_line": "סֹלֶת [c. suf. סָלְתָּהּ]",
+    "headword_tokens": ["סלת"],
+    "page_start": 533,
+    "page_end": 533,
+    "gloss_es": "Flor de harina, sémola",
+    "text": "Flor de harina, sémola. Ex 29,2; Lv 2,2. סֹלֶת קֶמַח: Flor de harina. Gn 18,6."
+  },
+  {
+    "id": "heb-002123",
+    "lemma": "סָמַךְ",
+    "headword_line": "סָמַךְ Q. pf. סָמַךְ; Ni. נִסְמַךְ",
+    "headword_tokens": ["סמך"],
+    "page_start": 533,
+    "page_end": 533,
+    "gloss_es": "Sostener, apoyar, imponer la mano",
+    "text": "Q. Sostener, apoyar, mantener, afianzar. Sal 3,6; 145,14. סָמַךְ יָד עַל: imponer la mano (ritual). Ex 29,10; Lv 4,4. Ni. Apoyarse. Jue 16,29; Is 36,6."
+  },
+  {
+    "id": "heb-002123-2",
+    "lemma": "סָעַד",
+    "headword_line": "סָעַד Q. impf. יִסְעָד; imptv. סְעַד",
+    "headword_tokens": ["סעד"],
+    "page_start": 533,
+    "page_end": 533,
+    "gloss_es": "Sostener, apoyar, reanimar",
+    "text": "Q. Sostener, apoyar, consolidar. Is 9,6; Sal 18,36. סָעַד לֵב: cobrar fuerzas, reanimarse. Gn 18,5; Jue 19,5."
+  },
+  {
+    "id": "heb-002125",
+    "lemma": "סָעִיף",
+    "headword_line": "סָעִיף [cstr. סְעִיף; pl. סְעִפִים]",
+    "headword_tokens": ["סעיף"],
+    "page_start": 533,
+    "page_end": 533,
+    "gloss_es": "Hendidura / Rama",
+    "text": "a) Hendidura de la roca, cueva. Jue 15,8; Is 2,21. b) Rama, ramaje. Is 17,6. Verbo סָעַף: Desgajar, tronchar. Is 10,33."
+  },
+  {
+    "id": "heb-002128",
+    "lemma": "סָמַר",
+    "headword_line": "סָמַר Q. pf. סָמַר; Pi. סִמֵּר",
+    "headword_tokens": ["סמר"],
+    "page_start": 533,
+    "page_end": 533,
+    "gloss_es": "Estremecerse, erizarse",
+    "text": "Q. Estremecerse, sentir escalofríos. Sal 119,120. Pi. Erizarse (el pelo). Job 4,15. Adj. סָמָר: Erizado, hirsuto. Jr 51,27."
+  },
+  {
+    "id": "heb-002131",
+    "lemma": "סָעַר",
+    "headword_line": "סָעַר Q. impf. יִסְעַר; Ni. נִסְעַר; Pi. סִעֵר",
+    "headword_tokens": ["סער"],
+    "page_start": 533,
+    "page_end": 534,
+    "gloss_es": "Agitarse, aborrascarse, zarandear",
+    "text": "Q. Agitarse, aborrascarse (el mar), revolverse en torbellino. Jon 1,11; Hab 3,14. Ni. Agitarse, alarmarse. 2 Re 6,11. Pi. Zarandear, sacudir. Zac 7,14."
+  },
+  {
+    "id": "heb-002131-2",
+    "lemma": "סַף",
+    "headword_line": "סַף [pl. סִפִּים]",
+    "headword_tokens": ["סף"],
+    "page_start": 534,
+    "page_end": 534,
+    "gloss_es": "Copa / Umbral",
+    "text": "1. Copa, taza, palangana. Ex 12,22; Jr 52,19. 2. Umbral. Jue 19,27; Am 9,1. שֹׁמְרֵי הַסַּף: porteros, centinelas. 2 Re 12,10."
+  },
+  {
+    "id": "heb-002131-3",
+    "lemma": "סָפַד",
+    "headword_line": "סָפַד Q. pf. סָפַד; impf. יִסְפֹּד",
+    "headword_tokens": ["ספד"],
+    "page_start": 534,
+    "page_end": 534,
+    "gloss_es": "Hacer duelo, lamentar",
+    "text": "Q. Hacer duelo, celebrar funerales. Gn 32,2; Zac 12,10. Acompañado de ritos como llorar o vestir sayal. Ni. Ser llorado. Jr 16,4."
+  },
+  {
+    "id": "heb-002132",
+    "lemma": "סָפָה",
+    "headword_line": "סָפָה Q. pf. סָפָה; Ni. נִסְפָּה",
+    "headword_tokens": ["ספה"],
+    "page_start": 534,
+    "page_end": 534,
+    "gloss_es": "Arrebatar, perecer, añadir",
+    "text": "1. Arrebatar, arrastrar. Gn 18,23. Intr. Perecer, desaparecer. Jr 12,4. Ni. Ser eliminado, perecer. Gn 19,15. 2. (Alomorfo de יסף) Añadir. Is 30,1; Nm 32,14."
+  },
+  {
+    "id": "heb-002134",
+    "lemma": "סָפַח",
+    "headword_line": "סָפַח Q. imptv. סְפָחֵנִי; Ni. נִסְפַּח",
+    "headword_tokens": ["ספח"],
+    "page_start": 534,
+    "page_end": 534,
+    "gloss_es": "Asociar, incorporar, mezclar",
+    "text": "Q. Asociar, incorporar. 1 Sm 2,36. Ni. Asociarse. Is 14,1. Pi. Mezclar. Hab 2,15. Sust. סַפַּחַת: Inflamación. Lv 13,2."
+  },
+  {
+    "id": "heb-002136",
+    "lemma": "סַפִּיר",
+    "headword_line": "סַפִּיר [pl. סַפִּירִים]",
+    "headword_tokens": ["ספיר"],
+    "page_start": 534,
+    "page_end": 534,
+    "gloss_es": "Lapislázuli, zafiro",
+    "text": "Lapislázuli, zafiro. Ex 24,10; Job 28,6. Piedra preciosa del pectoral. Ex 28,18."
+  },
+  {
+    "id": "heb-002137",
+    "lemma": "סָפַן",
+    "headword_line": "סָפַן Q. pf. סָפַן; ptc. pas. סָפוּן",
+    "headword_tokens": ["ספן"],
+    "page_start": 534,
+    "page_end": 535,
+    "gloss_es": "Cubrir, revestir, artesonar",
+    "text": "Q. Cubrir, recubrir, revestir. 1 Re 6,9; Jr 22,14. Sust. סִפּוּן: Artesonado. 1 Re 6,15."
+  },
+  {
+    "id": "heb-002138",
+    "lemma": "סָפַק",
+    "headword_line": "סָפַק Q. pf. סָפַק; impf. יִסְפֹּק",
+    "headword_tokens": ["ספק"],
+    "page_start": 535,
+    "page_end": 535,
+    "gloss_es": "Palmear / Ser bastante",
+    "text": "1. Palmear, golpear (gesto de irritación o burla). Nm 24,10; Lam 2,15. 2. Ser bastante, abundante. Eclo 15,18. Hi. Cumplir su función. Eclo 39,16."
+  },
+  {
+    "id": "heb-002139",
+    "lemma": "סָפַר",
+    "headword_line": "סָפַר Q. pf. סָפַר; Pi. סִפֵּר; Ni. נִסְפַּר",
+    "headword_tokens": ["ספר"],
+    "page_start": 535,
+    "page_end": 536,
+    "gloss_es": "Contar, narrar, enumerar",
+    "text": "Q. Contar, numerar, computar, calcular; hacer un censo. Gn 15,5; 2 Sm 24,10. Ni. Ser censado; incontable. Gn 16,10. Pi. Contar, narrar, referir, proclamar. Gn 24,66; Sal 96,3. Pu. Ser informado. Hab 1,5."
+  },
+  {
+    "id": "heb-002141",
+    "lemma": "סֵפֶר",
+    "headword_line": "סֵפֶר [c. suf. סִפְרִי; pl. סְפָרִים]",
+    "headword_tokens": ["ספר"],
+    "page_start": 536,
+    "page_end": 536,
+    "gloss_es": "Libro, documento, carta",
+    "text": "Libro, pliego, rollo. Is 29,12; Jr 36,2. סֵפֶר הַבְּרִית: Libro de la alianza. Ex 24,7. Según contexto: carta, registro, contrato, código. 1 Re 21,8; Dt 28,61."
+  },
+  {
+    "id": "heb-002145",
+    "lemma": "סָקַל",
+    "headword_line": "סָקַל Q. pf. סָקַל; Ni. נִסְקַל; Pi. סִקֵּל",
+    "headword_tokens": ["סקל"],
+    "page_start": 536,
+    "page_end": 536,
+    "gloss_es": "Apedrear, lapidar / Despedregar",
+    "text": "Q. Apedrear, lapidar. Ex 8,22; 1 Re 21,10. Ni. Ser apedreado o lapidado. Ex 19,13. Pi. Tirar piedras. 2 Sm 16,6. b) Despedregar (limpiar de piedras). Is 5,2; 62,10."
+  },
+  {
+    "id": "heb-002149",
+    "lemma": "סָרִיס",
+    "headword_line": "סָרִיס [pl. סָרִיסִים]",
+    "headword_tokens": ["סריס"],
+    "page_start": 537,
+    "page_end": 537,
+    "gloss_es": "Eunuco, ministro, oficial",
+    "text": "Eunuco, ministro, palaciego, oficial. Gn 37,36; 1 Re 22,9; Is 56,4. רַב-סָרִיס: jefe de eunucos/prefecto. 2 Re 18,17."
+  },
+  {
+    "id": "heb-002151",
+    "lemma": "סֶרֶן",
+    "headword_line": "סֶרֶן [pl. סְרָנִים]",
+    "headword_tokens": ["סרן"],
+    "page_start": 537,
+    "page_end": 537,
+    "gloss_es": "Eje / Jefe filisteo",
+    "text": "1. Eje de rueda. 1 Re 7,30. 2. Jefes o príncipes (título filisteo). Jos 13,3; Jue 3,3; 1 Sm 29,6."
+  },
+  {
+    "id": "heb-002155",
+    "lemma": "סָרַר",
+    "headword_line": "סָרַר Q. ptc. סוֹרֵר",
+    "headword_tokens": ["סרר"],
+    "page_start": 537,
+    "page_end": 537,
+    "gloss_es": "Ser rebelde, indócil",
+    "text": "Q. ptc. Rebelde, levantisco, revoltoso, indócil. Dt 21,18; Is 1,23. כָּתֵף סֹרֶרֶת: hombro rebelde al yugo. Zac 7,11."
+  },
+  {
+    "id": "heb-002155-2",
+    "lemma": "סָתַם",
+    "headword_line": "סָתַם Q. impf. יִסְתֹּם; pas. סָתוּם",
+    "headword_tokens": ["סתם"],
+    "page_start": 537,
+    "page_end": 537,
+    "gloss_es": "Cegar, obstruir, guardar secreto",
+    "text": "Q. Cegar, obstruir (fuentes). 2 Re 3,19. Esconder, guardar, sellar. Dn 8,26; 12,4. Ptc. pas. Secreto, arcano. Ez 28,3. Pi. Cegar pozos. Gn 26,15."
+  },
+  {
+    "id": "heb-002156",
+    "lemma": "סָתַר",
+    "headword_line": "סָתַר Ni. נִסְתַּר; Hi. הִסְתִּיר",
+    "headword_tokens": ["סתר"],
+    "page_start": 537,
+    "page_end": 538,
+    "gloss_es": "Esconderse, ocultarse, tapar",
+    "text": "Ni. Esconderse, ocultarse, refugiarse. Gn 4,14; Is 28,15. Hi. Ocultar, esconder, tapar. Sal 17,8. הִסְתִּיר פָּנִים: tapar el rostro (desentenderse, Dios sujeto). Dt 31,17; Is 54,8. Sust. סֵתֶר: Escondite, refugio. Sal 32,7."
+  },
+  {
+    "id": "heb-002156-2",
+    "lemma": "עָב",
+    "headword_line": "עָב [pl. עָבִים]",
+    "headword_tokens": ["עב"],
+    "page_start": 538,
+    "page_end": 538,
+    "gloss_es": "Nube, nubarrón, espesura",
+    "text": "1. Marquesina, voladizo. 1 Re 7,6. 2. Nube, cúmulo, celaje, nubarrón. 1 Re 18,44; Sal 104,3. עַב הֶעָנָן: nube espesa. Ex 19,9. 3. Espesura, maleza. Jr 4,29."
+  },
+  {
+    "id": "heb-002157",
+    "lemma": "עָבַד",
+    "headword_line": "עָבַד Q. pf. עָבַד; impf. יַעֲבֹד; Hi. הֶעֱבִיד",
+    "headword_tokens": ["עבד"],
+    "page_start": 538,
+    "page_end": 539,
+    "gloss_es": "Trabajar, labrar, servir, adorar",
+    "text": "Q. 1. Trabajar, atarearse. Ex 5,18. 2. Labrar, cultivar la tierra. Gn 2,5; 4,2. 3. Servir, ser esclavo. Gn 29,15. 4. Ser vasallo, estar sometido. Gn 14,4; 2 Re 18,7. 5. Venerar, servir, adorar, ofrecer culto. Ex 23,25; Dt 4,19. Hi. Esclavizar, sojuzgar. Ex 1,13."
+  },
+  {
+    "id": "heb-002158",
+    "lemma": "עֶבֶד",
+    "headword_line": "עֶבֶד [cstr. עֶבֶד; c. suf. עַבְדִּי; pl. עֲבָדִים]",
+    "headword_tokens": ["עבד"],
+    "page_start": 539,
+    "page_end": 540,
+    "gloss_es": "Esclavo, siervo, ministro, súbdito",
+    "text": "Esclavo, siervo, criado. Gn 24,34; Sal 105,17. 2. Ministro, cortesano, oficial, funcionario real. Gn 45,16; 1 Sm 22,17. 3. Adorador, devoto. Is 65,13. b) El Siervo del Señor (título). Is 41,8. 4. Fórmula de cortesía: Tu servidor. Gn 18,5."
+  },
+  {
+    "id": "heb-002158-2",
+    "lemma": "עֲבֹדָה",
+    "headword_line": "עֲבֹדָה [cstr. עֲבֹדַת; c. suf. עֲבֹדָתוֹ]",
+    "headword_tokens": ["עבודה"],
+    "page_start": 540,
+    "page_end": 540,
+    "gloss_es": "Trabajo, servicio, culto",
+    "text": "Trabajo, labor, tarea, faena. Ex 1,14; Sal 104,23. 2. Servicio, esclavitud, servidumbre. Ex 6,6. 3. Culto, liturgia, rito. Ex 39,40; 1 Cr 23,28. עֲבֹדַת הָאֲדָמָה: labranza, agricultura. 1 Cr 27,26."
+  },
+  {
+    "id": "heb-002160",
+    "lemma": "עָבָה",
+    "headword_line": "עָבָה Q. pf. עָבִיתָ; Hi. הֶעֱבָה",
+    "headword_tokens": ["עבה"],
+    "page_start": 540,
+    "page_end": 541,
+    "gloss_es": "Engordar, ser grueso",
+    "text": "Q. Engordar, echar carnes, estar gordo, ser grueso. Dt 32,15. Hi. Robustecer. Eclo 6,2. Adj. עָבֶה: Gordo, grueso. 1 Re 12,10."
+  },
+  {
+    "id": "heb-002162",
+    "lemma": "עָבַר",
+    "headword_line": "עָבַר Q. pf. עָבַר; impf. יַעֲבֹר; Hi. הֶעֱבִיר",
+    "headword_tokens": ["עבר"],
+    "page_start": 541,
+    "page_end": 543,
+    "gloss_es": "Pasar, cruzar, transgredir, perdonar",
+    "text": "Q. 1. Pasar, cruzar, atravesar (ríos, territorios). Gn 31,21; Ex 12,12. 2. Transgredir, violar, quebrantar (ley, alianza). Dt 17,2; Jos 7,11. 3. Pasar, desaparecer, escapar. Is 31,9. עָבַר עַל פֶּשַׁע: perdonar un delito. Miq 7,18. Hi. Hacer pasar, trasladar; sacrificar (pasar por fuego); purificar; apartar, perdonar. Dt 18,10; 2 Sm 24,10."
+  },
+  {
+    "id": "heb-002162-2",
+    "lemma": "עֵבֶר",
+    "headword_line": "עֵבֶר [cstr. עֵבֶר; c. suf. עֶבְרוֹ]",
+    "headword_tokens": ["עבר"],
+    "page_start": 543,
+    "page_end": 543,
+    "gloss_es": "Lado, parte, orilla, frontera",
+    "text": "Lado, parte, borde, orilla, frontera; allende, más allá. Gn 50,10; Dt 11,30. עֵבֶר הַנָּהָר: Trans-eufratina. Esd 8,36."
+  },
+  {
+    "id": "heb-002164",
+    "lemma": "עֶבְרָה",
+    "headword_line": "עֶבְרָה [cstr. עֶבְרַת; pl. עֲבָרוֹת]",
+    "headword_tokens": ["עברה"],
+    "page_start": 543,
+    "page_end": 544,
+    "gloss_es": "Cólera, ira, furia",
+    "text": "Cólera, ira, furia, furor, indignación. Gn 49,7; Is 16,6. יוֹם עֶבְרָה: día de ira, trágico. Sof 1,18."
+  },
+  {
+    "id": "heb-002165",
+    "lemma": "עָגַב",
+    "headword_line": "עָגַב Q. pf. עָגְבָה; ptc. עֹגְבִים",
+    "headword_tokens": ["עגב"],
+    "page_start": 544,
+    "page_end": 544,
+    "gloss_es": "Enamorarse, desear",
+    "text": "Q. Enamorarse, amar, desear. Ez 23,5.7. Sust. עֲגָבָה: Amor, deseo. Ez 23,11. עֲגָבִים: Amoríos, lisonjas. Ez 33,31."
+  },
+  {
+    "id": "heb-002167",
+    "lemma": "עֻגָה",
+    "headword_line": "עֻגָה [pl. עֻגּוֹת]",
+    "headword_tokens": ["עגה"],
+    "page_start": 544,
+    "page_end": 544,
+    "gloss_es": "Hogaza, torta",
+    "text": "Hogaza, torta, pan cocido. Gn 18,6; Ex 12,39; 1 Re 17,13."
+  },
+  {
+    "id": "heb-002171",
+    "lemma": "עֵגֶל",
+    "headword_line": "עֵגֶל [pl. עֲגָלִים; cstr. עֶגְלֵי]",
+    "headword_tokens": ["עגל"],
+    "page_start": 544,
+    "page_end": 544,
+    "gloss_es": "Novillo, becerro",
+    "text": "Novillo, becerro, ternero. Is 11,6; Jr 34,18. Becerro de oro (ídolo). Ex 32; 1 Re 12,28. עֵגֶל מַסֵּכָה: Becerro de fundición. Neh 9,18."
+  },
+  {
+    "id": "heb-002171-2",
+    "lemma": "עֲגָלָה",
+    "headword_line": "עֲגָלָה [cstr. עֲגַלַת; pl. עֲגָלוֹת]",
+    "headword_tokens": ["עגלה"],
+    "page_start": 544,
+    "page_end": 544,
+    "gloss_es": "Carro, carreta",
+    "text": "Carro, carreta, carromato. Gn 46,5; 1 Sm 6,7; Am 2,13. עֲגָלָה צָב: carromato. Nm 7,3."
+  },
+  {
+    "id": "heb-002172",
+    "lemma": "עֶגְלָה",
+    "headword_line": "עֶGְלָה [cstr. עֶגְלַת; pl. עֶגְלוֹת]",
+    "headword_tokens": ["עגלה"],
+    "page_start": 544,
+    "page_end": 544,
+    "gloss_es": "Novilla, becerra",
+    "text": "Novilla, becerra, ternera, vaquilla. Gn 15,9; Dt 21,3; Os 10,11."
+  },
+  {
+    "id": "heb-002174",
+    "lemma": "עַד",
+    "headword_line": "עַד [Preposición; c. suf. עָדַי, עָדֶיךָ]",
+    "headword_tokens": ["עד"],
+    "page_start": 545,
+    "page_end": 545,
+    "gloss_es": "Hasta, mientras",
+    "text": "Preposición: hasta. 1. Espacial: Gn 10,19. 2. Temporal: Gn 15,16. עַד מָתַי: ¿hasta cuándo? Ex 10,3. עַד אֲשֶׁר: hasta que. Gn 27,44. 3. Presa, botín. Gn 49,27; Is 33,23."
+  },
+  {
+    "id": "heb-002175",
+    "lemma": "עֵד",
+    "headword_line": "עֵד [pl. עֵדִים; cstr. עֵדֵי]",
+    "headword_tokens": ["עד"],
+    "page_start": 545,
+    "page_end": 545,
+    "gloss_es": "Testigo, testimonio, prueba",
+    "text": "Testigo, testimonio; prueba, garantía, certificado. Judicial: Lv 5,1; Dt 19,15. עֵד שֶׁקֶר: testigo falso. Ex 20,16. עֵד אֱמֶת: testigo veraz. Prov 14,5."
+  },
+  {
+    "id": "heb-002176",
+    "lemma": "עַד",
+    "headword_line": "עַד [Sustantivo]",
+    "headword_tokens": ["עד"],
+    "page_start": 546,
+    "page_end": 546,
+    "gloss_es": "Duración, eternidad",
+    "text": "Duración, perpetuidad, eternidad. לָעַד: para siempre. Is 64,8; Sal 9,19. לְעוֹלָם וָעֶד: por siempre jamás. Ex 15,18; Sal 9,6. עָדֵי-עַד: perpetuamente. Sal 83,18."
+  },
+  {
+    "id": "heb-002178",
+    "lemma": "עָדָה",
+    "headword_line": "עָדָה Q. pf. עָדִיתָ; Hi. הֶעֱדָה",
+    "headword_tokens": ["עדה"],
+    "page_start": 546,
+    "page_end": 546,
+    "gloss_es": "Adornarse, engalanarse / Pasar",
+    "text": "Q. Adornarse, enjoyarse, engalanarse, lucir. Is 61,10; Jr 31,4. Hi. (de 1. עדה) Hacer pasar, quitarse. Prov 25,20. Sust. עֲדִי: Joya, alhaja. Ex 33,4."
+  },
+  {
+    "id": "heb-002178-2",
+    "lemma": "עֵדָה",
+    "headword_line": "עֵדָה [cstr. עֲדַת; pl. עֵדוֹת]",
+    "headword_tokens": ["עדה"],
+    "page_start": 546,
+    "page_end": 546,
+    "gloss_es": "Testimonio / Asamblea, comunidad",
+    "text": "1. Testimonio, garantía. Gn 21,30. 2. Preceptos, mandatos (pl.). Dt 4,45; Sal 119. 3. Asamblea, comunidad de Israel. Ex 12,3; Nm 1,2. Grupo, banda. Sal 22,17. Enjambre, bandada. Jue 14,8."
+  },
+  {
+    "id": "heb-002180",
+    "lemma": "עֵדוּת",
+    "headword_line": "עֵדוּת [cstr. עֵדוּת]",
+    "headword_tokens": ["עדות"],
+    "page_start": 546,
+    "page_end": 546,
+    "gloss_es": "Alianza, norma, estatuto",
+    "text": "Documento de la alianza, norma, estatuto. אֲרוֹן הָעֵדוּת: arca de la alianza. Ex 26,33. לֻחֹת הָעֵדוּת: tablas de la alianza. Ex 31,18. Sal 19,8."
+  },
+  {
+    "id": "heb-002183",
+    "lemma": "עֵדֶן",
+    "headword_line": "עֵדֶן [pl. עֲדָנִים]",
+    "headword_tokens": ["עדן"],
+    "page_start": 546,
+    "page_end": 547,
+    "gloss_es": "Delicia, placer, edén",
+    "text": "Delicia, placer, deleite, edén. Sal 36,9. עֶדְנָה: Placer carnal. Gn 18,12. Hitp. יִתְעַדְּנוּ: Disfrutar, gozar. Neh 9,25."
+  },
+  {
+    "id": "heb-002183-2",
+    "lemma": "עָדַר",
+    "headword_line": "עָדַר Q. impf. יֵעָדֵר; Ni. נֶעְדַּר",
+    "headword_tokens": ["עדר"],
+    "page_start": 547,
+    "page_end": 547,
+    "gloss_es": "Escardar / Faltar",
+    "text": "Q. Escardar. Is 5,6. Ni. Faltar, echarse de menos. 1 Sm 30,19; Is 40,26. Pi. Echar de menos. 1 Re 5,7."
+  },
+  {
+    "id": "heb-002184",
+    "lemma": "עֵדֶר",
+    "headword_line": "עֵדֶר [cstr. עֶדֶר; pl. עֲדָרִים]",
+    "headword_tokens": ["עדר"],
+    "page_start": 547,
+    "page_end": 547,
+    "gloss_es": "Rebaño, hato, manada",
+    "text": "Rebaño, hato, manada, grey, vacada. Gn 32,17; Is 17,2. Correlativo de רֹעִים (pastores). Jr 6,3; Sal 78,52."
+  },
+  {
+    "id": "heb-002185",
+    "lemma": "עוּגָב",
+    "headword_line": "עוּגָב [c. suf. עֻגָּבִי]",
+    "headword_tokens": ["עוגב"],
+    "page_start": 547,
+    "page_end": 547,
+    "gloss_es": "Flauta",
+    "text": "Flauta. Gn 4,21; Sal 150,4; Job 21,12."
+  },
+  {
+    "id": "heb-002186",
+    "lemma": "עוּד",
+    "headword_line": "עוּד Hi. הֵעִיד; Ho. הוּעַד",
+    "headword_tokens": ["עוד"],
+    "page_start": 547,
+    "page_end": 547,
+    "gloss_es": "Atestiguar, advertir",
+    "text": "Hi. 1. Dar testimonio, testimoniar, declarar, deponer; tomar testimonio, citar por testigo. 1 Re 21,10; Is 8,2. 2. Amonestar, advertir, avisar, conminar, asegurar. Gn 43,3; Ex 19,21; Jr 11,7. Ho. Estar advertido. Ex 21,29."
+  },
+  {
+    "id": "heb-002188",
+    "lemma": "עוֹד",
+    "headword_line": "עוֹד [Adverbio; c. suf. עוֹדֶנִּי]",
+    "headword_tokens": ["עוד"],
+    "page_start": 547,
+    "page_end": 548,
+    "gloss_es": "Todavía, aún, más, otra vez",
+    "text": "Significa continuidad o reiteración. 1. Continuidad: todavía, aún. Gn 46,29. 2. Reiteración: otro, más, otra vez, de nuevo. Gn 4,25; 19,12. בְּעוֹד: mientras, cuando aún. 2 Sm 12,22. עֵין עוֹד: no hay otro. Dt 4,35."
+  },
+  {
+    "id": "heb-002188-2",
+    "lemma": "עָוָה",
+    "headword_line": "עָוָה Q. pf. עָוָה; Ni. נַעֲוָה; Hi. הֶעֱוָה",
+    "headword_tokens": ["עוה"],
+    "page_start": 548,
+    "page_end": 549,
+    "gloss_es": "Torcer, pervertir, cometer crímenes",
+    "text": "Q. Cometer crímenes, faltar, ofender. Dn 9,5; Est 1,16. Ni. Estar encorvado, agobiado, perverso. Is 21,3; Prov 12,8. Hi. Retorcer, desviar, pervertirse, depravarse. 2 Sm 7,14; Jr 3,21. Sust. עַוָּה: Ruina, devastación. Ez 21,32."
+  },
+  {
+    "id": "heb-002189",
+    "lemma": "עוּל",
+    "headword_line": "עוּל [c. suf. עִילָהּ]",
+    "headword_tokens": ["עול"],
+    "page_start": 549,
+    "page_end": 549,
+    "gloss_es": "Crío, niño, bebé",
+    "text": "Crío, criatura, niño, bebé. Is 49,15; 65,20. Verbo עול: amamantar, criar (vacas, ovejas). Gn 33,13; Is 40,11."
+  },
+  {
+    "id": "heb-002191",
+    "lemma": "עַוְלָה",
+    "headword_line": "עַוְלָה [cstr. עַוְלַת]",
+    "headword_tokens": ["עולה"],
+    "page_start": 549,
+    "page_end": 549,
+    "gloss_es": "Injusticia, iniquidad, maldad",
+    "text": "Injusticia, iniquidad, maldad, delito, crimen, fraude. Ez 28,15; Sal 92,16. עֶבֶד עַוְלָה: esclavo de tiranos. Is 49,7. בֶּן-עַוְלָה: malvado. 2 Sm 3,34."
+  },
+  {
+    "id": "heb-002192",
+    "lemma": "עוֹלֵל",
+    "headword_line": "עוֹלֵל [pl. עוֹלְלִים]",
+    "headword_tokens": ["עולל"],
+    "page_start": 549,
+    "page_end": 549,
+    "gloss_es": "Niño, chiquillo, pequeño",
+    "text": "Niño, chiquillo, pequeño. 1 Sm 15,3. Con יוֹנֵק (lactante): niño de pecho. Jr 44,7; Sal 8,3. Lam 2,20."
+  },
+  {
+    "id": "heb-002194",
+    "lemma": "עָוֶל",
+    "headword_line": "עָוֶל [cstr. עֶוֶל; c. suf. עַוְלוֹ]",
+    "headword_tokens": ["עול"],
+    "page_start": 549,
+    "page_end": 549,
+    "gloss_es": "Injusticia, maldad, delito",
+    "text": "Injusticia, maldad, iniquidad, delito, crimen. Dt 25,16; Jr 2,5. אִישׁ עָוֶל: injusto, inicuo. Prov 29,27. Verbo עִוֵּל: Obrar mal, ser perverso. Is 26,10; Sal 71,4."
+  },
+  {
+    "id": "heb-002195",
+    "lemma": "עוֹלָם",
+    "headword_line": "עוֹלָם [c. suf. עוֹלָמוֹ; pl. עוֹלָמִים]",
+    "headword_tokens": ["עולם"],
+    "page_start": 549,
+    "page_end": 551,
+    "gloss_es": "Eternidad, perpetuidad, mundo",
+    "text": "Tiempo o duración indefinida, pasada o futura. 1. Adverbio: לְעוֹלָם para siempre. Gn 3,22. מֵעוֹלָם de antaño. Gn 6,4. עַד-עוֹלָם para siempre. Gn 13,15. 2. Adjetivo: duradero, perpetuo, eterno. בְּרִית עוֹלָם: alianza irrevocable. Gn 17,7. חֻקַּת עוֹלָם: ley irrevocable. Ex 12,14. 3. Lo definitivo: salvación o destrucción definitiva. Is 45,17. 4. Mundo. Ecl 3,11."
+  },
+  {
+    "id": "heb-002197",
+    "lemma": "עָוֹן",
+    "headword_line": "עָוֹן [cstr. עֲוֹן; c. suf. עֲוֹנִי; pl. עֲוֹנוֹת]",
+    "headword_tokens": ["עון"],
+    "page_start": 551,
+    "page_end": 551,
+    "gloss_es": "Delito, crimen, culpa, reato",
+    "text": "Delito, crimen, ofensa; culpa, reato. Is 1,4; Gn 4,13. בַּעֲוֹן: por culpa de. Is 50,1. נָשָׂא עָוֹן: cargar con la culpa (culpable) / perdonar (Dios). Ex 28,43; 34,7. כִּפֶּר עָוֹן: expiar la culpa. Is 22,14."
+  },
+  {
+    "id": "heb-002199",
+    "lemma": "עִוְעִים",
+    "headword_line": "עִוְעִים [Sustantivo]",
+    "headword_tokens": ["עועים"],
+    "page_start": 551,
+    "page_end": 551,
+    "gloss_es": "Tambaleo, vértigo",
+    "text": "Tambaleo, vértigo. Is 19,14."
+  },
+  {
+    "id": "heb-002200",
+    "lemma": "עוּף",
+    "headword_line": "עוּף Q. pf. עָפוּ; impf. יָעוּף; Polel עוֹפֵף",
+    "headword_tokens": ["עוף"],
+    "page_start": 551,
+    "page_end": 552,
+    "gloss_es": "Volar, revolotear, aves",
+    "text": "Q. Volar, revolar, remontarse, cernerse; abatirse. Dt 4,17; Is 6,6; Hab 1,8. Polel. Volar, aletear. Gn 1,20; Is 6,2. Hi. Hacer volar, dirigir la mirada. Prov 23,5. Sust. עוֹף (Colectivo): aves, pájaros. Gn 1,26. עוֹף הַשָּׁמַיִם: aves del cielo. Gn 6,9."
+  },
+  {
+    "id": "heb-002200-2",
+    "lemma": "עוּר",
+    "headword_line": "עוּר Q. pf. עִוֵּר; impf. יְעַוֵּר",
+    "headword_tokens": ["עור"],
+    "page_start": 552,
+    "page_end": 552,
+    "gloss_es": "Cegar",
+    "text": "Q. Cegar. Ex 23,8; Dt 16,19; 2 Re 25,7; Jr 39,7. De la misma raíz: עִוֵּר (ciego), עִוָּרוֹן (ceguera)."
+  }
+]
