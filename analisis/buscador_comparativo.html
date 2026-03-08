@@ -615,6 +615,7 @@
       const mount = document.getElementById('occurrenceDonutMount');
       if (mount && window.AnalisisOccurrenceDonut?.create) {
         const donut = window.AnalisisOccurrenceDonut.create(mount);
+                window.AnalisisComparativoOccurrenceDonut = donut;
         donut?.setData?.({ es: [], he: [], gr: [] });
       }
     })();

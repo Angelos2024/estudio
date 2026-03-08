@@ -1,9 +1,26 @@
 (function () {
+  const SEARCH_INDEX_URLS = {
+    es: ['../search/index-es.json', './search/index-es.json', '/search/index-es.json'],
+    he: ['../search/index-he.json', './search/index-he.json', '/search/index-he.json'],
+    gr: ['../search/index-gr.json', './search/index-gr.json', '/search/index-gr.json']
+  };
+
+  const NT_BOOKS = new Set([
+    'mateo', 'marcos', 'lucas', 'juan', 'hechos', 'romanos',
+    '1_corintios', '2_corintios', 'galatas', 'efesios', 'filipenses', 'colosenses',
+    '1_tesalonicenses', '2_tesalonicenses', '1_timoteo', '2_timoteo', 'tito', 'filemon',
+    'hebreos', 'santiago', '1_pedro', '2_pedro', '1_juan', '2_juan', '3_juan',
+    'judas', 'apocalipsis'
+  ]);
+
+  const jsonCache = new Map();
+
   const state = {
     rows: [],
     rawQuery: '',
-    selectedByLang: { he: '—', gr: '—', es: '—' }
-  };
+  selectedByLang: { he: '—', gr: '—', es: '—' },
+    loadingDonut: false
+      };
 
   function escapeHtml(text) {
     return String(text ?? '')
@@ -34,6 +51,120 @@
     }
     return unique;
   }
+
+  function normalizeSpanish(text) {
+    return String(text || '')
+      .trim()
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9ñ\s]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function normalizeGreek(text) {
+    return String(text || '')
+      .replace(/[··.,;:!?“”"(){}\[\]<>«»]/g, '')
+      .replace(/\s/g, '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase();
+  }
+
+  function normalizeHebrew(text) {
+    return String(text || '')
+      .replace(/[\u0591-\u05C7]/g, '')
+      .replace(/[\u200E\u200F\u202A-\u202E\u2066-\u2069\u200C\u200D\uFEFF]/g, '')
+      .trim();
+  }
+
+  async function fetchJsonWithFallback(urls) {
+    let lastError = null;
+    for (const url of urls || []) {
+      try {
+        if (jsonCache.has(url)) return jsonCache.get(url);
+        const response = await fetch(url, { cache: 'force-cache' });
+        if (!response.ok) {
+          lastError = new Error(`No se pudo cargar ${url} (HTTP ${response.status}).`);
+          continue;
+        }
+        const payload = await response.json();
+        jsonCache.set(url, payload);
+        return payload;
+      } catch (error) {
+        lastError = error;
+      }
+    }
+    throw lastError || new Error('No se pudo cargar el índice de búsqueda.');
+  }
+
+  async function getIndexForLang(lang) {
+    const urls = SEARCH_INDEX_URLS[lang];
+    const data = await fetchJsonWithFallback(urls);
+    return data?.tokens && typeof data.tokens === 'object' ? data.tokens : {};
+  }
+
+  function buildBookCountRows(refs) {
+    const counts = new Map();
+    refs.forEach((ref) => {
+      const [book] = String(ref || '').split('|');
+      if (!book) return;
+      counts.set(book, (counts.get(book) || 0) + 1);
+    });
+    return [...counts.entries()]
+      .map(([book, count]) => ({ book, label: book.replace(/_/g, ' ').replace(/\b\w/g, (m) => m.toUpperCase()), count }))
+      .sort((a, b) => b.count - a.count);
+  }
+
+  function filterOtRefs(refs) {
+    return refs.filter((ref) => {
+      const [book] = String(ref || '').split('|');
+      return book && !NT_BOOKS.has(book);
+    });
+  }
+
+  async function refsForWord(lang, word) {
+    const index = await getIndexForLang(lang);
+    if (lang === 'es') {
+      const key = normalizeSpanish(word);
+      return Array.isArray(index[key]) ? index[key] : [];
+    }
+    if (lang === 'gr') {
+      const key = normalizeGreek(word);
+      return Array.isArray(index[key]) ? index[key] : [];
+    }
+    const exact = Array.isArray(index[word]) ? index[word] : [];
+    if (exact.length) return exact;
+    const fallback = normalizeHebrew(word);
+    return Array.isArray(index[fallback]) ? index[fallback] : [];
+  }
+
+  async function updateDonutFromSelection() {
+    const donut = window.AnalisisComparativoOccurrenceDonut;
+    if (!donut?.setData || state.loadingDonut) return;
+    state.loadingDonut = true;
+    try {
+      const [esRefsRaw, heRefsRaw, grRefsRaw] = await Promise.all([
+        refsForWord('es', state.selectedByLang.es),
+        refsForWord('he', state.selectedByLang.he),
+        refsForWord('gr', state.selectedByLang.gr)
+      ]);
+      const esRefs = filterOtRefs(esRefsRaw);
+      const heRefs = filterOtRefs(heRefsRaw);
+      const grRefs = grRefsRaw;
+      donut.setData({
+        es: buildBookCountRows(esRefs),
+        he: buildBookCountRows(heRefs),
+        gr: buildBookCountRows(grRefs)
+      });
+    } catch (_) {
+      donut.setData({ es: [], he: [], gr: [] });
+    } finally {
+      state.loadingDonut = false;
+    }
+  }
+
 
   function createSelectableRow(entry) {
     const heRaw = entry?.he || entry?.hebrew || entry?.palabra || '';
@@ -125,8 +256,8 @@
 
     if (!items.length) {
       state.rows = [];
-      state.selectedByLang = { he: '—', gr: '—', es: '—' };
-      return;
+      window.AnalisisComparativoOccurrenceDonut?.setData?.({ es: [], he: [], gr: [] });
+            return;
     }
 
     state.rows = items.map((entry) => createSelectableRow(entry));

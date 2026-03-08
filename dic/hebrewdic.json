@@ -21705,5 +21705,1867 @@
     "page_end": 460,
     "gloss_es": "Pavimento, bruñir, fregar, purgar.",
     "text": "מַרְצֶפֶת Pavimento 2 Re 16,17.\nמָרַק Q. imptv. pi. מִרְקוּ; ptc. pas. מָרוּק. Pu. pf. מֹרַק. hí. impf. f. הַמְרִיק.\nQ. Bruñir Jr 46,4 2 Cr 4,16.\nPu. Ser fregado Lv 6,21.\nHi. Purgar Prov 20,30."
-  }
-]
+  },
+  {
+    "id": "heb-001801",
+    "lemma": "מָרָק",
+    "headword_line": "מָרָק Caldo",
+    "headword_tokens": [
+      "מָרָק"
+    ],
+    "page_start": 460,
+    "page_end": 460,
+    "gloss_es": "Caldo, sopa, menestra Jue 6,19.",
+    "text": "מָרָק Est. cstr. מְרַק. Caldo, sopa, menestra Jue 6,19; מְרַק פִּגֻּלִים caldo abominable Is 65,4.\nמֶרְקָחִים Sólo pl. Aroma, esencia Cant 5,13 = בְּשָׂמִים.\nמֶרְקָחָה Pebetero Job 41,23."
+  },
+  {
+    "id": "heb-001802",
+    "lemma": "מִרְקַחַת",
+    "headword_line": "מִרְקַחַת Aroma",
+    "headword_tokens": [
+      "מִרְקַחַת"
+    ],
+    "page_start": 460,
+    "page_end": 460,
+    "gloss_es": "Aroma, ungüento, amargura, irritar.",
+    "text": "מִרְקַחַת Aroma, ungüento 2 Cr 16,14 Eclo 38,7. רֹקַח מִרְקַחַת mixtura de ungüentos Ex 30,25.\nמָרַר Q. pf. מַר, f. מָרָה; impf. יֵמַר. pi. wayy. pl. וַיְמָרֲרוּ. hi. pf. הֵמַר; impf. 2 תַּמְרִי; imptv. הָמֵר; inf. הָמֵר. hitp. imptv. הִתְמָרֵר. hitpalpel impf. יִתְמַרְמַר.\nQ. Ser amargo; sentir amargura o pena. Sentido físico Is 24,9. Sentido espiritual: מַר לִי sentir amargura Rut 1,13; מָרָה נַפְשָׁהּ estar amargado 2 Re 4,27.\nPi. Irritar, molestar Gn 49,23; amargar Ex 1,14. מָרֵר בִּבְכִי llorar amargamente Is 22,4.\nHi. Amargar, afligir Ex 23,21 Job 27,2 Rut 1,20. Intransitivo: hacer duelo Zac 12,10.\nHitp. Gemir, hacer duelo Eclo 38,16.\nHitpalpel. Estar enfurecido, despechado Dn 8,7 11,11.\nDe la misma raíz: מָרָה, מַר, מִמְרַר, מִמְרָר."
+  },
+  {
+    "id": "heb-001803",
+    "lemma": "מְרֹורִים",
+    "headword_line": "מְרֹורִים Amargo",
+    "headword_tokens": [
+      "מְרֹורִים"
+    ],
+    "page_start": 460,
+    "page_end": 460,
+    "gloss_es": "Amargo, ácido, hierbas amargas.",
+    "text": "מְרֹורִים [מְרֹרִים] Sólo pl. Amargo, ácido, agrio. Sustantivado: hierbas amargas Ex 12,8 Nm 9,11; hiel Lam 3,15."
+  },
+  {
+    "id": "heb-001804",
+    "lemma": "מְרֵרָה",
+    "headword_line": "מְרֵרָה Vesícula biliar",
+    "headword_tokens": [
+      "מְרֵרָה"
+    ],
+    "page_start": 460,
+    "page_end": 460,
+    "gloss_es": "Vesícula biliar, hiel Job 16,13.",
+    "text": "מְרֵרָה Sólo c. suf. מְרֵרָתִי. Vesícula biliar, hiel Job 16,13."
+  },
+  {
+    "id": "heb-001805",
+    "lemma": "מְרֹורָה",
+    "headword_line": "מְרֹורָה Veneno",
+    "headword_tokens": [
+      "מְרֹורָה",
+      "מְרֵרָה"
+    ],
+    "page_start": 460,
+    "page_end": 460,
+    "gloss_es": "Veneno, amargor, malvada.",
+    "text": "מְרֹורָה / מְרֵרָה Est. cstr. מְרֹורַת, c. suf. מְרֵרָתֹו; pi. מְרֹורֹות. Veneno, amargor Dt 32,32 Job 20,14. ¿Vesícula biliar? 20,25.\nמִרְשַׁעַת Malvada 2 Cr 24,7."
+  },
+  {
+    "id": "heb-001806",
+    "lemma": "ד",
+    "headword_line": "Morfología/Raíz",
+    "headword_tokens": [
+      "ד"
+    ],
+    "page_start": 460,
+    "page_end": 460,
+    "gloss_es": "Separador.",
+    "text": "ד"
+  },
+  {
+    "id": "heb-001807",
+    "lemma": "מַשָּׂא",
+    "headword_line": "מַשָּׂא Carga, peso",
+    "headword_tokens": [
+      "מַשָּׂא"
+    ],
+    "page_start": 460,
+    "page_end": 461,
+    "gloss_es": "Carga, transporte, fardo, oráculo profético.",
+    "text": "מַשָּׂא Est. abs. = cstr. c. suf. מַשָּׂאָם, מַשָּׂאֲכֶם, מַשָּׂאֹו; pl. cstr. מַשְּׂאֹות. El acto de transportar y el objeto transportado. a) Propio: Transporte Nm 4,15; בַּכָּתֵף- a hombros 2 Cr 35,3. Carga, peso Is 22,25 Jr 17,21 Neh 13,15. מַשָּׂא + numeral: una carga de X 2 Re 5,17. מַשָּׂא אֶבֶן piedra pesada Eclo 6,21. b) Figurado: Carga (responsabilidad) Nm 11,11 Dt 1,12 2 Sm 15,33 Sal 38,5 Job 7,20. Cargas = tributos Os 8,10. c) Género profético: Oráculo contra paganos, sátira, invectiva Is 13,1 15,1 17,1 19,1 Nah 1,1 Hab 1,1 Zac 9,1 Mal 1,1 Lam 2,14."
+  },
+  {
+    "id": "heb-001808",
+    "lemma": "מַשָּׂא",
+    "headword_line": "מַשָּׂא Favoritismo",
+    "headword_tokens": [
+      "מַשָּׂא"
+    ],
+    "page_start": 461,
+    "page_end": 461,
+    "gloss_es": "Favoritismo, deseo, ansia.",
+    "text": "מַשָּׂא נֶפֶשׁ- objeto del deseo, del ansia Ez 24,25 Eclo 51,26. מַשָּׂא פָנִים favoritismo, parcialidad 2 Cr 19,7 Eclo 35,15."
+  },
+  {
+    "id": "heb-001809",
+    "lemma": "מַשְׂאֵת",
+    "headword_line": "מַשְׂאֵת / מַשְׂאָה Elevación, regalo",
+    "headword_tokens": [
+      "מַשְׂאֵת",
+      "מַשְׂאָה"
+    ],
+    "page_start": 461,
+    "page_end": 461,
+    "gloss_es": "Enseña, humareda, regalo, tributo.",
+    "text": "מַשְׂאֵת / מַשְׂאָה Est. cstr. מַשְׂאַת; pl. מַשְׂאֹות, cstr. מַשְׂאֹות, c. suf. מַשְׂאֹתֵיכֶם. a) Algo que se eleva: Enseña Jr 6,1; humareda Is 30,27; מַשְׂאַת עָשָׁן Jue 20,38. מַשְׂאַת כַּפַּיִם elevación de manos Sal 141,2. b) Algo que se transporta: Regalo, obsequio, tributo Gn 43,34 2 Sm 11,8 Jr 40,5 Est 2,18 2 Cr 24,6. מַשְׂאַת עָוֹן culpabilidad Eclo 4,21."
+  },
+  {
+    "id": "heb-001810",
+    "lemma": "מִשְׂגָּב",
+    "headword_line": "מִשְׂגָּב Alcázar",
+    "headword_tokens": [
+      "מִשְׂגָּב"
+    ],
+    "page_start": 461,
+    "page_end": 461,
+    "gloss_es": "Alcázar, acrópolis, baluarte, refugio.",
+    "text": "מִשְׂגָּב Est. cstr. מִשְׂגַּב, c. suf. מִשְׂגַּבֹּו, מִשְׂגַּבִּי. Alcázar, acrópolis, baluarte, refugio Is 33,16; מִשְׂגַּב מִבְצָר altos baluartes 25,12. Epelativo de Moab Jr 48,1. Figurado de Dios en Salmos: Sal 9,10 18,3 59,10 62,3 94,22 144,2."
+  },
+  {
+    "id": "heb-001811",
+    "lemma": "מְשׂוּכָה",
+    "headword_line": "מְשׂוּכָה Valla, מַשֹּׂור Sierra, מְשׂוּרָה Medida",
+    "headword_tokens": [
+      "מְשׂוּכָה",
+      "מַשֹּׂור",
+      "מְשׂוּרָה"
+    ],
+    "page_start": 461,
+    "page_end": 461,
+    "gloss_es": "Valla, sierra, medida de líquidos.",
+    "text": "מְשׂוּכָה [מְשֻׂכָה] Est. cstr. מְשׂוּכַת, c. suf. מְשׂוּכָתֹו. Valla Is 5,5 Prov 15,19.\nמַשֹּׂור Sierra Is 10,15.\nמְשׂוּרָה Medida, peso Lv 19,35 1 Cr 23,29; מְשׂוּרָה מַיִם agua tasada Ez 4,11."
+  },
+  {
+    "id": "heb-001812",
+    "lemma": "מָשֹׂושׂ",
+    "headword_line": "מָשֹׂושׂ Gozo",
+    "headword_tokens": [
+      "מָשֹׂושׂ"
+    ],
+    "page_start": 461,
+    "page_end": 461,
+    "gloss_es": "Gozo, alegría, alborozo.",
+    "text": "מָשֹׂושׂ Est. cstr. מְשֹׂושׂ."
+  },
+  {
+    "id": "heb-001813",
+    "lemma": "מָשֹׂושׂ",
+    "headword_line": "מָשֹׂושׂ (Detalles), מִשְׂחָק Escarnio, מַשְׂכִּיל Salmo",
+    "headword_tokens": [
+      "מָשֹׂושׂ",
+      "מִשְׂחָק",
+      "מַשְׂכִּיל"
+    ],
+    "page_start": 461,
+    "page_end": 461,
+    "gloss_es": "Gozo, alegría, escarnio, rebelión, salmo didáctico.",
+    "text": "מָשֹׂושׂ c. suf. מְשֹׂושָׂהּ, מְשֹׂושִׂי. Gozo, alegría, delicia, alborozo. Sin.: גִּילָה, שִׂמְחָה. Is 24,8 32,14 60,15 65,18 66,10; Os 2,13 = חַג; Sal 48,3 Lam 2,15. בָּתֵּי מָשֹׂושׂ casas alegres Is 32,13; מְשֹׂושׂ דַּרְכֹּו Job 8,19.\nמִשְׂחָק Escarnio, burla Hab 1,10.\nמִשְׂטֵמָה Rebelión, animosidad Os 9,7.\nמַשְׂכִּיל ¿Maestría? En los títulos de 13 salmos, tipo de canto o composición didáctica Sal 47,8."
+  },
+  {
+    "id": "heb-001814",
+    "lemma": "מַשְׂכִּית",
+    "headword_line": "מַשׂ. .. Imagen",
+    "headword_tokens": [
+      "מַשְׂכִּית"
+    ],
+    "page_start": 461,
+    "page_end": 461,
+    "gloss_es": "Imagen, estatua, imaginación, fantasía.",
+    "text": "מַשְׂכִּית c. suf. מַשְׂכִּיתֹו, pl. מַשְׂכִּיֹּות, c. suf. מַשְׂכִּיֹּתָם. a) Imagen, estatua, figura Nm 33,52 Prov 25,11. אֶבֶן מַשְׂכִּית relieves en piedra Lv 26,1. b) Imaginación, fantasía Prov 18,11; מַשְׂכִּיֹּות לֵבָב Sal 73,7."
+  },
+  {
+    "id": "heb-001815",
+    "lemma": "מַשְׂכֹּרֶת",
+    "headword_line": "מַשְׂכֹּרֶת Salario",
+    "headword_tokens": [
+      "מַשְׂכֹּרֶת"
+    ],
+    "page_start": 461,
+    "page_end": 461,
+    "gloss_es": "Salario Gn 29,15.",
+    "text": "מַשְׂכֹּרֶת c. suf. מַשְׂכֻּרְתִּי, מַשְׂכֻּרְתְּךָ, מַשְׂכֻּרְתֶּךָ. Salario Gn 29,15 31,7 31,41 Rut 2,12."
+  },
+  {
+    "id": "heb-001816",
+    "lemma": "מַשְׂמֵרֹות",
+    "headword_line": "מַשְׂמֵר Clavo, מִשְׂפָּח Crimen, מִשְׂרָה Principado",
+    "headword_tokens": [
+      "מַשְׂמֵר",
+      "מִשְׂפָּח",
+      "מִשְׂרָה"
+    ],
+    "page_start": 461,
+    "page_end": 461,
+    "gloss_es": "Clavo, remachado, asesinato, crimen, principado.",
+    "text": "מַשְׂמֵר Sólo pl. מַשְׂמְרֹות clavo; נְטוּעִים מַשְׂמְרֹות bien remachados Ecl 12,11. Alógrafo de מַסְמֵר.\nמִשְׂפָּח Asesinato, crimen Is 5,7 * מִשְׁפָּט derecho.\nמִשְׂרָה Principado Is 9,5."
+  },
+  {
+    "id": "heb-001817",
+    "lemma": "מִשְׂרָפֹות",
+    "headword_line": "מִשְׂרָפָה Combustión, מַשְׂרֵת Sartén",
+    "headword_tokens": [
+      "מִשְׂרָפֹות",
+      "מַשְׂרֵת"
+    ],
+    "page_start": 462,
+    "page_end": 462,
+    "gloss_es": "Combustión, calcinado, sartén.",
+    "text": "מִשְׂרָפָה Sólo est. cstr. מִשְׂרְפֹות combustión Jr 34,5; הָיָה מִשְׂרְפֹות שִׂיד ser calcinado Is 33,12.\nמַשְׂרֵת Sartén 2 Sm 13,9."
+  },
+  {
+    "id": "heb-001818",
+    "lemma": "מַשָּׁא",
+    "headword_line": "מַשָּׁא Préstamo",
+    "headword_tokens": [
+      "מַשָּׁא"
+    ],
+    "page_start": 462,
+    "page_end": 462,
+    "gloss_es": "Préstamo, deuda, exigencia.",
+    "text": "מַשָּׁא Préstamo, deuda, exigencia, reclamación Neh 5,7 5,10; כָּל־מַשָּׁא יָד cualquier clase de deudas 10,32."
+  },
+  {
+    "id": "heb-001819",
+    "lemma": "מַשְׁאָבִים",
+    "headword_line": "מַשְׁאָבִים Abrevaderos",
+    "headword_tokens": [
+      "מַשְׁאָבִים",
+      "מַשָּׁאָה",
+      "מַשָּׁאֹון"
+    ],
+    "page_start": 462,
+    "page_end": 462,
+    "gloss_es": "Abrevaderos, préstamo, deuda, engaño, disimulo.",
+    "text": "מַשְׁאָבִים Sólo pl. Abrevaderos Jue 5,11.\nמַשָּׁאָה Est. cstr. מַשַּׁאת, pl. מַשָּׁאֹות. Préstamo, deuda Dt 24,10 Prov 22,26.\nמַשָּׁאֹון Engaño, disimulo Prov 26,26."
+  },
+  {
+    "id": "heb-001820",
+    "lemma": "מִשְׁאָלֹות",
+    "headword_line": "מִשְׁאָלָה Petición",
+    "headword_tokens": [
+      "מִשְׁאָלֹות"
+    ],
+    "page_start": 462,
+    "page_end": 462,
+    "gloss_es": "Petición Sal 20,6.",
+    "text": "מִשְׁאָלָה pl. מִשְׁאָלֹות, c. suf. מִשְׁאָלֹותֶיךָ. Sólo pl. Petición Sal 20,6. מִשְׁאֲלֹת לִבֶּךָ que pide tu corazón 37,4."
+  },
+  {
+    "id": "heb-001821",
+    "lemma": "מִשְׁאֶרֶת",
+    "headword_line": "מִשְׁאֶרֶת Artesa, מַשְׁבֵּר Alumbramiento",
+    "headword_tokens": [
+      "מִשְׁאֶרֶת",
+      "מַשְׁבֵּר"
+    ],
+    "page_start": 462,
+    "page_end": 462,
+    "gloss_es": "Artesa, filigrana, cuello del útero, alumbramiento.",
+    "text": "מִשְׁאֶרֶת c. suf. מִשְׁאַרְתְּךָ, מִשְׁאֲרֹותֶיךָ, מִשְׁאֲרֹותָם. Artesa Ex 7,28 12,34 Dt 28,5.\nמִשְׁבֶּצֶת Pl. מִשְׁבְּצֹות. Filigranas Ex 28,11 39,6 Sal 45,14.\nמַשְׁבֵּר Est. cstr. מַשְׁבֵּר. Cuello del útero, embocadura del alumbramiento 2 Re 19,3 Os 13,13."
+  },
+  {
+    "id": "heb-001822",
+    "lemma": "מִשְׁבָּר",
+    "headword_line": "מִשְׁבָּר Oleaje",
+    "headword_tokens": [
+      "מִשְׁבָּר"
+    ],
+    "page_start": 462,
+    "page_end": 462,
+    "gloss_es": "Rompiente, oleaje, oleada, embate.",
+    "text": "מִשְׁבָּר Sólo pl. cstr. מִשְׁבְּרֵי, c. suf. מִשְׁבָּרֶיךָ. Rompiente, oleaje, oleada, maretazo, embate. Jon 2,4 Sal 93,4. Fig.: Sal 42,8; מִשְׁבְּרֵי־מָוֶת olas mortales 2 Sm 22,5."
+  },
+  {
+    "id": "heb-001823",
+    "lemma": "מִשְׁבָּת",
+    "headword_line": "מִשְׁבָּת Ruina",
+    "headword_tokens": [
+      "מִשְׁבָּת"
+    ],
+    "page_start": 462,
+    "page_end": 462,
+    "gloss_es": "Ruina, desgracia, fracaso.",
+    "text": "מִשׁ... (Contenido del bloque: Sólo pl. c. suf. מִשְׁבַּתֶּיהָ. Ruina, desgracia, fracaso Lam 1,7.)"
+  },
+  {
+    "id": "heb-001824",
+    "lemma": "מִשְׁגֶּה",
+    "headword_line": "מִשְׁגֶּה Equivocación",
+    "headword_tokens": [
+      "מִשְׁגֶּה"
+    ],
+    "page_start": 462,
+    "page_end": 462,
+    "gloss_es": "Equivocación, descuido Gn 43,12.",
+    "text": "מִשְׁגֶּה Equivocación, descuido Gn 43,12."
+  },
+  {
+    "id": "heb-001825",
+    "lemma": "מָשָׁה",
+    "headword_line": "מָשָׁה Sacar",
+    "headword_tokens": [
+      "מָשָׁה"
+    ],
+    "page_start": 462,
+    "page_end": 462,
+    "gloss_es": "Sacar, extraer Ex 2,10.",
+    "text": "מָשָׁה Q. pf. 1 c. suf. מְשִׁיתִיהוּ. Hi. impf. 3 c. suf. יַמְשֵׁנִי.\nQ. Sacar, extraer Ex 2,10.\nHi. Idem Q. 2 Sm 22,17 (Sal 18,17)."
+  },
+  {
+    "id": "heb-001826",
+    "lemma": "מַשֶּׁה",
+    "headword_line": "מַשֶּׁה Deuda, מְשֹׁואָה Desolación, מְשׁוּבָה Apostasía",
+    "headword_tokens": [
+      "מַשֶּׁה",
+      "מְשֹׁואָה",
+      "מְשׁוּבָה"
+    ],
+    "page_start": 462,
+    "page_end": 462,
+    "gloss_es": "Deuda, préstamo, desolación, devastación, apostasía, defección, rebeldía.",
+    "text": "מַשֶּׁה Est. cstr. מַשֵּׁה. Deuda, préstamo: בַּעַל מַשֵּׁה יָדֹו acreedor Dt 15,2. Alógrafo de מַשָּׁא.\nמְשֹׁואָה [מְשֹׁאָה] Desolación, devastación: יֹום שֹׁאָה וּמְשֹׁואָה día de destrucción y desolación Sof 1,15 Eclo 51,10. מְשֹׁואָה desolado Job 30,3.\nמְשֹׁואֹות [מְשֹׁאֹות] Sólo pl. Ruinas Sal 73,18 74,3.\nמְשׁוּבָה [מְשֻׁבָה] Est. cstr. מְשׁוּבַת, c. suf. מְשׁוּבָתִי, מְשׁוּבָתָם. Pl. c. suf. מְשׁוּבֹתֵיכֶם, מְשׁוּבֹתֵינוּ, מְשׁוּבֹותֵיהֶם. Apostasía, defección Jr 2,19 3,22 14,7 Os 11,7 Eclo 49,2. מְשׁוּבָה נִצַּחַת rebeldía irrevocable Jr 8,5."
+  },
+  {
+    "id": "heb-001827",
+    "lemma": "מְשׁוּגָה",
+    "headword_line": "מְשׁוּגָה Error, מָשַׁח Untar, מָשִׁי",
+    "headword_tokens": [
+      "מְשׁוּגָה",
+      "מָשַׁח",
+      "מָשִׁי"
+    ],
+    "page_start": 462,
+    "page_end": 462,
+    "gloss_es": "Error, yerro, remo, untar, aceitar, ungir, consagrar, seda.",
+    "text": "מְשׁוּגָה Sólo c. suf. מְשׁוּגָתִי. Error, yerro Job 19,4.\nמָשֹׁוט / מָשֹׁוט pi. c. suf. מִשֹּׁוטַיִךְ. Remo Ez 27,6.\nמָשַׁח Q. pf. 3 c. suf. מְשָׁחֹו, מְשָׁחַנִי; 2 מְשַׁחְתָּ; pl. מָשְׁחוּ; impf. יִמְשַׁח, wayy. וַיִּמְשַׁח; imptv. מְשַׁח, pl. מִשְׁחוּ; inf. abs. מָשֹׁוחַ cstr. מְשֹׁחַ; ptc. מֹשֵׁחַ, pas. מָשׁוּחַ. Ni pf. נִמְשַׁח.\nQ. Untar, aceitar, embadurnar; ungir, consagrar. a) Uso profano: Ungirse, perfumarse Am 6,6; מָגֵן- engrasar el escudo Is 21,5. b) Culto: בַּשֶּׁמֶן- aceitar Ex 29,2 Lv 7,12. c) Ungir para un cargo (reyes, sacerdotes): Jue 9,8 1 Sm 15,1 2 Sm 2,4 1 Re 1,34 2 Re 9,3; sacerdotes: Ex 29,7 Nm 3,3; objetos de culto: Ex 40,9 Nm 7,1.\nמֶשִׁי Seda Ez 16,10."
+  },
+  {
+    "id": "heb-001828",
+    "lemma": "מָשִׁי",
+    "headword_line": "מָשִׁי Seda",
+    "headword_tokens": [
+      "מָשִׁי"
+    ],
+    "page_start": 463,
+    "page_end": 463,
+    "gloss_es": "Seda Ez 16:10.",
+    "text": "מֶשִׁי Seda Ez 16,10.13. Ni. pf. נִמְשַׁח Ser ungido Lv 6,13 Nm 7,10 1 Cr 14,8. De la misma raíz: מָשִׁיחַ, מִשְׁחָה."
+  },
+  {
+    "id": "heb-001829",
+    "lemma": "מִשְׁחָה",
+    "headword_line": "מִשְׁחָה Unción",
+    "headword_tokens": [
+      "מִשְׁחָה"
+    ],
+    "page_start": 463,
+    "page_end": 463,
+    "gloss_es": "Unción, consagración, porción, ración.",
+    "text": "מִשְׁחָה Est. cstr. מִשְׁחַת. a) Unción: מִשְׁחַת יְהוָה del Señor Lv 10,7 21,12; מִשְׁחַת קֹדֶשׁ sagrada Ex 30,25. שֶׁמֶן הַמִּשְׁחָה aceite de la unción 25,6 35,8 Lv 8,10 21,10 Nm 4,16. b) Porción, ración (de los consagrados) Lv 7,35."
+  },
+  {
+    "id": "heb-001830",
+    "lemma": "מִשְׁחָה",
+    "headword_line": "מִשְׁחָה (Usos), מַשְׁחִית Exterminador",
+    "headword_tokens": [
+      "מִשְׁחָה",
+      "מַשְׁחִית"
+    ],
+    "page_start": 463,
+    "page_end": 463,
+    "gloss_es": "Unción, porción, exterminador, destructor, aniquilación, fosa.",
+    "text": "מִשְׁחָה c. suf. מִשְׁחָתָם. Unción Ex 29,29 40,15; porción Nm 18,8.\nמַשְׁחִית Ptc. Hi. de שָׁחַת. a) Exterminador, destructor, devastador Ex 12,23 Is 54,16 Jr 4,7 22,7 Prov 18,9; אִישׁ מַשְׁחִית asesino 28,24. Fuerza de choque 1 Sm 13,17. b) Exterminio, aniquilación: לְמַשְׁחִית hasta el exterminio Ez 9,6 25,15; נֶגֶף לְמַשְׁחִית plaga exterminadora Ex 12,13; חִצֵּי מַשְׁחִית Ez 5,16. c) Fosa, trampa Jr 5,26. d) Sintagmas: מַרְאֶה הָיָה לְמַשְׁחִית semblante desfigurado Dn 10,8; לְמַשְׁחִית enzarzarse a muerte 2 Cr 20,23. e) Topónimo: הַר הַמַּשְׁחִית Monte Exterminio Jr 51,25."
+  },
+  {
+    "id": "heb-001831",
+    "lemma": "מִשְׁחָר",
+    "headword_line": "מִשְׁחָר Aurora, מַשְׁחָת Destrucción",
+    "headword_tokens": [
+      "מִשְׁחָר",
+      "מַשְׁחָת"
+    ],
+    "page_start": 463,
+    "page_end": 463,
+    "gloss_es": "Aurora, destrucción, desfigurado.",
+    "text": "מִשְׁחָר Aurora Sal 110,3.\nמַשְׁחָת Sólo c. suf. מַשְׁחַתֹּו. Destrucción: כְּלִי מַשְׁחַתֹּו arma mortal Ez 9,1.\nמִשְׁחָת Desfigurado Is 52,14."
+  },
+  {
+    "id": "heb-001832",
+    "lemma": "מִשְׁחַת",
+    "headword_line": "מִשְׁחָת c. suf. מִשְׁחָתָם",
+    "headword_tokens": [
+      "מִשְׁחַת"
+    ],
+    "page_start": 463,
+    "page_end": 463,
+    "gloss_es": "Destrucción, mutilación.",
+    "text": "מִשְׁחָת c. suf. מִשְׁחָתָם. Destrucción, mutilación."
+  },
+  {
+    "id": "heb-001833",
+    "lemma": "מִשְׁחָת",
+    "headword_line": "מִשְׁחָת Deforme, מִשְׁטָח Secadero",
+    "headword_tokens": [
+      "מִשְׁחָת",
+      "מִשְׁטָח"
+    ],
+    "page_start": 463,
+    "page_end": 463,
+    "gloss_es": "Deforme, defectuoso, fuente corrompida, secadero.",
+    "text": "מִשְׁחָת בָּהֶם deformes Lv 22,25. Adjetivo: lo estropeado Mal 1,14; מָקֹור מָשְׁחָת fuente corrompida Prov 25,26.\nמִשְׁטָח Est. cstr. מִשְׁטַח. Tendedero, secadero Ez 26,5 26,14 47,10."
+  },
+  {
+    "id": "heb-001834",
+    "lemma": "מִשְׁטָר",
+    "headword_line": "מִשְׁטָר Función",
+    "headword_tokens": [
+      "מִשְׁטָר"
+    ],
+    "page_start": 463,
+    "page_end": 463,
+    "gloss_es": "Función Job 38:33.",
+    "text": "מִשְׁטָר Sólo c. suf. מִשְׁטָרֹו. Función Job 38,33."
+  },
+  {
+    "id": "heb-001835",
+    "lemma": "מָשִׁיחַ",
+    "headword_line": "מָשִׁיחַ Ungido, מָשַׁךְ Tirar",
+    "headword_tokens": [
+      "מָשִׁיחַ",
+      "מָשַׁךְ"
+    ],
+    "page_start": 463,
+    "page_end": 464,
+    "gloss_es": "Ungido, consagrado, El Ungido, Mesías, tirar, arrastrar, prolongar, disparar.",
+    "text": "מָשִׁיחַ Est. cstr. מְשִׁיחַ, c. suf. מְשִׁיחֹו, מְשִׁיחֶיךָ, מְשִׁיחַי. pi. c. suf. מְשִׁיחָי. a) Untado, engrasado (מָגֵן escudo) 2 Sm 1,21. b) Cultual: Ungido: הַכֹּהֵן הַמָּשִׁיחַ sacerdote consagrado Lv 4,3. El Ungido = el rey; el Mesías 1 Sm 24,7 Is 45,1 Sal 2,2 84,10 89,39 Lam 4,20 Dn 9,25.\nמָשַׁךְ Q. pf. f. מָשַׁכְתִּי, מָשְׁכָה, pl. מָשְׁכוּ; impf. תִּמְשֹׁךְ, יִמְשֹׁךְ, wayy. וַיִּמְשֹׁךְ; imptv. מְשֹׁךְ; ptc. מֹשֵׁךְ, pl. מֹשְׁכִים. Ni. impf. f. תִּמָּשֵׁךְ. Pu. ptc. מְמֻשָּׁךְ.\nQ. Tirar de; arrastrar, atraer; prolongar, alargar; disparar. 1. Intransitivo: Instrumento (יֹובֵל cuerno) sonar prolongadamente Ex 19,13 Jos 6,5. וַיִּמְשֹׁךְ הָאֹרֶב prolongaron la matanza Jue 20,37. 2. Transitivo. a) Personas: וַיִּמְשְׁכוּ אֶת־יֹוסֵף Gn 37,28 Jr 38,13; atraer Os 11,4; arrastrar Sal 10,9 Job 24,22 Cant 1,4. Ejército: conducir Jue 4,7. b) Objetos: בַּעַל מָשַׁךְ llevar yugo Dt 21,3; מָשַׁךְ בְּשֵׁבֶט empuñar el cetro Jue 5,14; מָשַׁךְ בַּקֶּשֶׁת disparar el arco 1 Re 22,34; מָשַׁךְ יָד alargar la mano Os 7,5; מֹשֵׁךְ הַזֶּרַע sembrar Am 9,13; מָשַׁךְ בְּחַכָּה pescar Job 40,25. c) Cualidades: מֹשְׁכֵי הֶעָוֹן Is 5,18; מָשַׁךְ חֶסֶד prolongar la lealtad Jr 31,3 Sal 36,11; מָשַׁךְ אַף prolongar la ira 85,6.\nNi. Retrasarse, demorarse Is 13,22 Ez 12,25.\nPu. Tardar, diferirse. ptc. מְמֻשָּׁךְ Prov 13,12; corpulento Is 18,2.\nמֶשֶׁךְ Bolsa, escarcela Sal 126,6 Job 28,18."
+  },
+  {
+    "id": "heb-001836",
+    "lemma": "מִשְׁכָּב",
+    "headword_line": "מִשְׁכָּב Lecho",
+    "headword_tokens": [
+      "מִשְׁכָּב"
+    ],
+    "page_start": 464,
+    "page_end": 464,
+    "gloss_es": "Lecho, cama, yacija, jergón, acto de yacer, dormir.",
+    "text": "מִשְׁכָּב Est. cstr. מִשְׁכַּב, c. suf. מִשְׁכָּבְךָ, מִשְׁכָּבִי, מִשְׁכָּבָם, מִשְׁכָּבֹו; pi. cstr. מִשְׁכְּבֵי, c. suf. מִשְׁכְּבֹותָם. Lecho, cama, yacija, jergón; acto de yacer, dormir. Sin.: עֶרֶשׂ, מִטָּה. a) Lecho Lv 15,4 1 Re 1,47 Os 7,14 Sal 4,5 Cant 3,1. Sexual: Gn 49,4 Is 57,7 Prov 7,17. Mortuorio: Is 57,2 Ez 32,25 2 Cr 16,14. b) Acto de yacer: חֲדַר הַמִּשְׁכָּב alcoba Ex 7,28 2 Re 6,12. Sexual: Lv 18,22 Nm 31,17 Jue 21,11.\nFraseología: לָקַח מִתַּחַת מִשְׁכָּבְךָ quitar de debajo la cama Prov 22,27; נָח עַל־מִשְׁכָּבֹו descansar en el lecho (muertos) Is 57,2; נָפַל לְמִשְׁכָּב guardar cama Ex 21,18; סָבַב עַל־מִשְׁכָּבֹו revolverse en la cama Prov 26,14; מִשְׁכַּב זָכָר relaciones con hombres Nm 31,17; בִּתְנוּמֹות עֲלֵי מִשְׁכָּב Job 33,15."
+  },
+  {
+    "id": "heb-001837",
+    "lemma": "מֹושְׁכֹות",
+    "headword_line": "מֹושְׁכֹות Ataduras",
+    "headword_tokens": [
+      "מֹושְׁכֹות"
+    ],
+    "page_start": 464,
+    "page_end": 464,
+    "gloss_es": "Ataduras Job 38:31.",
+    "text": "מֹושְׁכֹות Sólo pl. Ataduras Job 38,31 = מַעֲדַנֹּות."
+  },
+  {
+    "id": "heb-001838",
+    "lemma": "מִשְׁכָּן",
+    "headword_line": "מִשְׁכָּן Morada, מָשַׁל Trovar, Gobernar",
+    "headword_tokens": [
+      "מִשְׁכָּן",
+      "מָשַׁל"
+    ],
+    "page_start": 464,
+    "page_end": 465,
+    "gloss_es": "Morada, casa, vivienda, santuario, trovar, componer, gobernar, regir.",
+    "text": "מִשְׁכָּן Est. cstr. מִשְׁכַּן, c. suf. מִשְׁכָּנֹו, מִשְׁכָּנִי; P1. 1 מִשְׁכָּנִים, cstr. מִשְׁכְּנֵי; pi. 2 מִשְׁכָּנֹות, cstr. מִשְׁכְּנֹות. Morada, casa, domicilio, vivienda, residencia, tienda. Nm 24,5 Is 22,16 54,2 Jr 9,18 Ez 25,4 Sal 78,28 Job 18,21. מִשְׁכְּנֹות הָרֹעִים apriscos Cant 1,8. Morada del Señor, el santuario Ex 26,7 40,2 Nm 3,7 10,11 Sal 26,8 132,7.\n1 מָשַׁל Q. impf. יִמְשֹׁל, wayy. וַיִּמְשֹׁל. Ni. pf. 2 נִמְשַׁלְתָּ. Pi. ptc. מְמַשֵּׁל. Hi. impf. 2 c. suf. הַמְשִׁילֹונִי. Hitp. wayy. 1 וָאֶתְמַשֵּׁל.\nQ. Trovar, componer, recitar, declamar. Ez 12,23 17,2 18,2 24,3; הִמְשִׁילַנִי לִמְשֹׁל עַמִּים me has hecho el hazmerreír Job 17,6. Ptc.: poeta, trovador Nm 21,27 Eclo 44,4.\nNi. Asemejarse, parecerse. Is 14,10 Sal 28,1 49,13 143,7.\nPi. Ptc. recitador Ez 21,5.\nHi. Comparar, asemejar Is 46,5.\nHitp. Confundirse Job 30,19.\n2 מָשַׁל Q. pf. מָשַׁל, f. מָשְׁלָה, pl. מָשְׁלוּ; impf. יִמְשֹׁל, אֶמְשֹׁל, pl. יִמְשְׁלוּ; inf. abs. מָשֹׁול cstr. מְשֹׁל; ptc. מֹשֵׁל. Hi. pf. 3 c. suf. הִמְשִׁילָם.\nQ. Regir, gobernar, señorear, dominar, mandar. a) Uso absoluto: Ez 19,14 Zac 6,13 Sal 66,7 Prov 12,24 29,2. b) Con בְּ: Gn 1,18 3,16 Dt 15,6 Jue 8,22 Is 3,4. מֹשֵׁל בְּרוּחֹו dominarse Prov 16,32.\nHi. Dar el mando Sal 8,7 Dn 11,39. De la misma raíz: מֶמְשָׁלָה."
+  },
+  {
+    "id": "heb-001839",
+    "lemma": "מָשָׁל",
+    "headword_line": "מָשָׁל Proverbio",
+    "headword_tokens": [
+      "מָשָׁל"
+    ],
+    "page_start": 465,
+    "page_end": 465,
+    "gloss_es": "Proverbio, refrán, copla, parábola, gobernador, jefe.",
+    "text": "מָשָׁל Est. cstr. מְשַׁל, c. suf. מְשָׁלֹו; P1. מְשָׁלִים, cstr. מִשְׁלֵי. Proverbio, refrán, copla, parábola, sátira, epigrama. Sal 49,5 Prov 1,1 10,1 25,1 26,7. הָיָה לְמָשָׁל hacerse proverbial 1 Sm 10,12; מִשְׁלֵי אֵפֶר proverbios polvorientos Job 13,12; מְשַׁל חֲכָמִים Eclo 3,29. לְמִשְׁלִים proverbial Ez 14,8. Refrán Ez 12,22 18,2; הַמָּשָׁל הַקַּדְמֹנִי 1 Sm 24,14; נָתַן לְמָשָׁל Jr 24,9. Parábola Ez 17,2. Sátira Miq 2,4 Hab 2,6.\nמֹשֵׁל Participio de 2 מָשַׁל: Gobernador, jefe, dueño, señor, soberano, tirano. Gn 45,8 Is 16,1 Miq 5,1 Prov 23,1. עֶבֶד מֹשְׁלִים esclavo de tiranos Is 49,7; שֵׁבֶט מֹשְׁלִים vara de los dominadores 14,5 = מַטֵּה רְשָׁעִים; Ez 19,11. לֹא מֹשֵׁל sin jefe Hab 1,14."
+  },
+  {
+    "id": "heb-001840",
+    "lemma": "מָשָׁל",
+    "headword_line": "1 מָשָׁל Semejanza, מִשְׁלֹוחַ Envío",
+    "headword_tokens": [
+      "מָשָׁל",
+      "מִשְׁלֹוח"
+    ],
+    "page_start": 465,
+    "page_end": 465,
+    "gloss_es": "Semejanza, igualdad, dominio, envío.",
+    "text": "1 מָשָׁל Sólo c. suf. מָשְׁלֹו Semejanza, igualdad Job 41,25.\n2 מָשָׁל Sólo c. suf. מָשְׁלֹו Poderío, dominio Zac 9,10 Dn 11,4.\nמִשְׁלֹוחַ Envío: מִשְׁלֹוחַ יָד empresa Is 11,14; מִשְׁלֹוחַ מָנֹות enviarse regalos Est 9,19."
+  },
+  {
+    "id": "heb-001841",
+    "lemma": "מִשְׁלַח",
+    "headword_line": "מִשְׁלַח Envío",
+    "headword_tokens": [
+      "מִשְׁלַח"
+    ],
+    "page_start": 465,
+    "page_end": 465,
+    "gloss_es": "Envío, empresa, tarea, pasto.",
+    "text": "מִשְׁלַח Est. cstr. מִשְׁלַח. Envío: מִשְׁלַח יָד empresa, tarea Dt 12,7 15,10 23,21 28,8; מִשְׁלַח שֹׁור pasto de vacas Is 7,25."
+  },
+  {
+    "id": "heb-001842",
+    "lemma": "מִשְׁלַחַת",
+    "headword_line": "מִשְׁלַחַת Misión, מְשַׁמָּה Desolación",
+    "headword_tokens": [
+      "מִשְׁלַחַת",
+      "מְשַׁמָּה"
+    ],
+    "page_start": 465,
+    "page_end": 465,
+    "gloss_es": "Envío, misión, liberación, desolación, devastación, sequedad.",
+    "text": "מִשְׁלַחַת Est. abs. = cstr. Envío, misión Sal 78,49; liberación Ecl 8,8.\nמְשַׁמָּה pi. מְשַׁמֹּות. Desolación, devastación, espanto. Ez 5,15 6,14 33,28 35,5. De un río: sequedad, aridez Is 15,6 Jr 48,34."
+  },
+  {
+    "id": "heb-001843",
+    "lemma": "מִשְׁמָן",
+    "headword_line": "מִשְׁמָן Gordura",
+    "headword_tokens": [
+      "מִשְׁמָן"
+    ],
+    "page_start": 465,
+    "page_end": 465,
+    "gloss_es": "Gordura, obesidad, robustez, fertilidad.",
+    "text": "מִשְׁמָן Est. cstr. מִשְׁמַן, P1. cstr. מִשְׁמַנֵּי, c. suf. מִשְׁמַנָּיו, מִשְׁמַנֵּיהֶם. Gordura, obesidad, robustez Is 10,16 17,4 Sal 78,31. De la tierra: fertilidad Gn 27,28 Dn 11,24."
+  },
+  {
+    "id": "heb-001844",
+    "lemma": "מִשְׁמַנִּים",
+    "headword_line": "מִשְׁמַנִּים Tajadas, מִשְׁמָע Rumor",
+    "headword_tokens": [
+      "מִשְׁמַנִּים",
+      "מִשְׁמָע"
+    ],
+    "page_start": 465,
+    "page_end": 465,
+    "gloss_es": "Tajadas, comida sustanciosa, rumor, de oídas.",
+    "text": "מִשְׁמַנִּים Sólo pl. Tajadas, comida sustanciosa Neh 8,10.\nמִשְׁמָע Sólo est. cstr. Rumor: לְמִשְׁמַע אָזְנַיִם de oídas Is 11,3."
+  },
+  {
+    "id": "heb-001845",
+    "lemma": "מִשְׁמַעַת",
+    "headword_line": "מִשְׁמַעַת",
+    "headword_tokens": [
+      "מִשְׁמַעַת"
+    ],
+    "page_start": 466,
+    "page_end": 466,
+    "gloss_es": "Obediencia.",
+    "text": "מִשְׁמַעַת."
+  },
+  {
+    "id": "heb-001846",
+    "lemma": "מִשְׁמַעַת",
+    "headword_line": "מִשְׁמַעַת Sumisión",
+    "headword_tokens": [
+      "מִשְׁמַעַat"
+    ],
+    "page_start": 466,
+    "page_end": 466,
+    "gloss_es": "Sumisión, rendición, obediencia, escolta, guardia.",
+    "text": "מִשְׁמַעַת c. suf. מִשְׁמַעְתָּם, מִשְׁמַעְתֹּו, מִשׁ. .. (מִשְׁמַעְתְּךָ). Sumisión, rendición, obediencia Is 11,14; escolta, guardia personal 1 Sm 22,14 2 Sm 23,23."
+  },
+  {
+    "id": "heb-001847",
+    "lemma": "מִשְׁמָר",
+    "headword_line": "מִשְׁמָר Cárcel, מִשְׁמֶרֶת Guardia",
+    "headword_tokens": [
+      "מִשְׁמָר",
+      "מִשְׁמֶרֶת"
+    ],
+    "page_start": 466,
+    "page_end": 466,
+    "gloss_es": "Cárcel, prisión, guardia, vigilancia, centinela, rito, ministerio.",
+    "text": "מִשְׁמָר Est. cstr. מִשְׁמַר, c. suf. מִשְׁמַרְכֶם, מִשְׁמָרֹו, מִשְׁמָרָיו. a) Cárcel, prisión, presidio Gn 40,3 41,10 42,17 Lv 24,12 Nm 15,34. b) Guardia, vigilancia Neh 4,16. אַנְשֵׁי הַמִּשְׁמָר escolta 4,17. הָיָה לְמִשְׁמָר לְ- hacer de centinela Ez 38,7; הֶחֱזִיק הַמִּשְׁמָר reforzar la guardia Jr 51,12; הֶעֱמִיד מִשְׁמָר apostar centinelas Neh 4,3; שִׂים מִשְׁמָר apostar guardián Job 7,12. לְעֻמַּת מִשְׁמָר turnos de guardia Neh 12,24. Vigilancia Prov 4,23; custodia Neh 13,14.\nמִשְׁמֶרֶת c. suf. מִשְׁמַרְתְּךָ, מִשְׁמַרְתִּי, מִשְׁמַרְתָּם, מִשְׁמַרְתֹּו, pl. מִשְׁמָרֹות, cstr. מִשְׁמָרֹות, c. suf. מִשְׁמָרֹותֵיהֶם, מִשְׁמָרֹותָם. a) Conservación, depósito Ex 12,6 16,23 Nm 17,25 18,8. בֵּית מִשְׁמֶרֶת harén 2 Sm 20,3. b) Vigilancia 1 Cr 9,23. נִצָּב עַל־מִשְׁמֶרֶת estar de centinela Is 21,8; עָמַד עַל־מִשְׁמֶרֶת Hab 2,1. c) Función, tarea, servicio, ministerio Nm 3,25 4,27 8,26 2 Re 11,5 Ez 44,8 1 Cr 26,12 2 Cr 35,2. d) Prescripción, rito Gn 26,5 Lv 18,30 22,9 Nm 9,19 Dt 11,1 1 Re 2,3 Zac 3,7 Neh 12,45."
+  },
+  {
+    "id": "heb-001848",
+    "lemma": "מִשְׁנֶה",
+    "headword_line": "מִשְׁנֶה Segundo, מְשִׁסָּה Saqueo, מִשְׁעֹול Angostura",
+    "headword_tokens": [
+      "מִשְׁנֶה",
+      "מְשִׁסָּה",
+      "מִשְׁעֹול"
+    ],
+    "page_start": 466,
+    "page_end": 466,
+    "gloss_es": "Segundo, virrey, doble, copia, saqueo, despojo, paso estrecho.",
+    "text": "מִשְׁנֶה Est. cstr. מִשְׁנֵה, c. suf. מִשְׁנֵהוּ, pl. מִשְׁנִים. Segundo, vice-, vicario; doble, duplicado, copia. a) Segundo 1 Sm 17,13 2 Sm 3,3 Neh 11,17. הַמִּשְׁנֶה Barrio Nuevo 2 Re 22,14. b) Virrey, visir Gn 41,43. מִשְׁנֵה לַמֶּלֶךְ virrey Est 10,3. c) Doble Gn 43,15 Ex 16,5 Is 61,7 Jr 16,18 Zac 9,12 Job 42,10. d) Copia, duplicado Dt 17,18 Jos 8,32. e) Equivalente Dt 15,18.\nמְשִׁסָּה pl. מְשִׁסֹּות. Saqueo, despojo, botín, presa. 2 Re 21,14 Is 42,22 Jr 30,16 Hab 2,7 Sof 1,13.\nמִשְׁעֹול Angostura, paso estrecho Nm 22,24."
+  },
+  {
+    "id": "heb-001849",
+    "lemma": "מִשְׁעִי",
+    "headword_line": "מִשְׁעִי Frotamiento, מִשְׁעָנָה Apoyo",
+    "headword_tokens": [
+      "מִשְׁעִי",
+      "מִשְׁעָנָה"
+    ],
+    "page_start": 466,
+    "page_end": 466,
+    "gloss_es": "Frotamiento, apoyo, sustento.",
+    "text": "מִשְׁעִי Frotamiento Ez 16,4. Dudoso.\nמִשְׁעֵנָה / מִשְׁעָן Bastón, apoyo, sustento Is 3,1."
+  },
+  {
+    "id": "heb-001850",
+    "lemma": "מִשְׁעָן",
+    "headword_line": "מִשְׁעָן Apoyo, מִשְׁעֶנֶת Bastón",
+    "headword_tokens": [
+      "מִשְׁעָן",
+      "מִשְׁעֶנֶת"
+    ],
+    "page_start": 466,
+    "page_end": 466,
+    "gloss_es": "Apoyo, sustento, bastón, cayado, gayata.",
+    "text": "מִשְׁעָן Est. cstr. מִשְׁעַן. Apoyo, sustento 2 Sm 22,19 Is 3,1; Eclo 3,31 40,26.\nמִשְׁעֶנֶת c. suf. מִשְׁעַנְתֹּו, מִשְׁעַנְתְּךָ, מִשְׁעַנְתִּי, pl. c. suf. מִשְׁעַנְתָּם. Bastón, cayado, gayata Ex 21,19 Nm 21,18 2 Re 4,29 Zac 8,4 Sal 23,4. קְצֵה הַמִּשְׁעֶנֶת punta del cayado Jue 6,21. Fig. מִשְׁעֶנֶת הַקָּנֶה הָרָצוּץ bastón de caña cascada Is 36,6 Ez 29,6."
+  },
+  {
+    "id": "heb-001851",
+    "lemma": "מִשְׁפָּחָה",
+    "headword_line": "מִשְׁפָּחָה Familia",
+    "headword_tokens": [
+      "מִשְׁפָּחָה"
+    ],
+    "page_start": 466,
+    "page_end": 466,
+    "gloss_es": "Familia, clan, casa, parentela, tribu, raza, etnia.",
+    "text": "מִשְׁפָּחָה Est. cstr. מִשְׁפַּחַת, c. suf. מִשְׁפַּחְתֹּו, מִשְׁפַּחְתִּי, מִשְׁפַּחְתָּם; pl. מִשְׁפָּחֹות, cstr. מִשְׁפְּחֹות, c. suf. מִשְׁפְּחֹתָיו. Familia, clan, casa, parientes, tribu, raza, etnia. Ordenación descendente: שֵׁבֶט tribu, מִשְׁפָּחָה clan, בַּיִת familia. Jos 7,14. La tribu de Dan Jue 18,11. Correlativo de עִיר ciudad Jr 3,14. Raza Gn 12,3 Ez 20,32. מִשְׁפְּחֹות גֹּויִם razas paganas Sal 22,28. Parientes Gn 24,38."
+  },
+  {
+    "id": "heb-001852",
+    "lemma": "מִשְׁפָּט",
+    "headword_line": "מִשְׁפָּט Causa, juicio",
+    "headword_tokens": [
+      "מִשְׁפָּט"
+    ],
+    "page_start": 466,
+    "page_end": 467,
+    "gloss_es": "Causa, juicio, derecho, norma, sentencia, tribunal.",
+    "text": "מִשׁ... (Contenido del bloque: Est. cstr. מִשְׁפַּט, c. suf. מִשְׁפָּטִי, מִשְׁפָּטְךָ, מִשְׁפָּטֹו, מִשְׁפָּטָם, מִשְׁפָּטָהּ. Pl. מִשְׁפָּטִים, cstr. מִשְׁפְּטֵי, c. suf. מִשְׁפָּטָיו, מִשְׁפָּטֶיךָ, מִשְׁפָּטַי, מִשְׁפְּטֵיהֶם. Causa y juicio; derecho; norma.\nA. Construcciones. 1. Simple: Lv 24,22 Is 32,16 Jr 48,21 Sal 36,7 Job 29,14. 2. Compuestos. a) מִשְׁפַּט הַבְּכֹרָה derecho de primogenitura Dt 21,17; מִשְׁפַּט־מָוֶת sentencia de muerte 21,22; מִשְׁפַּט הַמֶּלֶךְ privilegio real 1 Sm 8,11. b) אֱלֹהֵי מִשְׁפָּט Dios justo Is 30,18; אֹרַח מִשְׁפָּט camino exacto Is 40,14. c) Preposiciones: בְּמִשְׁפָּט en el juicio Lv 19,15, a juicio Job 9,32, rectamente Sal 72,2; בְּלֹא מִשְׁפָּט injustamente Ez 22,29; כַּמִּשְׁפָּט según la norma Nm 9,3; לַמִּשְׁפָּט a juicio Nm 35,12, para juzgar Sal 9,8, para el castigo Eclo 39,29; עַל הַמִּשְׁפָּט conforme a las normas Nm 35,24.\nB. Significación. 1. Judicial. a) שָׁפַט מִשְׁפָּט juzgar una causa Dt 16,18 Zac 7,9. b) בֹּוא בַמִּשְׁפָּט acudir a juicio Is 3,14 Sal 143,2; הֵבִיא בַמִּשְׁפָּט llevar a juicio Job 14,3; נָגַשׁ אֶל־הַמִּשְׁפָּט acudir al tribunal Dt 25,1. c) עָרַךְ מִשְׁפָּט presentar la causa Job 13,18; דִּבֶּר מִשְׁפָּט enjuiciar, procesar 2 Re 25,6 Jr 1,16. d) הִטָּה מִשְׁפָּט violar el derecho Dt 16,19; עִוֵּת מִשְׁפָּט torcer el derecho Job 8,3; הֵסִיר מִשְׁפָּט negar el derecho Job 27,2. e) עָמַד לַמִּשְׁפָּט comparecer Jos 20,6; יָשַׁב עַל־הַמִּשְׁפָּט sentarse a juzgar Is 28,6; קָם לַמִּשְׁפָּט levantarse inocente Sal 1,5. f) הִגִּיד דְּבַר הַמִּשְׁפָּט pronunciar sentencia Dt 17,9; יָצָא מִשְׁפָּט ser dictada Os 6,5; חָרַץ מִשְׁפָּט dictar sentencia 1 Re 20,40. g) עָשָׂה מִשְׁפָּט administrar justicia 2 Sm 8,15.)"
+  },
+  {
+    "id": "heb-001853",
+    "lemma": "מִשְׁפָּט",
+    "headword_line": "מִשְׁפָּט (Continuación)",
+    "headword_tokens": [
+      "מִשְׁפָּט"
+    ],
+    "page_start": 468,
+    "page_end": 468,
+    "gloss_es": "Jurisdicción, pectoral, ritual, ceremonial, mandato.",
+    "text": "מִשְׁפָּט. h) עָבַר מִשְׁפָּט descuidar la causa Is 40,27; לֹו הַמִּשְׁפָּט tiene jurisdicción Ez 21,32. חֹשֶׁן הַמִּשְׁפָּט pectoral de las suertes Ex 28,15; בְּמִשְׁפַּט הָאֹורִים Nm 27,21.\n2. Político/Religioso. Decisión, norma, mandato, ritual. a) Cúltico: כַּמִּשְׁפָּט según el ritual Lv 5,10 Nm 9,3 1 Re 18,28. b) Legislación: אֵלֶּה הַמִּשְׁפָּטִים Decretos Ex 21,1 Dt 4,45. c) Verbos: הֹורָה מִשְׁפָּט Dt 33,10; לִמֵּד- Esd 7,10; צִוָּה- Mal 3,22; שִׂים- Ex 15,25. d) עָשָׂה / שָׁמַר מִשְׁפָּט cumplir Ez 37,24 Sal 89,31. 3. Profano: costumbre, estilo, modo de proceder. מִשְׁפָּטִי mi norma es Sof 3,8; בַּמִּשְׁפָּט según el trato debido Ex 21,9; כַּמִּשְׁפָּט como suelen Jue 18,7; לְכָל־מִשְׁפָּטֹו según el proyecto 1 Re 6,38."
+  },
+  {
+    "id": "heb-001854",
+    "lemma": "מִשְׁפְּתַיִם",
+    "headword_line": "מִשְׁפְּתַיִם Alforjas, מִשְׁקָן Posesión",
+    "headword_tokens": [
+      "מִשְׁפְּתַיִם",
+      "מִשְׁקָן"
+    ],
+    "page_start": 468,
+    "page_end": 468,
+    "gloss_es": "Alforjas, aprisco, posesión.",
+    "text": "מִשְׁפְּתַיִם Sólo pl. Alforjas Gn 49,14; ¿aprisco? Jue 5,16.\nמִשְׁקָן Posesión Gn 15,2. Dudoso."
+  },
+  {
+    "id": "heb-001855",
+    "lemma": "מֶשֶׁק",
+    "headword_line": "מֶשֶׁק Posesión",
+    "headword_tokens": [
+      "מֶשֶׁק"
+    ],
+    "page_start": 468,
+    "page_end": 468,
+    "gloss_es": "Posesión Gn 15,2.",
+    "text": "מֶשֶׁק Posesión Gn 15,2. Dudoso."
+  },
+  {
+    "id": "heb-001856",
+    "lemma": "מַשָּׁק",
+    "headword_line": "מַשָּׁק Asalto",
+    "headword_tokens": [
+      "מַשָּׁק"
+    ],
+    "page_start": 468,
+    "page_end": 468,
+    "gloss_es": "Asalto, embate Is 33:4.",
+    "text": "מַשָּׁק Est. cstr. מַשַּׁק. Asalto, embate Is 33,4."
+  },
+  {
+    "id": "heb-001857",
+    "lemma": "מַשְׁקֶה",
+    "headword_line": "מַשְׁקֶה Bebida, מִשְׁקֹול Peso",
+    "headword_tokens": [
+      "מַשְׁקֶה",
+      "מִשְׁקֹול"
+    ],
+    "page_start": 468,
+    "page_end": 468,
+    "gloss_es": "Bebida, copero, regadío, peso tasado.",
+    "text": "מַשְׁקֶה Est. cstr. מַשְׁקֵה, c. suf. מַשְׁקֵהוּ, מַשְׁקָיו; pi. מַשְׁקִים. a) Bebida Lv 11,34 Is 32,6. כְּלִי מַשְׁקֶה vajilla 1 Re 10,21. b) Copero Gn 40,1 Neh 1,11. c) Regadío Gn 13,10 Eclo 39,23.\nמִשְׁקֹול Peso: אָכַל בְּמִשְׁקֹול comer el alimento tasado Ez 4,10."
+  },
+  {
+    "id": "heb-001858",
+    "lemma": "מַשְׁקֹוף",
+    "headword_line": "מַשְׁקֹוף Dintel",
+    "headword_tokens": [
+      "מַשְׁקֹוף"
+    ],
+    "page_start": 468,
+    "page_end": 468,
+    "gloss_es": "Dintel Ex 12,7.",
+    "text": "מַשְׁקֹוף Dintel Ex 12,7 12,22."
+  },
+  {
+    "id": "heb-001859",
+    "lemma": "מִשְׁקָל",
+    "headword_line": "מִשְׁקָל Peso, מִשְׁקֶלֶת Nivel",
+    "headword_tokens": [
+      "מִשְׁקָל",
+      "מִשְׁקֶלֶת"
+    ],
+    "page_start": 468,
+    "page_end": 468,
+    "gloss_es": "Peso, tasa, incalculable, nivel, plomada.",
+    "text": "מִשְׁקָל Est. cstr. מִשְׁקַל, c. suf. מִשְׁקָלֹו, מִשְׁקָלָם. Peso, tasa Gn 24,22 Nm 7,13 Jos 7,21 Jue 8,26. אֵין מִשְׁקָל incalculable 1 Cr 22,3; אֵין מִשְׁקָל לְטֹובָתֹו no tiene precio Eclo 6,15. בְּמִשְׁקָל tasado Lv 26,26 Ez 4,16; מִשְׁקַל מֹאזְנַיִם balanza Ez 5,1.\nמִשְׁקֶלֶת / מִשְׁקֹלֶת Nivel (utensilio) 2 Re 21,13 Is 28,17 (+ קַו plomada)."
+  },
+  {
+    "id": "heb-001860",
+    "lemma": "מִשְׁקָע",
+    "headword_line": "מִשְׁקָע Poso",
+    "headword_tokens": [
+      "מִשְׁקָע"
+    ],
+    "page_start": 468,
+    "page_end": 468,
+    "gloss_es": "Poso, sedimento, agua clara.",
+    "text": "מִשְׁקָע Sólo est. cstr. מִשְׁקַע. Poso, sedimento: מִשְׁקַע מַיִם agua clara (reposada) Ez 34,18."
+  },
+  {
+    "id": "heb-001861",
+    "lemma": "מִשְׁרָה",
+    "headword_line": "מִשְׁרָה Jugo, מְשָׁרֵת Sirviente",
+    "headword_tokens": [
+      "מִשְׁרָה",
+      "מְשָׁרֵת"
+    ],
+    "page_start": 468,
+    "page_end": 468,
+    "gloss_es": "Jugo, zumo, extracto, sirviente, ayudante.",
+    "text": "מִשְׁרָה Sólo est. cstr. מִשְׁרַת. Jugo, zumo, extracto Nm 6,3.\nמְשָׁרֵת c. suf. מְשָׁרְתֹו; Pl. מְשָׁרְתִים, cstr. מְשָׁרְתֵי, c. suf. מְשָׁרְתָיו, מְשָׁרְתַי. Sirviente, ayudante. Véase שָׁרֵת Pi."
+  },
+  {
+    "id": "heb-001862",
+    "lemma": "שָׁרֵת",
+    "headword_line": "שָׁרֵת Pi.",
+    "headword_tokens": [
+      "שָׁרֵת"
+    ],
+    "page_start": 468,
+    "page_end": 468,
+    "gloss_es": "Servir, ministrar.",
+    "text": "שָׁרֵת Pi."
+  },
+  {
+    "id": "heb-001863",
+    "lemma": "מָשַׁשׁ",
+    "headword_line": "מָשַׁשׁ Palpar, מִשְׁתֶּה Banquete",
+    "headword_tokens": [
+      "מָשַׁשׁ",
+      "מִשְׁתֶּה"
+    ],
+    "page_start": 468,
+    "page_end": 468,
+    "gloss_es": "Palpar, tentar, revolver, rebuscar, banquete, festín, convite.",
+    "text": "מָשַׁשׁ Q. impf. 3 c. suf. וַיְמֻשֵּׁהוּ, 1 אֲמֻשְׁךָ. pf. pl. 2 מְשַׁשְׁתֶּם; impf. יְמַשְׁשׁוּ, יְמַשְׁשׁוּ, wayy. וַיְמַשֵּׁשׁ; ptc. מְמַשֵּׁשׁ.\nQ. Palpar, tentar, tantear Gn 27,12 27,22.\nPi. Revolver, rebuscar Gn 31,34 31,37; ir a tientas Dt 28,29 Job 5,14.\nמִשְׁתֶּה Est. cstr. מִשְׁתֵּה, c. suf. מִשְׁתֵּיהוּ, מִשְׁתֵּיכֶם, מִשׁ. .. (מִשְׁתֵּיהֶם). Convite, banquete, festín; bebida. Gn 19,3 Jue 14,10 1 Sm 25,36 1 Re 3,15 Est 1,5 2,18 Dn 1,10 Esd 3,7. בֵּית מִשְׁתֶּה casa de banquetes Jr 16,8. יְמֵי הַמִּשְׁתֶּה días de festín Jue 14,12. מִשְׁתֵּה הַיַּיִן brindis Est 5,6. עָשָׂה מִשְׁתֶּה celebrar un banquete Gn 21,8 26,30 2 Sm 3,20 Est 1,3."
+  },
+  {
+    "id": "heb-001865",
+    "lemma": "מֵת",
+    "headword_line": "מֵת Difunto",
+    "headword_tokens": [
+      "מֵת"
+    ],
+    "page_start": 469,
+    "page_end": 469,
+    "gloss_es": "Difunto, muerto.",
+    "text": "מֵת Véase מֵתִים."
+  },
+  {
+    "id": "heb-001866",
+    "lemma": "מֵת",
+    "headword_line": "מֵת Muerto",
+    "headword_tokens": [
+      "מֵת"
+    ],
+    "page_start": 469,
+    "page_end": 469,
+    "gloss_es": "Difunto, finado, cadáver, restos mortales.",
+    "text": "מֵת c. suf. מֵתֹו, מֵתְךָ, מֵתִי; Pl. מֵתִים, cstr. מֵתֵי, c. suf. מֵתֶיךָ. Difunto, muerto, finado, fallecido; cadáver, restos mortales. Gn 23,3 Ex 21,35 Nm 17,13 Is 26,14 Sal 88,11. אֵשֶׁת הַמֵּת viuda Dt 25,5; זִבְחֵי מֵתִים sacrificios a dioses muertos Sal 106,28; מֵתֵי מִלְחָמָה muertos en combate Is 22,2; מֵתֵי עֹולָם muertos de antaño Lam 3,6. בָּכָה לְמֵת llorar por Jr 22,10; דֹּרֵשׁ אֶל־הַמֵּתִים nigromante Dt 18,11; קָבַר אֶת־הַמֵּת sepultar Gn 23,4."
+  },
+  {
+    "id": "heb-001867",
+    "lemma": "מַתְבֵּן",
+    "headword_line": "מַתְבֵּן Muladar",
+    "headword_tokens": [
+      "מַתְבֵּן"
+    ],
+    "page_start": 469,
+    "page_end": 469,
+    "gloss_es": "Muladar Is 25:10.",
+    "text": "מַתְבֵּן Muladar Is 25,10."
+  },
+  {
+    "id": "heb-001868",
+    "lemma": "מֶתֶג",
+    "headword_line": "מֶתֶג Freno, מָתֹוק Dulce",
+    "headword_tokens": [
+      "מֶתֶג",
+      "מָתֹוק"
+    ],
+    "page_start": 469,
+    "page_end": 469,
+    "gloss_es": "Freno, bocado, dulce, sabroso, grato.",
+    "text": "מֶתֶג c. suf. מִתְגִּי. Freno, bocado 2 Re 19,28 Is 37,29 Sal 32,9 Prov 26,3.\nמָתֹוק f. מְתוּקָה, pi. m. מְתוּקִים. Dulce, sabroso, grato, agradable. Ant. מַר amargo; asociado a דְּבַשׁ miel. Jue 14,14 Ez 3,3 Sal 19,11 Prov 16,24 24,13 Cant 2,3; sueño Ecl 5,11; luz 11,7."
+  },
+  {
+    "id": "heb-001869",
+    "lemma": "מָתַח",
+    "headword_line": "מָתַח Desplegar",
+    "headword_tokens": [
+      "מָתַח"
+    ],
+    "page_start": 469,
+    "page_end": 469,
+    "gloss_es": "Desplegar, extender Is 40:22.",
+    "text": "מָתַח Q. wayy. c. suf. וַיִּמְתָּחֵם. Desplegar, extender Is 40,22 = נָטָה tender."
+  },
+  {
+    "id": "heb-001870",
+    "lemma": "מָתַי",
+    "headword_line": "מָתַי ¿Cuándo?",
+    "headword_tokens": [
+      "מָתַי"
+    ],
+    "page_start": 469,
+    "page_end": 469,
+    "gloss_es": "Adverbio interrogativo, cuándo, apenas, hasta cuándo.",
+    "text": "מָתַי Adverbio interrogativo y temporal. a) ¿Cuándo? Gn 30,30 Am 8,5 Sal 41,6 101,2 Job 7,4. Cuando, en cuanto Prov 23,35. b) עַד־מָתַי ¿hasta cuándo? Jr 13,27; לְמָתַי ¿para cuándo? Ex 8,5. עַד־מָתַי מֵאַנְתָּ ¿hasta cuándo seguirás negándote? Ex 10,3; עַד־מָתַי אֶרְאֶה־נֵּס ¿hasta cuándo veré la bandera? Jr 4,21; עַד־מָתַי אַתָּה מִתְאַבֵּל ¿hasta cuándo estarás lamentándote? 1 Sm 16,1; עַד־מָתַי הֶחָזֹון ¿para cuándo es la visión? Dn 8,13. ¡Ya está bien!, ¡Ya es hora! Jr 23,26 Hab 2,6 Sal 90,13."
+  },
+  {
+    "id": "heb-001871",
+    "lemma": "מְתִים",
+    "headword_line": "מְתִים Individuo",
+    "headword_tokens": [
+      "מְתִים"
+    ],
+    "page_start": 469,
+    "page_end": 470,
+    "gloss_es": "Individuo, persona, gente, población.",
+    "text": "מְתִים Sólo pl. Est. cstr. מְתֵי, c. suf. מְתָיו. Individuo, persona, gente, población. a) Genérico: Sal 17,14 Job 11,3; población Is 3,25. b) Específico: מְתֵי אָהֳלִי compañeros de campamento Job 31,31; מְתֵי אָוֶן maleantes 22,15; מְתֵי מִסְפָּר unos pocos, puñado de gente Gn 34,30 Dt 4,27 33,6 Jr 44,28 Sal 105,12. מְתֵי מְעָט Dt 26,5. מְתֵי סֹוד íntimos Job 19,19; מְתֵי שָׁוְא gente falsa Sal 26,4 Job 11,11 Eclo 15,7. מְתֵי כָל־עִיר población Dt 2,34.\nנ (Nun) Décimonovena letra del alefato. Valores: a) Preformante: 1ª pl. (נִירָא, נֵצֵא) o Ni. (נָכֹון). b) Aformante: 1ª pl. (קַמְנוּ); 2ª/3ª f. pl. (תְּקֹומֶינָה, קָטַלְנָה). c) Sufijo: 1ª sg. (הִנֵּנִי, סַבּוּנִי); 3ª sg. (מִמֶּנּוּ); 1ª pl. (אֲבֹותֵינוּ). d) Paragógico/Enfático: יִקְטְלוּן. e) Epentético ante sufijo: אֲרֹמְמֶנְהוּ. f) 1ª radical: a veces asimilada (הִפִּיל de נפל) o elidida (תֵּן de נתן)."
+  },
+  {
+    "id": "heb-001872",
+    "lemma": "מַתְכֹּנֶת",
+    "headword_line": "מַתְכֹּנֶת Receta, מָתַק Saborear",
+    "headword_tokens": [
+      "מַתְכֹּנֶת",
+      "מָתַק"
+    ],
+    "page_start": 470,
+    "page_end": 470,
+    "gloss_es": "Receta, medidas, planos, cupo, saborear, gustar.",
+    "text": "מַתְכֹּנֶת c. suf. מַתְכֻּנְתָּהּ, מַתְכֻּנְתֹּו. Receta Ex 30,32; medidas, planos 2 Cr 24,13; patrón Ez 45,11; cupo Ex 5,8; moderación Eclo 31,27.\nמְתַלְּעֹות [מַתַּלְּעֹות] c. suf. מְתַלְּעֹותָיו. Quijadas, mandíbulas J1 1,6 Prov 30,14 Job 29,17.\n1 מְתֹם Parte ilesa Is 1,6 Sal 38,4.\n2 מְתֹם Personas, población: מְתֹם עִיר Jue 20,48.\nמָתַק Q. pf. 3 m. c. suf. מָתְקוּ; impf. pl. יִמְתָּקוּ. Hi. pf. הִמְתִּיק, pl. הִמְתִּיקוּ.\nQ. Saborear, gustar Job 24,20. Intransitivo: saber dulce, ser sabroso Job 21,33 Prov 9,17 Eclo 40,18; volverse dulce Ex 15,25.\nHi. Endulzar, volver dulce Sal 55,15 Job 20,12."
+  },
+  {
+    "id": "heb-001873",
+    "lemma": "מַתָּן",
+    "headword_line": "מַתָּן Regalo",
+    "headword_tokens": [
+      "מַתָּן"
+    ],
+    "page_start": 470,
+    "page_end": 470,
+    "gloss_es": "Regalo, donativo, dádiva, presente.",
+    "text": "מַתָּן c. suf. מַתָּנָם. Don, regalo, donativo, dádiva, presente Nm 18,11 Prov 18,16 19,6 21,14; dote Gn 34,12; limosna Eclo 4,3. אִישׁ מַתָּן generoso Eclo 3,17; בְּתֹוךְ מַתָּן a la hora de dar 4,31; חַיֵּי מַתָּן vivir de limosna 40,28."
+  },
+  {
+    "id": "heb-001874",
+    "lemma": "מַתָּנָה",
+    "headword_line": "מַתָּנָה Don, מָתְנַיִם Lomos, מַתָּת Ofrenda",
+    "headword_tokens": [
+      "מַתָּנָה",
+      "מָתְנַיִם",
+      "מַתָּת"
+    ],
+    "page_start": 470,
+    "page_end": 471,
+    "gloss_es": "Don, regalo, ofrenda, soborno, dulzura, lomos, espalda, cintura.",
+    "text": "מַתָּנָה Est. cstr. מַתְּנַת; Pl. מַתָּנֹות, cstr. מַתְּנֹות, c. suf. מַתְּנֹותָם, מַתְּנֹותֵיכֶם. Don, regalo, dádiva; ofrenda; tributo; legado; soborno. Nm 18,29 Est 9,22. Ofrenda cultual Ex 28,38 Lv 23,38. Tributo Sal 68,19; מַתְּנַת יָדֹו su tributo personal Dt 16,17. Legado Gn 25,6 Ez 46,16. Soborno Prov 15,27 Ecl 7,7.\nמֶתֶק Dulzura, gracia, delicia, encanto Prov 16,21 27,9.\nמֹתֶק Sólo c. suf. מָתְקִי. Dulzura, sabor Jue 9,11.\nמָתְנַיִם Est. cstr. מָתְנֵי, c. suf. מָתְנַי, מָתְנֶיךָ, מָתְנָיו, מָתְנֵיהֶם, מָתְנֵיכֶם, מָתְנֵינוּ. Lomos, espalda, cintura Ex 28,42 1 Re 12,10 Ez 1,27 8,2 Job 40,16. חֶרֶב עַל־מָתְנַיִם espada a la cintura 2 Sm 20,8. שִׂים שַׂק בְּמָתְנַיִם ceñir sayal Gn 37,34 1 Re 20,31; אָסַר בְּמָתְנַיִם atar a la cintura Job 12,18; חָגַר מָתְנַיִם ceñirse 2 Re 4,29; מָחַץ מָתְנַיִם quebrantar los lomos Dt 33,11; שִׁבְרֹון מָתְנַיִם derrengado Ez 21,11.\nמַתָּת Est. cstr. מַתַּת. Ofrenda, regalo, don 1 Re 13,7 Ecl 3,13 5,18. מַתַּת יָדֹו a voluntad Ez 46,5; מַתַּת שֶׁקֶר regalo sin valor Prov 25,14.\n1 נָא Partícula volitiva: Te ruego, por favor. Gn 19,2 22,2 Nm 16,26. הֹושִׁיעָה נָּא (Hosanna) ¡salva! Sal 118,25. אַל־נָא No, por favor Gn 19,18.\n2 נָא Crudo Ex 12,9 * בָּשֵׁל cocido."
+  },
+  {
+    "id": "heb-001875",
+    "lemma": "נֹאד",
+    "headword_line": "נֹאד Odre",
+    "headword_tokens": [
+      "נֹאד"
+    ],
+    "page_start": 471,
+    "page_end": 471,
+    "gloss_es": "Odre, pellejo.",
+    "text": "נֹאד Est. abs. = cstr. c. suf. נֹאדִי; pl. נֹאדֹות. Odre, pellejo Sal 56,9 119,83. נֹאד יַיִן Jos 9,13 1 Sm 16,20; נֹאד הֶחָלָב Jue 4,19."
+  },
+  {
+    "id": "heb-001876",
+    "lemma": "נֶאְדָּר",
+    "headword_line": "נֶאְדָּר Magnífico",
+    "headword_tokens": [
+      "נֶאְדָּר"
+    ],
+    "page_start": 471,
+    "page_end": 471,
+    "gloss_es": "Magnífico, majestuoso Ex 15:6.",
+    "text": "נֶאְדָּר [נֶאְדָּרִי] Participio verbal. Magnífico, majestuoso Ex 15,6 15,11."
+  },
+  {
+    "id": "heb-001877",
+    "lemma": "נָאָה",
+    "headword_line": "נָאָה Ser hermoso, נָאוֶה Bello",
+    "headword_tokens": [
+      "נָאָה",
+      "נָאוֶה"
+    ],
+    "page_start": 471,
+    "page_end": 471,
+    "gloss_es": "Ser hermoso, bello, grato, conveniente, adecuado.",
+    "text": "נָאָה / נָאֲוָה Q. pf. sg. נָאוָה Sal 93,5, f. 3 נָאתָה Eclo 15,9, pl. נָאווּ. hitp. impf. יִתְנָאֶה Eclo 13,3.\nQ. Ser hermoso, bello, grato; convenir. Is 52,7 Sal 93,5 Cant 1,10. לֹא נָאתָה desdecir Eclo 10,18.\nHitp. Ufanarse Eclo 13,3. Dudoso.\nנָאוֶה F. נָאוָה. a) Hermoso, bello, grato, atractivo. Sin.: נָעִים, יָפֶה. Sal 147,1 Cant 1,5 2,14 4,3 6,4. b) Conveniente, adecuado, que sienta bien. Sal 33,1 Prov 17,7 19,10 26,1 Eclo 14,3."
+  },
+  {
+    "id": "heb-001878",
+    "lemma": "נָאֹור",
+    "headword_line": "נָאֹור Brillante, נָאַם Vaticinar",
+    "headword_tokens": [
+      "נָאֹור",
+      "נָאַם"
+    ],
+    "page_start": 471,
+    "page_end": 471,
+    "gloss_es": "Brillante, deslumbrante, pronunciar oráculos.",
+    "text": "נָאֹור Brillante, deslumbrante Sal 76,5. Participio Ni. de אֹור.\nנָאַם Q. wayy. pl. וַיִּנְאֲמוּ. Con acusativo interno נְאֻם: pronunciar oráculos, soltar vaticinios Jr 23,31."
+  },
+  {
+    "id": "heb-001879",
+    "lemma": "נְאֻם",
+    "headword_line": "נְאֻם Oráculo",
+    "headword_tokens": [
+      "נְאֻם"
+    ],
+    "page_start": 471,
+    "page_end": 471,
+    "gloss_es": "Oráculo, vaticinio del Señor.",
+    "text": "נְאֻם Oráculo, vaticinio: נְאֻם־יְהוָה del Señor Gn 22,16 Nm 14,28 Jr 23 Am 4,3. אֲדֹנָי יְהוִה צְבָאֹות Is 3,15 14,22. נְאֻם בִּלְעָם Nm 24,15; נְאֻם דָּוִד 2 Sm 23,1; נְאֻם הַגֶּבֶר Nm 24,3 Prov 30,1."
+  },
+  {
+    "id": "heb-001880",
+    "lemma": "נָאַף",
+    "headword_line": "נָאַף Cometer adulterio",
+    "headword_tokens": [
+      "נָאַף"
+    ],
+    "page_start": 471,
+    "page_end": 472,
+    "gloss_es": "Cometer adulterio, ser infiel, adúltero.",
+    "text": "נָאַף Q. impf. תִּנְאַף, יִנְאַף, pl. יִנְאָפוּ, wayy. וַתִּנְאָף; inf. abs. נָאֹוף; ptc. נֹאֵף, f. נֹאָפֶת, pl. נֹאֲפֹות. Pi. pf. f. נִאֵפָה, pl. נִאֵפוּ; impf. pl. f. תְּנָאַפְנָה, wayy. וַיְנָאֲפוּ; ptc. מְנָאֵף, f. מְנָאֶפֶת, pl. מְנָאֲפִים.\nQ. Cometer adulterio, ser infiel. Sin. זָנָה. Ex 20,14 Lv 20,10 Dt 5,18. Jr 3,9 (idolatría); 5,7 23,14 Os 4,2. Participio: adúltero, infiel Ez 16,38 23,45 Job 24,15 Prov 6,32.\nPi. Idem Q. Jr 29,23 Ez 23,37 Os 4,13. Participio: adúltero Is 57,3 Jr 9,1 Ez 16,32 Os 7,4 Mal 3,5 Sal 50,18 Prov 30,20.\nDe la misma raíz: נַאֲפוּפִים, נִאֻפִים."
+  },
+  {
+    "id": "heb-001881",
+    "lemma": "נִאֻפִים",
+    "headword_line": "נִאֻפִים Adulterios",
+    "headword_tokens": [
+      "נִאֻפִים",
+      "נַאֲפוּפִים"
+    ],
+    "page_start": 472,
+    "page_end": 472,
+    "gloss_es": "Adulterios, fornicaciones.",
+    "text": "נִאֻפִים c. suf. נִאֻפַיִךְ. Adulterios Jr 13,27 Ez 23,43.\nנַאֲפוּפִים Sólo c. suf. נַאֲפוּפֶיהָ. Adulterios Os 2,4 = זְנוּנִים fornicaciones."
+  },
+  {
+    "id": "heb-001882",
+    "lemma": "נָאַץ",
+    "headword_line": "נָאַץ Despreciar",
+    "headword_tokens": [
+      "נָאַץ"
+    ],
+    "page_start": 472,
+    "page_end": 472,
+    "gloss_es": "Despreciar, rechazar, desacreditar, insultar, ofensa.",
+    "text": "נָאַץ Q. pf. pl. נָאָצוּ; impf. תִּנְאַץ, יִנְאַץ, wayy. וַיִּנְאַץ, יִנְאָצוּן. Pi pf. נִאֵץ, pl. נִאֲצוּ, c. suf. נִאֲצוּנִי; impf. יְנָאֵץ. Hitpolel ptc. מִנֹּאָץ.\nQ. Despreciar, desdeñar, rechazar; desacreditar. Sin.: עָזַב, מָאַס, שָׂנֵא. Dt 32,19; Jr 14,21; 33,24; Sal 107,11; Prov 1,30 5,12 15,5; Lam 2,6; Eclo 41,22.\nPi. Idem Q. Nm 14,11 16,30 Dt 31,20 1 Sm 2,17 2 Sm 12,14 Is 1,4 Jr 23,17 Sal 10,3 74,10.\nHitpoel. Ser ultrajado Is 52,5.\nנֶאָצָה / נְאָצָה pi. נֶאָצֹות, c. suf. נֶאָצֹותֶיךָ. Ultraje, insulto, ofensa, contumelia, humillación. 2 Re 19,3 Is 37,3 Ez 35,12 Neh 9,18 9,26."
+  },
+  {
+    "id": "heb-001883",
+    "lemma": "נָאַק",
+    "headword_line": "נָאַק Gemir, נְאָקָה Gemido",
+    "headword_tokens": [
+      "נָאַק",
+      "נְאָקָה"
+    ],
+    "page_start": 472,
+    "page_end": 472,
+    "gloss_es": "Gemir, queja, estragos.",
+    "text": "נָאַק Q. impf. pl. יִנְאָקוּ. Gemir Ez 30,24; Job 24,12.\nנְאָקָה Est. cstr. נֶאֱקַת, c. suf. נֶאֱקָתָם, pl. cstr. נַאֲקֹות. Gemido, queja Ex 2,24 6,5 Jue 2,18 Ez 30,24."
+  },
+  {
+    "id": "heb-001884",
+    "lemma": "נָאַר",
+    "headword_line": "נָאַר Rechazar, נָבָא Profetizar",
+    "headword_tokens": [
+      "נָאַר",
+      "נָבָא"
+    ],
+    "page_start": 472,
+    "page_end": 472,
+    "gloss_es": "Rechazar, repudiar, profetizar, vaticinar, entrar en trance.",
+    "text": "נָאַר Pi. pf. נֵאַרְתָּ, pl. נֵאֲרוּ. Rechazar Sal 89,40 Lam 2,7.\nנָבָא Ni. pf. נִבֵּאתָ, 2 נִבֵּאתָ, 1 נִבֵּאתִי, pl. נִבְּאוּ; impf. תִּנָּבֵא, יִנָּבֵא, pl. יִנָּבְאוּ, wayy. וַיִּנָּבֵא; imptv. הִנָּבֵא; inf. cstr. הִנָּבֵא; ptc. נִבָּא, pl. נִבְּאִים. hitp. pf. 2 הִתְנַבֵּיתָ, 1 הִתְנַבֵּאתִי, pl. הִתְנַבְּאוּ; impf. יִתְנַבֵּא, pl. וַיִּתְנַבְּאוּ; wayy. וַיִּתְנַבֵּא; inf. הִתְנַבֹּות; ptc. מִתְנַבֵּא.\nNi. Profetizar, vaticinar, predecir, pronunciar oráculos. Jr 14,16 27,14 Ez 13,2 Am 2,12 J1 3,1 Zac 13,3. Estar en trance 1 Sm 10,11 19,20. Conjurar Ez 37,4. Cantor inspirado 1 Cr 25,1.\nHitp. Idem Ni. Profetizar 1 Re 22,18 Jr 14,14 29,27 Ez 13,17. Estar en trance, frenesí, delirio; hacer gestos orgiásticos Nm 11,25 1 Sm 10,5 19,20 1 Re 18,29."
+  },
+  {
+    "id": "heb-001885",
+    "lemma": "נְבוּאָה",
+    "headword_line": "נְבוּאָה Profecía",
+    "headword_tokens": [
+      "נְבוּאָה"
+    ],
+    "page_start": 472,
+    "page_end": 472,
+    "gloss_es": "Profecía, oráculo, vaticinio.",
+    "text": "נְבוּאָה Est. cstr. נְבוּאַת, c. suf. נְבוּאָתָם Eclo 46,20. Profecía, oráculo, vaticinio 2 Cr 9,29 15,8 Neh 6,12 Eclo 44,3 46,1."
+  },
+  {
+    "id": "heb-001886",
+    "lemma": "נָבֹון",
+    "headword_line": "נָבוּב Hueco, נָבֹון Inteligente, נָבִיא Profeta",
+    "headword_tokens": [
+      "נָבוּב",
+      "נָבֹון",
+      "נָבִיא"
+    ],
+    "page_start": 472,
+    "page_end": 473,
+    "gloss_es": "Hueco, mentecato, inteligente, perspicaz, prudente, profeta, vate.",
+    "text": "נָבוּב Est. cstr. נְבוּב. Ptc. pas. de נָבַב: Hueco Ex 27,8 38,7 Jr 52,21. אִישׁ נָבוּב mentecato, huero Job 11,12.\nנָבֹון Est. cstr. נְבֹון, P1. נְבֹונִים, c. suf. נְבֹונָיו. Ptc. Ni. de בִּין: Inteligente, perspicaz; entendido, instruido; prudente, juicioso; hábil. Sin. חָכָם. Gn 41,33 41,39 Dt 1,13 4,6 Is 5,21 29,14 Jr 4,22 Os 14,10 Prov 1,5 14,6 Ecl 9,11. נְבֹון דָּבָר elocuente 1 Sm 16,18; נְבֹון לֵב mente prudente 1 Re 3,12 Prov 14,33; נְבֹון לַחַשׁ experto Is 3,3; נְבֹון שְׂפָתַי labios prudentes Prov 10,13.\nנָבַח Q. ger. לִנְבֹּחַ Ladrar Is 56,10.\nנָבַט Pi. pf. נִבַּט. Hi. pf. הִבִּיט, 2 הִבַּטְתָּ, pl. הִבִּיטוּ; impf. אַבִּיט, יַבִּיט, P1. יַבִּיטוּ; wayy. וַיַּבֵּט; imptv. הַבֵּט; inf. הַבִּיט; ptc. מַבִּיט.\nHi. Mirar, poner los ojos, observar, examinar, contemplar, fijarse, atender, vigilar. a) Gn 15,5 Ex 3,6 Is 51,1 Zac 12,10. b) Is 5,12 22,11 Sal 119,15. c) Is 66,2 Sal 13,4. d) Sal 33,13 Lam 3,63. e) Is 18,4 Hab 1,13 Job 28,24 Eclo 33,15. f) בְּ- mirar triunfante Sal 22,18 92,12; דֶּרֶךְ- otear 1 Re 18,43; מִן- Is 63,15 Sal 33,13; נֹכַח- mirar de frente Prov 4,25; עַל- Hab 2,15; מֵרָחֹוק- divisar Job 36,25.\nנָבִיא c. suf. נְבִיאֲכֶם, נְבִיאֶךָ; Pl. נְבִיאִים, cstr. נְבִיאֵי, c. suf. נְבִיאֵינוּ, נְבִיאֵיהֶם. Profeta, vate, vidente. Gn 20,7 Ex 7,1 Nm 11,29 Dt 18,15 Jue 6,8 1 Sm 9,9 2 Sm 7,2 1 Re 11,29 Is 1,1 Ez 13,14. בְּנֵי־הַנְּבִיאִים comunidad profética 2 Re 2,3. c) Sacerdote Mal 2,7. נְבִיאָה Profetisa Ex 15,20 Jue 4,4 Is 8,3."
+  },
+  {
+    "id": "heb-001887",
+    "lemma": "נָבַל",
+    "headword_line": "נָבַל Marchitarse",
+    "headword_tokens": [
+      "נָבַל"
+    ],
+    "page_start": 473,
+    "page_end": 474,
+    "gloss_es": "Hontanar, manantial, marchitarse, agostarse, deshonrar.",
+    "text": "נִבְכֵי pi. cstr. נִבְכֵי. Hontanar, manantial Job 38,16. Prov 8,24.\nנָבַל Q. pf. נָבַל, f. נָבְלָה; impf. יִבֹּל, P1. יִבֹּלוּן; inf. abs. נָבֹל; ptc. נֹבֵל, f. נֹבֶלֶת. pi. pf. 1 c. suf. נִבַּלְתָּנִי; impf. 2 תְּנַבֵּל; wayy. וַיְנַבֵּל. hitp. ger. לְהִתְנַבֵּל Eclo 9,7.\nQ. Marchitarse, mustiarse, agostarse, secarse. 1. Marchitarse. a) Propio: אֵלָה נֹבֶלֶת encina seca Is 1,30; יִבֹּל דֶּשֶׁא secarse la hierba Sal 37,2; עָלֶה לֹא־יִבֹּל Ez 47,12 Sal 1,3; צִיץ נֹבֵל flor caduca Is 28,1 40,7. כֶּעָלֶה נָבֵל como follaje Is 64,5. b) Figurado: Ex 18,18; Is 34,4 Sal 18,46; Is 24,4 = אָבַל languidecer. 2. Actuar con irreflexión Prov 30,32.\nPi. Deshonrar, desprestigiar, envilecer Dt 32,15; Jr 14,21 = נָאַץ; Miq 7,6 Nah 3,6.\nHitp. Actuar irreflexivamente, enloquecer Eclo 9,7. De la misma raíz: נַבְלוּת, נְבֵלָה, נְבָלָה, נָבָל.\nנָבָל pi. נְבָלִים, f. נְבָלָה. Insensato, mentecato, estúpido; vil, ruin. Dt 32,6 * חָכָם; Ez 13,3 Sal 14,1 Job 2,10. Villano 2 Sm 3,33 13,13 Is 32,6 Prov 17,7 * נָדִיב. בְּנֵי נָבָל chusma vil Job 30,8. גֹּוי נָבָל pueblo necio Eclo 49,5.\nנָבַע Hi. pf. הִבִּיעַ; impf. יַבִּיעַ, pl. יַבִּיעוּ. a) Hacer manar, brotar, borbotar. Fig. del hablar: אֹמֶר- comunicar Sal 19,3; חִידֹות- enigmas 78,2; זֵכֶר- el recuerdo 145,7; רוּחַ- abrir el corazón Prov 1,23. פֶּה יַבִּיעַ Prov 15,2; כְּלָבִים יַבִּיעוּ babear Sal 59,7."
+  },
+  {
+    "id": "heb-001888",
+    "lemma": "נֵבֶל",
+    "headword_line": "נֵבֶל Vasija",
+    "headword_tokens": [
+      "נֵבֶל"
+    ],
+    "page_start": 474,
+    "page_end": 474,
+    "gloss_es": "Vasija, jarra, cántaro, odre, pellejo.",
+    "text": "נֵבֶל pi. נְבָלִים, cstr. נִבְלֵי, c. suf. נְבָלֶיהָ. Vasija, jarra, cántaro, cacharro; odre, pellejo."
+  },
+  {
+    "id": "heb-001889",
+    "lemma": "נֵבֶל",
+    "headword_line": "נֵבֶל Arpa, נְבָלָה Infamia, נְבֵלָה Cadáver",
+    "headword_tokens": [
+      "נֵבֶל",
+      "נְבָלָה",
+      "נְבֵלָה"
+    ],
+    "page_start": 474,
+    "page_end": 474,
+    "gloss_es": "Odre de vino, arpa, lira, infamia, vileza, villanía, cadáver, despojos, restos.",
+    "text": "נֵבֶל יַיִן odre de vino 1 Sm 1,24 10,3 2 Sm 16,1; נִבְלֵי כֵלִי Is 22,24; נִבְלֵי יֹוצְרִים de loza 30,14; נֵבֶל חֶרֶשׂ Lam 4,2. הִשְׁכִּיב נִבְלֵי שָׁמַיִם volcar los cántaros Job 38,37.\n2 נֵבֶל pi. נְבָלִים, cstr. נִבְלֵי, c. suf. נְבָלֶיךָ. Arpa 2 Sm 6,5 1 Re 10,12 Sal 57,9. הֶמְיַת נְבָלֶיךָ arpegios Is 14,11; זִמְרַת- Am 5,23; עַל־פִּי הַנֵּבֶל acompañado de 6,5; נֵבֶל עָשֹׂור de diez cuerdas Sal 33,2. שִׁירַת נְבָלִים cantos al son del arpa Eclo 39,15.\n3 נְבָלָה Infamia, vileza, villanía, crimen. Jue 19,24 2 Sm 13,12 Is 9,16 32,6 Job 42,8. נְבָלָה בְּיִשְׂרָאֵל infamia en Israel Gn 34,7 Dt 22,21 Jos 7,15 Jue 20,6 Jr 29,23.\nנְבֵלָה Est. cstr. נִבְלַת, c. suf. נִבְלָתִי Is 26,19, נִבְלָתָם, נִבְלָתָהּ, נִבְלָתֹו. Cadáver, despojos, restos mortales; carroña. Lv 5,2 7,24 11,24 Dt 14,8 1 Re 13,24 Is 5,25 Jr 7,33 Ez 4,14 Sal 79,2."
+  },
+  {
+    "id": "heb-001890",
+    "lemma": "נַבְלוּת",
+    "headword_line": "נַבְלוּת Vergüenzas",
+    "headword_tokens": [
+      "נַבְלוּת"
+    ],
+    "page_start": 474,
+    "page_end": 474,
+    "gloss_es": "Vergüenzas, partes pudendas Os 2:12.",
+    "text": "נַבְלוּת Sólo c. suf. נַבְלוּתָהּ. Vergüenzas, partes pudendas Os 2,12."
+  },
+  {
+    "id": "heb-001891",
+    "lemma": "נָבַע",
+    "headword_line": "נָבַע Brotar",
+    "headword_tokens": [
+      "נָבַע"
+    ],
+    "page_start": 474,
+    "page_end": 474,
+    "gloss_es": "Brotar, deducir.",
+    "text": "נָבַע Q. ptc. נֹבֵעַ. Pi. pf. נִבַּע. Q. Brotar Prov 18,4. Pi. Deducir, hacer surgir בְּפִתֹּור לֵב a través de la meditación Eclo 50,27."
+  },
+  {
+    "id": "heb-001892",
+    "lemma": "נֶגֶב",
+    "headword_line": "נֶגֶב Sur, מָגַד Hi. Informar",
+    "headword_tokens": [
+      "נֶגֶב",
+      "מָגַד"
+    ],
+    "page_start": 474,
+    "page_end": 475,
+    "gloss_es": "Sur, Negueb, mediodía, informar, anunciar, referir, predecir.",
+    "text": "נֶגֶב Direc. נֶגְבָּה. Negueb (topónimo); sur, mediodía. a) Gn 12,9 Dt 1,7 Jue 1,9 Is 21,1 Jr 33,13. b) Sur Gn 28,14 1 Sm 30,27 2 Sm 24,7. Sin.: תֵּימָן, יָמִין. c) Adjetivo: בַּהֲמֹות נֶגֶב Is 30,6; גְּבוּל נֶגֶב Nm 34,3; יַעַר הַנֶּגֶב Ez 21,3; עָרֵי הַנֶּגֶב Abd 20; פְּאַת־נֶגֶב Nm 34,3. d) Adverbial: מִנֶּגֶב, מִן, עַל, אֶל al sur, hacia mediodía Jos 15,3 1 Sm 27,10 30,1 1 Re 7,39.\nנָגַד Hi. pf. הִגִּיד, c. suf. הִגִּידָהּ, הִגִּידָה, pl. הִגִּידוּ; impf. יַגִּיד, wayy. וַיַּגֵּד, f. תַּגִּיד, אֲגִידָה, pl. וַיַּגִּידוּ; imptv. הַגֵּד, הַגִּידָה; inf. abs. הַגֵּד cstr. הַגִּיד; ptc. מַגִּיד. ho. pf. הֻגַּד, wayy. וַיֻּגַּד.\nHi. Informar, anunciar, referir, comunicar, manifestar; narrar, contar; predecir; enseñar, indicar, explicar; pregonar, proclamar, revelar; denunciar, acusar; declarar, confesar. Sin.: דִּבֶּר, הִשְׁמִיעַ, סִפֵּר. a) Gn 46,31 2 Sm 1,5 Jue 13,10 2 Sm 15,13. b) 1 Sm 10,15 Sal 9,12. Predecir Is 43,12; אֲשֶׁר תָּבֹאנָה el porvenir 44,7; מֵרֹאשׁ- de antemano 46,10. c) אֶת־זֹאת- explicar esto Jr 9,11; חִידָה- acertar un acertijo Jue 14,12; חֲלֹום- interpretar sueño Gn 41,24. d) Pregonar Is 66,19 Sal 64,10."
+  },
+  {
+    "id": "heb-001893",
+    "lemma": "נֶגֶד",
+    "headword_line": "נֶגֶד Ante",
+    "headword_tokens": [
+      "נֶגֶד"
+    ],
+    "page_start": 475,
+    "page_end": 476,
+    "gloss_es": "Ante, delante de, en presencia de, frente a.",
+    "text": "נֶגֶד c. suf. נֶגְדְּךָ, נֶגְדִּי, נֶגְדָּם, נֶגְדָּהּ, נֶגְדֹּו. 1. Simple. Ante, delante de, frente a, en presencia de. נֶגֶד הָהָר Ex 19,2; נֶגֶד יְרִיחֹו Jos 3,16; נֶגֶד כָּל־יִשְׂרָאֵל 2 Sm 12,12; נֶגֶד הָעִיר Jos 8,11; נֶגֶד הַשֶּׁמֶשׁ frente al sol Nm 25,4. פֶּתַח נֶגֶד פֶּתַח puertas enfrentadas Ez 40,13. אִישׁ נֶגְדֹּו en su puesto Jos 6,20. 2. Compuesto. a) כְּנֶגֶד correspondiente a Gn 2,20. b) לְנֶגֶד delante de 2 Re 1,13, נֶגֶד עֵינַיִם delante de los ojos Sal 18,25 101,3. c) מִנֶּגֶד frente a 2 Re 2,7, a distancia 3,22, Sal 38,12; מִנֶּגֶד עֵינַיִם de delante Is 1,16 Jon 2,5. d) נֶגֶד פָּנִים delante de Lam 3,35; רָעָה נֶגֶד פְּנֵיכֶם malas intenciones Ex 10,10."
+  },
+  {
+    "id": "heb-001894",
+    "lemma": "נָגַהּ",
+    "headword_line": "נָגַהּ Brillar",
+    "headword_tokens": [
+      "נָגַהּ",
+      "נֹגַהּ"
+    ],
+    "page_start": 476,
+    "page_end": 476,
+    "gloss_es": "Brillar, resplandecer, lucir, alumbrar, resplandor.",
+    "text": "נָגַהּ Q. impf. יִגַּהּ. hi. pf. הִגַּהּ; impf. יַגִּיהַּ.\nQ. Brillar, resplandecer, lucir, alumbrar: אֹור la luz Is 9,1; שְׁבִיב אֵשׁ llama del hogar Job 18,5.\nHi. Alumbrar: חֹשֶׁךְ la oscuridad 2 Sm 22,29 Sal 18,29; אֹור- destellar Is 13,10. Fig. רֹגֶז- derramar la ira Eclo 16,11.\nנֹגַהּ c. suf. נָגְהָם. Brillo, fulgor, resplandor, claridad. Sin. אֹור. בָּרָק- fulgor del relámpago Hab 3,11; זֶרַח- de la aurora Is 60,3; מִנֹּגַהּ דֶּשֶׁא brillo de la hierba 2 Sm 23,4; מַרְאֵה הַנֹּגַהּ Ez 1,28. לְנֹגַהּ con brillo Ez 1,4. נֹגַהּ הַכֹּוכָבִים destello de los astros J1 2,10. אֹור נֹגַהּ brillar como la aurora Prov 4,18."
+  },
+  {
+    "id": "heb-001895",
+    "lemma": "נְגִנָה",
+    "headword_line": "נְגִנָה Copla, נָגַח Acornear, נָגִיד Jefe",
+    "headword_tokens": [
+      "נְגִנָה",
+      "נָגַח",
+      "נָגִיד"
+    ],
+    "page_start": 476,
+    "page_end": 476,
+    "gloss_es": "Copla, cantar, canción, acornear, embestir, jefe, príncipe, caudillo.",
+    "text": "נְגִנָה Est. cstr. נְגִינַת, c. suf. נְגִינָתָם, נְגִינָתִי; P1. נְגִינֹות, c. suf. נְגִינֹותַי. a) Copla, cantar, canción Sal 69,13 Lam 5,14. En títulos de salmos. b) Objeto de coplas Job 30,9 Lam 3,14.\nנָגַח Q. impf. יִגַּח. pi. impf. תְּנַגַּח, יְנַגַּח, pl. יְנַגְּחוּ. Hitp. impf. יִתְנַגַּח.\nQ. Acornear, embestir Ex 21,28. Pi. Idem Q. Dt 33,17 Ez 34,21 1 Re 22,11. Figurado Sal 44,6. Hitp. Enzarzarse, trabar combate Dn 11,40.\nנַגָּח Que embiste, bravo, indómito (שֹׁור toro) Ex 21,29.\nנָגִיד Est. cstr. נְגִיד, P1. נְגִידִים, cstr. נְגִידֵי, c. suf. נְגִידָיו. Jefe, príncipe, caudillo. a) Gn 41,33 1 Sm 9,16 2 Sm 5,2 1 Re 1,35; Is 55,4; Ez 28,2. b) Específico: מִילְטָרִים mandos 1 Cr 13,1. עַל־הָאֹוצָרֹות- tesorero 26,24. נְגִיד בֵּית־יְהוָה prefecto del templo Jr 20,1. נְגִיד הַבַּיִת mayordomo de palacio 2 Cr 28,7."
+  },
+  {
+    "id": "heb-001896",
+    "lemma": "נָגַן",
+    "headword_line": "נָגַן Tocar",
+    "headword_tokens": [
+      "נָגַן"
+    ],
+    "page_start": 476,
+    "page_end": 476,
+    "gloss_es": "Tocar, tañer, pulsar, acompañar.",
+    "text": "נָגַן Pi. pf. נִגֵּן; impf. 1 נְנַגֵּן; ptc. מְנַגֵּן. Tocar, tañer, pulsar, rasguear, acompañar 1 Sm 16,16 18,10 Is 23,16 Ez 33,32 Sal 33,3 68,26. Ptc. músico, tañedor 2 Re 3,15; f. coplera Eclo 9,4."
+  },
+  {
+    "id": "heb-001897",
+    "lemma": "נָגַע",
+    "headword_line": "נָגַע Tocar, rozar",
+    "headword_tokens": [
+      "נָגַע"
+    ],
+    "page_start": 476,
+    "page_end": 477,
+    "gloss_es": "Tocar, acariciar, rozar, palpar, golpear, alcanzar.",
+    "text": "נָגַע Q. pf. 3 f. נָגְעָה, pl. נָגְעוּ, c. suf. נְגָעֹוהוּ; impf. יִגַּע, f. תִּגַּע, pl. יִגְּעוּ, wayy. וַיִּגַּע; imptv. נְגַע; inf. cstr. נְגֹעַ, נְגִיעַ, c. suf. נָגְעֹו, נָגְעָךְ; ptc. נֹגֵעַ, f. נֹגַעַת, pl. נֹגְעִים; pas. נָגוּעַ. Ni. wayy. pl. וַיִּנָּגְעוּ. Pi. pf. c. suf. נִגְּעֹו; wayy. וַיְנַגַּע. Hi. pf. הִגִּיעַ, 1 הִגַּעְתִּי, c. suf. הִגַּעְתִּיהוּ, pl. הִגִּיעוּ; impf. יַגִּיעַ, c. suf. וַיַּגַּע, תַּגִּיעַ; inf. הַגִּיעַ; ptc. מַגִּיעַ.\nQ. Tocar, acariciar, rozar; palpar; acercarse, llegar, alcanzar; golpear, herir, azotar. 1. Sin connotación. a) Tocar: Lv 5,2 Nm 19. Rozar Jue 6,21 Is 6,7 Est 5,2. b) Llegar, alcanzar: עַד־הַנֶּפֶשׁ a la garganta Jr 4,10; אֶל־הַשָּׁמַיִם hasta el cielo 51,9; עַד־שַׁעַר hasta la puerta Miq 1,9. הַחֹדֶשׁ הַשְּׁבִיעִי llegar el mes Esd 3,1. 2. Con connotación. a) Sexual Gn 20,6 Prov 6,29. b) Bélica u hostil: בְּאִישׁ- a un hombre Gn 26,11; עַל- echarse encima Jue 20,34. יָד- sentar la mano 1 Sm 6,9; אֶל־עַצְמֹו- herir sus huesos Job 2,5. נָגוּעַ (por Yahvé) llagado, proscrito Is 53,4 Sal 73,14.\nNi. Ser derrotado Jos 8,15.\nPi. Herir, llagar, castigar (Yahvé) Gn 12,17 2 Re 15,5 2 Cr 26,20.\nPu. Ser castigado Sal 73,5.\nHi. a) Tocar Gn 28,12 Is 6,7. עַד־עָפָר- tirar al suelo Is 26,5 Ez 13,14. b) Alcanzar: אֶל- acercarse 1 Sm 14,9; עַד־צַוָּאר- hasta el cuello Is 8,8; לִשְׁאֹול- al borde del Abismo Sal 88,4; לַמַּלְכוּת- llegar a reinar Est 4,14. c) Temporales: הַיֹּום llegar el día Ez 7,12; הַתֹּור el turno Est 2,12. d) יָדֹו מַשֶּׂגֶת- le alcanza para Lv 5,7; הִגִּיעַ בַּיִת בְּבַיִת juntar casas Is 5,8."
+  },
+  {
+    "id": "heb-001898",
+    "lemma": "נֶגַע",
+    "headword_line": "נֶגַע Lesión",
+    "headword_tokens": [
+      "נֶגַע"
+    ],
+    "page_start": 477,
+    "page_end": 477,
+    "gloss_es": "Lesión, afección, llaga, mancha, morbo, enfermedad.",
+    "text": "נֶגַע c. suf. נִגְעֹו, נִגְעֲךָ, נִגְעִי; pi. נְגָעִים, cstr. נִגְעֵי. Lesión, afección, infección, llaga, mancha; mal, morbo, enfermedad. a) Dolencia: נְגָעִים גְּדֹלִים dolencias graves Gn 12,17. Golpe, plaga, castigo 2 Sm 7,14 Is 53,8 Sal 38,12. b) Sintomatología: נֶגַע בְּקִירֹות הַבַּיִת infección en las paredes Lv 14,37; נֶגַע הַצָּרַעַת afección cutánea Lv 13,2 Dt 24,8. c) Figurado: נֶגַע לְבָבֹו remordimiento 1 Re 8,38."
+  },
+  {
+    "id": "heb-001899",
+    "lemma": "נָגַף",
+    "headword_line": "נָגַף Herir, נָגַר Derramarse, נָגַשׂ Apremiar, נָגַשׁ Acercarse",
+    "headword_tokens": [
+      "נָגַף",
+      "נָגַר",
+      "נָגַשׂ",
+      "נָגַשׁ"
+    ],
+    "page_start": 477,
+    "page_end": 479,
+    "gloss_es": "Herir, golpear, castigar, derrotar, derramarse, apremiar, exigir, acercarse, acudir.",
+    "text": "נָגַף Q. pf. c. suf. נְגָפָנוּ, pl. נָגְפוּ; impf. יִגֹּף, c. suf. יִגְּפֶנּוּ, וַיִּגֹּף. Ni. pf. נִגַּף, pl. נִגְּפוּ; impf. יִנָּגֵף, pl. יִנָּגְפוּ, wayy. וַיִּנָּגֶף; inf. cstr. הִנָּגֵף; ptc. נִגָּף. Hitp. impf. pl. יִתְנַגְּפוּ.\nQ. Herir, golpear, castigar; derrotar; tropezar. a) Tocar: Ex 21,22. נָגַף רַגְלוֹ בָּאֶבֶן tropezar Sal 91,12. b) Castigo divino: 1 Sm 25,38 Is 19,22 2 Cr 13,20. מַגֵּפָה גְדֹלָה gran derrota 1 Sm 4,3 2 Cr 13,15.\nNi. Ser derrotado, vencido; sucumbir ante N נִגַּף לִפְנֵי N. Lv 26,17 Nm 14,42 Dt 1,42 Jue 20,32 1 Sm 4,2 2 Sm 10,15 2 Re 14,12.\nHitp. רֶגֶל- tropezar Jr 13,16.\nנֶגֶף Plaga, desgracia, castigo Ex 12,13 30,12 Nm 8,19; tropiezo Is 8,14.\nנָגַר Ni. pf. 3 f. נִגְּרָה; ptc. f. נִגֶּרֶת, pl. נִגָּרִים. Hi. pf. 1 הִגַּרְתִּי; impf. pl. c. suf. יַגִּירֻהוּ, wayy. וַיַּגֵּר. Ni. Derramarse: מַיִם agua 2 Sm 14,14; עֵינַי נִגְּרָה deshacerse en lágrimas Lam 3,49. Hi. הִגִּיר אֲבָנִים esparcir piedras Miq 1,6; הִגִּיר עַל־יְדֵי־חֶרֶב entregar a la espada Jr 18,21 Sal 63,11. Ho. de מַיִם, fluir Miq 1,4.\nנָגַשׂ Q. impf. תִּנְגֹּשׂ, יִנְגֹּשׂ. Ni. pf. נִגַּשׂ. ptc. נֹגֵשׂ. Q. Apremiar, exigir Dt 15,2 2 Re 23,35 Is 58,3. Ni. Estar oprimido, maltratado 1 Sm 13,6 Is 3,5 53,7. נֹגֵשׂ: Capataz Ex 5,10 Is 60,17; opresor, tirano Is 9,3 14,2 Zac 9,8.\nנָגַשׁ Q. impf. יִגַּשׁ, pl. יִגְּשׁוּ; imptv. גַּשׁ, f. גְּשִׁי, pl. גְּשׁוּ; inf. cstr. גֶּשֶׁת, c. suf. גִּשְׁתָּם. Ni. pf. נִגַּשׁ, pl. נִגְּשׁוּ; wayy. וַיִּנָּגַשׁ. Hi. pf. c. suf. הִגִּישָׁהּ, pl. הִגִּישׁוּ; impf. יַגִּישׁ, wayy. וַיַּגֵּשׁ, וַיַּגִּישׁוּ; imptv. הַגִּישָׁה, pl. הַגִּישׁוּ; ptc. מַגִּישׁ. ho. pf. pl. הֻגַּשׁ. Hitp. imptv. pl. הִתְנַגְּשׁוּ.\nQ. Acercarse, aproximarse; acudir, presentarse, adelantarse. גְּשָׁה הֲלֹם acércate Jos 3,9; גֶּשׁ־הָלְאָה atrás Gn 19,9. Presentar batalla Jue 20,23.\nHi. a) Acercar, arrimar Gn 48,10 Ex 21,6. b) Ofrecer, servir, presentar Gn 27,25 2 Sm 13,11. c) Culto: ofrecer sacrificios Ex 32,6 Am 5,25 Mal 1,8 3,3. d) Jurídico: aducir pruebas Is 41,21."
+  },
+  {
+    "id": "heb-001900",
+    "lemma": "נֵד",
+    "headword_line": "נֵד Dique",
+    "headword_tokens": [
+      "נֵד"
+    ],
+    "page_start": 479,
+    "page_end": 479,
+    "gloss_es": "Dique, embalse, represa.",
+    "text": "נֵד Dique, embalse, represa Ex 15,8 Jos 3,13 Sal 33,7 78,13. Nota. Is 17,11 de נָדַד."
+  },
+  {
+    "id": "heb-001901",
+    "lemma": "סוּר",
+    "headword_line": "Q. wayy. וַיָּסַר En מן - apartar, desviar de",
+    "headword_tokens": ["סור", "מן"],
+    "page_start": 479,
+    "page_end": 479,
+    "gloss_es": "Apartar, desviar de",
+    "text": "Q. wayy. וַיָּסַר En מן - apartar, desviar de. 2 Re 17,21."
+  },
+  {
+    "id": "heb-001902",
+    "lemma": "נָדַב",
+    "headword_line": "נָדַב Q. pf.; נִדְבָה impf. c. suf. יִדְּבֶנּוּ",
+    "headword_tokens": ["נדב"],
+    "page_start": 479,
+    "page_end": 479,
+    "gloss_es": "Incitar, impulsar",
+    "text": "Q. Incitar, impulsar. Sujeto לֵב o רוּחַ. Ex 25,2; 35,21.29. Hitp. Ofrecerse voluntariamente, espontáneamente, generosamente. Jue 5,2.9; Esd 1,6."
+  },
+  {
+    "id": "heb-001903",
+    "lemma": "נָדָה",
+    "headword_line": "נָדָה Pi. ptc. pl. מְנַדִּים c. suf. מְנַדֵּיכֶם",
+    "headword_tokens": ["נדה", "מנדים"],
+    "page_start": 479,
+    "page_end": 479,
+    "gloss_es": "Expulsar, alejar",
+    "text": "Pi. ptc. pl. מְנַדִּים; c. suf. מְנַדֵּיכֶם. Hitp. impf. יִתְנַדֶּה."
+  },
+  {
+    "id": "heb-001904",
+    "lemma": "נְדָבָה",
+    "headword_line": "נְדָבָה [cstr. נִדְבַת; pl. נְדָבוֹת]",
+    "headword_tokens": ["נדבה"],
+    "page_start": 479,
+    "page_end": 479,
+    "gloss_es": "Ofrenda voluntaria, generosidad",
+    "text": "a) Ofrenda voluntaria, espontánea, de propia iniciativa; no debida por ley o voto. Ex 35,29; 36,3. b) Valor adjetival: lluvia abundante, generosa. Sal 68,10. c) Valores adverbiales: בִּנְדָבָה voluntariamente."
+  },
+  {
+    "id": "heb-001905",
+    "lemma": "נָדַח",
+    "headword_line": "נָדַח Q. inf. cstr. לִנְדֹּחַ; Ni. pf. נִדַּח",
+    "headword_tokens": ["נדח"],
+    "page_start": 479,
+    "page_end": 480,
+    "gloss_es": "Empujar, dispersar, extraviar",
+    "text": "Q. Blandir el hacha. Dt 20,19. Ni. a) Andar disperso, extraviado, descarriado. Dt 22,1; Jr 40,12. b) Dejarse arrastrar, seducir. Dt 4,19. Hi. Dispersar, expulsar, rechazar. Dt 30,1; Jr 23,2. Apartar, extraviar. Dt 13,6."
+  },
+  {
+    "id": "heb-001906",
+    "lemma": "נָדִיב",
+    "headword_line": "נָדִיב [cstr. נְדִיב; pl. נְדִיבִים]",
+    "headword_tokens": ["נדיב"],
+    "page_start": 480,
+    "page_end": 480,
+    "gloss_es": "Voluntario, generoso, noble",
+    "text": "Adj. y sust. a) Voluntario, generoso. Prov 19,6. b) Noble, poderoso, príncipe. Nm 21,18; 1 Sm 2,8."
+  },
+  {
+    "id": "heb-001907",
+    "lemma": "נְדִיבוּת",
+    "headword_line": "נְדִיבוּת [c. suf. נְדִיבָתִי]",
+    "headword_tokens": ["נדיבות"],
+    "page_start": 480,
+    "page_end": 480,
+    "gloss_es": "Nobleza, dignidad",
+    "text": "Nobleza, rango noble. Is 32,8; Job 30,15."
+  },
+  {
+    "id": "heb-001908",
+    "lemma": "נָדָן",
+    "headword_line": "נָדָן [c. suf. נְדָנָהּ]",
+    "headword_tokens": ["נדן"],
+    "page_start": 480,
+    "page_end": 480,
+    "gloss_es": "Vaina (de espada)",
+    "text": "Vaina de la espada. 1 Cr 21,27. 2. Regalo, paga. Ez 16,33."
+  },
+  {
+    "id": "heb-001910",
+    "lemma": "נָדַף",
+    "headword_line": "נָדַף Q. impf. יִנְדֹּף; Ni. pf. נִדַּף",
+    "headword_tokens": ["נדף"],
+    "page_start": 480,
+    "page_end": 480,
+    "gloss_es": "Arrebatar, disipar, dispersar",
+    "text": "Q. Arrebatar el viento. Sal 1,4. Disiparse la bruma. Sal 68,3. Ni. Ser arrebatado, barrido, esparcido. Is 19,7. Esfumarse, disiparse. Prov 21,6."
+  },
+  {
+    "id": "heb-001911",
+    "lemma": "נָדַר",
+    "headword_line": "נָדַר Q. pf. נָדַר; impf. יִדֹּר",
+    "headword_tokens": ["נדר"],
+    "page_start": 480,
+    "page_end": 480,
+    "gloss_es": "Hacer un voto o promesa",
+    "text": "Q. Hacer un voto o promesa, ligarse con voto. Lv 27,8; Nm 30,3. Correlativo a שִׁלֵּם (cumplir)."
+  },
+  {
+    "id": "heb-001912",
+    "lemma": "נֶדֶר",
+    "headword_line": "נֶדֶר [pl. נְדָרִים; c. suf. נְדָרַי]",
+    "headword_tokens": ["נדר"],
+    "page_start": 480,
+    "page_end": 481,
+    "gloss_es": "Voto, promesa",
+    "text": "Voto, promesa. Lv 7,16. עָשָׂה נֶדֶר: cumplir un voto. הֵפֵר נֶדֶר: anular un voto. שִׁלֵּם נֶדֶר: cumplir un voto."
+  },
+  {
+    "id": "heb-001914",
+    "lemma": "נָהַג",
+    "headword_line": "נָהַג Q. pf. נָהַג; impf. יִנְהַג",
+    "headword_tokens": ["נהg"],
+    "page_start": 481,
+    "page_end": 481,
+    "gloss_es": "Guiar, conducir, arrear",
+    "text": "Q. Guiar, conducir, llevar, dirigir; arrear. a) Animales: ganado, burra, bueyes. Gn 31,18; 2 Re 4,24. b) Personas: cautivos, tropa. Is 20,4; 2 Cr 25,11. Pi. Conducir, avanzar, hacer soplar (el viento). Ex 10,13; Sal 78,26."
+  },
+  {
+    "id": "heb-001917",
+    "lemma": "נָהַם",
+    "headword_line": "נָהַם Q. pf. נָהַמְתָּ; impf. יִנְהַם",
+    "headword_tokens": ["נהם"],
+    "page_start": 481,
+    "page_end": 481,
+    "gloss_es": "Bramar, rugir, gemir",
+    "text": "Q. Bramar, mugir, rugir, gruñir; gemir. a) De animales: león. Is 5,29. b) De personas: Ez 24,23; Prov 5,11."
+  },
+  {
+    "id": "heb-001919",
+    "lemma": "נָהַר",
+    "headword_line": "נָהַר Q. pf. נָהֲרוּ; impf. יִנְהֲרוּ",
+    "headword_tokens": ["נהר"],
+    "page_start": 481,
+    "page_end": 481,
+    "gloss_es": "Fluir, afluir / Brillar",
+    "text": "1. Fluir, afluir, confluir; acudir pueblos. Is 2,2; Jr 31,12. 2. Brillar, estar radiante. Is 60,5; Sal 34,6."
+  },
+  {
+    "id": "heb-001920",
+    "lemma": "נָהָה",
+    "headword_line": "נָהָה Q. imptv. נְהֵה; Ni. wayy. וַיִּנָּהֶה",
+    "headword_tokens": ["נהה"],
+    "page_start": 481,
+    "page_end": 481,
+    "gloss_es": "Lamentarse, entonar elegías",
+    "text": "Q. Cantar elegías, entonar cantos fúnebres. Ez 32,18; Miq 2,4. Ni. Lamentarse amargamente."
+  },
+  {
+    "id": "heb-001921",
+    "lemma": "נִהֵל",
+    "headword_line": "נִהֵל Pi. pf. נִהַלְתָּ; impf. יְנַהֵל",
+    "headword_tokens": ["נהל"],
+    "page_start": 481,
+    "page_end": 481,
+    "gloss_es": "Llevar, guiar, suministrar",
+    "text": "Pi. a) Llevar, guiar, conducir. Ex 15,13; Sal 23,2. b) Suministrar, otorgar sustento. Gn 47,17."
+  },
+  {
+    "id": "heb-001924",
+    "lemma": "נְהָמָה",
+    "headword_line": "נְהָמָה [cstr. נַהֲמַת]",
+    "headword_tokens": ["נהמה"],
+    "page_start": 481,
+    "page_end": 481,
+    "gloss_es": "Rugido, bramido",
+    "text": "Rugido, bramido del mar o del corazón. Is 5,30; Sal 38,9."
+  },
+  {
+    "id": "heb-001926",
+    "lemma": "נָהָר",
+    "headword_line": "נָהָר [cstr. נְהַר; pl. נְהָרוֹת o נְהָרִים]",
+    "headword_tokens": ["נהר"],
+    "page_start": 481,
+    "page_end": 482,
+    "gloss_es": "Río, torrente, canal",
+    "text": "Río, torrente, canal, acequia, rambla; riada. El Río (con art.) suele referirse al Éufrates. Is 7,19; Sal 46,5; Jos 24,2."
+  },
+  {
+    "id": "heb-001930",
+    "lemma": "נוּא",
+    "headword_line": "נוּא Hi. pf. הֵנִיא; impf. יָנִיא",
+    "headword_tokens": ["נוא"],
+    "page_start": 482,
+    "page_end": 482,
+    "gloss_es": "Desautorizar, frustrar",
+    "text": "Hi. Desaprobar, desautorizar. Nm 30,6. Desmoralizar. Nm 32,7. Frustrar. Sal 33,10."
+  },
+  {
+    "id": "heb-001931",
+    "lemma": "נָוֶה",
+    "headword_line": "נָוֶה [cstr. נְוֵה; pl. נְאוֹת]",
+    "headword_tokens": ["נוה"],
+    "page_start": 482,
+    "page_end": 483,
+    "gloss_es": "Dehesa, morada, pastizal",
+    "text": "Dehesa, aprisco, majadal; prado, morada, hogar. a) De animales. Jr 49,20. b) Designa la tierra prometida o Jerusalén. Ex 15,13; Is 33,20."
+  },
+  {
+    "id": "heb-001932",
+    "lemma": "נוּחַ",
+    "headword_line": "נוּחַ Q. pf. נָח; impf. יָנוּחַ",
+    "headword_tokens": ["נוח"],
+    "page_start": 483,
+    "page_end": 484,
+    "gloss_es": "Asentarse, descansar, reposar",
+    "text": "Q. Asentarse, posarse, encallar; descansar, morir. Gn 8,4; Ex 20,11. Hi. 1. Colocar, depositar, dar reposo. Ex 33,14; Is 28,12. Hi. 2. Abandonar, dejar, permitir. Gn 2,15; Ex 32,10."
+  },
+  {
+    "id": "heb-001934",
+    "lemma": "נוּס",
+    "headword_line": "נוּס Q. pf. נָס; impf. יָנוּס",
+    "headword_tokens": ["נוס"],
+    "page_start": 484,
+    "page_end": 484,
+    "gloss_es": "Huir, escapar, refugiarse",
+    "text": "Q. Huir, escapar, ponerse a salvo; refugiarse, desaparecer. Ex 4,3; Is 30,16. Hi. Ahuyentar, poner en fuga. Dt 32,30."
+  },
+  {
+    "id": "heb-001937",
+    "lemma": "נוּם",
+    "headword_line": "נוּם Q. pf. נָמוּ; impf. יָנוּם",
+    "headword_tokens": ["נום"],
+    "page_start": 484,
+    "page_end": 484,
+    "gloss_es": "Dormir, dormitar",
+    "text": "Q. Dormir, dormitar. Sinónimo de יָשֵׁן. Is 5,27; Sal 121,3."
+  },
+  {
+    "id": "heb-001940",
+    "lemma": "נוּעַ",
+    "headword_line": "נוּעַ Q. pf. נָעוּ; impf. יָנוּעַ",
+    "headword_tokens": ["נוע"],
+    "page_start": 484,
+    "page_end": 485,
+    "gloss_es": "Temblar, vacilar, vagar",
+    "text": "Q. Temblar, oscilar, tambalearse; vagar, errar. Is 6,4; Gn 4,12. Hi. Menear (la cabeza en burla), sacudir, hacer vagar. Sal 22,8; Nm 32,13."
+  },
+  {
+    "id": "heb-001943",
+    "lemma": "נוֹרָא",
+    "headword_line": "נוֹרָא [Ni. ptc. de ירא]",
+    "headword_tokens": ["נורא"],
+    "page_start": 485,
+    "page_end": 485,
+    "gloss_es": "Admirable, temible, terrible",
+    "text": "Admirable, imponente, temible, venerable. Referido a Dios, su nombre o sus obras. Dt 10,17; Sal 47,3."
+  },
+  {
+    "id": "heb-001946",
+    "lemma": "נֶזֶם",
+    "headword_line": "נֶזֶם [pl. נְזָמִים]",
+    "headword_tokens": ["נזם"],
+    "page_start": 486,
+    "page_end": 486,
+    "gloss_es": "Anillo, pendiente",
+    "text": "Anillo, pendiente, arracada. Gn 24,22; Prov 11,22."
+  },
+  {
+    "id": "heb-001947",
+    "lemma": "נָזָה",
+    "headword_line": "נָזָה Q. impf. יִזֶּה; Hi. pf. הִזָּה",
+    "headword_tokens": ["נזה"],
+    "page_start": 486,
+    "page_end": 486,
+    "gloss_es": "Rociar, salpicar",
+    "text": "Q. Rociar, salpicar. Lv 6,20. Hi. Idem, uso cúltico. Ex 29,21; Lv 4,6."
+  },
+  {
+    "id": "heb-001949",
+    "lemma": "נָזִיר",
+    "headword_line": "נָזִיר [cstr. נְזִיר; pl. נְזִירִים]",
+    "headword_tokens": ["נזיר"],
+    "page_start": 486,
+    "page_end": 486,
+    "gloss_es": "Consagrado, nazareo",
+    "text": "a) Elegido y apartado para ser dedicado y consagrado. Nm 6,2; Jue 13,5. b) Cepas no podadas. Lv 25,5."
+  },
+  {
+    "id": "heb-001950",
+    "lemma": "נָזַל",
+    "headword_line": "נָזַל Q. impf. יִזַּל; ptc. pl. נֹזְלִים",
+    "headword_tokens": ["נזל"],
+    "page_start": 486,
+    "page_end": 487,
+    "gloss_es": "Fluir, destilar, manar",
+    "text": "Q. Fluir, rebosar, brotar el agua; destilar los párpados. Nm 24,7; Jr 9,17. Hi. Hacer brotar agua. Is 48,21."
+  },
+  {
+    "id": "heb-001951",
+    "lemma": "נְחִילוֹת",
+    "headword_line": "נְחִילוֹת [Sólo pl.]",
+    "headword_tokens": ["נחילות"],
+    "page_start": 487,
+    "page_end": 487,
+    "gloss_es": "Término musical",
+    "text": "Término musical de significado incierto. Sal 5,1."
+  },
+  {
+    "id": "heb-001952",
+    "lemma": "נְחִירַיִם",
+    "headword_line": "נְחִירַיִם [c. suf. נְחִירָיו]",
+    "headword_tokens": ["נחירים"],
+    "page_start": 487,
+    "page_end": 487,
+    "gloss_es": "Narices",
+    "text": "Narices. Job 41,12."
+  },
+  {
+    "id": "heb-001953",
+    "lemma": "נַחַל",
+    "headword_line": "נַחַל [cstr. נַחַל; pl. נְחָלִים]",
+    "headword_tokens": ["נחל"],
+    "page_start": 487,
+    "page_end": 488,
+    "gloss_es": "Torrente, cauce, barranco",
+    "text": "Significa el torrente (corriente de agua) y la torrentera (cauce). a) Torrente: orilla del río. Dt 2,36. Tierra de torrentes. Dt 8,7. b) Cauce: barranca, rambla, vega. Nm 24,6; Job 21,33."
+  },
+  {
+    "id": "heb-001955",
+    "lemma": "נָחַל",
+    "headword_line": "נָחַל Q. pf. נָחַל; impf. יִנְחַל",
+    "headword_tokens": ["נחל"],
+    "page_start": 488,
+    "page_end": 489,
+    "gloss_es": "Heredar, poseer, tomar posesión",
+    "text": "Q. Heredar, recibir en herencia; tomar posesión sucediendo a otro. Ex 23,30; Nm 18,20. Pi. Repartir herencia. Nm 34,29. Hi. Dar o repartir heredades; legar. Dt 1,38; Prov 13,22. Hitp. Tomar posesión. Nm 33,54."
+  },
+  {
+    "id": "heb-001954",
+    "lemma": "נַחֲלָה",
+    "headword_line": "נַחֲלָה [cstr. נַחֲלַת; c. suf. נַחֲלָתוֹ]",
+    "headword_tokens": ["נחלה"],
+    "page_start": 488,
+    "page_end": 489,
+    "gloss_es": "Herencia, propiedad, patrimonio",
+    "text": "Herencia, heredad, patrimonio, propiedad. Especialmente la tierra prometida para el pueblo. Gn 31,14; Jos 14,2; Sal 105,11. 2. Herida incurable (metáfora). Jr 10,19; Nah 3,19."
+  },
+  {
+    "id": "heb-001956",
+    "lemma": "נָחַם",
+    "headword_line": "נָחַם Ni. pf. נִחַם; Pi. נִחֵם",
+    "headword_tokens": ["נחם"],
+    "page_start": 489,
+    "page_end": 489,
+    "gloss_es": "Arrepentirse, consolar, compadecerse",
+    "text": "Ni. Arrepentirse, dolerse, pesarle a uno; consolarse, calmarse. Ex 32,12; Jr 8,6. Pi. Consolar, confortar, aliviar. Gn 37,35; Is 40,1. Hitp. Arrepentirse o consolarse. Nm 23,19."
+  },
+  {
+    "id": "heb-001956-2",
+    "lemma": "נֶחָמָה",
+    "headword_line": "נֶחָמָה [c. suf. נֶחָמָתִי]",
+    "headword_tokens": ["נחמה"],
+    "page_start": 489,
+    "page_end": 489,
+    "gloss_es": "Consuelo",
+    "text": "Consuelo, alivio. Sal 119,50; Job 6,10."
+  },
+  {
+    "id": "heb-001957",
+    "lemma": "נָחוּץ",
+    "headword_line": "נָחוּץ [Q. ptc. pas.]",
+    "headword_tokens": ["נחוץ"],
+    "page_start": 489,
+    "page_end": 489,
+    "gloss_es": "Urgente",
+    "text": "Urgente, apremiante. 1 Sm 21,9."
+  },
+  {
+    "id": "heb-001958",
+    "lemma": "נַחֲרָה",
+    "headword_line": "נַחֲרָה [cstr. נַחֲרַת]",
+    "headword_tokens": ["נחרת"],
+    "page_start": 489,
+    "page_end": 490,
+    "gloss_es": "Resoplido, bufido",
+    "text": "Resoplido, bufido (especialmente de caballos). Job 39,20; Jr 8,16."
+  },
+  {
+    "id": "heb-001958-2",
+    "lemma": "נִחֵשׁ",
+    "headword_line": "נִחֵשׁ Pi. pf. נִחֵשׁ; inf. נַחֵשׁ",
+    "headword_tokens": ["נחש"],
+    "page_start": 490,
+    "page_end": 490,
+    "gloss_es": "Adivinar, vaticinar",
+    "text": "Pi. Adivinar, practicar la adivinación, tomar algo como augurio. Gn 30,27; 44,5; 2 Re 17,17."
+  },
+  {
+    "id": "heb-001959",
+    "lemma": "נָחָשׁ",
+    "headword_line": "נָחָשׁ [pl. נְחָשִׁים]",
+    "headword_tokens": ["נחש"],
+    "page_start": 490,
+    "page_end": 490,
+    "gloss_es": "Serpiente, culebra",
+    "text": "Serpiente, culebra, áspid. Nm 21,6; Am 5,19. También como animal mitológico o fantástico. Is 27,1. Representación artística: serpiente de bronce. 2 Re 18,4."
+  },
+  {
+    "id": "heb-001959-2",
+    "lemma": "נְחֹשֶׁת",
+    "headword_line": "נְחֹשֶׁת [c. suf. נְחֻשְׁתּוֹ]",
+    "headword_tokens": ["נחשת"],
+    "page_start": 491,
+    "page_end": 491,
+    "gloss_es": "Bronce, cobre",
+    "text": "Bronce, cobre. Trabajado o fundido. Ex 27,2; 1 Re 7,14. Objetos de bronce: puertas, cadenas. Is 45,2."
+  },
+  {
+    "id": "heb-001961",
+    "lemma": "נָטָה",
+    "headword_line": "נָטָה Q. pf. נָטָה; impf. יִטֶּה",
+    "headword_tokens": ["נטה"],
+    "page_start": 490,
+    "page_end": 492,
+    "gloss_es": "Extender, inclinar, desviarse",
+    "text": "Q. a) Transitivo: tender, extender (la mano, una tienda, los cielos). Ex 7,5; Gn 12,8; Is 40,22. b) Intransitivo: desviarse, apartarse, inclinarse (el día, los pies). Nm 22,23; Sal 73,2. Hi. Desviar, apartar, inclinar el oído (atender). Jr 7,24; Sal 119,36."
+  },
+  {
+    "id": "heb-001964",
+    "lemma": "נָטַל",
+    "headword_line": "נָטַל Q. impf. יִטּוֹל; Pi. נִטֵּל",
+    "headword_tokens": ["נטל"],
+    "page_start": 492,
+    "page_end": 492,
+    "gloss_es": "Levantar, pesar, cargar",
+    "text": "Q. Pesar, cargar, gravitar sobre. Is 40,15; Lam 3,28. Pi. Levantar, elevar. Is 63,9."
+  },
+  {
+    "id": "heb-001964-2",
+    "lemma": "נָטַע",
+    "headword_line": "נָטַע Q. pf. נָטַע; impf. יִטַּע",
+    "headword_tokens": ["נטע"],
+    "page_start": 492,
+    "page_end": 492,
+    "gloss_es": "Plantar, hincar",
+    "text": "Q. Plantar (árboles, viñas), hincar o clavar (estacas, clavos). Gn 2,8; Ex 15,17; Ecl 12,11. Ni. Ser plantado. Is 40,24."
+  },
+  {
+    "id": "heb-001965",
+    "lemma": "נֶטַע",
+    "headword_line": "נֶטַע [cstr. נֶטַע; pl. נְטָעִים]",
+    "headword_tokens": ["נטע"],
+    "page_start": 492,
+    "page_end": 492,
+    "gloss_es": "Plantío, planta",
+    "text": "Plantel, plantío, plantación. Is 5,7; Sal 144,12."
+  },
+  {
+    "id": "heb-001968",
+    "lemma": "נָטַף",
+    "headword_line": "נָטַף Q. pf. נָטְפוּ; Hi. הִטִּיף",
+    "headword_tokens": ["נטף"],
+    "page_start": 492,
+    "page_end": 493,
+    "gloss_es": "Gotear, destilar, vaticinar",
+    "text": "Q. Chorrear, destilar, gotear (mirra, miel, palabras). Cant 5,5; Prov 5,3. Hi. a) Manar, escanciar. b) Figurado: vaticinar, profetizar. Ez 21,2; Am 7,16."
+  },
+  {
+    "id": "heb-001971",
+    "lemma": "נָטַר",
+    "headword_line": "נָטַר Q. pf. נָטַר; impf. יִטֹּר",
+    "headword_tokens": ["נטר"],
+    "page_start": 493,
+    "page_end": 493,
+    "gloss_es": "Guardar, vigilar, guardar rencor",
+    "text": "a) Guardar, vigilar, custodiar. Cant 1,6. b) Guardar rencor, abrigar resentimiento. Lv 19,18; Sal 103,9."
+  },
+  {
+    "id": "heb-001972",
+    "lemma": "נָטַשׁ",
+    "headword_line": "נָטַשׁ Q. pf. נָטַשׁ; impf. יִטֹּשׁ",
+    "headword_tokens": ["נטש"],
+    "page_start": 493,
+    "page_end": 493,
+    "gloss_es": "Abandonar, dejar, permitir",
+    "text": "Q. Abandonar, dejar, desamparar; permitir, renunciar; tirar, arrojar. Jue 6,13; 1 Sm 10,2; Is 2,6. Ni. Extenderse, desplegarse. Is 16,8. Pu. Ser abandonado. Is 32,14."
+  },
+  {
+    "id": "heb-001974",
+    "lemma": "נִיב",
+    "headword_line": "נִיב [c. suf. נִיבוֹ]",
+    "headword_tokens": ["ניב"],
+    "page_start": 493,
+    "page_end": 493,
+    "gloss_es": "Fruto, producto",
+    "text": "Fruto, producto de los labios (alabanza). Is 57,19; Mal 1,12."
+  },
+  {
+    "id": "heb-001977",
+    "lemma": "נִיחוֹחַ",
+    "headword_line": "נִיחוֹחַ [c. suf. נִיחֹחִי]",
+    "headword_tokens": ["ניחוח"],
+    "page_start": 493,
+    "page_end": 494,
+    "gloss_es": "Aroma grato, alivio",
+    "text": "Aroma que calma o aplaca. Usado casi exclusivamente para los sacrificios (רֵיחַ נִיחוֹחַ). Gn 8,21; Lv 1,9; Nm 28,6."
+  },
+  {
+    "id": "heb-001979",
+    "lemma": "נִין",
+    "headword_line": "נִין [c. suf. נִינִי]",
+    "headword_tokens": ["נין"],
+    "page_start": 494,
+    "page_end": 494,
+    "gloss_es": "Vástago, prole, descendencia",
+    "text": "Vástago, retoño, prole, descendencia. Gn 21,23; Is 14,22; Job 18,19."
+  },
+  {
+    "id": "heb-001980",
+    "lemma": "נִיצוֹץ",
+    "headword_line": "נִיצוֹץ [pl. נִיצוֹצִים]",
+    "headword_tokens": ["ניצוץ"],
+    "page_start": 494,
+    "page_end": 494,
+    "gloss_es": "Chispa",
+    "text": "Chispa. Is 1,31; Eclo 11,32."
+  },
+  {
+    "id": "heb-001981",
+    "lemma": "נִיר",
+    "headword_line": "נִיר Q. imptv. נִירוּ; Sust. נִיר",
+    "headword_tokens": ["ניר"],
+    "page_start": 494,
+    "page_end": 494,
+    "gloss_es": "Roturar / Lámpara / Campo",
+    "text": "1. Verbo: Roturar la tierra. Jr 4,3. 2. Sustantivo: Lámpara, candil (figurado: linaje sucesorio). 1 Re 11,36. 3. Sustantivo: Campo noval, besana. Os 10,12."
+  },
+  {
+    "id": "heb-001982",
+    "lemma": "נָכָא",
+    "headword_line": "נָכָא Ni. pf. נִכְּאוּ; Adj. נָכֵא",
+    "headword_tokens": ["נכא"],
+    "page_start": 494,
+    "page_end": 494,
+    "gloss_es": "Afligido, abatido, expulsado",
+    "text": "Ni. Ser expulsado por la fuerza. Job 30,8. Adj. Afligido, abatido. Is 16,7. רוּחַ נְכֵאָה: ánimo abatido. Prov 15,13."
+  },
+  {
+    "id": "heb-001985",
+    "lemma": "נָכָה",
+    "headword_line": "נָכָה Hi. pf. הִכָּה; impf. יַכֶּה",
+    "headword_tokens": ["נכה"],
+    "page_start": 494,
+    "page_end": 496,
+    "gloss_es": "Golpear, herir, matar, derrotar",
+    "text": "Hi. Golpear, herir; matar, dar muerte; derrotar (en guerra), castigar. Muy frecuente en contextos militares y judiciales. Ex 21,12; 1 Sm 17,35; Dt 25,2. Ho. Ser golpeado, herido o matado. Is 1,5; Zac 13,6."
+  },
+  {
+    "id": "heb-001987",
+    "lemma": "נָכֶה",
+    "headword_line": "נָכֶה [cstr. נְכֵה]",
+    "headword_tokens": ["נכה"],
+    "page_start": 496,
+    "page_end": 496,
+    "gloss_es": "Tullido, lisiado, abatido",
+    "text": "נְכֵה רַגְלַיִם: tullido de pies. 2 Sm 4,4. נְכֵה רוּחַ: abatido de espíritu. Is 66,2."
+  },
+  {
+    "id": "heb-001990",
+    "lemma": "נֹכַח",
+    "headword_line": "נֹכַח [c. suf. נִכְחוֹ]",
+    "headword_tokens": ["נכח"],
+    "page_start": 496,
+    "page_end": 496,
+    "gloss_es": "Ante, frente a, en presencia de",
+    "text": "Prep. Frente a, en frente de, a la vista de, en presencia de. Ex 14,2; Gn 25,21; Prov 5,21. Sust. Parte delantera, vanguardia."
+  },
+  {
+    "id": "heb-001991",
+    "lemma": "נְכֹחָה",
+    "headword_line": "נְכֹחָה [pl. נְכֹחוֹת]",
+    "headword_tokens": ["נכחה"],
+    "page_start": 496,
+    "page_end": 496,
+    "gloss_es": "Rectitud, honradez, verdad",
+    "text": "Lo que es recto, justo, honrado. Is 26,10; 30,10; Am 3,10."
+  },
+  {
+    "id": "heb-001993",
+    "lemma": "נְכָסִים",
+    "headword_line": "נְכָסִים [Sólo pl.]",
+    "headword_tokens": ["נכסים"],
+    "page_start": 496,
+    "page_end": 496,
+    "gloss_es": "Riquezas, bienes",
+    "text": "Riquezas, bienes, fortuna, patrimonio. Jos 22,8; Ecl 5,18."
+  },
+  {
+    "id": "heb-001994",
+    "lemma": "נִכַּר",
+    "headword_line": "נִכַּר Ni. pf. נִכַּר; Hi. הִכִּיר",
+    "headword_tokens": ["נכר"],
+    "page_start": 496,
+    "page_end": 497,
+    "gloss_es": "Reconocer, identificar, disimular",
+    "text": "Ni. Ser reconocido; disimular, fingir. Prov 26,24; Lam 4,8. Hi. Reconocer, identificar, distinguir; interesarse, hacer caso. Gn 27,23; 42,7. Hitp. Hacerse pasar por otro, disimular. 1 Re 14,5."
+  },
+  {
+    "id": "heb-001997",
+    "lemma": "נֵכָר",
+    "headword_line": "נֵכָר [Sust.]",
+    "headword_tokens": ["נכר"],
+    "page_start": 497,
+    "page_end": 497,
+    "gloss_es": "Extranjero, extrañeza",
+    "text": "Lo extranjero, lo desconocido. בֶּן-נֵכָר: extranjero. Gn 17,12. אֱלֹהֵי נֵכָר: dioses extraños/ajenos. Jos 24,20."
+  },
+  {
+    "id": "heb-002000",
+    "lemma": "נָכְרִי",
+    "headword_line": "נָכְרִי [f. נָכְרִיָּה; pl. נָכְרִים]",
+    "headword_tokens": ["נכרי"],
+    "page_start": 497,
+    "page_end": 498,
+    "gloss_es": "Extranjero, forastero, ajeno",
+    "text": "Extranjero, forastero, advenedizo. Refiriéndose a personas, tierras o lenguas. Ex 2,22; Prov 2,16. En femenino puede significar ramera o mujer ajena."
+  },
+  
