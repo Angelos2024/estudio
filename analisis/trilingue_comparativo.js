@@ -679,6 +679,18 @@ const HEBREW_DICT_STATE = {
     index: {}
 };
 
+function normalizeHebrewStrict(text) {
+    return String(text || '')
+        .replace(/־/g, ' ')
+        .replace(/[^\u0590-\u05FF\s]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+function normalizeHebrewStrictCompact(text) {
+    return normalizeHebrewStrict(text).replace(/\s+/g, '');
+}
+
 function stripHebrewDiacritics(text) {
     return String(text || '')
         .normalize('NFD')
@@ -695,10 +707,18 @@ function normalizeHebrewLemmaForLookup(text) {
 }
 
 function normalizeHebrewSpacing(text) {
-    return normalizeHebrewLemmaForLookup(text);
+    return normalizeHebrewStrict(text);
 }
 
 function normalizeHebrewCompact(text) {
+    return normalizeHebrewStrictCompact(text);
+}
+
+function normalizeHebrewLoose(text) {
+    return normalizeHebrewLemmaForLookup(text);
+}
+
+function normalizeHebrewLooseCompact(text) {
     return normalizeHebrewLemmaForLookup(text).replace(/\s+/g, '');
 }
 
@@ -741,24 +761,39 @@ function findHebrewDictionaryEntry(rawHebrew) {
     const state = HEBREW_DICT_STATE;
     const source = Array.isArray(state.entries) ? state.entries : [];
     const index = state.index && typeof state.index === 'object' ? state.index : {};
-    const query = normalizeHebrewSpacing(rawHebrew);
-    const compactQuery = normalizeHebrewCompact(rawHebrew);
-    if (!compactQuery) return null;
+
+    const strictQuery = normalizeHebrewSpacing(rawHebrew);
+    const strictCompactQuery = normalizeHebrewCompact(rawHebrew);
+    const looseQuery = normalizeHebrewLoose(rawHebrew);
+    const looseCompactQuery = normalizeHebrewLooseCompact(rawHebrew);
+
+    if (!strictCompactQuery && !looseCompactQuery) return null;
 
     const byId = new Map(source.map(entry => [entry.id, entry]));
-    const byLemma = new Map(source.map(entry => [normalizeHebrewCompact(entry?.lemma), entry]));
-    const byHeadword = new Map(source.map(entry => [normalizeHebrewCompact(entry?.headword_line), entry]));
+    const byLemmaStrict = new Map(source.map(entry => [normalizeHebrewStrictCompact(entry?.lemma), entry]));
+    const byHeadwordStrict = new Map(source.map(entry => [normalizeHebrewStrictCompact(entry?.headword_line), entry]));
+    const byLemmaLoose = new Map(source.map(entry => [normalizeHebrewLooseCompact(entry?.lemma), entry]));
+    const byHeadwordLoose = new Map(source.map(entry => [normalizeHebrewLooseCompact(entry?.headword_line), entry]));
 
-    const indexedIds = index[compactQuery] || index[query] || [];
-    if (Array.isArray(indexedIds) && indexedIds.length) {
-        const exactById = byId.get(indexedIds[0]);
+    const strictIndexedIds = index[strictCompactQuery] || index[strictQuery] || [];
+    if (Array.isArray(strictIndexedIds) && strictIndexedIds.length) {
+        const exactById = byId.get(strictIndexedIds[0]);
         if (exactById) return exactById;
     }
 
-    if (byLemma.has(compactQuery)) return byLemma.get(compactQuery);
-    if (byHeadword.has(compactQuery)) return byHeadword.get(compactQuery);
+    if (byLemmaStrict.has(strictCompactQuery)) return byLemmaStrict.get(strictCompactQuery);
+    if (byHeadwordStrict.has(strictCompactQuery)) return byHeadwordStrict.get(strictCompactQuery);
 
-   return null;
+    const looseIndexedIds = index[looseCompactQuery] || index[looseQuery] || [];
+    if (Array.isArray(looseIndexedIds) && looseIndexedIds.length) {
+        const exactById = byId.get(looseIndexedIds[0]);
+        if (exactById) return exactById;
+    }
+
+    if (byLemmaLoose.has(looseCompactQuery)) return byLemmaLoose.get(looseCompactQuery);
+    if (byHeadwordLoose.has(looseCompactQuery)) return byHeadwordLoose.get(looseCompactQuery);
+
+    return null;
 }
 
 function splitParagraphsFromDictionaryText(text) {
