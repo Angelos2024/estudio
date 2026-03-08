@@ -687,19 +687,33 @@ function stripHebrewDiacritics(text) {
         .trim();
 }
 
+function normalizeHebrewStrict(text) {
+    try {
+        return String(text || '')
+            .normalize('NFC')
+            .replace(/־/g, ' ')
+            .replace(/[^\u0590-\u05FF\s]/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+    } catch (_) {
+        return String(text || '')
+            .replace(/־/g, ' ')
+            .replace(/[^\u0590-\u05FF\s]/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+    }
+}
+
 function normalizeHebrewLemmaForLookup(text) {
-    return stripHebrewDiacritics(text)
-        .replace(/[^\u05D0-\u05EA\s]/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
+    return normalizeHebrewStrict(text);
 }
 
 function normalizeHebrewSpacing(text) {
-    return normalizeHebrewLemmaForLookup(text);
+    return normalizeHebrewStrict(text);
 }
 
 function normalizeHebrewCompact(text) {
-    return normalizeHebrewLemmaForLookup(text).replace(/\s+/g, '');
+    return normalizeHebrewStrict(text).replace(/\s+/g, '');
 }
 
 async function fetchJsonWithFallback(urls) {
@@ -741,24 +755,30 @@ function findHebrewDictionaryEntry(rawHebrew) {
     const state = HEBREW_DICT_STATE;
     const source = Array.isArray(state.entries) ? state.entries : [];
     const index = state.index && typeof state.index === 'object' ? state.index : {};
-    const query = normalizeHebrewSpacing(rawHebrew);
-    const compactQuery = normalizeHebrewCompact(rawHebrew);
+    const query = normalizeHebrewStrict(rawHebrew);
+    const compactQuery = query.replace(/\s+/g, '');
     if (!compactQuery) return null;
 
-    const byId = new Map(source.map(entry => [entry.id, entry]));
-    const byLemma = new Map(source.map(entry => [normalizeHebrewCompact(entry?.lemma), entry]));
-    const byHeadword = new Map(source.map(entry => [normalizeHebrewCompact(entry?.headword_line), entry]));
+    const matchesExactEntry = (entry) => {
+        const lemma = normalizeHebrewStrict(entry?.lemma).replace(/\s+/g, '');
+        const headword = normalizeHebrewStrict(entry?.headword_line).replace(/\s+/g, '');
+        return lemma === compactQuery || headword === compactQuery;
+    };
 
+    const byId = new Map(source.map(entry => [entry.id, entry]));
     const indexedIds = index[compactQuery] || index[query] || [];
     if (Array.isArray(indexedIds) && indexedIds.length) {
-        const exactById = byId.get(indexedIds[0]);
-        if (exactById) return exactById;
+        for (const id of indexedIds) {
+            const hit = byId.get(id);
+            if (hit && matchesExactEntry(hit)) return hit;
+        }
     }
 
-    if (byLemma.has(compactQuery)) return byLemma.get(compactQuery);
-    if (byHeadword.has(compactQuery)) return byHeadword.get(compactQuery);
+    for (const entry of source) {
+        if (matchesExactEntry(entry)) return entry;
+    }
 
-   return null;
+    return null;
 }
 
 function splitParagraphsFromDictionaryText(text) {
@@ -872,35 +892,6 @@ function renderGreekComparisonCell(entry, rawQuery) {
     `;
 }
 
-
-function getHebrewDictionaryApi() {
-    return window.DiccionarioBHebreo || null;
-}
-
-function renderHebrewUnifiedSupplement(rawHebrew, options = {}) {
-    const api = getHebrewDictionaryApi();
-    const unifiedEntries = api?.findUnifiedEntries ? api.findUnifiedEntries(rawHebrew, options) : [];
-    if (!unifiedEntries.length) return '';
-
-    return unifiedEntries.map(entry => {
-        const fullJson = escapeHtml(JSON.stringify(entry, null, 2));
-        const strong = api?.normalizeStrongForLookup ? api.normalizeStrongForLookup(entry?.strong) : (entry?.strong || '—');
-        const lema = entry?.strong_detail?.lemma || entry?.lemma || entry?.hebreo || entry?.forma || rawHebrew || '—';
-
-        return `
-          <div class="trilingual-brief mt-3">
-            <div class="trilingual-title">Complemento · diccionario_unificado.min.json</div>
-            <div class="trilingual-line"><strong>Strong:</strong> ${escapeHtml(String(strong))}</div>
-            <div class="trilingual-line"><strong>Lema:</strong> <span class="hebrew">${escapeHtml(lema)}</span></div>
-            <div class="trilingual-line"><strong>Forma:</strong> <span class="hebrew">${escapeHtml(entry?.forma || '—')}</span></div>
-            <div class="trilingual-line"><strong>Glosa:</strong> ${escapeHtml(entry?.glosa || '—')}</div>
-            <div class="trilingual-line"><strong>Entrada completa:</strong></div>
-            <pre class="comparison-pre comparison-pre--hebrew">${fullJson}</pre>
-          </div>
-        `;
-    }).join('');
-}
-
 async function updateDictionaryComparison(items, rawQuery) {
     const tbody = document.getElementById('dictionaryComparisonTbody');
     if (!tbody) return;
@@ -917,50 +908,86 @@ async function updateDictionaryComparison(items, rawQuery) {
         return;
     }
 
-    const api = getHebrewDictionaryApi();
-    if (!api?.ensureLoaded) {
-        tbody.innerHTML = `
-          <tr>
-            <td>${renderGreekComparisonCell(primary, rawQuery)}</td>
-            <td><div class="comparison-pre comparison-pre--hebrew">DiccionarioBHebreo no está disponible en esta página.</div></td>
-          </tr>
-        `;
-        return;
+    tbody.innerHTML = '<tr><td colspan="2" class="muted">Consultando diccionario hebreo…</td></tr>';
+
+    await ensureHebrewDictionaryLoaded();
+    const hebrewEntry = findHebrewDictionaryEntry(hebrewCandidate);
+
+    let unifiedEntries = [];
+    try {
+        if (window.DiccionarioBHebreo?.ensureLoaded) {
+            await window.DiccionarioBHebreo.ensureLoaded();
+            const meta = window.DiccionarioBHebreo.buildUnifiedMeta
+                ? window.DiccionarioBHebreo.buildUnifiedMeta(primary, hebrewEntry, hebrewCandidate)
+                : {};
+            unifiedEntries = window.DiccionarioBHebreo.findUnifiedEntries
+                ? window.DiccionarioBHebreo.findUnifiedEntries(hebrewCandidate, meta)
+                : [];
+        }
+    } catch (error) {
+        console.error('No se pudo consultar diccionario_unificado.min.json.', error);
     }
 
-    tbody.innerHTML = '<tr><td colspan="2" class="muted">Consultando diccionarios hebreos…</td></tr>';
-
-    await api.ensureLoaded();
-
-    const hebrewEntry = api.findPrimaryEntry ? api.findPrimaryEntry(hebrewCandidate) : null;
-    const unifiedLookupMeta = api.buildUnifiedMeta ? api.buildUnifiedMeta(primary, hebrewEntry, hebrewCandidate) : {};
-    const unifiedSupplement = renderHebrewUnifiedSupplement(hebrewCandidate, unifiedLookupMeta);
-
-    const hebrewBlocks = [];
-    if (hebrewEntry) {
-        hebrewBlocks.push(renderStructuredHebrewEntry(hebrewEntry));
-    }
-    if (unifiedSupplement) {
-        hebrewBlocks.push(unifiedSupplement);
-    }
-    if (!hebrewBlocks.length) {
-        hebrewBlocks.push(`
-          <div class="trilingual-brief mb-3">
-            <div class="trilingual-title">B. Hebreo</div>
-            <div class="trilingual-line"><strong>Candidato exacto consultado:</strong> <span class="hebrew">${escapeHtml(hebrewCandidate)}</span></div>
-          </div>
-          <div class="comparison-pre comparison-pre--hebrew">No se encontró coincidencia exacta en ninguno de los dos diccionarios hebreos cargados.</div>
-        `);
-    }
+    const hebrewHtml = renderCombinedHebrewComparisonCell(hebrewEntry, unifiedEntries, hebrewCandidate);
 
     tbody.innerHTML = `
       <tr>
         <td>${renderGreekComparisonCell(primary, rawQuery)}</td>
-        <td>${hebrewBlocks.join('')}</td>
+        <td>${hebrewHtml}</td>
       </tr>
     `;
 }
 
+
+function renderUnifiedHebrewEntry(entry) {
+    const detail = entry?.strong_detail || {};
+    const lemma = detail.lemma || entry?.lemma || entry?.hebreo || '—';
+    const strong = entry?.strong || '—';
+    const translit = detail.transliteracion || entry?.transliteracion || '—';
+    const definicion = detail.definicion || entry?.definicion || entry?.glosa || '—';
+    const defRv = detail.def_rv || entry?.def_rv || '';
+    const header = detail.header || '';
+    return `
+        <div class="trilingual-brief mb-3">
+          <div class="trilingual-title hebrew">${escapeHtml(lemma)}</div>
+          <div class="trilingual-line"><strong>Strong:</strong> ${escapeHtml(String(strong))}</div>
+          ${header ? `<div class="trilingual-line"><strong>header:</strong> ${escapeHtml(header)}</div>` : ''}
+          <div class="trilingual-line"><strong>transliteración:</strong> ${escapeHtml(translit)}</div>
+          <div class="trilingual-line"><strong>definición:</strong> ${escapeHtml(definicion)}</div>
+          ${defRv ? `<div class="trilingual-line"><strong>def_rv:</strong> ${escapeHtml(defRv)}</div>` : ''}
+        </div>
+    `;
+}
+
+function renderCombinedHebrewComparisonCell(primaryEntry, unifiedEntries, hebrewCandidate) {
+    const blocks = [];
+
+    if (primaryEntry) {
+        blocks.push(renderStructuredHebrewEntry(primaryEntry));
+    } else {
+        blocks.push(`
+            <div class="trilingual-brief mb-3">
+              <div class="trilingual-title">Diccionario A · Hebreo</div>
+              <div class="trilingual-line"><strong>Consulta exacta:</strong> <span class="hebrew">${escapeHtml(hebrewCandidate)}</span></div>
+            </div>
+            <div class="comparison-pre comparison-pre--hebrew">Sin coincidencia exacta en hebrewdic.json.</div>
+        `);
+    }
+
+    if (Array.isArray(unifiedEntries) && unifiedEntries.length) {
+        blocks.push(unifiedEntries.map(renderUnifiedHebrewEntry).join(''));
+    } else {
+        blocks.push(`
+            <div class="trilingual-brief mb-3">
+              <div class="trilingual-title">Diccionario B · Hebreo</div>
+              <div class="trilingual-line"><strong>Consulta exacta:</strong> <span class="hebrew">${escapeHtml(hebrewCandidate)}</span></div>
+            </div>
+            <div class="comparison-pre comparison-pre--hebrew">Sin coincidencia exacta en diccionario_unificado.min.json.</div>
+        `);
+    }
+
+    return blocks.join('');
+}
 
 /**
  * SOBREESCRITURA DE DO-SEARCH

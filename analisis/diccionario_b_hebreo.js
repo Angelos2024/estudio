@@ -43,7 +43,7 @@
   async function ensureLoaded() {
     if (state.loaded) return state;
     const [entriesData, indexData, unifiedData] = await Promise.all([
-      fetchJsonWithFallback(['../dic/hebrewdic.json', './dic/hebrewdic.json', './hebrewdic.json', '/dic/hebrewdic.json']),
+       fetchJsonWithFallback(['../dic/hebrewdic.json', './dic/hebrewdic.json', './hebrewdic.json', '/dic/hebrewdic.json']),
       fetchJsonWithFallback(['../dic/diccionario_index_by_lemma.json', './dic/diccionario_index_by_lemma.json', './diccionario_index_by_lemma.json', '/dic/diccionario_index_by_lemma.json']),
       fetchJsonWithFallback(['../diccionario/diccionario_unificado.min.json', './diccionario/diccionario_unificado.min.json', './diccionario_unificado.min.json', '/diccionario/diccionario_unificado.min.json'])
     ]);
@@ -62,33 +62,27 @@
     return matches.map(item => normalizeStrongForLookup(item)).filter(Boolean);
   }
 
-  function entryMatchesExactHebrew(entry, query) {
-    const exact = normalizeHebrewLemmaForLookup(query);
-    if (!exact || !entry) return false;
-
-    const candidates = [
-      entry?.lemma,
-      entry?.headword_line
-    ].map(normalizeHebrewLemmaForLookup).filter(Boolean);
-
-    return candidates.includes(exact);
-  }
-
   function findPrimaryEntry(rawHebrew) {
     const query = normalizeHebrewLemmaForLookup(rawHebrew);
     if (!query || !state.entries.length) return null;
 
     const byId = new Map(state.entries.map(entry => [entry.id, entry]));
+    const matchesExact = (entry) => {
+      const lemma = normalizeHebrewLemmaForLookup(entry?.lemma);
+      const headword = normalizeHebrewLemmaForLookup(entry?.headword_line);
+      return lemma === query || headword === query;
+    };
+
     const indexedIds = state.index[query] || [];
     if (Array.isArray(indexedIds)) {
       for (const id of indexedIds) {
         const hit = byId.get(id);
-        if (entryMatchesExactHebrew(hit, query)) return hit;
+        if (hit && matchesExact(hit)) return hit;
       }
     }
 
     for (const entry of state.entries) {
-      if (entryMatchesExactHebrew(entry, query)) return entry;
+      if (matchesExact(entry)) return entry;
     }
     return null;
   }
@@ -139,17 +133,6 @@
     return { lemmaCandidates, strongCandidates };
   }
 
-  function collectUnifiedHebrewFields(entry) {
-    return [
-      entry?.lemma,
-      entry?.hebreo,
-      entry?.forma,
-      entry?.strong_detail?.lemma,
-      ...(Array.isArray(entry?.hebreos) ? entry.hebreos : []),
-      ...(Array.isArray(entry?.formas) ? entry.formas : [])
-    ].map(normalizeHebrewLemmaForLookup).filter(Boolean);
-  }
-
   function findUnifiedEntries(rawHebrew, options = {}) {
     if (!state.unified.length) return [];
     const { hebrewCandidates, strongSet } = collectUnifiedLookupCandidates({ rawHebrew, ...options });
@@ -159,16 +142,23 @@
     const seen = new Set();
 
     state.unified.forEach(entry => {
-      const entryHebrew = new Set(collectUnifiedHebrewFields(entry));
+      const detail = entry?.strong_detail || {};
+      const entryHebrew = new Set([
+        detail?.lemma,
+        entry?.lemma,
+        entry?.hebreo,
+        entry?.forma,
+        ...(Array.isArray(entry?.hebreos) ? entry.hebreos : []),
+        ...(Array.isArray(entry?.formas) ? entry.formas : [])
+      ].map(value => normalizeHebrewLemmaForLookup(value)).filter(Boolean));
+
       const entryStrong = normalizeStrongForLookup(entry?.strong);
       const hebrewMatch = Array.from(hebrewCandidates).some(candidate => entryHebrew.has(candidate));
       const strongMatch = !!entryStrong && strongSet.has(entryStrong);
-
       if (!hebrewMatch && !strongMatch) return;
 
-      const dedupeKey = `${entryStrong}|${normalizeHebrewLemmaForLookup(entry?.strong_detail?.lemma)}|${normalizeHebrewLemmaForLookup(entry?.hebreo)}|${normalizeHebrewLemmaForLookup(entry?.forma)}`;
+      const dedupeKey = `${entryStrong}|${normalizeHebrewLemmaForLookup(detail?.lemma || entry?.lemma || entry?.hebreo)}|${normalizeHebrewLemmaForLookup(entry?.forma)}`;
       if (seen.has(dedupeKey)) return;
-
       seen.add(dedupeKey);
       results.push(entry);
     });
@@ -181,7 +171,6 @@
     findPrimaryEntry,
     buildUnifiedMeta,
     findUnifiedEntries,
-    normalizeStrongForLookup,
-    normalizeHebrewLemmaForLookup
+    normalizeStrongForLookup
   };
 })(window);
