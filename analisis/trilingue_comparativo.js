@@ -915,24 +915,25 @@ function renderHebrewUnifiedSupplement(rawHebrew, options = {}) {
     if (!unifiedEntries.length) return '';
 
     return unifiedEntries.map(entry => {
-        const fullJson = escapeHtml(JSON.stringify(entry, null, 2));
-        const strong = normalizeStrongForLookup(entry?.strong) || '—';
         const lema = entry?.strong_detail?.lemma || entry?.lemma || entry?.hebreo || entry?.forma || rawHebrew || '—';
         const transliteracion = entry?.strong_detail?.transliteracion || entry?.transliteracion || '—';
+        const glosa = entry?.glosa || entry?.strong_detail?.glosa || '—';
         const definicion = entry?.strong_detail?.definicion || entry?.definicion || '—';
         const defRv = entry?.strong_detail?.def_rv || entry?.def_rv || '—';
+        const derivacion = entry?.strong_detail?.derivacion || entry?.derivacion || '—';
 
         return `
-          <div class="trilingual-brief mt-3">
-            <div class="trilingual-title">Complemento · diccionario_unificado.min.json</div>
-            <div class="trilingual-line"><strong>Strong:</strong> ${escapeHtml(String(strong))}</div>
+          <div class="trilingual-brief mt-3 dict-entry">
+            <div class="dict-entry-header">
+              <div class="dict-entry-kicker">Diccionario unificado</div>
+              <div class="dict-entry-title hebrew">${escapeHtml(lema)}</div>
+            </div>
             <div class="trilingual-line"><strong>Lema:</strong> <span class="hebrew">${escapeHtml(lema)}</span></div>
             <div class="trilingual-line"><strong>Transliteración:</strong> ${escapeHtml(transliteracion)}</div>
-            <div class="trilingual-line"><strong>Glosa:</strong> ${escapeHtml(entry?.glosa || '—')}</div>
+            <div class="trilingual-line"><strong>Glosa:</strong> ${escapeHtml(glosa)}</div>
             <div class="trilingual-line"><strong>Definición:</strong> ${escapeHtml(definicion)}</div>
             <div class="trilingual-line"><strong>Definición RV:</strong> ${escapeHtml(defRv)}</div>
-            <div class="trilingual-line"><strong>Entrada completa:</strong></div>
-            <pre class="comparison-pre comparison-pre--hebrew">${fullJson}</pre>
+            <div class="trilingual-line"><strong>Derivación:</strong> ${escapeHtml(derivacion)}</div>
           </div>
         `;
     }).join('');
