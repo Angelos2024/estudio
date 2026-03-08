@@ -637,15 +637,17 @@ const firstPartTokenCount = normalizeFuzzy(firstPart).split(/\s+/).filter(Boolea
  */
 function renderResults(items, rawQuery = '') {
     // Usamos la función de buscador2.js para procesar las glosas si vienen del hebreo
-    const displayItems = typeof buildDisplayResults === 'function' 
-        ? buildDisplayResults(items, rawQuery) 
+    const displayItems = typeof buildDisplayResults === 'function'
+        ? buildDisplayResults(items, rawQuery)
         : items;
     
+
     if (!displayItems || !displayItems.length) {
         if (resultsTbodyEl) {
             resultsTbodyEl.innerHTML = '<tr><td colspan="3" class="muted">Sin resultados precisos para esta entrada.</td></tr>';
         }
         updateDictionaryComparison([], rawQuery);
+        notifyRenderedResults([], rawQuery);
         return;
     }
 
@@ -653,10 +655,8 @@ function renderResults(items, rawQuery = '') {
 
     if (!resultsTbodyEl) return;
 
-    updateDictionaryComparison(limitedItems, rawQuery);
 
     resultsTbodyEl.innerHTML = limitedItems.map(e => {
-        // Extraer griego de cualquier posible llave en el JSON
         const griego = e.gr || e.equivalencia_griega || e.greek || '—';
         return `
         <tr>
@@ -670,6 +670,25 @@ function renderResults(items, rawQuery = '') {
             </td>
         </tr>
     `}).join('');
+
+    updateDictionaryComparison(limitedItems, rawQuery);
+    notifyRenderedResults(limitedItems, rawQuery);
+}
+
+function notifyRenderedResults(items, rawQuery) {
+    if (typeof window === 'undefined' || typeof window.dispatchEvent !== 'function') return;
+    window.dispatchEvent(new CustomEvent('trilingue:results-rendered', {
+        detail: {
+            items: Array.isArray(items) ? items : [],
+            rawQuery: String(rawQuery || '')
+        }
+    }));
+}
+
+if (typeof window !== 'undefined') {
+    window.TrilingueComparativoAPI = Object.assign({}, window.TrilingueComparativoAPI || {}, {
+        updateDictionaryComparison
+    });
 }
 
 
