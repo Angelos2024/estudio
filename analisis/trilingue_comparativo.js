@@ -700,6 +700,7 @@ const HEBREW_DICT_STATE = {
     unified: []
 };
 
+const UNIFIED_STRONG_INDEX = new Map();
 
 function normalizeHebrewLemmaForLookup(text) {
     try {
@@ -741,6 +742,7 @@ async function ensureHebrewDictionaryLoaded() {
         HEBREW_DICT_STATE.index = indexData;
         HEBREW_DICT_STATE.lexico = Array.isArray(lexicoData) ? lexicoData : [];
         HEBREW_DICT_STATE.unified = Array.isArray(unifiedData) ? unifiedData : [];
+                buildUnifiedStrongIndex();
         HEBREW_DICT_STATE.loaded = true;
     } catch (error) {
         console.error('No se pudieron cargar los archivos del diccionario hebreo.', error);
@@ -794,6 +796,39 @@ function normalizeStrongForLookup(value) {
     const match = upper.match(/H?\s*0*(\d{1,4})/);
     if (!match) return upper.replace(/\s+/g, '');
     return `H${match[1]}`;
+}
+
+function buildUnifiedStrongIndex() {
+    UNIFIED_STRONG_INDEX.clear();
+    const source = Array.isArray(HEBREW_DICT_STATE.unified) ? HEBREW_DICT_STATE.unified : [];
+
+    source.forEach(entry => {
+        const key = normalizeStrongForLookup(entry?.strong);
+        if (!key || UNIFIED_STRONG_INDEX.has(key)) return;
+        UNIFIED_STRONG_INDEX.set(key, entry);
+    });
+}
+
+function formatUnifiedStrongReference(entry) {
+    if (!entry || typeof entry !== 'object') return 'referencia no disponible';
+
+    const lema = entry?.strong_detail?.lemma || entry?.lemma || entry?.hebreo || entry?.forma || '—';
+    const forma = entry?.forma || entry?.strong_detail?.forma || '—';
+    const transliteracion = entry?.strong_detail?.transliteracion || entry?.transliteracion || '—';
+
+    return `lema ${lema} · forma ${forma} · transliteración ${transliteracion}`;
+}
+
+function resolveDerivacionStrongRefs(rawDerivacion) {
+    const source = String(rawDerivacion || '').trim();
+    if (!source) return '—';
+    if (!/\d/.test(source)) return source;
+
+    return source.replace(/\bH?\s*\d{1,4}\b/gi, match => {
+        const key = normalizeStrongForLookup(match);
+        const referenceEntry = UNIFIED_STRONG_INDEX.get(key);
+        return formatUnifiedStrongReference(referenceEntry);
+    });
 }
 
 function collectUnifiedLookupCandidates({ rawHebrew, lemmaCandidates = [], strongCandidates = [] } = {}) {
@@ -920,8 +955,7 @@ function renderHebrewUnifiedSupplement(rawHebrew, options = {}) {
         const glosa = entry?.glosa || entry?.strong_detail?.glosa || '—';
         const definicion = entry?.strong_detail?.definicion || entry?.definicion || '—';
         const defRv = entry?.strong_detail?.def_rv || entry?.def_rv || '—';
-        const derivacion = entry?.strong_detail?.derivacion || entry?.derivacion || '—';
-
+        const derivacion = resolveDerivacionStrongRefs(entry?.strong_detail?.derivacion || entry?.derivacion || '—');
         return `
           <div class="trilingual-brief mt-3 dict-entry">
             <div class="dict-entry-header">
