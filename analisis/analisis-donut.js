@@ -30,10 +30,63 @@
     apocalipsis: new Set(['apocalipsis'])
   };
 
+ const BOOK_ALIASES = {
+    gen: 'genesis',
+    exod: 'exodo',
+    lev: 'levitico',
+    num: 'numeros',
+    deut: 'deuteronomio',
+    josha: 'josue',
+    joshb: 'josue',
+    judga: 'jueces',
+    judgb: 'jueces',
+    ruth: 'rut',
+    '1sam': '1_samuel',
+    '2sam': '2_samuel',
+    '1kgs': '1_reyes',
+    '2kgs': '2_reyes',
+    '1chr': '1_cronicas',
+    '2chr': '2_cronicas',
+    '1esdr': 'esdras',
+    '2esdr': 'nehemias',
+    esth: 'ester',
+    job: 'job',
+    ps: 'salmos',
+    prov: 'proverbios',
+    eccl: 'eclesiastes',
+    song: 'cantares',
+    isa: 'isaias',
+    jer: 'jeremias',
+    lam: 'lamentaciones',
+    ezek: 'ezequiel',
+    danog: 'daniel',
+    danth: 'daniel',
+    hos: 'oseas',
+    joel: 'joel',
+    amos: 'amos',
+    obad: 'abdias',
+    jonah: 'jonas',
+    mic: 'miqueas',
+    nah: 'nahum',
+    hab: 'habacuc',
+    zeph: 'sofonias',
+    hag: 'hageo',
+    zech: 'zacarias',
+    mal: 'malaquias'
+  };
+
+  function normalizeBookKey(book) {
+    const raw = String(book || '').trim().toLowerCase();
+    if (!raw) return '';
+    const safe = raw.replace(/\s+/g, '_');
+    return BOOK_ALIASES[safe] || BOOK_ALIASES[safe.replace(/[^a-z0-9_]/g, '')] || safe;
+  }
+
   function categoryForBook(book) {
+        const normalizedBook = normalizeBookKey(book);
     for (const key of CATEGORY_ORDER) {
-      if (BOOK_GROUPS[key].has(book)) return key;
-    }
+      if (BOOK_GROUPS[key].has(normalizedBook)) return key;
+          }
     return null;
   }
 
@@ -69,8 +122,9 @@
           <div class="btn-group btn-group-sm" role="group" aria-label="Idioma">
             <button type="button" class="btn btn-soft active" data-language="es">Español</button>
             <button type="button" class="btn btn-soft" data-language="he">Hebreo</button>
-            <button type="button" class="btn btn-soft" data-language="gr">Griego</button>
-          </div>
+<button type="button" class="btn btn-soft" data-language="gr_rkant">Griego RKANT</button>
+            <button type="button" class="btn btn-soft" data-language="gr_lxx">Griego LXX</button>
+                      </div>
         </div>
         <div class="occurrence-donut-layout">
           <div class="donut-stage">
@@ -78,7 +132,7 @@
             <div class="donut-center">
               <div class="donut-total" data-role="total">0</div>
               <div class="donut-subtitle" data-role="subtitle">Toda la Escritura</div>
-              <button type="button" class="btn btn-link btn-sm p-0" data-role="reset" hidden>Volver al total</button>
+              <button type="button" class="donut-subtitle" data-role="reset" hidden>Volver al total</button>
             </div>
           </div>
           <div class="donut-legend" data-role="legend"></div>
@@ -90,8 +144,8 @@
       lang: 'es',
       activeCategory: null,
       hoverCategory: null,
-      dataByLang: { es: [], he: [], gr: [] }
-    };
+      dataByLang: { es: [], he: [], gr_rkant: [], gr_lxx: [] }
+          };
 
     const svg = container.querySelector('.donut-svg');
     const legend = container.querySelector('[data-role="legend"]');
@@ -241,8 +295,9 @@
         state.dataByLang = {
           es: Array.isArray(nextDataByLang?.es) ? nextDataByLang.es : [],
           he: Array.isArray(nextDataByLang?.he) ? nextDataByLang.he : [],
-          gr: Array.isArray(nextDataByLang?.gr) ? nextDataByLang.gr : []
-        };
+ gr_rkant: Array.isArray(nextDataByLang?.gr_rkant) ? nextDataByLang.gr_rkant : (Array.isArray(nextDataByLang?.gr) ? nextDataByLang.gr : []),
+          gr_lxx: Array.isArray(nextDataByLang?.gr_lxx) ? nextDataByLang.gr_lxx : []
+                  };
         state.activeCategory = null;
         state.hoverCategory = null;
         render();

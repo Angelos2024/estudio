@@ -24817,5 +24817,4005 @@
     "page_end": 552,
     "gloss_es": "Cegar",
     "text": "Q. Cegar. Ex 23,8; Dt 16,19; 2 Re 25,7; Jr 39,7. De la misma raíz: עִוֵּר (ciego), עִוָּרוֹן (ceguera)."
+  },
+  {
+    "id": "heb-002201",
+    "lemma": "עוּר",
+    "headword_line": "עוּר [II]",
+    "headword_tokens": ["עוּר", "יָעוּר"],
+    "page_start": 552,
+    "page_end": 553,
+    "gloss_es": "Despertar, vigilar, incitar",
+    "text": "עוּר [II]\nQal: Estar despierto, vigilar, velar, desvelarse; despertar; hacer guardia; incitar; provocar.\na) Imperativo: ¡Despierta!, ¡alerta! (Jue 5:12, Is 51:9, Sal 44:24). b) Incitar, provocar (Job 41:2).\nNifal (נֵעוֹר): Despertarse, levantarse, removerse (Jr 6:22, Zac 2:17); despabilarse (Zac 4:1); desperezarse (Job 14:12).\nPolel (עוֹרֵר): Despertar (Cant 2:7); blandir/hacer vibrar la lanza (2 Sm 23:18); sacudir el látigo (Is 10:26).\nHifil (הֵעִיר): a) Despertar (Zac 4:1, Sal 57:9). b) Despertarse (Sal 35:23); velar (Job 8:6). c) Incitar, provocar, impulsar; atizar, azuzar; estimular, animar, instigar (Dt 32:11, Is 13:17, Esd 1:1).\nHitpolel (הִתְעוֹרֵר): Despabilarse (Is 51:17); indignarse (Job 17:8); alborozarse (Job 31:29)."
+  },
+  {
+    "id": "heb-002202",
+    "lemma": "עִוֵּר",
+    "headword_line": "עִוֵּר (pl. עִוְרִים)",
+    "headword_tokens": ["עִוֵּר", "עִוְרִים"],
+    "page_start": 553,
+    "page_end": 553,
+    "gloss_es": "Ciego, invidente",
+    "text": "עִוֵּר (pl. עִוְרִים, עִוְרֹת): Ciego, cegato, invidente. (Ex 4:11, Lv 19:14, Dt 15:21, 2 Sm 5:8, Is 29:18, Job 29:15). Como ciegos, a ciegas (Sof 1:17)."
+  },
+  {
+    "id": "heb-002203",
+    "lemma": "עֵז",
+    "headword_line": "עֵז (pl. עִזִּים)",
+    "headword_tokens": ["עֵז", "עִזִּים"],
+    "page_start": 553,
+    "page_end": 553,
+    "gloss_es": "Cabra, chivo",
+    "text": "עֵז (pl. עִזִּים): a) Cabra; chivo, macho cabrío (Ex 12:5, Lv 3:12, Nm 15:11, Prov 27:27). b) Pelo de cabra (Ex 25:4, Nm 31:20)."
+  },
+  {
+    "id": "heb-002204",
+    "lemma": "עַוֶּרֶת",
+    "headword_line": "עַוֶּרֶת",
+    "headword_tokens": ["עַוֶּרֶת"],
+    "page_start": 553,
+    "page_end": 553,
+    "gloss_es": "Ceguera",
+    "text": "עַוֶּרֶת: Ceguera (Lv 22:22). Compárese con עִוָּרוֹן (Dt 28:28)."
+  },
+  {
+    "id": "heb-002205",
+    "lemma": "עוּשׁ",
+    "headword_line": "עוּשׁ",
+    "headword_tokens": ["עוּשׁ"],
+    "page_start": 553,
+    "page_end": 553,
+    "gloss_es": "Acudir, ayudar",
+    "text": "עוּשׁ\nQal (Imperativo): Acudir, apresurarse (Jl 4:11)."
+  },
+  {
+    "id": "heb-002206",
+    "lemma": "וָו",
+    "headword_line": "וָו",
+    "headword_tokens": ["וָו"],
+    "page_start": 553,
+    "page_end": 553,
+    "gloss_es": "Gancho, clavo",
+    "text": "וָו: Gancho, corchete (Ex 26:32, 38:28)."
+  },
+  {
+    "id": "heb-002207",
+    "lemma": "עָוַת",
+    "headword_line": "עָוַת",
+    "headword_tokens": ["עָוַת", "עִוֵּת"],
+    "page_start": 553,
+    "page_end": 553,
+    "gloss_es": "Torcer, pervertir",
+    "text": "עָוַת\nPiel (עִוֵּת): a) Sentido físico: Torcer, curvar, combar (Ecl 7:13); desequilibrar una balanza (Am 8:5). b) Sentido ético: Torcer, pervertir el derecho o la justicia (Job 8:3, 34:12); perjudicar, agraviar, causar extorsión (Sal 119:78, Job 19:6, Lam 3:36).\nPual: Participio (מְעֻוָּת): Curvado, torcido (Ecl 1:15).\nHitpael: Encorvarse (Ecl 12:3)."
+  },
+  {
+    "id": "heb-002208",
+    "lemma": "עַוָּתָה",
+    "headword_line": "עַוָּתָה",
+    "headword_tokens": ["עַוָּתָה"],
+    "page_start": 553,
+    "page_end": 554,
+    "gloss_es": "Injusticia, opresión",
+    "text": "עַוָּתָה: Injusticia, perjuicio, extorsión (Lam 3:59)."
+  },
+  {
+    "id": "heb-002209",
+    "lemma": "עָזַב",
+    "headword_line": "עָזַב [I]",
+    "headword_tokens": ["עָזַב"],
+    "page_start": 554,
+    "page_end": 555,
+    "gloss_es": "Abandonar, dejar",
+    "text": "עָזַב [I]\nQal: Abandonar; dejar, soltar; deshacerse de; descuidar; desatender; desamparar; descargar; encomendar; evacuar.\n1. Personas: Abandonar, desamparar (Gn 2,24, Dt 31:6, Sal 27:9, Prov 4:6).\n2. Lugares/Normas: Abandonar la tierra (Jr 9:18), la casa (2 Cr 24:18), la alianza (Dt 29:24), la ley (Prov 4:2), el consejo (1 Re 12:8).\nRegímenes especiales: Encomendar a (Gn 39:6), descargar en (Job 39:11), ser indulgente con (Eclo 3:13).\nNifal: Ser abandonado, deshabitado (Lv 26:43, Is 7:16, Job 18:4).\nPual: Quedar desierta (Is 32:14)."
+  },
+  {
+    "id": "heb-002210",
+    "lemma": "עָזְנִיָּה",
+    "headword_line": "עָזְנִיָּה",
+    "headword_tokens": ["עָזְנִיָּה"],
+    "page_start": 555,
+    "page_end": 555,
+    "gloss_es": "Buitre negro",
+    "text": "עָזְנִיָּה: Buitre negro (Lv 11:13, Dt 14:12)."
+  },
+  {
+    "id": "heb-002211",
+    "lemma": "עָזַק",
+    "headword_line": "עָזַק",
+    "headword_tokens": ["עָזַק"],
+    "page_start": 555,
+    "page_end": 555,
+    "gloss_es": "Entrecavar, cercar",
+    "text": "עָזַק\nPiel (וַיְעַזְּקֵהוּ): Entrecavar, cavar alrededor (Is 5:2)."
+  },
+  {
+    "id": "heb-002212",
+    "lemma": "עָזַר",
+    "headword_line": "עָזַר",
+    "headword_tokens": ["עָזַר"],
+    "page_start": 555,
+    "page_end": 555,
+    "gloss_es": "Ayudar, auxiliar",
+    "text": "עָזַר\nQal: Auxiliar, ayudar, apoyar, asistir, socorrer, proteger.\na) Contexto militar: Ayudar contra (2 Cr 26:13), ser aliado de (1 Cr 12:22). b) General: (Job 26:2, Esd 10:15). c) Sujeto Dios: Salvar, liberar, dar la victoria (Sal 37:40, 1 Cr 15:26). d) Participio (עוֹזֵר): Protector, aliado (Sal 10:14, Ez 30:8).\nNifal: Recibir auxilio o ayuda (Sal 28:7, 1 Cr 5:20)."
+  },
+  {
+    "id": "heb-002213",
+    "lemma": "עִזָּבוֹן",
+    "headword_line": "עִזָּבוֹן",
+    "headword_tokens": ["עִזָּבוֹן"],
+    "page_start": 555,
+    "page_end": 555,
+    "gloss_es": "Mercancías, depósitos",
+    "text": "עִזָּבוֹן (pl. עִזְּבוֹנַיִךְ): Mercancías, feria, productos de intercambio (Ez 27:14, 16, 19, 33)."
+  },
+  {
+    "id": "heb-002214",
+    "lemma": "עֱזוּז",
+    "headword_line": "עֱזוּז",
+    "headword_tokens": ["עֱזוּז"],
+    "page_start": 555,
+    "page_end": 555,
+    "gloss_es": "Fuerza, poder",
+    "text": "עֱזוּז: Valor, valentía; proeza (Sal 78:4, 145:6). Furor bélico (Is 42:25). Arrogancia (Eclo 45:18)."
+  },
+  {
+    "id": "heb-002215",
+    "lemma": "עִזּוּז",
+    "headword_line": "עִזּוּז",
+    "headword_tokens": ["עִזּוּז"],
+    "page_start": 555,
+    "page_end": 555,
+    "gloss_es": "Valiente, heroico",
+    "text": "עִזּוּז: Valiente, valeroso, heroico (Is 43:17, Sal 24:8)."
+  },
+  {
+    "id": "heb-002216",
+    "lemma": "עָזַז",
+    "headword_line": "עָזַז",
+    "headword_tokens": ["עָזַז"],
+    "page_start": 555,
+    "page_end": 556,
+    "gloss_es": "Ser fuerte, prevalecer",
+    "text": "עָזַז\nQal: Ser/hacerse fuerte, prevalecer, imponerse (Sal 9:20, 89:14); consolidarse (Prov 8:28).\nHifil (הֵעִיז): a) Desfachatado (Prov 7:13). b) Gesto duro, desafiante (Prov 21:29). c) Ser testarudo (Eclo 8:16)."
+  },
+  {
+    "id": "heb-002217",
+    "lemma": "עֵזֶר",
+    "headword_line": "עֵזֶר",
+    "headword_tokens": ["עֵזֶר"],
+    "page_start": 556,
+    "page_end": 556,
+    "gloss_es": "Auxilio, ayuda",
+    "text": "עֵזֶר: Auxilio, ayuda, apoyo, defensa; defensor, auxiliar (Ex 18:4, Dt 33:7, Sal 33:20, Eclo 36:29). Concreto: Ayuda idónea (Gn 2:18), escolta (Ez 12:14)."
+  },
+  {
+    "id": "heb-002218",
+    "lemma": "עֹזֶר",
+    "headword_line": "עֹזֶר",
+    "headword_tokens": ["עֹזֶר"],
+    "page_start": 556,
+    "page_end": 556,
+    "gloss_es": "Ayudante",
+    "text": "עֹזֶר: Participio de עָזַר. El que ayuda o auxilia."
+  },
+  {
+    "id": "heb-002219",
+    "lemma": "עֶזְרָה",
+    "headword_line": "עֶזְרָה",
+    "headword_tokens": ["עֶזְרָה"],
+    "page_start": 556,
+    "page_end": 556,
+    "gloss_es": "Atrio, ayuda",
+    "text": "עֶזְרָה\n1. Atrio, patio, zaguán (2 Cr 4:9, 6:13); base o borde del altar (Ez 43:14).\n2. Auxilio, ayuda, apoyo, socorro (Sal 27:9, 44:27, Is 20:6)."
+  },
+  {
+    "id": "heb-002220",
+    "lemma": "עָטָה",
+    "headword_line": "עָטָה",
+    "headword_tokens": ["עָטָה"],
+    "page_start": 556,
+    "page_end": 556,
+    "gloss_es": "Cubrir, envolver",
+    "text": "עָטָה\nQal: Cubrir, tapar, embozar, arropar; envolverse, revestirse. Taparse la barba (Lv 13:45); envolverse en un manto (1 Sm 28:14); ceñirse la corona (Eclo 11:5).\nPual: Estar desenvainada (espada) (Ez 21:20).\nHifil: Revestir, cubrir (Is 61:10, Sal 89:46)."
+  },
+  {
+    "id": "heb-002221",
+    "lemma": "עָטָה",
+    "headword_line": "עָטָה [II]",
+    "headword_tokens": ["עָטָה"],
+    "page_start": 556,
+    "page_end": 556,
+    "gloss_es": "Aferrar",
+    "text": "עָטָה [II]\nQal: Aferrar, agarrar (Is 22:17). Por contexto: espulgar (Jr 43:12)."
+  },
+  {
+    "id": "heb-002222",
+    "lemma": "עָטֵף",
+    "headword_line": "עָטֵף",
+    "headword_tokens": ["עָטֵף"],
+    "page_start": 556,
+    "page_end": 556,
+    "gloss_es": "Débil, flojo",
+    "text": "עָטֵף: Flojo, débil (Gn 30:42, Lam 2:19)."
+  },
+  {
+    "id": "heb-002223",
+    "lemma": "עֲטִין",
+    "headword_line": "עֲטִין",
+    "headword_tokens": ["עֲטִין"],
+    "page_start": 556,
+    "page_end": 556,
+    "gloss_es": "Vísceras, depósitos",
+    "text": "עֲטִין (pl. עֲטִינָיו): ¿Vísceras?, ¿vasijas de leche? (Job 21:24)."
+  },
+  {
+    "id": "heb-002224",
+    "lemma": "עֲטִישָׁה",
+    "headword_line": "עֲטִישָׁה",
+    "headword_tokens": ["עֲטִישָׁה"],
+    "page_start": 556,
+    "page_end": 556,
+    "gloss_es": "Estornudo",
+    "text": "עֲטִישָׁה: Estornudo (Job 41:10)."
+  },
+  {
+    "id": "heb-002225",
+    "lemma": "עֲטַלֵּף",
+    "headword_line": "עֲטַלֵּף",
+    "headword_tokens": ["עֲטַלֵּף"],
+    "page_start": 556,
+    "page_end": 556,
+    "gloss_es": "Murciélago",
+    "text": "עֲטַלֵּף: Murciélago (Lv 11:19, Dt 14:18, Is 2:20)."
+  },
+  {
+    "id": "heb-002226",
+    "lemma": "עָטַף",
+    "headword_line": "עָטַף [I]",
+    "headword_tokens": ["עָטַף"],
+    "page_start": 556,
+    "page_end": 557,
+    "gloss_es": "Cubrir, ocultar",
+    "text": "עָטַף [I]\nQal: Cubrir, vestir, revestir (Sal 65:14). Ocultarse (Job 23:9).\nPual: Estar cubierto, vestido (Eclo 11:4)."
+  },
+  {
+    "id": "heb-002227",
+    "lemma": "עָטַף",
+    "headword_line": "עָטַף [II]",
+    "headword_tokens": ["עָטַף"],
+    "page_start": 557,
+    "page_end": 557,
+    "gloss_es": "Desfallecer",
+    "text": "עָטַף [II]\nQal: Desfallecer, flaquear, sucumbir, estar agotado, desmayarse; ser débil. Descorazonarse (Sal 102:1, 61:3).\nNifal: Desfallecer (Lam 2:11).\nHifil: Ser flojo, débil (Ganado) (Gn 30:42).\nHitpael: Desfallecer (Lam 2:12); faltar el aliento, estar desanimado (Jon 2:8, Sal 77:4)."
+  },
+  {
+    "id": "heb-002228",
+    "lemma": "עִי",
+    "headword_line": "עִי (pl. עִיִּים)",
+    "headword_tokens": ["עִי", "עִיִּים"],
+    "page_start": 557,
+    "page_end": 557,
+    "gloss_es": "Ruina, escombro",
+    "text": "עִי (pl. עִיִּים, עִיִּין): Ruina, escombros (Miq 3:12, Jr 26:18, Sal 79:1). ¿Desastre? (Job 30:24)."
+  },
+  {
+    "id": "heb-002229",
+    "lemma": "עַיִט",
+    "headword_line": "עַיִט",
+    "headword_tokens": ["עַיִט"],
+    "page_start": 557,
+    "page_end": 557,
+    "gloss_es": "Ave de rapiña",
+    "text": "עַיִט: Ave de rapiña, de presa, rapaz; buitre (Gn 15:11, Is 18:6, Job 28:7, Eclo 43:14)."
+  },
+  {
+    "id": "heb-002230",
+    "lemma": "עַיִן",
+    "headword_line": "עַיִן",
+    "headword_tokens": ["עַיִן"],
+    "page_start": 557,
+    "page_end": 559,
+    "gloss_es": "Ojo, fuente, aspecto",
+    "text": "עַיִן (du. עֵינַיִם, pl. עֲיָנוֹת)\nA. Ojo: 1. Órgano de la visión (Ex 21:24, Zac 4:10). Actividades: abrir los ojos (Sal 119:18), alzar la vista (Gn 13:10), vigilar (Sal 66:7). 2. Expresión: ojos soberbios (Is 2:11), guiñar (Prov 16:30), llanto (Sal 119:136). 3. Estimación: parecer bien/mal (Gn 16:6, 21:11), hallar gracia (Gn 6:8).\nB. Fuente: Manantial (Gn 49:22, Dt 8:7). Frecuente en topónimos.\nC. Aspecto: Apariencia (Nm 11:7), brillo o destello (Ez 1:4)."
+  },
+  {
+    "id": "heb-002231",
+    "lemma": "עָטַר",
+    "headword_line": "עָטַר",
+    "headword_tokens": ["עָטַר"],
+    "page_start": 557,
+    "page_end": 557,
+    "gloss_es": "Rodear, coronar",
+    "text": "עָטַר\nQal: Rodear, ceñir, cercar, envolver (1 Sm 23:26, Sal 5:13).\nPiel: Coronar (Sal 8:6, 65:12, Cant 3:11, Eclo 45:25).\nHifil: Imponer coronas (Is 23:8)."
+  },
+  {
+    "id": "heb-002232",
+    "lemma": "עֲטָרָה",
+    "headword_line": "עֲטָרָה (pl. עֲטָרוֹת)",
+    "headword_tokens": ["עֲטָרָה", "עֲטָרֶת"],
+    "page_start": 557,
+    "page_end": 559,
+    "gloss_es": "Corona, diadema",
+    "text": "עֲטָרָה (est. עֲטֶרֶת): Corona, diadema, guirnalda (2 Sm 12:30, Zac 6:11, Prov 12:4, Cant 3:11). Diadema real (Is 62:3)."
+  },
+  {
+    "id": "heb-002233",
+    "lemma": "עָיֵף",
+    "headword_line": "עָיֵף",
+    "headword_tokens": ["עָיֵף"],
+    "page_start": 559,
+    "page_end": 560,
+    "gloss_es": "Cansado, exhausto",
+    "text": "עָיֵף: Cansado, agotado, rendido, exhausto, fatigado. (Gn 25:29, Jue 8:4, Is 5:27). Tierra reseca (Is 32:2, Sal 143:6)."
+  },
+  {
+    "id": "heb-002234",
+    "lemma": "עַיִר",
+    "headword_line": "עַיִר (pl. עֲיָרִים)",
+    "headword_tokens": ["עַיִר"],
+    "page_start": 560,
+    "page_end": 560,
+    "gloss_es": "Asno, pollino",
+    "text": "עַיִר: Asno, borrico, pollino, jumento (Gn 32:16, 49:11, Zac 9:9)."
+  },
+  {
+    "id": "heb-002235",
+    "lemma": "עַכָּבִישׁ",
+    "headword_line": "עַכָּבִישׁ",
+    "headword_tokens": ["עַכָּבִישׁ"],
+    "page_start": 560,
+    "page_end": 560,
+    "gloss_es": "Araña",
+    "text": "עַכָּבִישׁ: Araña (Is 59:5, Job 8:14)."
+  },
+  {
+    "id": "heb-002236",
+    "lemma": "עַכְבָּר",
+    "headword_line": "עַכְבָּר",
+    "headword_tokens": ["עַכְבָּר"],
+    "page_start": 560,
+    "page_end": 560,
+    "gloss_es": "Ratón, rata",
+    "text": "עַכְבָּר: Rata, ratón (Lv 11:29, 1 Sm 6:4, Is 66:17)."
+  },
+  {
+    "id": "heb-002237",
+    "lemma": "עָכַר",
+    "headword_line": "עָכַר",
+    "headword_tokens": ["עָכַר"],
+    "page_start": 560,
+    "page_end": 560,
+    "gloss_es": "Arruinar, dañar",
+    "text": "עָכַר\nQal: Arruinar, dañar, deshacer, desbaratar (Gn 34:30, Jos 6:18, Jue 11:35, Prov 15:27).\nNifal: Empeorar (Sal 39:3); perderse (Prov 15:6).\nHitpael: Arruinarse (Eclo 7:10)."
+  },
+  {
+    "id": "heb-002238",
+    "lemma": "עַל",
+    "headword_line": "עַל",
+    "headword_tokens": ["עַל"],
+    "page_start": 560,
+    "page_end": 564,
+    "gloss_es": "Sobre, encima, contra",
+    "text": "עַל (prep.): Sobre, encima; superior a; en; junto a; cerca de; acerca de; por, a causa de; según; contra.\nA. Situación: Sobre la tierra (Gn 7:21), en el trono (1 Re 1:46). B. Movimiento: Caer sobre (Jue 13:20), subir a (Sal 132:3). C. Metafórico: Mandar sobre (1 Sm 9:16), confiar en (Sal 31:15), añadir a (Lv 27:13). D. Proximidad: Junto a la fuente (Gn 16:7), a la orilla del Nilo (Gn 41:1). E. Hostilidad: Contra (Sal 2:2, Gn 41:10)."
+  },
+  {
+    "id": "heb-002239",
+    "lemma": "עִלֵּג",
+    "headword_line": "עִלֵּג",
+    "headword_tokens": ["עִלֵּג"],
+    "page_start": 564,
+    "page_end": 564,
+    "gloss_es": "Tartamudo",
+    "text": "עִלֵּג: Tartamudo, tartajoso (Is 32:4)."
+  },
+  {
+    "id": "heb-002240",
+    "lemma": "עָלָה",
+    "headword_line": "עָלָה",
+    "headword_tokens": ["עָלָה"],
+    "page_start": 564,
+    "page_end": 567,
+    "gloss_es": "Subir, ascender",
+    "text": "עָלָה\nQal: Subir, ascender, escalar, trepar; crecer, brotar, surgir; presentarse; atacar.\n1. Personas: Subir a un país (Gn 13:1), subir al monte (Ex 19:3), montar en carro (1 Re 12:18). 2. Vegetales: Crecer (Is 55:13, Am 7:1). 3. Inertes: Alzarse el humo (Ex 19:18), despuntar la aurora (Gn 19:15). 4. Bélico: Atacar, invadir (Jos 15:15, 2 Re 17:3).\nHifil (הֶעֱלָה): Hacer subir, alzar; sacar, pescar; ofrendar (sacrificio); trasladar (Ex 3:8, Hab 1:15, Lv 17:8).\nNifal: Ser elevado, ser excelso (Sal 47:10, 97:9).\nHofal: Ser sacrificado (Jue 6:28)."
+  },
+  {
+    "id": "heb-002241",
+    "lemma": "עֲלָטָה",
+    "headword_line": "עֲלָטָה",
+    "headword_tokens": ["עֲלָטָה"],
+    "page_start": 567,
+    "page_end": 567,
+    "gloss_es": "Oscuridad",
+    "text": "עֲלָטָה: Oscuridad (Gn 15:17). A oscuras, en la oscuridad (Ez 12:6)."
+  },
+  {
+    "id": "heb-002242",
+    "lemma": "עֱלִי",
+    "headword_line": "עֱלִי",
+    "headword_tokens": ["עֱלִי"],
+    "page_start": 567,
+    "page_end": 567,
+    "gloss_es": "Mano de mortero",
+    "text": "עֱלִי: Mano del almirez o mortero (Prov 27:22)."
+  },
+  {
+    "id": "heb-002243",
+    "lemma": "עִלִּי",
+    "headword_line": "עִלִּי",
+    "headword_tokens": ["עִלִּי"],
+    "page_start": 567,
+    "page_end": 567,
+    "gloss_es": "Superior",
+    "text": "עִלִּי: Adj. Superior, de arriba (Jos 15:19, Jue 1:15)."
+  },
+  {
+    "id": "heb-002244",
+    "lemma": "עֲלִיָּה",
+    "headword_line": "עֲלִיָּה",
+    "headword_tokens": ["עֲלִיָּה"],
+    "page_start": 567,
+    "page_end": 567,
+    "gloss_es": "Habitación alta",
+    "text": "עֲלִיָּה (pl. עֲלִיּוֹת): Habitación superior, de la azotea; galería, mirador (1 Re 17:19, Jr 22:13). Morada celeste de Dios (Sal 104:3)."
+  },
+  {
+    "id": "heb-002245",
+    "lemma": "עֶלְיוֹן",
+    "headword_line": "עֶלְיוֹן",
+    "headword_tokens": ["עֶלְיוֹן"],
+    "page_start": 567,
+    "page_end": 567,
+    "gloss_es": "Altísimo, superior",
+    "text": "עֶלְיוֹן: a) Superior, encumbrado, sobresaliente, excelso (Gn 40:17, Dt 26:19). b) Título divino: El Altísimo (Gn 14:18, Nm 24:16, Sal 7:18)."
+  },
+  {
+    "id": "heb-002246",
+    "lemma": "עֲלוּמִים",
+    "headword_line": "עֲלוּמִים",
+    "headword_tokens": ["עֲלוּמִים"],
+    "page_start": 567,
+    "page_end": 567,
+    "gloss_es": "Juventud",
+    "text": "עֲלוּמִים: Juventud, lozanía, flor de la edad (Sal 89:46, Job 20:11, Is 54:4)."
+  },
+  {
+    "id": "heb-002247",
+    "lemma": "עֲלוּקָה",
+    "headword_line": "עֲלוּקָה",
+    "headword_tokens": ["עֲלוּקָה"],
+    "page_start": 567,
+    "page_end": 567,
+    "gloss_es": "Sanguijuela",
+    "text": "עֲלוּקָה: Sanguijuela (Prov 30:15)."
+  },
+  {
+    "id": "heb-002248",
+    "lemma": "עָלַז",
+    "headword_line": "עָלַז",
+    "headword_tokens": ["עָלַז"],
+    "page_start": 567,
+    "page_end": 568,
+    "gloss_es": "Regocijarse",
+    "text": "עָלַז\nQal: Hacer fiesta, regocijarse, alborozarse, divertirse; celebrar, festejar; cantar victoria; gozar, disfrutar (2 Sm 1:20, Sal 149:5, Prov 23:16)."
+  },
+  {
+    "id": "heb-002249",
+    "lemma": "עַלִּיז",
+    "headword_line": "עַלִּיז",
+    "headword_tokens": ["עַלִּיז"],
+    "page_start": 567,
+    "page_end": 568,
+    "gloss_es": "Jovial, alegre",
+    "text": "עַלִּיז: Bullicioso, alborotador, jaranero; insolente, arrogante. Ciudad divertida (Is 22:2). Entusiastas de mi honor (Is 13:3)."
+  },
+  {
+    "id": "heb-002250",
+    "lemma": "עֲלִילָה",
+    "headword_line": "עֲלִילָה",
+    "headword_tokens": ["עֲלִילָה"],
+    "page_start": 568,
+    "page_end": 568,
+    "gloss_es": "Acción, hecho",
+    "text": "עֲלִילָה (pl. עֲלִילוֹת): Acción, acto, obra, hecho; conducta, comportamiento. a) Sentido neutro (Ez 14:22). b) Malas acciones (Ez 20:44, Sal 14:1). c) Proezas o hazañas de Dios (Sal 9:12, 103:7). d) Calumnia (Dt 22:14)."
+  },
+  {
+    "id": "heb-002251",
+    "lemma": "עָלַם",
+    "headword_line": "עָלַם [I]",
+    "headword_tokens": ["עָלַם", "נֶעְלָם"],
+    "page_start": 568,
+    "page_end": 568,
+    "gloss_es": "Ocultar, ser secreto",
+    "text": "עָלַם [I]\nQal: Participio pasivo (עָלוּם): Secreto (Sal 90:8).\nNifal (נֶעְלָם): Quedar oculto, ser secreto, esconderse; no darse cuenta, no enterarse (Lv 4:13, 5:2, Nah 3:11, Job 28:21). Participio: acciones ocultas, recónditas (Ecl 12:14).\nHifil (הֶעְלִים): Ocultar, encubrir, velar, tapar. Tapar los oídos (Lam 3:56); hacer la vista gorda o disimular (Lv 20:4, Ez 22:26, Eclo 9:8).\nHitpael (הִתְעַלֵּם): Desentenderse, hurtar el bulto, cerrarse (Dt 22:1, Is 58:7, Sal 55:2)."
+  },
+  {
+    "id": "heb-002252",
+    "lemma": "עֶלֶם",
+    "headword_line": "עֶלֶם",
+    "headword_tokens": ["עֶלֶם"],
+    "page_start": 568,
+    "page_end": 569,
+    "gloss_es": "Muchacho, joven",
+    "text": "עֶלֶם: Chico, muchacho, rapaz, mozuelo (1 Sm 17:56, 20:22)."
+  },
+  {
+    "id": "heb-002253",
+    "lemma": "עַלְמָה",
+    "headword_line": "עַלְמָה (pl. עֲלָמוֹת)",
+    "headword_tokens": ["עַלְמָה", "עֲלָמוֹת"],
+    "page_start": 569,
+    "page_end": 569,
+    "gloss_es": "Muchacha, doncella",
+    "text": "עַלְמָה: Muchacha, chica, joven, doncella (Gn 24:43, Ex 2:8, Is 7:14, Sal 68:26, Cant 1:3)."
+  },
+  {
+    "id": "heb-002254",
+    "lemma": "עָלַס",
+    "headword_line": "עָלַס",
+    "headword_tokens": ["עָלַס"],
+    "page_start": 569,
+    "page_end": 569,
+    "gloss_es": "Gozar, disfrutar",
+    "text": "עָלַס\nQal: Gozar de, disfrutar (Job 20:18).\nNifal (נֶעֱלָסָה): Aletear con orgullo (Job 39:13).\nHitpael: Disfrutar mutuamente, saciarse de amores (Prov 7:18)."
+  },
+  {
+    "id": "heb-002255",
+    "lemma": "עִלְעוּל",
+    "headword_line": "עִלְעוּל",
+    "headword_tokens": ["עִלְעוּל"],
+    "page_start": 569,
+    "page_end": 569,
+    "gloss_es": "Tormenta, ciclón",
+    "text": "עִלְעוּל: Tormenta, ciclón, huracán (Eclo 43:17)."
+  },
+  {
+    "id": "heb-002256",
+    "lemma": "עָלַץ",
+    "headword_line": "עָלַץ",
+    "headword_tokens": ["עָלַץ"],
+    "page_start": 569,
+    "page_end": 571,
+    "gloss_es": "Alegrarse, triunfar",
+    "text": "עָלַץ\nQal: a) Alegrarse, regocijarse, hacer fiesta (1 Sm 2:1, Sal 5:12, 68:4). b) Triunfar (Prov 28:12).\nHifil: Alegrar con vino o licor (Eclo 40:20)."
+  },
+  {
+    "id": "heb-002257",
+    "lemma": "עִם",
+    "headword_line": "עִם (con sufijos)",
+    "headword_tokens": ["עִם", "עִמִּי", "עִמּוֹ"],
+    "page_start": 571,
+    "page_end": 572,
+    "gloss_es": "Con, junto a",
+    "text": "עִם (prep.): Indica compañía, proximidad o trato.\n1. Compañía: Comer con (Ex 18:12), ir con (Gn 24:58), acostarse con (Ex 22:18). 2. Posesión: Que tiene frutos (Cant 4:13); servirme (Gn 29:27). 3. Reciprocidad: Luchar con (Gn 32:25), pactar con (Os 2:20), conversar (Gn 31:24). 4. Semejanza: Como, al igual que (Sal 26:9). 5. Concesiva: Con todo, a pesar de (Neh 5:18). 6. Compuestos: מֵעִם (de parte de, de la presencia de)."
+  },
+  {
+    "id": "heb-002258",
+    "lemma": "עָמַד",
+    "headword_line": "עָמַד",
+    "headword_tokens": ["עָמַד"],
+    "page_start": 572,
+    "page_end": 573,
+    "gloss_es": "Estar en pie, detenerse",
+    "text": "עָמַד\nQal: Estar, quedarse o mantenerse en pie; ponerse de pie, erguirse; situarse, pararse, hacer alto, detenerse; resistir, aguantar; servir, oficiar; subsistir, durar.\n1. Sentido físico: Estar situado (Lv 13:23), esperar (Nm 9:8), resistir o soportar (Ex 18:23, Am 2:15). 2. Gesto: Atender al servicio (1 Re 8:14), comparecer en juicio (Is 44:11). 3. Metafórico: Durar (Is 66:22), nacer o brotar (Sal 33:9), conservarse (Jr 32:14).\nHifil (הֶעֱמִיד): Colocar, poner, levantar; erigir; mantener, sostener; constituir; asignar, encomendar. Nombrar cantores (1 Cr 6:16), estabilizar el país (Prov 29:4), cumplir una visión (Dn 11:14).\nHofal: Ser sostenido o presentado (1 Re 22:35, Lv 16:10)."
+  },
+  {
+    "id": "heb-002259",
+    "lemma": "לִפְנֵי",
+    "headword_line": "עָמַד לִפְנֵי",
+    "headword_tokens": ["עָמַד", "לִפְנֵי"],
+    "page_start": 573,
+    "page_end": 574,
+    "gloss_es": "Estar al servicio de",
+    "text": "עָמַד לִפְנֵי: Presentarse, personarse (Gn 41:46); ofrecerse; estar al servicio de (Dt 1:38, 1 Re 12:8, Jr 15:19); comparecer (Nm 35:12); resistir o vencer (2 Re 10:4, Nah 1:6)."
+  },
+  {
+    "id": "heb-002260",
+    "lemma": "מַעֲמָד",
+    "headword_line": "מַעֲמָד",
+    "headword_tokens": ["מַעֲמָד"],
+    "page_start": 574,
+    "page_end": 574,
+    "gloss_es": "Puesto, oficio",
+    "text": "מַעֲמָד: Servicio, puesto, cargo; estancia (1 Re 10:5, Is 22:19, 1 Cr 23:28)."
+  },
+  {
+    "id": "heb-002261",
+    "lemma": "עֹמֶד",
+    "headword_line": "עֹמֶד",
+    "headword_tokens": ["עֹמֶד"],
+    "page_start": 574,
+    "page_end": 574,
+    "gloss_es": "Lugar, sitio",
+    "text": "עֹמֶד: Puesto, lugar, sitio (Dn 8:17, 10:11, Neh 8:7, 2 Cr 30:16)."
+  },
+  {
+    "id": "heb-002262",
+    "lemma": "עַמּוּד",
+    "headword_line": "עַמּוּד (pl. עַמּוּדִים)",
+    "headword_tokens": ["עַמּוּד", "עַמּוּדִים"],
+    "page_start": 574,
+    "page_end": 575,
+    "gloss_es": "Columna, pilar",
+    "text": "עַמּוּD: Columna, pilar, poste, pilastra (Ex 27:10, 1 Re 7:21, Sal 75:4). Columna de fuego (Ex 13:21), columna de nube (Nm 12:5). Estrado (2 Re 11:14)."
+  },
+  {
+    "id": "heb-002263",
+    "lemma": "עָמִיר",
+    "headword_line": "עָמִיר",
+    "headword_tokens": ["עָמִיר"],
+    "page_start": 575,
+    "page_end": 575,
+    "gloss_es": "Gavilla",
+    "text": "עָמִיר: Gavilla (Jr 9:21, Am 2:13, Miq 4:12, Zac 12:6)."
+  },
+  {
+    "id": "heb-002264",
+    "lemma": "עָמַל",
+    "headword_line": "עָמַל",
+    "headword_tokens": ["עָמַל"],
+    "page_start": 575,
+    "page_end": 575,
+    "gloss_es": "Trabajar, afanarse",
+    "text": "עָמַל\nQal: Fatigarse, cansarse, afanarse, esforzarse, trabajar (Jon 4:10, Sal 127:1, Ecl 1:3, 2:11)."
+  },
+  {
+    "id": "heb-002265",
+    "lemma": "עָמָל",
+    "headword_line": "עָמָל",
+    "headword_tokens": ["עָמָל"],
+    "page_start": 575,
+    "page_end": 575,
+    "gloss_es": "Fatiga, penalidad",
+    "text": "עָמָל: a) Trabajo, labor; fatiga, afán (Job 5:7, Ecl 2:10). Hacienda, riqueza (Sal 105:44). b) Pena, penalidad, miseria, aflicción, desgracia (Gn 41:51, Dt 26:7, Hab 1:3). c) Vejación, opresión, maldad (Is 59:4, Sal 7:17, Prov 24:2)."
+  },
+  {
+    "id": "heb-002266",
+    "lemma": "עָמַם",
+    "headword_line": "עָמַם",
+    "headword_tokens": ["עָמַם", "יוּעַם"],
+    "page_start": 575,
+    "page_end": 575,
+    "gloss_es": "Oscurecer, superar",
+    "text": "עָמַם\nQal: ¿Superar, sobrepasar?, ¿cubrir, tapar, oscurecer? (Ez 28:3, 31:8).\nHofal (יוּעַם): Oscurecer, palidecer (Lam 4:1)."
+  },
+  {
+    "id": "heb-002267",
+    "lemma": "עָמַק",
+    "headword_line": "עָמַק",
+    "headword_tokens": ["עָמַק"],
+    "page_start": 575,
+    "page_end": 576,
+    "gloss_es": "Ser hondo, profundo",
+    "text": "עָמַק\nQal: Ser hondo, profundo (Sal 92:6).\nHifil (הֶעְמִיק): Ahondar, profundizar, zahondar; hacer algo a fondo (Is 7:11, 29:15, Jr 49:8, Os 9:9)."
+  },
+  {
+    "id": "heb-002268",
+    "lemma": "עָמֹק",
+    "headword_line": "עָמֹק",
+    "headword_tokens": ["עָמֹק"],
+    "page_start": 576,
+    "page_end": 576,
+    "gloss_es": "Hondo, incomprensible",
+    "text": "עָמֹק (f. עֲמֻקָּה): Hondo, profundo, abismal, insondable; hundido. Copa honda (Ez 23:32); mente profunda (Sal 64,7); fosa profunda (Prov 22:14). Metafórico: Incomprensible, arcano (Ecl 7:24)."
+  },
+  {
+    "id": "heb-002269",
+    "lemma": "עֵמֶק",
+    "headword_line": "עֵמֶק (pl. עֲמָקִים)",
+    "headword_tokens": ["עֵמֶק"],
+    "page_start": 576,
+    "page_end": 576,
+    "gloss_es": "Valle, llanura",
+    "text": "עֵמֶק: Valle, vega, cuenca, nava; llano, llanura, planicie (Nm 14:25, Jue 5:15, Sal 65:14). Frecuente en topónimos."
+  },
+  {
+    "id": "heb-002270",
+    "lemma": "עֵנָב",
+    "headword_line": "עֵנָב (pl. עֲנָבִים)",
+    "headword_tokens": ["עֵנָב"],
+    "page_start": 576,
+    "page_end": 576,
+    "gloss_es": "Uva",
+    "text": "עֵנָב: Uva (Gn 40:11, Dt 23:25). Racimo de uvas (Nm 13:23). Sangre de uvas (vino) (Gn 49:11, Dt 32:14). Uvas pasas (Nm 6:3)."
+  },
+  {
+    "id": "heb-002271",
+    "lemma": "עָנַג",
+    "headword_line": "עָנַג",
+    "headword_tokens": ["עָנַג"],
+    "page_start": 576,
+    "page_end": 576,
+    "gloss_es": "Deleitarse",
+    "text": "עָנַג\nPual: Participio (מְעֻנָּגָה): Finca de recreo o placer (Jr 6:2).\nHitpael: Deleitarse, gozarse, disfrutar, complacerse, recrearse, solazarse (Is 55:2, Sal 37:4, Job 22:26). Ser delicado o melindroso (Dt 28:56). Burlarse (Is 57:4)."
+  },
+  {
+    "id": "heb-002272",
+    "lemma": "עֹנֶג",
+    "headword_line": "עֹנֶג",
+    "headword_tokens": ["עֹנֶג"],
+    "page_start": 576,
+    "page_end": 576,
+    "gloss_es": "Placer, delicia",
+    "text": "עֹנֶג: Placer, deleite, delicia, goce, fruición, solaz (Is 13:22, 58:13)."
+  },
+  {
+    "id": "heb-002273",
+    "lemma": "עָנַד",
+    "headword_line": "עָנַד",
+    "headword_tokens": ["עָנַד"],
+    "page_start": 576,
+    "page_end": 576,
+    "gloss_es": "Atar, ceñir",
+    "text": "עָנַד\nQal: Ceñir, atar (Job 31:36); colgar del cuello (Prov 6:21)."
+  },
+  {
+    "id": "heb-002274",
+    "lemma": "עָנָה",
+    "headword_line": "עָנָה [I]",
+    "headword_tokens": ["עָנָה"],
+    "page_start": 576,
+    "page_end": 577,
+    "gloss_es": "Responder, contestar",
+    "text": "עָנָה [I]\nQal: Responder, contestar, reponer, replicar; intervenir, terciar; acusar; recitar, cantar.\n1. Diálogo: Responder a una llamada o pregunta (1 Sm 14:37, Sal 34:5). Asentir (1 Re 18:24). 2. Forense: Acusar, denunciar, testificar (Dt 19:16, Is 3:9). Dar falso testimonio (Ex 20:16). 3. Musical: Recitar, entonar, cantar antífonas (Ex 15:21, 1 Sm 18:7, Sal 147:7). 4. Acción: Dios responde con fuego o portentos (1 Re 18:24, Sal 65:6).\nNifal (נַעֲנָה): Recibir respuesta (Job 11:2, Prov 21:13).\nHifil: Dar respuesta (Job 32:17)."
+  },
+  {
+    "id": "heb-002275",
+    "lemma": "עָנָה",
+    "headword_line": "עָנָה [II]",
+    "headword_tokens": ["עָנָה"],
+    "page_start": 577,
+    "page_end": 578,
+    "gloss_es": "Afligir, humillar",
+    "text": "עָנָה [II]\nQal: Ser desgraciado, estar afligido (Sal 116:10); intimidarse o achicarse (Is 31:4); trabajar, atarearse (Ecl 1:13).\nNifal: Humillarse, mortificarse (Is 53:7, Sal 119:107).\nPiel (עִנָּה): Humillar, someter, domar, oprimir, explotar; afligir, maltratar, vejar, atropellar; violar o forzar sexualmente. Humillar a una mujer (Gn 34:2, Dt 21:14). Afligir (Dt 8:2, Sal 94:5). Mortificarse (hacer penitencia) (Lv 16:29).\nPual: Ser afligido o humillado (Is 53:4, Sal 119:71).\nHifil: Humillar, afligir (Is 25:5, Sal 55:20).\nHitpael: Someterse, humillarse, mortificarse (Gn 16:9, Dn 10:12, Esd 8:21)."
+  },
+  {
+    "id": "heb-002276",
+    "lemma": "עָנָו",
+    "headword_line": "עָנָו (pl. עֲנָוִים)",
+    "headword_tokens": ["עָנָו"],
+    "page_start": 578,
+    "page_end": 578,
+    "gloss_es": "Humilde, pobre",
+    "text": "עָנָו: Humilde, sufrido, paciente; oprimido, desamparado, desvalido, necesitado (Nm 12:3, Sal 10:12, 25:9, Is 61:1, Prov 3:34)."
+  },
+  {
+    "id": "heb-002277",
+    "lemma": "עֲנָוָה",
+    "headword_line": "עֲנָוָה",
+    "headword_tokens": ["עֲנָוָה"],
+    "page_start": 578,
+    "page_end": 578,
+    "gloss_es": "Humildad, modestia",
+    "text": "עֲנָוָה: Humildad, modestia, moderación (Sof 2:3, Sal 18:36, Prov 15:33, Eclo 3:17)."
+  },
+  {
+    "id": "heb-002278",
+    "lemma": "עֱנוּת",
+    "headword_line": "עֱנוּת",
+    "headword_tokens": ["עֱנוּת"],
+    "page_start": 578,
+    "page_end": 578,
+    "gloss_es": "Aflicción",
+    "text": "עֱנוּת: Aflicción (Sal 22:25)."
+  },
+  {
+    "id": "heb-002279",
+    "lemma": "עָנִי",
+    "headword_line": "עָנִי (pl. עֲנִיִּים)",
+    "headword_tokens": ["עָנִי"],
+    "page_start": 578,
+    "page_end": 579,
+    "gloss_es": "Pobre, indigente",
+    "text": "עָנִי: a) Pobre, indigente, necesitado; víctima de injusticias (Lv 19:10, Dt 15:11, Is 10:2, Sal 40:18, Eclo 4:1). b) Afligido, abatido, dolorido (Is 66:2, Zac 9:9, Sal 69:30)."
+  },
+  {
+    "id": "heb-002280",
+    "lemma": "עֳנִי",
+    "headword_line": "עֳנִי",
+    "headword_tokens": ["עֳנִי"],
+    "page_start": 579,
+    "page_end": 579,
+    "gloss_es": "Pena, miseria",
+    "text": "עֳנִי: Aflicción, pena, tristeza, congoja; desgracia, infortunio, desdicha, miseria, opresión (Gn 16:11, Dt 26:7, Sal 31:8, Job 30:16, Lam 1:3). Crisol de la desgracia (Is 48:10)."
+  },
+  {
+    "id": "heb-002281",
+    "lemma": "עִנְיָן",
+    "headword_line": "עִנְיָן",
+    "headword_tokens": ["עִנְיָן"],
+    "page_start": 579,
+    "page_end": 579,
+    "gloss_es": "Tarea, ocupación",
+    "text": "עִנְיָן: Tarea, ocupación, preocupación (Ecl 1:13, 2:23, 3:10, 5:2, 8:16)."
+  },
+  {
+    "id": "heb-002282",
+    "lemma": "עָנַן",
+    "headword_line": "עָנַן [I]",
+    "headword_tokens": ["עָנַן"],
+    "page_start": 579,
+    "page_end": 579,
+    "gloss_es": "Adivinar, vaticinar",
+    "text": "עָנַן [I]\nPilel (עוֹנֵן): Adivinar, vaticinar, augurar, presagiar (Lv 19:26, 2 Re 21:6). Participio (מְעוֹנֵן): Adivino, vate, agorero, hechicero (Dt 18:10, Is 2:6, Jr 27:9)."
+  },
+  {
+    "id": "heb-002283",
+    "lemma": "עָנַן",
+    "headword_line": "עָנַן [II]",
+    "headword_tokens": ["עָנַן"],
+    "page_start": 579,
+    "page_end": 579,
+    "gloss_es": "Anubarrar",
+    "text": "עָנַן [II]\nPiel (עִנֵּן): Anubarrar, juntar nubes (Gn 9:14)."
+  },
+  {
+    "id": "heb-002284",
+    "lemma": "עָנָן",
+    "headword_line": "עָנָן (pl. עֲנָנִים)",
+    "headword_tokens": ["עָנָן"],
+    "page_start": 579,
+    "page_end": 579,
+    "gloss_es": "Nube, nubarrón",
+    "text": "עָנָן: Nube, nubarrón (Gn 9:13, Is 4:5, Ez 1:4, Job 7:9, Lam 3:44). Nube mañanera (Os 6:4). Nube de incienso (Lv 16:13)."
+  },
+  {
+    "id": "heb-002285",
+    "lemma": "עֲנָנָה",
+    "headword_line": "עֲנָנָה",
+    "headword_tokens": ["עֲנָנָה"],
+    "page_start": 579,
+    "page_end": 579,
+    "gloss_es": "Nubosidad",
+    "text": "עֲנָנָה: Gran nube, oscuridad de nubes (Job 3:5)."
+  },
+  {
+    "id": "heb-002286",
+    "lemma": "עָנָף",
+    "headword_line": "עָנָף (pl. עֲנָפִים)",
+    "headword_tokens": ["עָנָף"],
+    "page_start": 579,
+    "page_end": 579,
+    "gloss_es": "Rama, follaje",
+    "text": "עָנָף: Rama, ramaje, fronda (Lv 23:40, Ez 17:8, Mal 3:19, Sal 80:11)."
+  },
+  {
+    "id": "heb-002287",
+    "lemma": "עָנַף",
+    "headword_line": "עָנַף",
+    "headword_tokens": ["עָנַף"],
+    "page_start": 579,
+    "page_end": 579,
+    "gloss_es": "Frondoso",
+    "text": "עָנַף: Frondoso, lleno de ramas (Ez 19:10)."
+  },
+  {
+    "id": "heb-002288",
+    "lemma": "עָנַק",
+    "headword_line": "עָנַק",
+    "headword_tokens": ["עָנַק"],
+    "page_start": 579,
+    "page_end": 579,
+    "gloss_es": "Poner collar",
+    "text": "עָנַק\nQal: Poner un collar o gargantilla (Sal 73:6).\nHifil: Colmar de regalos (Dt 15:14)."
+  },
+  {
+    "id": "heb-002289",
+    "lemma": "עָנָק",
+    "headword_line": "עָנָק (pl. עֲנָקִים)",
+    "headword_tokens": ["עָנָק"],
+    "page_start": 579,
+    "page_end": 579,
+    "gloss_es": "Collar",
+    "text": "עָנָק: Collar, cadena para el cuello (Jue 8:26, Prov 1:9, Cant 4:9)."
+  },
+  {
+    "id": "heb-002290",
+    "lemma": "עָנַשׁ",
+    "headword_line": "עָנַשׁ",
+    "headword_tokens": ["עָנַשׁ"],
+    "page_start": 579,
+    "page_end": 580,
+    "gloss_es": "Multar, castigar",
+    "text": "עָנַשׁ\nQal: Multar, poner una multa, castigar, hacer pagar; imponer un tributo (Ex 21:22, Dt 22:19, Am 2:8, Prov 17:26, 2 Cr 36:3).\nNifal: Ser multado, tener que pagar (Ex 21:22, Prov 22:3)."
+  },
+  {
+    "id": "heb-002291",
+    "lemma": "עֹנֶשׁ",
+    "headword_line": "עֹנֶשׁ",
+    "headword_tokens": ["עֹנֶשׁ"],
+    "page_start": 580,
+    "page_end": 580,
+    "gloss_es": "Multa, tributo",
+    "text": "עֹנֶשׁ: Multa, impuesto, tributo (2 Re 23:33, Prov 19:19)."
+  },
+  {
+    "id": "heb-002292",
+    "lemma": "עָסִיס",
+    "headword_line": "עָסִיס",
+    "headword_tokens": ["עָסִיס"],
+    "page_start": 580,
+    "page_end": 580,
+    "gloss_es": "Mosto, zumo",
+    "text": "עָסִיס: Mosto, zumo de uva, vino nuevo (Is 49:26, Jl 1:5, Am 9:13, Cant 8:2)."
+  },
+  {
+    "id": "heb-002293",
+    "lemma": "עָסַס",
+    "headword_line": "עָסַס",
+    "headword_tokens": ["עָסַס"],
+    "page_start": 580,
+    "page_end": 580,
+    "gloss_es": "Pisotear",
+    "text": "עָסַס\nQal: Pisotear (Mal 3:21)."
+  },
+  {
+    "id": "heb-002294",
+    "lemma": "עֳפִי",
+    "headword_line": "עֳפִי",
+    "headword_tokens": ["עֳפִי"],
+    "page_start": 580,
+    "page_end": 580,
+    "gloss_es": "Follaje, ramaje",
+    "text": "עֳפִי (pl. עֳפָאיִם): Follaje, fronda, ramaje (Sal 104:12, Eclo 14:26)."
+  },
+  {
+    "id": "heb-002295",
+    "lemma": "עָפַל",
+    "headword_line": "עָפַל",
+    "headword_tokens": ["עָפַל"],
+    "page_start": 580,
+    "page_end": 580,
+    "gloss_es": "Hincharse, arrogancia",
+    "text": "עָפַל\nPual: Hincharse; ser arrogante (Hab 2:4).\nHifil: Empeñarse, empecinarse, atreverse (Nm 14:44)."
+  },
+  {
+    "id": "heb-002296",
+    "lemma": "עֹפֶל",
+    "headword_line": "עֹפֶל",
+    "headword_tokens": ["עֹפֶל"],
+    "page_start": 580,
+    "page_end": 580,
+    "gloss_es": "Tumor, colina",
+    "text": "עֹפֶל (pl. עֳפָלִים): a) Hinchazón, tumor, divieso (Dt 28:27, 1 Sm 5-6). b) Ofel (colina, cabezo fortificado) (2 Re 5:24, Is 32:14, Miq 4:8)."
+  },
+  {
+    "id": "heb-002297",
+    "lemma": "עַפְעַפַּיִם",
+    "headword_line": "עַפְעַפַּיִם",
+    "headword_tokens": ["עַפְעַפַּיִם"],
+    "page_start": 580,
+    "page_end": 580,
+    "gloss_es": "Párpados, pupilas",
+    "text": "עַפְעַפַּיִם: Párpados, pupilas, ojos; miradas (Jr 9:17, Sal 11:4, Job 16:16). Párpados del alba (Job 3:9). Mirada altanera (Prov 30:13)."
+  },
+  {
+    "id": "heb-002298",
+    "lemma": "עָפַר",
+    "headword_line": "עָפַר",
+    "headword_tokens": ["עָפַר"],
+    "page_start": 580,
+    "page_end": 580,
+    "gloss_es": "Levantar polvo",
+    "text": "עָפַר\nPiel: Levantar polvo, empolvar (2 Sm 16:13)."
+  },
+  {
+    "id": "heb-002299",
+    "lemma": "עָפָר",
+    "headword_line": "עָפָר",
+    "headword_tokens": ["עָפָר"],
+    "page_start": 580,
+    "page_end": 581,
+    "gloss_es": "Polvo, tierra",
+    "text": "עָפָר: Polvo, tierra, arcilla; barro, lodo, terrón; revoque; ceniza.\n1. Físico: Tierra (Gn 26:15), cubrir con tierra (Lv 17:13). Reducir a polvo (Dt 9:21). Revoque (Lv 14:42). Ceniza de combustión (Nm 5:17). 2. Ritual: Sentarse en tierra (Is 47:1), echar polvo sobre la cabeza (Jos 7:6), revolcarse en el lodo (Miq 1:10). 3. Simbólico: Naturaleza humana débil (Gn 2:7, 3:19). Polvo y ceniza (Gn 18:27). Condición mortal (Sal 22:30). Volver al polvo (morir) (Job 34:15)."
+  },
+  {
+    "id": "heb-002300",
+    "lemma": "עֹפֶרֶת",
+    "headword_line": "עֹפֶרֶת",
+    "headword_tokens": ["עֹפֶרֶת"],
+    "page_start": 581,
+    "page_end": 581,
+    "gloss_es": "Plomo",
+    "text": "עֹפֶרֶת: Plomo (Jr 6:29, Zac 5:7, Job 19:24, Eclo 47:18). Pesado como el plomo (Ex 15:10)."
+  },
+  {
+    "id": "heb-002301",
+    "lemma": "עֵץ",
+    "headword_line": "עֵץ (pl. עֵצִים)",
+    "headword_tokens": ["עֵץ", "עֵצִים"],
+    "page_start": 581,
+    "page_end": 581,
+    "gloss_es": "Árbol, madera, leña",
+    "text": "עֵץ (est. עֵץ, c. suf. עֵצוֹ): Planta; árbol; leña, leño, madera; objeto de madera.\n1. Vegetal: Árbol (Gn 3:11, Is 7:2). Especificaciones: עֵץ הַגֶּפֶן (vid), עֵץ הַזַּיִת (olivo), עֵץ הַחַיִּים (árbol de la vida).\n2. Leña: Para el fuego (Gn 22:7, 1 Re 18:23). Verbos asociados: חָטַב (talar), כָּרַת (cortar).\n3. Madera: Material de construcción (Ex 25:5, 1 Re 6:10). Fabricación de objetos: horca (Est 7:9), vasijas, altar (Ex 27:1), ídolos (Is 45:20)."
+  },
+  {
+    "id": "heb-002302",
+    "lemma": "עָצַב",
+    "headword_line": "עָצַב [I]",
+    "headword_tokens": ["עָצַב", "עִצֵּב"],
+    "page_start": 581,
+    "page_end": 581,
+    "gloss_es": "Modelar, dar forma",
+    "text": "עָצַב [I]\nPiel (עִצֵּב): Modelar (Job 10:8).\nHifil (הֶעֱצִיב): Dar forma, moldear (Jr 44:19)."
+  },
+  {
+    "id": "heb-002303",
+    "lemma": "עָצַב",
+    "headword_line": "עָצַב [II]",
+    "headword_tokens": ["עָצַב", "נֶעֱצַב"],
+    "page_start": 581,
+    "page_end": 582,
+    "gloss_es": "Afligir, disgustar",
+    "text": "עָצַב [II]\nQal: Disgustar; afligir, apesadumbrar (1 Re 1:6).\nNifal (נֶעֱצַב): Apenarse, afligirse, entristecerse, malhumorarse (Gn 45:5, 1 Sm 20:3, Neh 8:10).\nPiel: Enfadar, irritar, molestar (Is 63:10).\nHifil: Enojar, provocar (Sal 78:40).\nHitpael (הִתְעַצֵּב): Apenarse, enfurecerse (Gn 6:6, 34:7)."
+  },
+  {
+    "id": "heb-002304",
+    "lemma": "עָצָב",
+    "headword_line": "עָצָב (pl. עֲצַבִּים)",
+    "headword_tokens": ["עָצָב", "עֲצַבִּים"],
+    "page_start": 582,
+    "page_end": 582,
+    "gloss_es": "Ídolo, imagen",
+    "text": "עָצָב: Ídolo, imagen, estatua (1 Sm 31:9, Is 46:1, Jr 50:2, Sal 115:4)."
+  },
+  {
+    "id": "heb-002305",
+    "lemma": "עִצָּבוֹן",
+    "headword_line": "עִצָּבוֹן",
+    "headword_tokens": ["עִצָּבוֹן"],
+    "page_start": 582,
+    "page_end": 582,
+    "gloss_es": "Dolor, fatiga",
+    "text": "עִצָּבוֹן (c. suf. עִצְּבוֹנֵךְ): Dolor, pesar, fatiga (Gn 3:16, 5:29)."
+  },
+  {
+    "id": "heb-002306",
+    "lemma": "עָצָה",
+    "headword_line": "עָצָה",
+    "headword_tokens": ["עָצָה"],
+    "page_start": 582,
+    "page_end": 582,
+    "gloss_es": "Cerrar los ojos",
+    "text": "עָצָה\nQal: En la expresión עֹצֶה עֵינַיִם (cerrar los ojos, disimular) (Prov 16:30)."
+  },
+  {
+    "id": "heb-002307",
+    "lemma": "עֵצָה",
+    "headword_line": "עֵצָה",
+    "headword_tokens": ["עֵצָה"],
+    "page_start": 582,
+    "page_end": 583,
+    "gloss_es": "Consejo, plan",
+    "text": "עֵצָה: Juicio, discernimiento; plan, proyecto, idea; estrategia; propuesta, consejo.\n1. Facultad de juzgar (Dt 32:28, Job 12:13). 2. Proyecto mental: anular un plan (Is 19:3), cumplir (Sal 20:5). 3. Consejo exterior: escuchar o aceptar consejo (2 Cr 25:16, Jr 18:18)."
+  },
+  {
+    "id": "heb-002308",
+    "lemma": "עָצוּם",
+    "headword_line": "עָצוּם",
+    "headword_tokens": ["עָצוּם"],
+    "page_start": 583,
+    "page_end": 583,
+    "gloss_es": "Numeroso, fuerte",
+    "text": "עָצוּם: Numeroso, innumerable; fuerte, poderoso (Gn 18:18, Ex 1:9, Sal 35:18). Aplicado a naciones o ejércitos."
+  },
+  {
+    "id": "heb-002309",
+    "lemma": "עֶצֶם",
+    "headword_line": "עֶצֶם (pl. עֲצָמוֹת)",
+    "headword_tokens": ["עֶצֶם", "עֲצָמוֹת"],
+    "page_start": 583,
+    "page_end": 584,
+    "gloss_es": "Hueso, mismo",
+    "text": "עֶצֶם: Hueso, osamenta; cadáver; miembros; adv. mismo, exacto.\n1. Anatomía: Hueso y carne (Gn 2:23, Job 2:5). Romper los huesos (Is 38:13). 2. Cadáver: Restos mortales (Ex 13:19, Ez 37). 3. Adverbial: בְּעֶצֶם הַיּוֹם הַזֶּה (el mismo día, justo ese día) (Gn 7:13, Ex 12:41)."
+  },
+  {
+    "id": "heb-002310",
+    "lemma": "עָצַל",
+    "headword_line": "עָצַל",
+    "headword_tokens": ["עָצַל"],
+    "page_start": 583,
+    "page_end": 583,
+    "gloss_es": "Ser perezoso",
+    "text": "עָצַל\nNifal: Dar largas, hacerse el remolón (Jue 18:9)."
+  },
+  {
+    "id": "heb-002311",
+    "lemma": "עָצֵל",
+    "headword_line": "עָצֵל",
+    "headword_tokens": ["עָצֵל"],
+    "page_start": 583,
+    "page_end": 583,
+    "gloss_es": "Perezoso, holgazán",
+    "text": "עָצֵל: Perezoso, holgazán, haragán, negligente (Prov 6:6, 10:26, 13:4, 26:14)."
+  },
+  {
+    "id": "heb-002312",
+    "lemma": "עַצְלָה",
+    "headword_line": "עַצְלָה",
+    "headword_tokens": ["עַצְלָה"],
+    "page_start": 583,
+    "page_end": 583,
+    "gloss_es": "Pereza",
+    "text": "עַצְלָה: Pereza, desidia, negligencia (Prov 19:15)."
+  },
+  {
+    "id": "heb-002313",
+    "lemma": "עַצְלוּת",
+    "headword_line": "עַצְלוּת",
+    "headword_tokens": ["עַצְלוּת"],
+    "page_start": 583,
+    "page_end": 584,
+    "gloss_es": "Negligencia",
+    "text": "עַצְלוּת: Pereza, negligencia, dejadez (Prov 31:27)."
+  },
+  {
+    "id": "heb-002314",
+    "lemma": "עָצַם",
+    "headword_line": "עָצַם",
+    "headword_tokens": ["עָצַם"],
+    "page_start": 584,
+    "page_end": 584,
+    "gloss_es": "Ser fuerte, cerrar ojos",
+    "text": "עָצַם\nQal: a) Ser fuerte, numeroso (Jr 15:8, Sal 40:6, Gn 26:16). b) Tapar los ojos (Is 33:15).\nPiel: Romper los huesos, despedazar (Jr 50:17). Tapar los ojos (Is 29:10).\nHifil: Hacer poderoso (Sal 105:24)."
+  },
+  {
+    "id": "heb-002315",
+    "lemma": "עֹצֶם",
+    "headword_line": "עֹצֶם",
+    "headword_tokens": ["עֹצֶם"],
+    "page_start": 584,
+    "page_end": 584,
+    "gloss_es": "Fuerza, poder",
+    "text": "עֹצֶם: Fuerza, poder (Dt 8:17, Job 30:21)."
+  },
+  {
+    "id": "heb-002316",
+    "lemma": "עָצַר",
+    "headword_line": "עָצַר",
+    "headword_tokens": ["עָצַר"],
+    "page_start": 584,
+    "page_end": 584,
+    "gloss_es": "Impedir, detener",
+    "text": "עָצַר\nQal: Impedir, retener, detener, reprimir; coercer, bloquear; controlar, frenar. Impedir el parto (Gn 16:2); cerrar el cielo o la lluvia (Dt 11:17); detener la marcha (2 Re 4:24); arrestar (Jr 33:1).\nNifal (נֶעְצַר): Cesar, detenerse (Nm 17:13, Sal 106:30); estar bloqueado o cerrado (1 Re 8:35)."
+  },
+  {
+    "id": "heb-002317",
+    "lemma": "עֹצֶר",
+    "headword_line": "עֹצֶר",
+    "headword_tokens": ["עֹצֶר"],
+    "page_start": 584,
+    "page_end": 584,
+    "gloss_es": "Opresión, estéril",
+    "text": "עֹצֶר: En רַחַם עֹצֶר (vientre estéril, obstrucción de matriz) (Prov 30:16); opresión (Sal 107:39)."
+  },
+  {
+    "id": "heb-002318",
+    "lemma": "עֲצָרָה",
+    "headword_line": "עֲצָרָה",
+    "headword_tokens": ["עֲצָרָה", "עֲצֶרֶת"],
+    "page_start": 584,
+    "page_end": 584,
+    "gloss_es": "Asamblea, reunión",
+    "text": "עֲצָרָה (est. עֲצֶרֶת): Reunión solemne, asamblea litúrgica (Lv 23:36, Nm 29:35, Is 1:13, Am 5:21). Convocar asamblea (2 Re 10:20)."
+  },
+  {
+    "id": "heb-002319",
+    "lemma": "עָקַב",
+    "headword_line": "עָקַב",
+    "headword_tokens": ["עָקַב"],
+    "page_start": 584,
+    "page_end": 585,
+    "gloss_es": "Suplantar, zancadilla",
+    "text": "עָקַב\nQal: Echar la zancadilla, suplantar, sujetar (Gn 27:36, Jr 9:3, Os 12:4).\nPiel: Sujetar, retener (Job 37:4)."
+  },
+  {
+    "id": "heb-002320",
+    "lemma": "עָקֵב",
+    "headword_line": "עָקֵב (pl. עֲקֵבִים)",
+    "headword_tokens": ["עָקֵב", "עֲקֵבוֹת"],
+    "page_start": 585,
+    "page_end": 585,
+    "gloss_es": "Talón, huella",
+    "text": "עָקֵב (pl. עֲקֵבוֹת): Talón, calcañar (Gn 3:15, Sal 41:10). Huellas, rastro (Sal 77:20, Cant 1:8). Retaguardia de un ejército (Gn 49:19)."
+  },
+  {
+    "id": "heb-002321",
+    "lemma": "עָקֹב",
+    "headword_line": "עָקֹב",
+    "headword_tokens": ["עָקֹב"],
+    "page_start": 585,
+    "page_end": 585,
+    "gloss_es": "Tortuoso, falso",
+    "text": "עָקֹב: Tortuoso, torcido, falso (Is 40:4, Jr 17:9). Intrigante (Eclo 36:25)."
+  },
+  {
+    "id": "heb-002322",
+    "lemma": "עֵקֶב",
+    "headword_line": "עֵקֶב",
+    "headword_tokens": ["עֵקֶב"],
+    "page_start": 585,
+    "page_end": 585,
+    "gloss_es": "Consecuencia, recompensa",
+    "text": "עֵקֶב: a) Consecuencia (Prov 22:4); recompensa (Sal 19:12). b) Partícula: porque, ya que (Gn 22:18, Dt 7:12). c) Adverbio: puntualmente (Sal 119:33)."
+  },
+  {
+    "id": "heb-002323",
+    "lemma": "עָקְבָה",
+    "headword_line": "עָקְבָה",
+    "headword_tokens": ["עָקְבָה"],
+    "page_start": 585,
+    "page_end": 585,
+    "gloss_es": "Dolo, fraude",
+    "text": "עָקְבָה: Dolo, fraude, engaño (2 Re 10:19)."
+  },
+  {
+    "id": "heb-002324",
+    "lemma": "עָקַד",
+    "headword_line": "עָקַד",
+    "headword_tokens": ["עָקַד"],
+    "page_start": 585,
+    "page_end": 585,
+    "gloss_es": "Atar, ligar",
+    "text": "עָקַד\nQal: Atar, sujetar (Gn 22:9)."
+  },
+  {
+    "id": "heb-002325",
+    "lemma": "עָקֹד",
+    "headword_line": "עָקֹד (pl. עֲקֻדִּים)",
+    "headword_tokens": ["עָקֹד", "עֲקֻדִּים"],
+    "page_start": 585,
+    "page_end": 585,
+    "gloss_es": "Rayado, listado",
+    "text": "עָקֹד: Rayado, con manchas en forma de anillos o rayas (Gn 30:35, 31:8)."
+  },
+  {
+    "id": "heb-002326",
+    "lemma": "עָקָה",
+    "headword_line": "עָקָה",
+    "headword_tokens": ["עָקָה"],
+    "page_start": 585,
+    "page_end": 585,
+    "gloss_es": "Opresión",
+    "text": "עָקָה: Opresión (Sal 55:4)."
+  },
+  {
+    "id": "heb-002327",
+    "lemma": "עָקַל",
+    "headword_line": "עָקַל",
+    "headword_tokens": ["עָקַל"],
+    "page_start": 585,
+    "page_end": 585,
+    "gloss_es": "Torcer, pervertir",
+    "text": "עָקַל\nPual (מְעֻקָּל): Ser perverso, torcido, injusto (Hab 1:4)."
+  },
+  {
+    "id": "heb-002328",
+    "lemma": "עֲקַלְקַל",
+    "headword_line": "עֲקַלְקַל (pl. עֲקַלְקַלּוֹת)",
+    "headword_tokens": ["עֲקַלְקַל", "עֲקַלְקַלּוֹת"],
+    "page_start": 585,
+    "page_end": 585,
+    "gloss_es": "Tortuoso, intrincado",
+    "text": "עֲקַלְקַל: Tortuoso, retorcido, intrincado (Jue 5:6, Sal 125:5)."
+  },
+  {
+    "id": "heb-002329",
+    "lemma": "עֲקַלָּתוֹן",
+    "headword_line": "עֲקַלָּתוֹן",
+    "headword_tokens": ["עֲקַלָּתוֹן"],
+    "page_start": 585,
+    "page_end": 585,
+    "gloss_es": "Sinuoso, tortuoso",
+    "text": "עֲקַלָּתוֹן: Tortuoso, sinuoso (Is 27:1)."
+  },
+  {
+    "id": "heb-002330",
+    "lemma": "עָקַר",
+    "headword_line": "עָקַר",
+    "headword_tokens": ["עָקַר"],
+    "page_start": 585,
+    "page_end": 585,
+    "gloss_es": "Arrancar, desjarretar",
+    "text": "עָקַר\nQal: Arrancar, desarraigar (Ecl 3:2).\nNifal: Ser arrancado (Sof 2:4).\nPiel: Desjarretar caballos o bueyes (Gn 49:6, Jos 11:6, 1 Cr 18:4)."
+  },
+  {
+    "id": "heb-002331",
+    "lemma": "עָקָר",
+    "headword_line": "עָקָר (f. עֲקָרָה)",
+    "headword_tokens": ["עָקָר", "עֲקָרָה"],
+    "page_start": 585,
+    "page_end": 585,
+    "gloss_es": "Estéril",
+    "text": "עָקָר: Estéril, infecundo (Gn 11:30, 25:21, Dt 7:14, Sal 113:9, Job 24:21)."
+  },
+  {
+    "id": "heb-002332",
+    "lemma": "עֵקֶר",
+    "headword_line": "עֵקֶר",
+    "headword_tokens": ["עֵקֶר"],
+    "page_start": 585,
+    "page_end": 585,
+    "gloss_es": "Vástago, descendiente",
+    "text": "עֵקֶר: Descendiente, vástago de una familia extranjera (Lv 25:47)."
+  },
+  {
+    "id": "heb-002333",
+    "lemma": "עַקְרָב",
+    "headword_line": "עַקְרָב (pl. עַקְרַבִּים)",
+    "headword_tokens": ["עַקְרָב", "עַקְרַבִּים"],
+    "page_start": 585,
+    "page_end": 585,
+    "gloss_es": "Escorpión",
+    "text": "עַקְרָב: Escorpión, alacrán (Dt 8:15, 1 Re 12:11, Ez 2:6). Nombre de un desfiladero (Nm 34:4)."
+  },
+  {
+    "id": "heb-002334",
+    "lemma": "עָקַשׁ",
+    "headword_line": "עָקַשׁ",
+    "headword_tokens": ["עָקַשׁ"],
+    "page_start": 585,
+    "page_end": 585,
+    "gloss_es": "Torcer, pervertir",
+    "text": "עָקַשׁ\nNifal: Extraviarse, proceder torcidamente (Prov 28:18).\nPiel: Pervertir (Is 59:8, Prov 10:9). Torcer el derecho (Miq 3:9).\nHifil: Declarar perverso (Job 9:20)."
+  },
+  {
+    "id": "heb-002335",
+    "lemma": "עִקֵּשׁ",
+    "headword_line": "עִקֵּשׁ",
+    "headword_tokens": ["עִקֵּשׁ"],
+    "page_start": 585,
+    "page_end": 585,
+    "gloss_es": "Torcido, falso",
+    "text": "עִקֵּשׁ: Torcido, retorcido, falso, pervertido, depravado (Dt 32:5, Sal 18:27, Prov 2:15, 11:20)."
+  },
+  {
+    "id": "heb-002336",
+    "lemma": "עִקְּשׁוּת",
+    "headword_line": "עִקְּשׁוּת",
+    "headword_tokens": ["עִקְּשׁוּת"],
+    "page_start": 585,
+    "page_end": 585,
+    "gloss_es": "Falsedad, engaño",
+    "text": "עִקְּשׁוּת: Falsedad, falsía, engaño (Prov 4:24, 6:12)."
+  },
+  {
+    "id": "heb-002337",
+    "lemma": "עָר",
+    "headword_line": "עָר (pl. עָרִים)",
+    "headword_tokens": ["עָר", "עָרִים"],
+    "page_start": 586,
+    "page_end": 586,
+    "gloss_es": "Enemigo",
+    "text": "עָר (c. suf. עָרֶיךָ): Enemigo, rival (1 Sm 28:16, Eclo 37:5)."
+  },
+  {
+    "id": "heb-002338",
+    "lemma": "עָרַב",
+    "headword_line": "עָרַב [I]",
+    "headword_tokens": ["עָרַב"],
+    "page_start": 586,
+    "page_end": 586,
+    "gloss_es": "Comerciar, empeñar",
+    "text": "עָרַב [I]\nQal: a) Comerciar, traficar (Ez 27:9, 27). b) Empeñar, hipotecar (Neh 5:3). c) Salir fiador, dar fianza o garantía (Gn 43:9, Sal 119:122, Prov 6:1, Job 17:3).\nHitpael: Apostar (2 Re 18:23, Is 36:8)."
+  },
+  {
+    "id": "heb-002339",
+    "lemma": "עָרַב",
+    "headword_line": "עָרַב [II]",
+    "headword_tokens": ["עָרַב", "הִתְעָרֵב"],
+    "page_start": 586,
+    "page_end": 586,
+    "gloss_es": "Mezclarse",
+    "text": "עָרַב [II]\nHitpael (הִתְעָרֵב): Mezclarse, juntarse, enzarzarse; emparentar (Sal 106:35, Prov 14:10, Esd 9:2)."
+  },
+  {
+    "id": "heb-002340",
+    "lemma": "עָרַב",
+    "headword_line": "עָרַב [III]",
+    "headword_tokens": ["עָרַב"],
+    "page_start": 586,
+    "page_end": 586,
+    "gloss_es": "Agradar, ser grato",
+    "text": "עָרַב [III]\nQal: Agradar, complacer; deleitar, ser grato (Jr 6:20, Sal 104:34, Prov 3:24).\nHifil: Hacer agradable (Eclo 40:21)."
+  },
+  {
+    "id": "heb-002341",
+    "lemma": "עָרַב",
+    "headword_line": "עָרַב [IV]",
+    "headword_tokens": ["עָרַב", "הֶעֱרִיב"],
+    "page_start": 586,
+    "page_end": 586,
+    "gloss_es": "Atardecer",
+    "text": "עָרַב [IV]\nQal: Atardecer; caer la tarde, oscurecer (Jue 19:9, Is 24:11).\nHifil (הֶעֱרִיב): Al atardecer (1 Sm 17:16)."
+  },
+  {
+    "id": "heb-002342",
+    "lemma": "עָרֵב",
+    "headword_line": "עָרֵב",
+    "headword_tokens": ["עָרֵב"],
+    "page_start": 586,
+    "page_end": 586,
+    "gloss_es": "Grato, dulce",
+    "text": "עָרֵב: Grato, dulce, deleitoso, placentero (Prov 20:17, Cant 2:14, Eclo 6:5)."
+  },
+  {
+    "id": "heb-002343",
+    "lemma": "עָרֹב",
+    "headword_line": "עָרֹב",
+    "headword_tokens": ["עָרֹב"],
+    "page_start": 586,
+    "page_end": 586,
+    "gloss_es": "Tábanos, enjambre",
+    "text": "עָרֹב: Colectivo: moscas, tábanos, moscones (Ex 8:17, Sal 78:45, 105:31)."
+  },
+  {
+    "id": "heb-002344",
+    "lemma": "עֵרֶב",
+    "headword_line": "עֵרֶב [I]",
+    "headword_tokens": ["עֵרֶב"],
+    "page_start": 586,
+    "page_end": 586,
+    "gloss_es": "Urdimbre",
+    "text": "עֵרֶב [I]: Urdimbre (Lv 13:48, 51, 56) correlativo de שְׁתִי (trama)."
+  },
+  {
+    "id": "heb-002345",
+    "lemma": "עֵרֶב",
+    "headword_line": "עֵרֶב [II]",
+    "headword_tokens": ["עֵרֶב"],
+    "page_start": 586,
+    "page_end": 587,
+    "gloss_es": "Turba, mezcla",
+    "text": "עֵרֶב [II]: Turba, masa, turbamulta, gente mezclada (Ex 12:38, Jr 25:20, Neh 13:3)."
+  },
+  {
+    "id": "heb-002346",
+    "lemma": "עֶרֶב",
+    "headword_line": "עֶרֶב",
+    "headword_tokens": ["עֶרֶב"],
+    "page_start": 586,
+    "page_end": 587,
+    "gloss_es": "Tarde, ocaso",
+    "text": "עֶרֶב (du. עַרְבַּיִם): Tarde, atardecer, crepúsculo, anochecer (Gn 1:5, Dt 28:67). בֵּין הָעַרְבַּיִם (entre dos luces) (Ex 12:6). עֵרֶב וָבֹקֶר (tarde y mañana)."
+  },
+  {
+    "id": "heb-002347",
+    "lemma": "עֲרָב",
+    "headword_line": "עֲרָב",
+    "headword_tokens": ["עֲרָב"],
+    "page_start": 587,
+    "page_end": 587,
+    "gloss_es": "Arabia",
+    "text": "עֲרָב: Arabia. Sólo en la expresión מַלְכֵי עֲרָב (reyes de Arabia) (1 Re 10:15, Jr 25:24)."
+  },
+  {
+    "id": "heb-002348",
+    "lemma": "עֹרֵב",
+    "headword_line": "עֹרֵב (pl. עֹרְבִים)",
+    "headword_tokens": ["עֹרֵב", "עֹרְבִים"],
+    "page_start": 587,
+    "page_end": 587,
+    "gloss_es": "Cuervo",
+    "text": "עֹרֵב: Cuervo (Gn 8:7, Lv 11:15, 1 Re 17:4, Cant 5:11)."
+  },
+  {
+    "id": "heb-002349",
+    "lemma": "עֲרָבָה",
+    "headword_line": "עֲרָבָה [I]",
+    "headword_tokens": ["עֲרָבָה"],
+    "page_start": 587,
+    "page_end": 587,
+    "gloss_es": "Sauce, chopo",
+    "text": "עֲרָבָה [I] (pl. עֲרָבִים): Sauce, chopo (Lv 23:40, Is 44:4, Sal 137:2)."
+  },
+  {
+    "id": "heb-002350",
+    "lemma": "עֲרָבָה",
+    "headword_line": "עֲרָבָה [II]",
+    "headword_tokens": ["עֲרָבָה"],
+    "page_start": 587,
+    "page_end": 587,
+    "gloss_es": "Estepa, páramo",
+    "text": "עֲרָבָה [II]: Estepa, páramo, yermo. Término geográfico (Estepa de Moab). עַרְבַת יְרִיחוֹ (llanuras de Jericó). יָם הָעֲרָבָה (Mar Muerto) (Jos 3:16)."
+  },
+  {
+    "id": "heb-002351",
+    "lemma": "עֲרֻבָּה",
+    "headword_line": "עֲרֻבָּה",
+    "headword_tokens": ["עֲרֻבָּה"],
+    "page_start": 587,
+    "page_end": 587,
+    "gloss_es": "Fianza",
+    "text": "עֲרֻבָּה: Fianza (Prov 17:18); recibo (1 Sm 17:18)."
+  },
+  {
+    "id": "heb-002352",
+    "lemma": "עֵרָבוֹן",
+    "headword_line": "עֵרָבוֹן",
+    "headword_tokens": ["עֵרָבוֹן"],
+    "page_start": 587,
+    "page_end": 587,
+    "gloss_es": "Prenda, señal",
+    "text": "עֵרָבוֹן: Prenda, garantía, señal (Gn 38:17, 18, 20)."
+  },
+  {
+    "id": "heb-002353",
+    "lemma": "עָרַג",
+    "headword_line": "עָרַג",
+    "headword_tokens": ["עָרַג"],
+    "page_start": 587,
+    "page_end": 587,
+    "gloss_es": "Anhelar, ansiar",
+    "text": "עָרַג\nQal: Ansiar, anhelar (Jl 1:20); de animales que braman por agua (Sal 42:2)."
+  },
+  {
+    "id": "heb-002354",
+    "lemma": "עָרָה",
+    "headword_line": "עָרָה",
+    "headword_tokens": ["עָרָה", "עֵרָה"],
+    "page_start": 587,
+    "page_end": 587,
+    "gloss_es": "Desnudar, derramar",
+    "text": "עָרָה\nNifal: Derramarse (Is 32:15).\nPiel (עֵרָה): a) Desnudar, despojar, descubrir (Is 3:17, Sal 137:7). b) Derramar, vaciar un cántaro o hucha (Gn 24:20, 2 Cr 24:11).\nHifil (הֶעֱרָה): Desnudar, descubrir; exponer la vida (Lv 20:18, Is 53:12).\nHitpael: Desnudarse (Lam 4:21)."
+  },
+  {
+    "id": "heb-002355",
+    "lemma": "עָשָׂה",
+    "headword_line": "עָשָׂה",
+    "headword_tokens": ["עָשָׂה"],
+    "page_start": 590,
+    "page_end": 595,
+    "gloss_es": "Hacer, actuar, crear",
+    "text": "עָשָׂה\nQal: Hacer, ejecutar, crear, construir, preparar, realizar, cumplir, actuar, tratar.\nA. Intransitivo: Actuar, obrar (Jos 9:4, Ez 17:17). B. Transitivo: Crear el mundo (Gn 1:16), realizar proezas (Sal 34:15). C. Con régimen: עָשָׂה חֶסֶד (tratar con lealtad/bondad). D. Específico: 1. Artesanía (Ex 31:4). 2. Culinario: preparar comida (Gn 27:17). 3. Cúltico: ofrecer sacrificios (Lv 9:7). 4. Ético: cometer infamia (Ez 22:9) o practicar justicia (Jr 5:1).\nNifal (נַעֲשָׂה): Hacerse, ser hecho, ser creado; suceder (Is 46:10, Ecl 1:9).\nPual: Ser formado (Sal 139:15)."
+  },
+  {
+    "id": "heb-002356",
+    "lemma": "עָרוּגָה",
+    "headword_line": "עָרוּגָה (pl. עֲרוּגוֹת)",
+    "headword_tokens": ["עָרוּגָה", "עֲרוּגוֹת"],
+    "page_start": 587,
+    "page_end": 587,
+    "gloss_es": "Bancal, arriate",
+    "text": "עָרוּגָה: Bancal, arriate, macizo de flores o plantas (Ez 17:7, Cant 5:13, 6:2)."
+  },
+  {
+    "id": "heb-002357",
+    "lemma": "עָרוֹד",
+    "headword_line": "עָרוֹד",
+    "headword_tokens": ["עָרוֹד"],
+    "page_start": 587,
+    "page_end": 587,
+    "gloss_es": "Onagro, asno salvaje",
+    "text": "עָרוֹד: Onagro, asno salvaje, cimarrón (Job 39:5)."
+  },
+  {
+    "id": "heb-002358",
+    "lemma": "עֶרְוָה",
+    "headword_line": "עֶרְוָה",
+    "headword_tokens": ["עֶרְוָה"],
+    "page_start": 587,
+    "page_end": 587,
+    "gloss_es": "Desnudez, vergüenza",
+    "text": "עֶרְוָה: Partes íntimas, desnudez, sexo (Gn 9:22, Ex 20:26, Ez 16:8). גִּלָּה עֶרְוָה (tener relaciones sexuales, descubrir la desnudez) (Lv 18:8). Metafórico: partes desguarnecidas de un país (Gn 42:9)."
+  },
+  {
+    "id": "heb-002359",
+    "lemma": "עָרוּם",
+    "headword_line": "עָרוּם",
+    "headword_tokens": ["עָרוּם"],
+    "page_start": 587,
+    "page_end": 587,
+    "gloss_es": "Astuto, cauto",
+    "text": "עָרוּם (pl. עֲרוּמִים): Astuto, ladino, taimado; cauto, cauteloso (Gn 3:1, Job 5:12, Prov 12:16, 22:3)."
+  },
+  {
+    "id": "heb-002360",
+    "lemma": "עָרוּץ",
+    "headword_line": "עָרוּץ",
+    "headword_tokens": ["עָרוּץ"],
+    "page_start": 587,
+    "page_end": 587,
+    "gloss_es": "Horrible, barranco",
+    "text": "עָרוּץ: Horrible, espantoso. Aplicado a valles o barrancos peligrosos (Job 30:6)."
+  },
+  {
+    "id": "heb-002361",
+    "lemma": "עֶרְיָה",
+    "headword_line": "עֶרְיָה",
+    "headword_tokens": ["עֶרְיָה"],
+    "page_start": 587,
+    "page_end": 587,
+    "gloss_es": "Desnudez",
+    "text": "עֶרְיָה: Desnudez (Ez 16:7, Miq 1:11, Hab 3:9). Frecuente en la expresión עָרוֹם וְעֶרְיָה (desnudo y en cueros)."
+  },
+  {
+    "id": "heb-002362",
+    "lemma": "עֲרִיסָה",
+    "headword_line": "עֲרִיסָה",
+    "headword_tokens": ["עֲרִיסָה"],
+    "page_start": 587,
+    "page_end": 587,
+    "gloss_es": "Masa, molienda",
+    "text": "עֲרִיסָה: Sólo en la expresión רֵאשִׁית עֲרִיסוֹתֵיכֶם (lo primero de vuestra masa/molienda) (Nm 15:20, Ez 44:30, Neh 10:38)."
+  },
+  {
+    "id": "heb-002363",
+    "lemma": "עֲרִיפִים",
+    "headword_line": "עֲרִיפִים",
+    "headword_tokens": ["עֲרִיפִים"],
+    "page_start": 587,
+    "page_end": 588,
+    "gloss_es": "Nubarrones",
+    "text": "עֲרִיפִים: Nubarrones, nubes oscuras (Is 5:30)."
+  },
+  {
+    "id": "heb-002364",
+    "lemma": "עָרִיץ",
+    "headword_line": "עָרִיץ (pl. עָרִיצִים)",
+    "headword_tokens": ["עָרִיץ", "עָרִיצִים"],
+    "page_start": 587,
+    "page_end": 588,
+    "gloss_es": "Tirano, violento",
+    "text": "עָרִיץ: Tirano, agresor, violento; fiero; triunfador (Is 13:11, 25:3, Jr 15:21). עוֹד עָרִיץ (banda de agresores) (Sal 86:14)."
+  },
+  {
+    "id": "heb-002365",
+    "lemma": "עֲרִירִי",
+    "headword_line": "עֲרִירִי",
+    "headword_tokens": ["עֲרִירִי"],
+    "page_start": 588,
+    "page_end": 588,
+    "gloss_es": "Sin hijos",
+    "text": "עֲרִירִי: Sin hijos, solitario (Gn 15:2, Lv 20:20, Jr 22:30)."
+  },
+  {
+    "id": "heb-002366",
+    "lemma": "עָרַךְ",
+    "headword_line": "עָרַךְ",
+    "headword_tokens": ["עָרַךְ", "הֶעֱרִיךְ"],
+    "page_start": 588,
+    "page_end": 588,
+    "gloss_es": "Colocar, ordenar",
+    "text": "עָרַךְ\nQal: Colocar, disponer, ordenar, organizar; preparar, apilar; proponer; comparar.\na) Militar: עָרַךְ מִלְחָמָה (ordenar batalla, presentar batalla) (Gn 14:8, 1 Sm 17:2). b) Jurídico: עָרַךְ מִשְׁפָּט (preparar la defensa o el caso) (Job 13:18). c) Culto: preparar altares o lámparas (Ex 27:21). d) Mesa: עָרַךְ שֻׁלְחָן (preparar la mesa) (Is 21:5, Sal 23:5).\nHifil (הֶעֱרִיךְ): Tasar, señalar tarifa; imponer impuesto (Lv 27:8, 2 Re 23:35)."
+  },
+  {
+    "id": "heb-002367",
+    "lemma": "עֵרֶךְ",
+    "headword_line": "עֵרֶךְ",
+    "headword_tokens": ["עֵרֶךְ"],
+    "page_start": 588,
+    "page_end": 588,
+    "gloss_es": "Fila, tasa",
+    "text": "עֵרֶך: a) Fila, hilera (Ex 40:4). b) Tasa, tarifa, precio, valoración (Lv 5:15, Nm 18:16, Job 28:13). c) Camarada, igual (Sal 55:14)."
+  },
+  {
+    "id": "heb-002368",
+    "lemma": "עָרַל",
+    "headword_line": "עָרַל",
+    "headword_tokens": ["עָרַל"],
+    "page_start": 588,
+    "page_end": 588,
+    "gloss_es": "No cosechar, prepucio",
+    "text": "עָרַל\nQal: No cosechar o considerar prohibido (fruto joven) (Lv 19:23).\nNifal: Dejar ver el prepucio (Hab 2:16)."
+  },
+  {
+    "id": "heb-002369",
+    "lemma": "עָרֵל",
+    "headword_line": "עָרֵל (pl. עֲרֵלִים)",
+    "headword_tokens": ["עָרֵל", "עֲרֵלִים"],
+    "page_start": 588,
+    "page_end": 588,
+    "gloss_es": "Incircunciso",
+    "text": "עָרֵל: Incircunciso (Gn 17:14, Ez 32:18). Metafórico: עֲרַל שְׂפָתַיִם (torpe de palabra) (Ex 6:12); עֲרַל לֵב (obstinado de mente) (Jr 9:25)."
+  },
+  {
+    "id": "heb-002370",
+    "lemma": "עָרְלָה",
+    "headword_line": "עָרְלָה",
+    "headword_tokens": ["עָרְלָה"],
+    "page_start": 588,
+    "page_end": 589,
+    "gloss_es": "Prepucio",
+    "text": "עָרְלָה (pl. עֳרָלוֹת): Prepucio (Gn 17:23, 1 Sm 18:25). מָל עָרְלָה (circuncidar el corazón, metafórico) (Dt 10:16)."
+  },
+  {
+    "id": "heb-002371",
+    "lemma": "עָרַם",
+    "headword_line": "עָרַם [I]",
+    "headword_tokens": ["עָרַם"],
+    "page_start": 589,
+    "page_end": 589,
+    "gloss_es": "Ser astuto",
+    "text": "עָרַם [I]\nQal: Ser o hacerse astuto, cauto (1 Sm 23:22, Prov 15:5).\nHifil: Maquinar, tramar planes (Sal 83:4)."
+  },
+  {
+    "id": "heb-002372",
+    "lemma": "עָרַם",
+    "headword_line": "עָרַם [II]",
+    "headword_tokens": ["עָרַם"],
+    "page_start": 589,
+    "page_end": 589,
+    "gloss_es": "Amontonarse",
+    "text": "עָרַם [II]\nNifal (נֶעֶרְמוּ): Amontonarse, alzarse (Ex 15:8)."
+  },
+  {
+    "id": "heb-002373",
+    "lemma": "עָרֹם",
+    "headword_line": "עָרֹם (f. עֲרֻמָּה)",
+    "headword_tokens": ["עָרֹם", "עֲרֹמִים"],
+    "page_start": 589,
+    "page_end": 589,
+    "gloss_es": "Desnudo",
+    "text": "עָרֹם (pl. עֲרוּמִים): Desnudo, desvestido, en cueros (Gn 2:25, Is 20:2, Job 1:21, Ecl 5:14)."
+  },
+  {
+    "id": "heb-002374",
+    "lemma": "עָרְמָה",
+    "headword_line": "עָרְמָה",
+    "headword_tokens": ["עָרְמָה"],
+    "page_start": 589,
+    "page_end": 589,
+    "gloss_es": "Astucia, sagacidad",
+    "text": "עָרְמָה: Astucia, cautela, sagacidad (Prov 1:4, 8:5, Job 5:13). Con premeditación (Ex 21:14)."
+  },
+  {
+    "id": "heb-002375",
+    "lemma": "עֲרֵמָה",
+    "headword_line": "עֲרֵמָה (pl. עֲרֵמוֹת)",
+    "headword_tokens": ["עֲרֵמָה", "עֲרֵמוֹת"],
+    "page_start": 589,
+    "page_end": 589,
+    "gloss_es": "Gavilla, montón",
+    "text": "עֲרֵמָה: Gavilla, haz, manojo, montón (Jr 50:26, Rut 3:7, Neh 13:15). Montón de trigo (Cant 7:3); de escombros (Neh 3:34)."
+  },
+  {
+    "id": "heb-002376",
+    "lemma": "עַרְמוֹן",
+    "headword_line": "עַרְמוֹן (pl. עַרְמוֹנִים)",
+    "headword_tokens": ["עַרְמוֹן", "עַרְמוֹנִים"],
+    "page_start": 589,
+    "page_end": 589,
+    "gloss_es": "Plátano (árbol)",
+    "text": "עַרְמוֹן: Plátano (árbol) (Gn 30:37, Ez 31:8)."
+  },
+  {
+    "id": "heb-002377",
+    "lemma": "עֲרֹעֵר",
+    "headword_line": "עֲרֹעֵר",
+    "headword_tokens": ["עֲרֹעֵר"],
+    "page_start": 589,
+    "page_end": 589,
+    "gloss_es": "Cardo, indefenso",
+    "text": "עֲרֹעֵר: a) Cardo (Jr 17:6). b) Indefenso, a la intemperie (Sal 102:18)."
+  },
+  {
+    "id": "heb-002378",
+    "lemma": "עָרַף",
+    "headword_line": "עָרַף [I]",
+    "headword_tokens": ["עָרַף"],
+    "page_start": 589,
+    "page_end": 589,
+    "gloss_es": "Destilar",
+    "text": "עָרַף [I]\nQal: Destilar rocío (Dt 33:28); derramarse como la lluvia (Dt 32:2)."
+  },
+  {
+    "id": "heb-002379",
+    "lemma": "עָרַף",
+    "headword_line": "עָרַף [II]",
+    "headword_tokens": ["עָרַף"],
+    "page_start": 589,
+    "page_end": 589,
+    "gloss_es": "Desnucar, romper cerviz",
+    "text": "עָרַף [II]\nQal: Desnucar, romper la cerviz (Ex 13:13, Dt 21:4, Is 66:3). Figurado: destruir altares (Os 10:2)."
+  },
+  {
+    "id": "heb-002380",
+    "lemma": "עֹרֶף",
+    "headword_line": "עֹרֶף",
+    "headword_tokens": ["עֹרֶף"],
+    "page_start": 589,
+    "page_end": 589,
+    "gloss_es": "Nuca, cerviz",
+    "text": "עֹרֶף (c. suf. עָרְפּוֹ): Nuca, cerviz (Gn 49:8, Lv 5:8). Figurado: קְשֵׁה עֹרֶף (terco, obstinado) (Ex 32:9). Dar la espalda (huida o desprecio) (Jos 7:8, Jr 2:27)."
+  },
+  {
+    "id": "heb-002381",
+    "lemma": "עֵת",
+    "headword_line": "עֵת (pl. עִתִּים)",
+    "headword_tokens": ["עֵת", "עִתּוֹת"],
+    "page_start": 597,
+    "page_end": 599,
+    "gloss_es": "Tiempo, momento, época",
+    "text": "עֵת (est. עֵת, pl. עִתִּים/עִתּוֹת): Tiempo, hora, momento, época, temporada, estación, plazo.\n1. Con partículas: בְּעֵת (en tiempo de), כְּעֵת (a estas horas), לְעֵת (a la hora de). 2. Determinaciones: עֵת הָאָסִיף (tiempo de la cosecha), עֵת צָרָה (momento de peligro). 3. Adverbial: בְּעִתּוֹ (a su tiempo, oportunamente) (Sal 1:3)."
+  },
+  {
+    "id": "heb-002382",
+    "lemma": "עַתָּה",
+    "headword_line": "עַתָּה",
+    "headword_tokens": ["עַתָּה"],
+    "page_start": 599,
+    "page_end": 599,
+    "gloss_es": "Ahora, ya",
+    "text": "עַתָּה (adv.): Ahora, al presente, ahora mismo.\na) Presente (Ex 18:11). b) Pasado próximo (acabar de) (Nm 22:38). c) Futuro próximo (Ex 6:1). d) Conjunción: Por tanto, pues bien (Ex 19:5, Sal 27:6)."
+  },
+  {
+    "id": "heb-002383",
+    "lemma": "עַתּוּד",
+    "headword_line": "עַתּוּד (pl. עַתּוּדִים)",
+    "headword_tokens": ["עַתּוּד", "עַתּוּדִים"],
+    "page_start": 599,
+    "page_end": 599,
+    "gloss_es": "Macho cabrío, potente",
+    "text": "עַתּוּד: a) Macho cabrío (Nm 7:17, Sal 50:9). b) Figurado: Potentados, magnates, jefes (Is 14:9)."
+  },
+  {
+    "id": "heb-002384",
+    "lemma": "עָתִיד",
+    "headword_line": "עָתִיד",
+    "headword_tokens": ["עָתִיד"],
+    "page_start": 599,
+    "page_end": 599,
+    "gloss_es": "Preparado, experto",
+    "text": "עָתִיד: Preparado, dispuesto (Est 3:14). Capaces, expertos (Job 3:8). Pl. f. עֲתִידוֹת (destino, cosas futuras) (Dt 32:35)."
+  },
+  {
+    "id": "heb-002385",
+    "lemma": "עַתִּיק",
+    "headword_line": "עַתִּיק",
+    "headword_tokens": ["עַתִּיק"],
+    "page_start": 599,
+    "page_end": 599,
+    "gloss_es": "Antiguo, espléndido",
+    "text": "עַתִּיק: a) Espléndido, duradero (Is 23:18). b) Antiguo, remoto (1 Cr 4:22). c) Destetado (Is 28:9)."
+  },
+  {
+    "id": "heb-002386",
+    "lemma": "עָתַק",
+    "headword_line": "עָתַק",
+    "headword_tokens": ["עָתַק", "הֶעְתִּיק"],
+    "page_start": 599,
+    "page_end": 600,
+    "gloss_es": "Moverse, envejecer",
+    "text": "עָתַק\nQal: Moverse, desplazarse (Job 14:18); envejecer (Sal 6:8).\nHifil (הֶעְתִּיק): a) Remover, desplazar (Job 9:5); copiar (Prov 25:1). b) Apartarse, alejarse (Gn 12:8)."
+  },
+  {
+    "id": "heb-002387",
+    "lemma": "עָתָק",
+    "headword_line": "עָתָק",
+    "headword_tokens": ["עָתָק"],
+    "page_start": 600,
+    "page_end": 600,
+    "gloss_es": "Insolencia",
+    "text": "עָתָק: Insolencia, petulancia, arrogancia al hablar (1 Sm 2,3, Sal 31:19, 94:4)."
+  },
+  {
+    "id": "heb-002388",
+    "lemma": "עָתַר",
+    "headword_line": "עָתַר [I]",
+    "headword_tokens": ["עָתַר", "נֶעְתַּר"],
+    "page_start": 600,
+    "page_end": 600,
+    "gloss_es": "Orar, suplicar",
+    "text": "עָתַר [I]\nQal: Rezar, orar; suplicar, interceder (Gn 25:21, Ex 8:26).\nNifal (נֶעְתַּר): Escuchar, atender una súplica, ser propicio (Gn 25:21, Is 19:22, 2 Cr 33:13).\nHifil (הֶעְתִּיר): Rezar, suplicar (Ex 8:4, Job 22:27)."
+  },
+  {
+    "id": "heb-002389",
+    "lemma": "עָתַר",
+    "headword_line": "עָתַר [II]",
+    "headword_tokens": ["עָתַר", "נַעְתָּרוֹת"],
+    "page_start": 600,
+    "page_end": 600,
+    "gloss_es": "Ser falaz",
+    "text": "עָתַר [II]\nNifal: Participio f. pl. נַעְתָּרוֹת (ser falaz, engañoso) (Prov 27:6)."
+  },
+  {
+    "id": "heb-002390",
+    "lemma": "עָתַר",
+    "headword_line": "עָתַר [III]",
+    "headword_tokens": ["עָתַר", "הֶעְתַּרְתֶּם"],
+    "page_start": 600,
+    "page_end": 600,
+    "gloss_es": "Insolentarse",
+    "text": "עָתַר [III]\nHifil: Insolentarse, hablar con arrogancia (Ez 35:13)."
+  },
+  {
+    "id": "heb-002391",
+    "lemma": "עָתָר",
+    "headword_line": "עָתָר",
+    "headword_tokens": ["עָתָר"],
+    "page_start": 600,
+    "page_end": 600,
+    "gloss_es": "Adorador, vapor",
+    "text": "עָתָר:\n1. El que reza, adorador (Sof 3:10).\n2. Vapor, humo (Ez 8:11)."
+  },
+  {
+    "id": "heb-002392",
+    "lemma": "עֲתֶרֶת",
+    "headword_line": "עֲתֶרֶת",
+    "headword_tokens": ["עֲתֶרֶת"],
+    "page_start": 600,
+    "page_end": 601,
+    "gloss_es": "Abundancia",
+    "text": "עֲתֶרֶת: Rebose, abundancia (Jr 33:6)."
+  },
+  {
+    "id": "heb-002393",
+    "lemma": "פֵּאָה",
+    "headword_line": "פֵּאָה (pl. פֵּאוֹת)",
+    "headword_tokens": ["פֵּאָה", "פֵּאוֹת"],
+    "page_start": 600,
+    "page_end": 600,
+    "gloss_es": "Lado, rincón",
+    "text": "פֵּאָה: Lado, sector, costado; frontera, dirección; ángulo. Sienes, patillas (Lv 13:41, Jr 9:25). Rincón o borde del campo (Lv 19:9)."
+  },
+  {
+    "id": "heb-002394",
+    "lemma": "פָּאַר",
+    "headword_line": "פָּאַר",
+    "headword_tokens": ["פָּאַר", "הִתְפָּאֵר"],
+    "page_start": 601,
+    "page_end": 601,
+    "gloss_es": "Honrar, gloriarse",
+    "text": "פָּאַר\nPiel (פֵּאֵר): Honrar, enaltecer, ennoblecer; ornar, engalanar (Is 55:5, 60:7, Sal 149:4).\nHitpael (הִתְפָּאֵר): a) Honrarse, enorgullecerse (Is 49:3, Ex 8:5). b) Engreírse, gloriarse (Jue 7:2, Is 10:15)."
+  },
+  {
+    "id": "heb-002395",
+    "lemma": "פְּאֵר",
+    "headword_line": "פְּאֵר (pl. פְּאֵרִים)",
+    "headword_tokens": ["פְּאֵר", "פְּאֵרִים"],
+    "page_start": 601,
+    "page_end": 601,
+    "gloss_es": "Turbante, adorno",
+    "text": "פְּאֵר: Turbante, tiara, adorno de cabeza (Ex 39:28, Is 3:20, Ez 24:17)."
+  },
+  {
+    "id": "heb-002396",
+    "lemma": "פֹּארָה",
+    "headword_line": "פֹּארָה",
+    "headword_tokens": ["פֹּארָה"],
+    "page_start": 601,
+    "page_end": 601,
+    "gloss_es": "Rama, fronda",
+    "text": "פֹּארָה (pl. פֹּארֹת): Copa del árbol, ramaje, fronda (Ez 17:6, 31:5)."
+  },
+  {
+    "id": "heb-002397",
+    "lemma": "פָּרוּר",
+    "headword_line": "פָּרוּר",
+    "headword_tokens": ["פָּרוּר"],
+    "page_start": 601,
+    "page_end": 601,
+    "gloss_es": "Rostro encendido",
+    "text": "פָּרוּר: Rostros enrojecidos, ardientes o sofocados (Jl 2:6, Nah 2:11)."
+  },
+  {
+    "id": "heb-002398",
+    "lemma": "פַּג",
+    "headword_line": "פַּג (pl. פַּגִּים)",
+    "headword_tokens": ["פַּג", "פַּגִּים"],
+    "page_start": 601,
+    "page_end": 601,
+    "gloss_es": "Higo verde",
+    "text": "פַּג (c. suf. פַּגֶּיהָ): Fruto inmaduro, higo verde (Cant 2:13)."
+  },
+  {
+    "id": "heb-002399",
+    "lemma": "פִּגּוּל",
+    "headword_line": "פִּגּוּל",
+    "headword_tokens": ["פִּגּוּל"],
+    "page_start": 601,
+    "page_end": 601,
+    "gloss_es": "Carne impura",
+    "text": "פִּגּוּל: Carne de sacrificio rechazada, abominable o impura (Lv 7:18, 19:7, Ez 4:14)."
+  },
+  {
+    "id": "heb-002400",
+    "lemma": "פֶּה",
+    "headword_line": "פֶּה",
+    "headword_tokens": ["פֶּה", "פִּי"],
+    "page_start": 602,
+    "page_end": 604,
+    "gloss_es": "Boca, palabra, orden",
+    "text": "פֶּה (est. פִּי, c. suf. פִּיו, pl. פִּיּוֹת):\nA. Físico: Boca, pico, hocico (Gn 8:11). Apertura de un pozo o cueva (Gn 29:2, Jos 10:18). B. Comer/Beber: Fauces del león (Sal 22:22). C. Hablar: Órgano del habla (Ex 4:10). D. Idiomático: פִּי יְהוָה (palabra del Señor). עַל פִּי (según la orden de, conforme a) (Gn 41:40, Dt 17:6). לְפִי חֶרֶב (a filo de espada). Cara a cara (Nm 12:8)."
+  },
+  {
+    "id": "heb-002401",
+    "lemma": "פּוּג",
+    "headword_line": "פּוּג",
+    "headword_tokens": ["פּוּג"],
+    "page_start": 604,
+    "page_end": 604,
+    "gloss_es": "Quedarse frío, desfallecer",
+    "text": "פּוּג\nQal (וַיָּפָג): Quedarse frío, yerto (Gn 45:26). הַתּוֹרָה- la ley cae en desuso (Hab 1:4). לֹא- sin descanso (Sal 77:3).\nNifal (נָפוֹג): Estar agotado (Sal 38:9).\nPiel: לֵב- recobrar el ánimo, consolar el corazón (Eclo 30:23)."
+  },
+  {
+    "id": "heb-002402",
+    "lemma": "פּוּגָה",
+    "headword_line": "פּוּגָה",
+    "headword_tokens": ["פּוּגָה"],
+    "page_start": 604,
+    "page_end": 604,
+    "gloss_es": "Reposo, descanso",
+    "text": "פּוּגָה (est. פּוּגַת): Reposo, descanso (Lam 2:18)."
+  },
+  {
+    "id": "heb-002403",
+    "lemma": "פּוּחַ",
+    "headword_line": "פּוּחַ",
+    "headword_tokens": ["פּוּחַ"],
+    "page_start": 604,
+    "page_end": 604,
+    "gloss_es": "Soplar, atizar",
+    "text": "פּוּחַ\nQal (יָפוּחַ): Soplar (Cant 2:17, 4:6).\nHifil (הֵפִיחַ): Orear (Cant 4:16). בָּאֵשׁ- atizar el fuego (Ez 21:36). קִרְיָה- agitar, soliviantar la ciudad (Prov 29:8). לַקֵּץ- חָזוֹן la visión jadea hacia la meta (Hab 2:3)."
+  },
+  {
+    "id": "heb-002404",
+    "lemma": "פּוּךְ",
+    "headword_line": "פּוּךְ",
+    "headword_tokens": ["פּוּךְ"],
+    "page_start": 604,
+    "page_end": 604,
+    "gloss_es": "Antimonio, cosmético",
+    "text": "פּוּךְ: Antimonio, cosmético para sombrear los ojos (2 Re 9:30, Jr 4:30); azabache (Is 54:11, 1 Cr 29:2)."
+  },
+  {
+    "id": "heb-002405",
+    "lemma": "פּוֹל",
+    "headword_line": "פּוֹל",
+    "headword_tokens": ["פּוֹל"],
+    "page_start": 604,
+    "page_end": 604,
+    "gloss_es": "Alubia, habichuela",
+    "text": "פּוֹל: Alubia, judía, habichuela, fríjol (2 Sm 17:28, Ez 4:9)."
+  },
+  {
+    "id": "heb-002406",
+    "lemma": "פּוּץ",
+    "headword_line": "פּוּץ",
+    "headword_tokens": ["פּוּץ"],
+    "page_start": 605,
+    "page_end": 605,
+    "gloss_es": "Dispersarse",
+    "text": "פּוּץ\nQal: Dispersarse, desperdigarse, desparramarse (Gn 11:4, Nm 10:35, Ez 34:5). Rebosar (Zac 1:17).\nNifal (נָפוֹץ): Dispersarse, desbaratarse (1 Re 22:17, Jr 10:21). Dividirse (Gn 10:18). Extenderse (2 Sm 18:8).\nHifil (הֵפִיץ): Esparcir, dispersar, desparramar, desbaratar (Gn 11:8, Dt 4:27, Ez 12:15, Sal 144:6)."
+  },
+  {
+    "id": "heb-002407",
+    "lemma": "פּוּק",
+    "headword_line": "פּוּק [I]",
+    "headword_tokens": ["פּוּק"],
+    "page_start": 605,
+    "page_end": 605,
+    "gloss_es": "Removerse, tambalearse",
+    "text": "פּוּק [I]\nQal: Titubear, vacilar (Is 28:7).\nHifil: (Re)moverse (Jr 10:4)."
+  },
+  {
+    "id": "heb-002408",
+    "lemma": "פּוּקָה",
+    "headword_line": "פּוּקָה",
+    "headword_tokens": ["פּוּקָה"],
+    "page_start": 605,
+    "page_end": 605,
+    "gloss_es": "Obstáculo, remordimiento",
+    "text": "פּוּקָה: Remordimientos (1 Sm 25:31), obstáculo, tropiezo."
+  },
+  {
+    "id": "heb-002409",
+    "lemma": "פּוּק",
+    "headword_line": "פּוּק [II]",
+    "headword_tokens": ["פּוּק"],
+    "page_start": 605,
+    "page_end": 605,
+    "gloss_es": "Obtener, otorgar",
+    "text": "פּוּק [II]\nHifil (יָפִיק): a) Obtener, alcanzar (Prov 3:13, 8:35, 12:2). b) Otorgar, ofrecer (Is 58:10); dar éxito (Sal 140:9)."
+  },
+  {
+    "id": "heb-002410",
+    "lemma": "פּוּר",
+    "headword_line": "פּוּר (pl. פּוּרִים)",
+    "headword_tokens": ["פּוּר", "פּוּרִים"],
+    "page_start": 605,
+    "page_end": 605,
+    "gloss_es": "Suertes, Purim",
+    "text": "פּוּר (pl. פּוּרִים): Suertes (Est 3:7, 9:24). Fiesta de Purim (Est 9:26)."
+  },
+  {
+    "id": "heb-002411",
+    "lemma": "פּוּרָה",
+    "headword_line": "פּוּרָה",
+    "headword_tokens": ["פּוּרָה"],
+    "page_start": 605,
+    "page_end": 605,
+    "gloss_es": "Lagar",
+    "text": "פּוּרָה: Lagar (Is 63:3, Ag 2:16)."
+  },
+  {
+    "id": "heb-002412",
+    "lemma": "פּוּשׁ",
+    "headword_line": "פּוּשׁ",
+    "headword_tokens": ["פּוּשׁ"],
+    "page_start": 605,
+    "page_end": 605,
+    "gloss_es": "Saltar, brincar",
+    "text": "פּוּשׁ\nQal: Brincar, saltar, trotar (Jr 50:11, Hab 1:8, Mal 3:20)."
+  },
+  {
+    "id": "heb-002413",
+    "lemma": "פָּז",
+    "headword_line": "פָּז",
+    "headword_tokens": ["פָּז"],
+    "page_start": 605,
+    "page_end": 605,
+    "gloss_es": "Oro fino",
+    "text": "פָּז: Oro fino, de calidad especial (Is 13:12, Sal 19:11, Cant 5:11). עֲטֶרֶת פָּז corona de oro (Sal 21:4)."
+  },
+  {
+    "id": "heb-002414",
+    "lemma": "פָּזַז",
+    "headword_line": "פָּזַז [I]",
+    "headword_tokens": ["פָּזַז"],
+    "page_start": 605,
+    "page_end": 605,
+    "gloss_es": "Ser refinado",
+    "text": "פָּזַז [I]\nHofal: Participio (מֻפְזָז): Oro refinado, acendrado (1 Re 10:18)."
+  },
+  {
+    "id": "heb-002415",
+    "lemma": "פָּזַז",
+    "headword_line": "פָּזַז [II]",
+    "headword_tokens": ["פָּזַז"],
+    "page_start": 605,
+    "page_end": 606,
+    "gloss_es": "Ágil, saltar",
+    "text": "פָּזַז [II]\nQal: Ser ágil o fuerte (Gn 49:24).\nPiel (מְפַזֵּז): Brincar, hacer piruetas (2 Sm 6:16)."
+  },
+  {
+    "id": "heb-002416",
+    "lemma": "פָּזַר",
+    "headword_line": "פָּזַר",
+    "headword_tokens": ["פָּזַר"],
+    "page_start": 606,
+    "page_end": 606,
+    "gloss_es": "Dispersar, repartir",
+    "text": "פָּזַר\nQal: Ir descarriado (Jr 50:17).\nNifal: Estar esparcido (Sal 141:7).\nPiel: Dispersar, esparcir (Sal 89:11). Repartir, ser generoso (Prov 11:24).\nPual: Estar diseminado (Est 3:8)."
+  },
+  {
+    "id": "heb-002417",
+    "lemma": "פַּח",
+    "headword_line": "פַּח [I]",
+    "headword_tokens": ["פַּח"],
+    "page_start": 606,
+    "page_end": 606,
+    "gloss_es": "Trampa, red",
+    "text": "פַּח [I] (pl. פַּחִים): Trampa, lazo, red, armadijo (Jos 23:13, Is 8:14, Am 3:5, Sal 91:3). פַחַד וָפַחַת וָפָח pánico, fosa y trampa (Is 24:17)."
+  },
+  {
+    "id": "heb-002418",
+    "lemma": "פַּח",
+    "headword_line": "פַּח [II]",
+    "headword_tokens": ["פַּח"],
+    "page_start": 606,
+    "page_end": 606,
+    "gloss_es": "Lámina, pan",
+    "text": "פַּח [II] (pl. פַּחִים): Láminas o panes de metal (oro) (Ex 39:3, Nm 17:3)."
+  },
+  {
+    "id": "heb-002419",
+    "lemma": "פָּחַד",
+    "headword_line": "פָּחַד",
+    "headword_tokens": ["פָּחַד"],
+    "page_start": 606,
+    "page_end": 606,
+    "gloss_es": "Temer, temblar",
+    "text": "פָּחַד\nQal: Temer, atemorizarse, asustarse, temblar (Dt 28:66, Is 12:2, Jr 33:9). Respetar (Sal 119:161).\nPiel: Temer, asustarse (Is 51:13).\nHifil: Estremecer (Job 4:14)."
+  },
+  {
+    "id": "heb-002420",
+    "lemma": "פַּחַד",
+    "headword_line": "פַּחַד [I]",
+    "headword_tokens": ["פַּחַד"],
+    "page_start": 606,
+    "page_end": 606,
+    "gloss_es": "Miedo, pavor",
+    "text": "פַּחַד [I]: Miedo, pavor, terror, pánico (Jr 30:5, Sal 14:5, Job 15:21). פַּחַד יִצְחָק El Temor de Isaac (título divino) (Gn 31:42)."
+  },
+  {
+    "id": "heb-002421",
+    "lemma": "פַּחַד",
+    "headword_line": "פַּחַד [II]",
+    "headword_tokens": ["פַּחַד"],
+    "page_start": 606,
+    "page_end": 606,
+    "gloss_es": "Muslo",
+    "text": "פַּחַד [II]: Muslo, tendón del muslo (Job 40:17)."
+  },
+  {
+    "id": "heb-002422",
+    "lemma": "פֶּחָה",
+    "headword_line": "פֶּחָה (pl. פַּחוֹת)",
+    "headword_tokens": ["פֶּחָה", "פַּחוֹת"],
+    "page_start": 606,
+    "page_end": 607,
+    "gloss_es": "Gobernador",
+    "text": "פֶּחָה: Gobernador, prefecto (1 Re 20:24, Jr 51:23, Ag 1:1, Esd 8:36, Neh 5:14)."
+  },
+  {
+    "id": "heb-002423",
+    "lemma": "פָּחַז",
+    "headword_line": "פָּחַז",
+    "headword_tokens": ["פָּחַז"],
+    "page_start": 607,
+    "page_end": 607,
+    "gloss_es": "Ser insolente",
+    "text": "פָּחַז\nQal: Participio (פּוֹחֵז): Aventurero, fanfarrón (Jue 9:4, Sof 3:4).\nHifil: Perturbar, desviar (Eclo 8:2, 19:2)."
+  },
+  {
+    "id": "heb-002424",
+    "lemma": "פַּחַז",
+    "headword_line": "פַּחַז",
+    "headword_tokens": ["פַּחַז"],
+    "page_start": 607,
+    "page_end": 607,
+    "gloss_es": "Impetuosidad",
+    "text": "פַּחַז: Impetuosidad, insolencia, desenfreno (Gn 49:4)."
+  },
+  {
+    "id": "heb-002425",
+    "lemma": "פַּחֲזוּת",
+    "headword_line": "פַּחֲזוּת",
+    "headword_tokens": ["פַּחֲזוּת"],
+    "page_start": 607,
+    "page_end": 607,
+    "gloss_es": "Jactancia",
+    "text": "פַּחֲזוּת: Jactancia, fanfarronería (Jr 23:32)."
+  },
+  {
+    "id": "heb-002426",
+    "lemma": "פָּחַח",
+    "headword_line": "פָּחַח",
+    "headword_tokens": ["פָּחַח"],
+    "page_start": 607,
+    "page_end": 607,
+    "gloss_es": "Atrapar",
+    "text": "פָּחַח\nHifil (הָפֵחַ): Atrapar en una red (Is 42:22)."
+  },
+  {
+    "id": "heb-002427",
+    "lemma": "פֶּחָם",
+    "headword_line": "פֶּחָם",
+    "headword_tokens": ["פֶּחָם"],
+    "page_start": 607,
+    "page_end": 607,
+    "gloss_es": "Carbón, brasas",
+    "text": "פֶּחָם: Carbón, brasas, combustible (Is 44:12, Prov 26:21)."
+  },
+  {
+    "id": "heb-002428",
+    "lemma": "פַּחַת",
+    "headword_line": "פַּחַת (pl. פְּחָתִים)",
+    "headword_tokens": ["פַּחַת", "פְּחָתִים"],
+    "page_start": 607,
+    "page_end": 607,
+    "gloss_es": "Hoyo, fosa",
+    "text": "פַּחַת: Hoyo, fosa, zanja, barranco (2 Sm 17:9, 18:17, Lam 3:47)."
+  },
+  {
+    "id": "heb-002429",
+    "lemma": "פַּחֶתֶת",
+    "headword_line": "פַּחֶתֶת",
+    "headword_tokens": ["פַּחֶתֶת"],
+    "page_start": 607,
+    "page_end": 607,
+    "gloss_es": "Corrosión",
+    "text": "פַּחֶתֶת: Corrosión, mancha profunda en la tela (Lv 13:55)."
+  },
+  {
+    "id": "heb-002430",
+    "lemma": "פִּטְדָה",
+    "headword_line": "פִּטְדָה",
+    "headword_tokens": ["פִּטְדָה"],
+    "page_start": 607,
+    "page_end": 607,
+    "gloss_es": "Topacio",
+    "text": "פִּטְדָה: Topacio (Ex 28:17, Ez 28:13, Job 28:19)."
+  },
+  {
+    "id": "heb-002431",
+    "lemma": "פַּטִּישׁ",
+    "headword_line": "פַּטִּישׁ",
+    "headword_tokens": ["פַּטִּישׁ"],
+    "page_start": 607,
+    "page_end": 607,
+    "gloss_es": "Martillo",
+    "text": "פַּטִּישׁ: Martillo (Is 41:7, Jr 23:29, 50:23)."
+  },
+  {
+    "id": "heb-002432",
+    "lemma": "פָּטַר",
+    "headword_line": "פָּטַר",
+    "headword_tokens": ["פָּטַר"],
+    "page_start": 607,
+    "page_end": 607,
+    "gloss_es": "Soltar, eximir",
+    "text": "פָּטַר\nQal: a) Soltar, abrir (1 Re 6:18, Prov 17:14). Exentar (1 Cr 9:33). b) Esquivar (1 Sm 19:10).\nHifil: Hacer visajes, burlarse (Sal 22:8)."
+  },
+  {
+    "id": "heb-002433",
+    "lemma": "פֶּטֶר",
+    "headword_line": "פֶּטֶר",
+    "headword_tokens": ["פֶּטֶר"],
+    "page_start": 607,
+    "page_end": 607,
+    "gloss_es": "Primogénito",
+    "text": "פֶּטֶר: Primogénito, primer parto (Ex 13:12, 34:19, Nm 3:12, Ez 20:26)."
+  },
+  {
+    "id": "heb-002434",
+    "lemma": "פַּכָּה",
+    "headword_line": "פַּכָּה",
+    "headword_tokens": ["פַּכָּה"],
+    "page_start": 607,
+    "page_end": 607,
+    "gloss_es": "Fluir",
+    "text": "פַּכָּה\nPiel (מְפַכִּים): Fluir, correr, manar (Ez 47:2)."
+  },
+  {
+    "id": "heb-002435",
+    "lemma": "פַּךְ",
+    "headword_line": "פַּךְ",
+    "headword_tokens": ["פַּךְ"],
+    "page_start": 607,
+    "page_end": 607,
+    "gloss_es": "Frasco, alcuza",
+    "text": "פַּךְ: Frasco, aceitera, alcuza (1 Sm 10:1, 2 Re 9:1, 3)."
+  },
+  {
+    "id": "heb-002436",
+    "lemma": "פָּלָא",
+    "headword_line": "פָּלָא [I]",
+    "headword_tokens": ["פָּלָא"],
+    "page_start": 607,
+    "page_end": 608,
+    "gloss_es": "Ser maravilloso",
+    "text": "פָּלָא [I]\nNifal (נִפְלָא): Ser difícil, imposible; ser maravilloso, prodigioso, milagroso (Gn 18:14, Dt 30:11, Jr 32:17, Sal 118:23).\nHifil (הִפְלִיא): Hacer maravillas, prodigios, milagros; extremar (Sal 31:22, Is 28:29, 2 Cr 26:15).\nHitpael: Hacer proezas (Job 10:16)."
+  },
+  {
+    "id": "heb-002437",
+    "lemma": "פֶּלֶא",
+    "headword_line": "פֶּלֶא (pl. פְּלָאִים)",
+    "headword_tokens": ["פֶּלֶא", "פְּלָאִים"],
+    "page_start": 608,
+    "page_end": 608,
+    "gloss_es": "Maravilla, milagro",
+    "text": "פֶּלֶא: Maravilla, portento, prodigio, milagro (Ex 15:11, Is 9:5, Sal 77:12). Adjetivo: admirable (Eclo 11:4)."
+  },
+  {
+    "id": "heb-002438",
+    "lemma": "פִּלְאִי",
+    "headword_line": "פִּלְאִי",
+    "headword_tokens": ["פִּלְאִי"],
+    "page_start": 608,
+    "page_end": 608,
+    "gloss_es": "Admirable, misterioso",
+    "text": "פִּלְאִי (f. פִּלְאִיָּה): Admirable, misterioso, sublime (Jue 13:18, Sal 139:6)."
+  },
+  {
+    "id": "heb-002439",
+    "lemma": "פָּלָא",
+    "headword_line": "פָּלָא [II]",
+    "headword_tokens": ["פָּלָא"],
+    "page_start": 608,
+    "page_end": 608,
+    "gloss_es": "Cumplir un voto",
+    "text": "פָּלָא [II]\nPiel / Hifil: Hacer o cumplir un voto especial (Lv 22:21, 27:2, Nm 6:2)."
+  },
+  {
+    "id": "heb-002440",
+    "lemma": "פָּלַג",
+    "headword_line": "פָּלַג",
+    "headword_tokens": ["פָּלַג"],
+    "page_start": 608,
+    "page_end": 608,
+    "gloss_es": "Dividir, hendir",
+    "text": "פָּלַג\nNifal (נִפְלְגָה): Dividirse, desmembrarse (Gn 10:25).\nPiel (פִּלַּג): Hendir, abrir (Job 38:25)."
+  },
+  {
+    "id": "heb-002441",
+    "lemma": "פֶּלֶג",
+    "headword_line": "פֶּלֶג (pl. פְּלָגִים)",
+    "headword_tokens": ["פֶּלֶג", "פְּלָגִים"],
+    "page_start": 608,
+    "page_end": 608,
+    "gloss_es": "Canal, arroyo",
+    "text": "פֶּלֶג: Acequia, canal, arroyo (Sal 65:10). פַּלְגֵי-מַיִם canales de agua, lágrimas (Is 32:2, Sal 119:136)."
+  },
+  {
+    "id": "heb-002442",
+    "lemma": "פְּלַגָּה",
+    "headword_line": "פְּלַגָּה",
+    "headword_tokens": ["פְּלַגָּה"],
+    "page_start": 608,
+    "page_end": 608,
+    "gloss_es": "Arroyo, división",
+    "text": "פְּלַגָּה (pl. פְּלַגּוֹת):\n1. Arroyo, curso de agua (Jue 5:15, Job 20:17).\n2. División, grupo (2 Cr 35:5)."
+  },
+  {
+    "id": "heb-002443",
+    "lemma": "פִּילֶגֶשׁ",
+    "headword_line": "פִּילֶגֶשׁ (pl. פִּילַגְשִׁים)",
+    "headword_tokens": ["פִּילֶגֶשׁ", "פִּילַגְשִׁים"],
+    "page_start": 608,
+    "page_end": 608,
+    "gloss_es": "Concubina, amante",
+    "text": "פִּילֶגֶשׁ: a) Concubina, barragana (Gn 22:24, Jue 19:1, 2 Sm 16:21). b) Amante, rufián (Ez 23:20)."
+  },
+  {
+    "id": "heb-002444",
+    "lemma": "פְּלָדוֹת",
+    "headword_line": "פְּלָדוֹת",
+    "headword_tokens": ["פְּלָדוֹת"],
+    "page_start": 608,
+    "page_end": 608,
+    "gloss_es": "Acero, blindaje",
+    "text": "פְּלָדוֹת: Revestimiento de acero, blindaje (Nah 2:4)."
+  },
+  {
+    "id": "heb-002445",
+    "lemma": "פָּלָה",
+    "headword_line": "פָּלָה",
+    "headword_tokens": ["פָּלָה"],
+    "page_start": 608,
+    "page_end": 608,
+    "gloss_es": "Distinguir, señalar",
+    "text": "פָּלָה\nNifal (נִפְלִינוּ): Distinguirse, señalarse (Ex 33:16).\nHifil (הִפְלָה): Distinguir, señalar, tratar con preferencia (Ex 8:18, 9:4, Sal 4:4)."
+  },
+  {
+    "id": "heb-002446",
+    "lemma": "פָּלַח",
+    "headword_line": "פָּלַח",
+    "headword_tokens": ["פָּלַח"],
+    "page_start": 608,
+    "page_end": 609,
+    "gloss_es": "Hender, atravesar",
+    "text": "פָּלַח\nQal: Surcar; hendir (Sal 141:7).\nPiel: Atravesar, perforar, desgarrar (Job 16:13, Prov 7:23). Abrir paso (Job 39:3)."
+  },
+  {
+    "id": "heb-002447",
+    "lemma": "פֶּלַח",
+    "headword_line": "פֶּלַח",
+    "headword_tokens": ["פֶּלַח"],
+    "page_start": 609,
+    "page_end": 609,
+    "gloss_es": "Trozo, rebanada",
+    "text": "פֶּלַח: Casco (de fruta), rebanada, trozo (Cant 4:3, 1 Sm 30:12). פֶּלַח רֶכֶב piedra superior de molino (Jue 9:53, Job 41:16)."
+  },
+  {
+    "id": "heb-002448",
+    "lemma": "פָּלַט",
+    "headword_line": "פָּלַט",
+    "headword_tokens": ["פָּלַט"],
+    "page_start": 609,
+    "page_end": 609,
+    "gloss_es": "Escapar, salvar",
+    "text": "פָּלַט\nQal: Escapar, evadirse, huir (Ez 7:16).\nPiel (פִּלֵּט): Librar, poner a salvo; preservar, salvar. (Sal 18:3, 22:5, 31:2). Dar a luz (Job 21:10).\nHifil: Retener, poner a salvo (Is 5:29)."
+  },
+  {
+    "id": "heb-002449",
+    "lemma": "פָּלִיט",
+    "headword_line": "פָּלִיט (pl. פְּלִיטִים)",
+    "headword_tokens": ["פָּלִיט", "פְּלִיטִים"],
+    "page_start": 609,
+    "page_end": 609,
+    "gloss_es": "Superviviente, fugitivo",
+    "text": "פָּלִיט: Superviviente, evadido, escapado, fugitivo (Gn 14:13, Jue 12:5, Jr 42:17). פְלִיטֵי חֶרֶב escapados de la espada (Jr 44:28)."
+  },
+  {
+    "id": "heb-002450",
+    "lemma": "פְּלֵיטָה",
+    "headword_line": "פְּלֵיטָה",
+    "headword_tokens": ["פְּלֵיטָה"],
+    "page_start": 609,
+    "page_end": 609,
+    "gloss_es": "Resto, salvación",
+    "text": "פְּלֵיטָה: a) Resto, supervivientes (Jue 21:17, Is 4:2, Esd 9:14). b) Huida, escape, escapatoria (2 Sm 15:14, Jr 25:35)."
+  },
+  {
+    "id": "heb-002451",
+    "lemma": "פְּלִילָה",
+    "headword_line": "פְּלִילָה",
+    "headword_tokens": ["פְּלִילָה"],
+    "page_start": 609,
+    "page_end": 609,
+    "gloss_es": "Sentencia, juicio",
+    "text": "פְּלִילָה: Decisión, sentencia, juicio (Is 16:3, 28:7)."
+  },
+  {
+    "id": "heb-002452",
+    "lemma": "פְּלִילִי",
+    "headword_line": "פְּלִילִי",
+    "headword_tokens": ["פְּלִילִי"],
+    "page_start": 609,
+    "page_end": 609,
+    "gloss_es": "Judicial",
+    "text": "פְּלִילִי: De competencia judicial (Job 31:28)."
+  },
+  {
+    "id": "heb-002453",
+    "lemma": "פְּלִילִים",
+    "headword_line": "פְּלִילִים",
+    "headword_tokens": ["פְּלִילִים"],
+    "page_start": 609,
+    "page_end": 610,
+    "gloss_es": "Jueces, árbitros",
+    "text": "פְּלִילִים: Jueces, árbitros, jurado (Ex 21:22, Dt 32:31, Job 31:11)."
+  },
+  {
+    "id": "heb-002454",
+    "lemma": "פֶּלֶךְ",
+    "headword_line": "פֶּלֶךְ",
+    "headword_tokens": ["פֶּלֶךְ"],
+    "page_start": 610,
+    "page_end": 610,
+    "gloss_es": "Distrito, rueca",
+    "text": "פֶּלֶךְ: a) Rueca para hilar (Prov 31:19, 2 Sm 3:29). b) Distrito, barrio, comarca (Neh 3:9, 12, 14)."
+  },
+  {
+    "id": "heb-002455",
+    "lemma": "פָּלַל",
+    "headword_line": "פָּלַל",
+    "headword_tokens": ["פָּלַל"],
+    "page_start": 610,
+    "page_end": 610,
+    "gloss_es": "Mediar, rezar",
+    "text": "פָּלַל\nPiel (פִּלֵּל): Arbitrar, sentenciar, fallar (1 Sm 2:25, Sal 106:30). Pensar, contar con (Gn 48:11).\nHitpael (הִתְפַּלֵּל): Rezar, suplicar, orar, interceder (Gn 20:7, Nm 11:2, 1 Sm 1:12, Jr 7:16). Construido con אֶל (hacia Dios) o בְּעַד (por alguien)."
+  },
+  {
+    "id": "heb-002456",
+    "lemma": "פַּלְמוֹנִי",
+    "headword_line": "פַּלְמוֹנִי",
+    "headword_tokens": ["פַּלְמוֹנִי"],
+    "page_start": 610,
+    "page_end": 610,
+    "gloss_es": "Zutano, alguien",
+    "text": "פַּלְמוֹנִי: Alguien determinado, zutano (Dn 8:13)."
+  },
+  {
+    "id": "heb-002457",
+    "lemma": "פְּלֹנִי",
+    "headword_line": "פְּלֹנִי",
+    "headword_tokens": ["פְּלֹנִי"],
+    "page_start": 610,
+    "page_end": 610,
+    "gloss_es": "Fulano",
+    "text": "פְּלֹנִי: Fulano, tal. + אַלְמֹנִי mengano (1 Sm 21:3, 2 Re 6:8, Rut 4:1)."
+  },
+  {
+    "id": "heb-002458",
+    "lemma": "פָּלַס",
+    "headword_line": "פָּלַס",
+    "headword_tokens": ["פָּלַס"],
+    "page_start": 610,
+    "page_end": 610,
+    "gloss_es": "Allanar, pesar",
+    "text": "פָּלַס\nPiel (פִּלֵּס): a) Allanar, igualar, nivelar (Is 26:7, Prov 4:26). נָתִיב לְאַף dar curso a la cólera (Sal 78:50). b) Pesar, ponderar, calcular (Sal 58:3, Prov 5:21)."
+  },
+  {
+    "id": "heb-002459",
+    "lemma": "פֶּלֶס",
+    "headword_line": "פֶּלֶס",
+    "headword_tokens": ["פֶּלֶס"],
+    "page_start": 610,
+    "page_end": 610,
+    "gloss_es": "Balanza",
+    "text": "פֶּלֶס: Balanza, peso, báscula (Is 40:12, Prov 16:11, Eclo 42:4)."
+  },
+  {
+    "id": "heb-002460",
+    "lemma": "פָּלַץ",
+    "headword_line": "פָּלַץ",
+    "headword_tokens": ["פָּלַץ"],
+    "page_start": 610,
+    "page_end": 610,
+    "gloss_es": "Temblar",
+    "text": "פָּלַץ\nHitpael (יִתְפַּלָּצוּ): Temblar, retemblar, sacudirse (Job 9:6)."
+  },
+  {
+    "id": "heb-002461",
+    "lemma": "פַּלָּצוּת",
+    "headword_line": "פַַּלָּצוּת",
+    "headword_tokens": ["פַַּלָּצוּת"],
+    "page_start": 610,
+    "page_end": 610,
+    "gloss_es": "Temblor, escalofrío",
+    "text": "פַּלָּצוּת: Temblor, estremecimiento, agitación, escalofrío, convulsión (Is 21:4, Ez 7:18, Sal 55:6, Job 21:6)."
+  },
+  {
+    "id": "heb-002462",
+    "lemma": "פָּלַשׁ",
+    "headword_line": "פָּלַשׁ",
+    "headword_tokens": ["פָּלַשׁ"],
+    "page_start": 610,
+    "page_end": 611,
+    "gloss_es": "Revolcarse",
+    "text": "פָּלַשׁ\nHitpael (הִתְפַּלֵּשׁ): Revolcarse en ceniza o polvo (Jr 6:26, 25:34, Ez 27:30, Miq 1:10)."
+  },
+  {
+    "id": "heb-002463",
+    "lemma": "פֶּן",
+    "headword_line": "פֶּן",
+    "headword_tokens": ["פֶּן"],
+    "page_start": 611,
+    "page_end": 611,
+    "gloss_es": "Para que no",
+    "text": "פֶּן: Partícula negativa final: (para) que no, de modo que no.\n1. Uso: Sigue a imperativos o advertencias (Gn 3:22, Nm 16:26, Jue 18:25). 2. Equivalencias: No sea que, no vaya a, para no + infinitivo. כִּי אָמַר פֶּן pensando: no vaya a ser que (Gn 38:11)."
+  },
+  {
+    "id": "heb-002464",
+    "lemma": "פַּנַּג",
+    "headword_line": "פַּנַּג",
+    "headword_tokens": ["פַּנַּג"],
+    "page_start": 611,
+    "page_end": 611,
+    "gloss_es": "Dulces, rosquillas",
+    "text": "פַּנַּג: Panes, dulces, rosquillas o confituras (Ez 27:17)."
+  },
+  {
+    "id": "heb-002465",
+    "lemma": "פָּנָה",
+    "headword_line": "פָּנָה",
+    "headword_tokens": ["פָּנָה"],
+    "page_start": 611,
+    "page_end": 612,
+    "gloss_es": "Volverse, dirigirse",
+    "text": "פָּנָה\nQal: Dirigirse, acudir, volverse; apartarse; prestar atención.\n1. Dirección: Dirigirse a un lugar (Jr 50:16), acudir a una persona (Sal 40:5). 2. Cambio: Apartarse (Dt 29:17), volver la cabeza (2 Sm 1:7), huir. 3. Metafórico: Atender, fijarse, aceptar (Nm 16:15, Sal 69:17). 4. Orientación: Estar orientado, mirar a (Jos 15:2, Ez 8:3).\nPiel (פִּנָּה): Preparar, despejar, desalojar (Gn 24:31, Is 40:3). Expulsar (Sof 3:15).\nHifil (הִפְנָה): Volverse (Jr 46:5); volver la espalda (1 Sm 10:9).\nHofal: Volverse (Jr 49:8). Estar orientado (Ez 9:2)."
+  },
+  {
+    "id": "heb-002466",
+    "lemma": "פִּנָּה",
+    "headword_line": "פִּנָּה (pl. פִּנּוֹת)",
+    "headword_tokens": ["פִּנָּה", "פִּנּוֹת"],
+    "page_start": 612,
+    "page_end": 612,
+    "gloss_es": "Ángulo, esquina",
+    "text": "פִּנָּה: Esquina, ángulo, rincón; remate; almena (Ex 27:2, Is 28:16, Sof 1:16). אֶבֶן פִּנָּה piedra angular (Job 38:6). Título de jefes o eminentes (Jue 20:2, 1 Sm 14:38)."
+  },
+  {
+    "id": "heb-002467",
+    "lemma": "פָּנִים",
+    "headword_line": "פָּנִים",
+    "headword_tokens": ["פָּנִים"],
+    "page_start": 612,
+    "page_end": 614,
+    "gloss_es": "Rostro, cara, superficie",
+    "text": "פָּנִים: Rostro, cara, faz, semblante; superficie, fachada, aspecto.\nA. Sustantivo: 1. Físico: Rostro (Jr 13:26). פָנִים אֶל-פָּנִים cara a cara (Gn 32:31). 2. Gesto: Gesto duro (Dt 28:50), rostro sereno (Job 29:24). 3. Superficie: עַל-פְּנֵי sobre la faz de (Gn 1:2). 4. Adverbio: Personalmente, en persona (Ex 33:14).\nB. Verbos: הֵאִיר פָּנִים iluminar el rostro/favorecer (Nm 6:25). חִלָּה פָנִים aplacar, buscar favor (Ex 32:11). נָשָׂא פָנִים ser parcial o acoger (Gn 19:21).\nC. Preposiciones: לִפְנֵי (delante de, antes), מִפְּנֵי (a causa de, ante), עַל-פְּנֵי (sobre, frente a)."
+  },
+  {
+    "id": "heb-002468",
+    "lemma": "לִפְנֵי",
+    "headword_line": "לִפְנֵי",
+    "headword_tokens": ["לִפְנֵי"],
+    "page_start": 614,
+    "page_end": 615,
+    "gloss_es": "Delante de, en presencia de",
+    "text": "לִפְנֵי (prep./adv.): Ante, delante de, en presencia de, frente a. a) Espacial: Situado delante (Gn 20:15). En vanguardia (Jl 2:3). b) Temporal (לְפָנִים): Antes, anteriormente, antaño (Dt 2:10, Sal 102:26). c) Cúltico: לִפְנֵי יְהוָה delante del Señor (Ex 28:35, Lv 1:3)."
+  },
+  {
+    "id": "heb-002469",
+    "lemma": "מִפְּנֵי",
+    "headword_line": "מִפְּנֵי",
+    "headword_tokens": ["מִפְּנֵי"],
+    "page_start": 615,
+    "page_end": 616,
+    "gloss_es": "A causa de, por miedo a",
+    "text": "מִפְּנֵי (prep.): Ante, delante de; a causa de, por consideración a, por miedo a. Régimen de verbos de huir, temer o esconderse (Gn 16:6, Ex 14:25, Jr 5:22, Job 35:12)."
+  },
+  {
+    "id": "heb-002470",
+    "lemma": "פְּנִימָה",
+    "headword_line": "פְּנִימָה",
+    "headword_tokens": ["פְּנִימָה"],
+    "page_start": 616,
+    "page_end": 616,
+    "gloss_es": "Dentro, adentro",
+    "text": "פְּנִימָה: Dentro, adentro, hacia el interior; fondo, camarín (Lv 10:18, 1 Re 6:18, Sal 45:14)."
+  },
+  {
+    "id": "heb-002471",
+    "lemma": "פְּנִימִי",
+    "headword_line": "פְּנִימִי (f. פְּנִימִית)",
+    "headword_tokens": ["פְּנִימִי", "פְּנִימִית"],
+    "page_start": 616,
+    "page_end": 617,
+    "gloss_es": "Interior, interno",
+    "text": "פְּנִימִי: Interior, interno, profundo (1 Re 6:27, Ez 40:15, Est 4:11)."
+  },
+  {
+    "id": "heb-002472",
+    "lemma": "פְּנִינִים",
+    "headword_line": "פְּנִינִים",
+    "headword_tokens": ["פְּנִינִים"],
+    "page_start": 617,
+    "page_end": 617,
+    "gloss_es": "Corales, perlas",
+    "text": "פְּנִינִים (pl.): Corales, perlas, piedras preciosas (Job 28:18, Prov 3:15, 31:10, Lam 4:7)."
+  },
+  {
+    "id": "heb-002473",
+    "lemma": "פָּנַק",
+    "headword_line": "פָּנַק",
+    "headword_tokens": ["פָּנַק"],
+    "page_start": 617,
+    "page_end": 617,
+    "gloss_es": "Mimar, consentir",
+    "text": "פָּנַק\nPiel (מְפַנֵּק): Mimar, consentir, tratar con molicie (Prov 29:21, Eclo 14:16)."
+  },
+  {
+    "id": "heb-002474",
+    "lemma": "פַּס",
+    "headword_line": "פַּס",
+    "headword_tokens": ["פַּס"],
+    "page_start": 617,
+    "page_end": 617,
+    "gloss_es": "Talar, mangas",
+    "text": "פַּס: Sólo en כְּתֹנֶת פַּסִּים túnica talar (larga hasta los pies) o túnica con mangas (Gn 37:3, 2 Sm 13:18)."
+  },
+  {
+    "id": "heb-002475",
+    "lemma": "פָּסַג",
+    "headword_line": "פָּסַג",
+    "headword_tokens": ["פָּסַג"],
+    "page_start": 617,
+    "page_end": 617,
+    "gloss_es": "Observar, examinar",
+    "text": "פָּסַג\nPiel (פַּסְּגוּ): Observar, examinar, contemplar con atención (Sal 48:14)."
+  },
+  {
+    "id": "heb-002476",
+    "lemma": "פִּסָּה",
+    "headword_line": "פִּסָּה",
+    "headword_tokens": ["פִּסָּה"],
+    "page_start": 617,
+    "page_end": 617,
+    "gloss_es": "Abundancia",
+    "text": "פִּסָּה (est. פִּסַּת): Abundancia, copia, abasto de grano (Sal 72:16)."
+  },
+  {
+    "id": "heb-002477",
+    "lemma": "פָּסַח",
+    "headword_line": "פָּסַח",
+    "headword_tokens": ["פָּסַח"],
+    "page_start": 617,
+    "page_end": 617,
+    "gloss_es": "Cojear, pasar de largo",
+    "text": "פָּסַח\nQal: a) Cojear, renquear (1 Re 18:21). b) Pasar junto a, pasar de largo, saltar (Ex 12:13, 23, Is 31:5).\nNifal: Quedar cojo (2 Sm 4:4).\nPiel: Brincar, dar saltos (1 Re 18:26)."
+  },
+  {
+    "id": "heb-002478",
+    "lemma": "פֶּסַח",
+    "headword_line": "פֶּסַח",
+    "headword_tokens": ["פֶּסַח"],
+    "page_start": 617,
+    "page_end": 617,
+    "gloss_es": "Pascua",
+    "text": "פֶּסַח: Pascua, rito pascual; víctima del sacrificio pascual (Ex 12:11, 21, Nm 33:3, Dt 16:2). עָשָׂה פֶסַח celebrar la Pascua (Ex 12:48)."
+  },
+  {
+    "id": "heb-002479",
+    "lemma": "פִּסֵּחַ",
+    "headword_line": "פִּסֵּחַ (pl. פִּסְחִים)",
+    "headword_tokens": ["פִּסֵּחַ", "פִּסְחִים"],
+    "page_start": 617,
+    "page_end": 617,
+    "gloss_es": "Cojo",
+    "text": "פִּסֵּחַ: Cojo, rengo (Lv 21:18, Dt 15:21, 2 Sm 9:13, Job 29:15)."
+  },
+  {
+    "id": "heb-002480",
+    "lemma": "פָּסִיל",
+    "headword_line": "פָּסִיל (pl. פְּסִילִים)",
+    "headword_tokens": ["פָּסִיל", "פְּסִילִים"],
+    "page_start": 617,
+    "page_end": 617,
+    "gloss_es": "Ídolo, fetiche",
+    "text": "פָּסִיל: Ídolo, fetiche, efigie tallada (Jue 3:19, Is 30:22, Jr 8:19, Os 11:2). שָׁבַר פְּסִילִים quebrar ídolos (2 Cr 34:4)."
+  },
+  {
+    "id": "heb-002481",
+    "lemma": "פָּסַל",
+    "headword_line": "פָּסַל",
+    "headword_tokens": ["פָּסַל"],
+    "page_start": 617,
+    "page_end": 617,
+    "gloss_es": "Labrar, tallar",
+    "text": "פָּסַל\nQal: Labrar, tallar piedra o madera (Ex 34:1, Dt 10:1, 1 Re 5:32, Hab 2:18)."
+  },
+  {
+    "id": "heb-002482",
+    "lemma": "פֶּסֶל",
+    "headword_line": "פֶּסֶל",
+    "headword_tokens": ["פֶּסֶל"],
+    "page_start": 617,
+    "page_end": 617,
+    "gloss_es": "Estatua, ídolo",
+    "text": "פֶּסֶל: Estatua, imagen, efigie, ídolo (Jue 17:3, Is 40:19, Jr 10:14). פֶּסֶל עֵץ ídolo de madera (Is 45:20)."
+  },
+  {
+    "id": "heb-002483",
+    "lemma": "פָּסַס",
+    "headword_line": "פָּסַס",
+    "headword_tokens": ["פָּסַס"],
+    "page_start": 617,
+    "page_end": 617,
+    "gloss_es": "Acabarse",
+    "text": "פָּסַס\nQal: Acabarse, terminarse, desaparecer (Sal 12:2)."
+  },
+  {
+    "id": "heb-002484",
+    "lemma": "פָּעָה",
+    "headword_line": "פָּעָה",
+    "headword_tokens": ["פָּעָה"],
+    "page_start": 617,
+    "page_end": 617,
+    "gloss_es": "Gemir, sollozar",
+    "text": "פָּעָה\nQal: Gemir, sollozar, jadear (Is 42:14)."
+  },
+  {
+    "id": "heb-002485",
+    "lemma": "פָּעַל",
+    "headword_line": "פָּעַל",
+    "headword_tokens": ["פָּעַל"],
+    "page_start": 617,
+    "page_end": 618,
+    "gloss_es": "Hacer, obrar",
+    "text": "פָּעַל\nQal: Hacer, obrar, realizar, ejecutar; trabajar, afanarse. לֵב- planear (Sal 58:3). טוֹב- conceder favor (Sal 31:20). Participio (פֹּעֵל): Hacedor, Creador (Job 36:3). פֹּעֲלֵי אָוֶן malhechores (Sal 6:9, 14:4, Prov 10:29)."
+  },
+  {
+    "id": "heb-002486",
+    "lemma": "פֹּעַל",
+    "headword_line": "פֹּעַל",
+    "headword_tokens": ["פֹּעַל"],
+    "page_start": 618,
+    "page_end": 618,
+    "gloss_es": "Acción, obra",
+    "text": "פֹּעַל: a) Acción, acto, actividad (Is 41:24, Sal 90:16). b) Obra, hecho (Is 45:9). c) Faena, tarea (Sal 104:23). d) Proeza, hazaña (2 Sm 23:20). e) Salario, jornal (Jr 22:13, Job 7:2)."
+  },
+  {
+    "id": "heb-002487",
+    "lemma": "פְּעֻלָּה",
+    "headword_line": "פְּעֻלָּה (pl. פְּעֻלּוֹת)",
+    "headword_tokens": ["פְּעֻלָּה", "פְּעֻלּוֹת"],
+    "page_start": 618,
+    "page_end": 618,
+    "gloss_es": "Sueldo, recompensa",
+    "text": "פְּעֻלָּה: a) Sueldo, salario, jornal, paga (Lv 19:13, Ez 29:20). b) Recompensa, galardón (Is 40:10, Eclo 36:21). c) Trabajo (Jr 31:16)."
+  },
+  {
+    "id": "heb-002488",
+    "lemma": "פָּעַם",
+    "headword_line": "פָּעַם",
+    "headword_tokens": ["פָּעַם"],
+    "page_start": 618,
+    "page_end": 618,
+    "gloss_es": "Agitar, sobresaltar",
+    "text": "פָּעַם\nQal: Agitar (Jue 13:25).\nNifal (נִפְעַם): Ser agitado, sobresaltarse (Gn 41:8, Sal 77:5, Dn 2:1, 3).\nHitpael: Sobresaltarse (Dn 2:1)."
+  },
+  {
+    "id": "heb-002489",
+    "lemma": "פַּעַם",
+    "headword_line": "פַּעַם (pl. פְּעָמִים)",
+    "headword_tokens": ["פַַּעַם", "פְּעָמִים"],
+    "page_start": 618,
+    "page_end": 618,
+    "gloss_es": "Paso, pie, vez",
+    "text": "פַּעַם: a) Pies, pasos, pisadas (Sal 58:11, Cant 7:2). פַּעֲמֵי עָנִי pies de los pobres (Is 26:6). Pata o basa (Ex 25:12). b) Vez (Gn 41:32). הַפַּעַם esta vez, ahora (Gn 29:34). פַּעַם בְּפַעַם como otras veces (Jue 16:20). פַּעַם אַחַת de una sola vez (Jos 10:42)."
+  },
+  {
+    "id": "heb-002490",
+    "lemma": "פַּעֲמֹן",
+    "headword_line": "פַּעֲמֹן",
+    "headword_tokens": ["פַּעֲמֹן"],
+    "page_start": 618,
+    "page_end": 618,
+    "gloss_es": "Cascabel, campanilla",
+    "text": "פַּעֲמֹן (pl. פַּעֲמֹנִים): Cascabel, campanilla (Ex 28:34, 39:25)."
+  },
+  {
+    "id": "heb-002491",
+    "lemma": "פָּעַר",
+    "headword_line": "פָּעַר",
+    "headword_tokens": ["פָּעַר"],
+    "page_start": 618,
+    "page_end": 618,
+    "gloss_es": "Abrir, ensanchar",
+    "text": "פָּעַר\nQal: Abrir, dilatar, ensanchar (la boca). (Is 5:14, Sal 119:131, Job 16:10, 29:23)."
+  },
+  {
+    "id": "heb-002492",
+    "lemma": "פָּצָה",
+    "headword_line": "פָּצָה",
+    "headword_tokens": ["פָּצָה"],
+    "page_start": 618,
+    "page_end": 618,
+    "gloss_es": "Abrir la boca, librar",
+    "text": "פָּצָה\nQal: a) Abrir (especialmente la boca). Piar (Is 10:14); hablar (Job 35:16); prometer (Jue 11:35). La tierra abre sus fauces (Dt 11:6, Gn 4:11). b) Librar, soltar (Sal 144:7, 10, Eclo 51:2)."
+  },
+  {
+    "id": "heb-002493",
+    "lemma": "פָּצַח",
+    "headword_line": "פָּצַח [I]",
+    "headword_tokens": ["פָּצַח"],
+    "page_start": 618,
+    "page_end": 618,
+    "gloss_es": "Romper a cantar",
+    "text": "פָּצַח [I]\nQal: Romper a cantar, irrumpir en aclamaciones, gritar de júbilo (Is 14:7, 44:23, 54:1, Sal 98:4). + רִנָּה dar gritos de alegría (Is 52:9)."
+  },
+  {
+    "id": "heb-002494",
+    "lemma": "פָּצַח",
+    "headword_line": "פָּצַח [II]",
+    "headword_tokens": ["פָּצַח"],
+    "page_start": 618,
+    "page_end": 619,
+    "gloss_es": "Romper huesos",
+    "text": "פָּצַח [II]\nPiel: Romper, despedazar los huesos (Miq 3:3)."
+  },
+  {
+    "id": "heb-002495",
+    "lemma": "פְּצִירָה",
+    "headword_line": "פְּצִירָה",
+    "headword_tokens": ["פְּצִירָה"],
+    "page_start": 619,
+    "page_end": 619,
+    "gloss_es": "Precio, afilado",
+    "text": "פְּצִירָה: Precio, censo o herramienta afilada (dudoso) (1 Sm 13:21)."
+  },
+  {
+    "id": "heb-002496",
+    "lemma": "פָּצַל",
+    "headword_line": "פָּצַל",
+    "headword_tokens": ["פָּצַל"],
+    "page_start": 619,
+    "page_end": 619,
+    "gloss_es": "Pelar, descortezar",
+    "text": "פָּצַל\nPiel (פִּצֵּל): Pelar, descortezar varas (Gn 30:37, 38)."
+  },
+  {
+    "id": "heb-002497",
+    "lemma": "פְּצָלוֹת",
+    "headword_line": "פְּצָלוֹת",
+    "headword_tokens": ["פְּצָלוֹת"],
+    "page_start": 619,
+    "page_end": 619,
+    "gloss_es": "Peladuras, tiras",
+    "text": "פְּצָלוֹת: Tiras, peladuras, muescas blancas (Gn 30:37)."
+  },
+  {
+    "id": "heb-002498",
+    "lemma": "פָּצַם",
+    "headword_line": "פָּצַם",
+    "headword_tokens": ["פָּצַם"],
+    "page_start": 619,
+    "page_end": 619,
+    "gloss_es": "Agrietar, rajar",
+    "text": "פָּצַם\nQal: Agrietar, rajar, abrir brechas en la tierra (Sal 60:4)."
+  },
+  {
+    "id": "heb-002499",
+    "lemma": "פָּצַע",
+    "headword_line": "פָּצַע",
+    "headword_tokens": ["פָּצַע"],
+    "page_start": 619,
+    "page_end": 619,
+    "gloss_es": "Herir, mutilar",
+    "text": "פָּצַע\nQal: Herir, mutilar, dejar maltrecho (Dt 23:2, 1 Re 20:37, Cant 5:7)."
+  },
+  {
+    "id": "heb-002500",
+    "lemma": "פֶּצַע",
+    "headword_line": "פֶּצַע (pl. פְּצָעִים)",
+    "headword_tokens": ["פֶּצַע", "פְּצָעִים"],
+    "page_start": 619,
+    "page_end": 619,
+    "gloss_es": "Herida, llaga",
+    "text": "פֶּצַע: Herida, llaga, lesión (Gn 4:23, Ex 21:25, Is 1:6, Prov 20:30, Eclo 11:29)."
+  },
+  {
+    "id": "heb-002501",
+    "lemma": "פָּשַׁח",
+    "headword_line": "פָּשַׁח",
+    "headword_tokens": ["יִפְשְׁחֵנִי"],
+    "page_start": 626,
+    "page_end": 626,
+    "gloss_es": "Despedazar, desgarrar",
+    "text": "פָּשַׁח\nQal (יִפְשְׁחֵנִי): Despedazar, descuartizar, desgarrar (Lam 3:11)."
+  },
+  {
+    "id": "heb-002502",
+    "lemma": "פָּשַׁט",
+    "headword_line": "פָּשַׁט",
+    "headword_tokens": ["פָּשַׁט"],
+    "page_start": 626,
+    "page_end": 627,
+    "gloss_es": "Despojarse, saquear, asaltar",
+    "text": "פָּשַׁט\nQal: a) Despojarse, quitarse la ropa (Lv 6:4, Ez 44:19). b) Saquear, despojar personas (1 Sm 23:27). c) Asaltar, atacar lugares (Jue 9:33, 1 Sm 30:1, 1 Cr 14:9).\nPiel: Despojar, saquear (1 Sm 31:8, 2 Sm 23:10).\nHifil (הִפְשִׁיט): Quitar, despojar, desollar. Quitar la túnica (Gn 37:23); despellejar (Miq 3:3); desollar la víctima (Lv 1:6).\nHitpael: Quitarse el manto (1 Sm 18:4)."
+  },
+  {
+    "id": "heb-002503",
+    "lemma": "פָּשַׁע",
+    "headword_line": "פָּשַׁע",
+    "headword_tokens": ["פָּשַׁע"],
+    "page_start": 627,
+    "page_end": 627,
+    "gloss_es": "Rebelarse, pecar",
+    "text": "פָּשַׁע\nQal: Rebelarse, sublevarse; pecar, ofender (1 Re 8:50, Is 1:2, Jr 2:8, Os 7:13). Independizarse de (2 Re 8:20).\nNifal: Ser ofendido (Prov 18:19)."
+  },
+  {
+    "id": "heb-002504",
+    "lemma": "פֶּשַׁע",
+    "headword_line": "פֶּשַׁע (pl. פְּשָׁעִים)",
+    "headword_tokens": ["פֶּשַׁע"],
+    "page_start": 627,
+    "page_end": 627,
+    "gloss_es": "Delito, rebelión",
+    "text": "פֶּשַׁע: Delito, crimen, culpa, pecado, ofensa, rebeldía (Gn 31:36, Is 53:5, Am 1:3, Sal 5:11). יַלְדֵי-פֶשַׁע hijos ilegítimos (Is 57:4)."
+  },
+  {
+    "id": "heb-002505",
+    "lemma": "פֵּשֶׁר",
+    "headword_line": "פֵּשֶׁר",
+    "headword_tokens": ["פֵּשֶׁר"],
+    "page_start": 627,
+    "page_end": 627,
+    "gloss_es": "Interpretación",
+    "text": "פֵּשֶׁר: Interpretación, explicación (Ecl 8:1)."
+  },
+  {
+    "id": "heb-002506",
+    "lemma": "פְּשָׁרָה",
+    "headword_line": "פְּשָׁרָה",
+    "headword_tokens": ["פְּשָׁרָה"],
+    "page_start": 627,
+    "page_end": 627,
+    "gloss_es": "Diagnosis",
+    "text": "פְּשָׁרָה: Diagnosis médica (Eclo 38:14)."
+  },
+  {
+    "id": "heb-002507",
+    "lemma": "פִּשְׁתֶּה",
+    "headword_line": "פִּשְׁתֶּה",
+    "headword_tokens": ["פִּשְׁתֶּה"],
+    "page_start": 627,
+    "page_end": 627,
+    "gloss_es": "Lino, hilo",
+    "text": "פִּשְׁתֶּה: Lino, hilo (Lv 13:47, Is 19:9, Ez 40:3). הָעֵץ- פִּשְׁתֵּי haces de lino (Jos 2:6)."
+  },
+  {
+    "id": "heb-002508",
+    "lemma": "פִּשְׁתָּה",
+    "headword_line": "פִּשְׁתָּה",
+    "headword_tokens": ["פִּשְׁתָּה"],
+    "page_start": 627,
+    "page_end": 627,
+    "gloss_es": "Lino, pabilo",
+    "text": "פִּשְׁתָּה: Planta de lino (Ex 9:31); mecha, pabilo (Is 42:3, 43:17)."
+  },
+  {
+    "id": "heb-002509",
+    "lemma": "פַּת",
+    "headword_line": "פַּת",
+    "headword_tokens": ["פַּת"],
+    "page_start": 627,
+    "page_end": 627,
+    "gloss_es": "Bocado, pedazo",
+    "text": "פַּת: Miga, migaja; bocado, mendrugo, trozo (Lv 2:6, 2 Sm 12:3, Prov 23:8). פַּת-לֶחֶם pedazo de pan (Gn 18:5, Prov 17:1)."
+  },
+  {
+    "id": "heb-002510",
+    "lemma": "פֹּת",
+    "headword_line": "פֹּת",
+    "headword_tokens": ["פֹּת"],
+    "page_start": 627,
+    "page_end": 627,
+    "gloss_es": "Quicio, frente",
+    "text": "פֹּת: a) Frente o partes (Is 3:17). b) Quicios o goznes (1 Re 7:50)."
+  },
+  {
+    "id": "heb-002511",
+    "lemma": "פִּתְאֹם",
+    "headword_line": "פִּתְאֹם",
+    "headword_tokens": ["פִּתְאֹם"],
+    "page_start": 627,
+    "page_end": 627,
+    "gloss_es": "De repente",
+    "text": "פִּתְאֹם (adv.): De repente, de improviso, de pronto, súbitamente (Nm 6:9, Jos 10:9, Is 47:11, Sal 64:5)."
+  },
+  {
+    "id": "heb-002512",
+    "lemma": "פַּת-בַּג",
+    "headword_line": "פַּת-בַּג",
+    "headword_tokens": ["פַּת-בַּג"],
+    "page_start": 627,
+    "page_end": 627,
+    "gloss_es": "Manjares",
+    "text": "פַּת-בַּג: Manjares, platos de la mesa real (Dn 1:5, 8, 13, 15, 11:26)."
+  },
+  {
+    "id": "heb-002513",
+    "lemma": "פִּתְגָּם",
+    "headword_line": "פִּתְגָּם",
+    "headword_tokens": ["פִּתְגָּם"],
+    "page_start": 627,
+    "page_end": 627,
+    "gloss_es": "Decreto, respuesta",
+    "text": "פִּתְגָּם: Decreto (Ecl 8:11, Est 1:20). Respuesta (Eclo 5:11, 8:9)."
+  },
+  {
+    "id": "heb-002514",
+    "lemma": "פָּתָה",
+    "headword_line": "פָּתָה [I]",
+    "headword_tokens": ["פָּתָה"],
+    "page_start": 627,
+    "page_end": 627,
+    "gloss_es": "Seducir, engañar",
+    "text": "פָּתָה [I]\nQal: Dejarse engañar o seducir (Dt 11:16, Job 31:27). Participio (פֹּתֶה): ingenuo, crédulo (Os 7:11).\nNi. Ser seducido, dejarse seducir (Jr 20:7, Job 31:9).\nPi. (פִּתָּה): Seducir, engañar (Ex 22:15, Jue 14:15, Jr 20:7). Cortejar (Os 2:16). Adular (Sal 78:36).\nPu. Dejarse convencer o seducir (Jr 20:10, Prov 25:15)."
+  },
+  {
+    "id": "heb-002515",
+    "lemma": "פָּתָה",
+    "headword_line": "פָּתָה [II]",
+    "headword_tokens": ["יַפְתְּ"],
+    "page_start": 627,
+    "page_end": 627,
+    "gloss_es": "Hacer ancho",
+    "text": "פָּתָה [II]\nHifil (יַפְתְּ): Hacer ancho, dar espacio (Gn 9:27)."
+  },
+  {
+    "id": "heb-002516",
+    "lemma": "פִּתּוּחַ",
+    "headword_line": "פִּתּוּחַ",
+    "headword_tokens": ["פִּתּוּחַ"],
+    "page_start": 627,
+    "page_end": 627,
+    "gloss_es": "Grabado, relieve",
+    "text": "פִּתּוּחַ: Grabado, relieve, inscripción (Ex 28:11, 39:6, 1 Re 6:29, Zac 3:9)."
+  },
+  {
+    "id": "heb-002517",
+    "lemma": "פָּתַח",
+    "headword_line": "פָּתַח [I]",
+    "headword_tokens": ["פָּתַח"],
+    "page_start": 627,
+    "page_end": 628,
+    "gloss_es": "Abrir, soltar",
+    "text": "פָּתַח [I]\nQal: Abrir, destapar, hendir. Abrir la puerta (2 Re 9:3), los ojos (1 Re 8:29), la boca (Ez 3:2). Soltar prisioneros (Is 14:17); desenvainar la espada (Ez 21:33); abrir la mano/ser generoso (Dt 15:8).\nNifal (נִפְתַּח): Abrirse. Abrirse los oídos (Is 35:5), los cielos (Ez 1:1). Desencadenarse la desgracia (Jr 1:14).\nPiel (פִּתַּח): Abrir, soltar. Soltar cadenas (Jr 40:4); abrir oídos (Is 48:8); desatar el sayal (Sal 30:12).\nHitpael: Desatarse correas (Is 52:2)."
+  },
+  {
+    "id": "heb-002518",
+    "lemma": "פָּתַח",
+    "headword_line": "פָּתַח [II]",
+    "headword_tokens": ["פִּתַּח"],
+    "page_start": 628,
+    "page_end": 628,
+    "gloss_es": "Grabar, cincelar",
+    "text": "פָּתַח [II]\nPiel (פִּתַּח): Grabar, burilar, cincelar, entallar (Ex 28:9, 1 Re 7:36, 2 Cr 2:6).\nPual: Cincelado, grabado (Ex 39:6)."
+  },
+  {
+    "id": "heb-002519",
+    "lemma": "פֶּתַח",
+    "headword_line": "פֶּתַח (pl. פְּתָחִים)",
+    "headword_tokens": ["פֶּתַח"],
+    "page_start": 628,
+    "page_end": 628,
+    "gloss_es": "Puerta, entrada",
+    "text": "פֶּתַח: Puerta, portal, entrada, acceso (Gn 43:19, Ex 29:32, Prov 9:14). מֶסֶךְ הַפֶּתַח antepuerta (Ex 26:36). Adverbial: a la entrada de (Jue 19:27)."
+  },
+  {
+    "id": "heb-002520",
+    "lemma": "פֵּתַח",
+    "headword_line": "פֵּתַח",
+    "headword_tokens": ["פֵּתַח"],
+    "page_start": 628,
+    "page_end": 628,
+    "gloss_es": "Explicación",
+    "text": "פֵּתַח: Explicación, revelación (Sal 119:130)."
+  },
+  {
+    "id": "heb-002521",
+    "lemma": "פִּתָּחוֹן",
+    "headword_line": "פִּתָּחוֹן",
+    "headword_tokens": ["פִּתָּחוֹן"],
+    "page_start": 628,
+    "page_end": 628,
+    "gloss_es": "Apertura",
+    "text": "פִּתָּחוֹן: En la expresión פִּתְחוֹן פֶּה (abrir la boca, libertad de palabra) (Ez 16:63, 29:21)."
+  },
+  {
+    "id": "heb-002522",
+    "lemma": "פְּתִחוֹת",
+    "headword_line": "פְּתִחוֹת",
+    "headword_tokens": ["פְּתִחוֹת"],
+    "page_start": 628,
+    "page_end": 629,
+    "gloss_es": "Espadas desenvainadas",
+    "text": "פְּתִחוֹת: Dicho de puñales o espadas: desenvainadas (Sal 55:22)."
+  },
+  {
+    "id": "heb-002523",
+    "lemma": "פֶּתִי",
+    "headword_line": "פֶּתִי (pl. פְּתָאיִם)",
+    "headword_tokens": ["פֶּתִי", "פְּתָאיִם"],
+    "page_start": 628,
+    "page_end": 629,
+    "gloss_es": "Inexperto, simple",
+    "text": "פֶּתִי: Inexperto, simple, ingenuo, cándido, incauto (Sal 119:130, Prov 1:4, 8:5, 14:15, 22:3)."
+  },
+  {
+    "id": "heb-002524",
+    "lemma": "פְּתַיּוּת",
+    "headword_line": "פְּתַיּוּת",
+    "headword_tokens": ["פְּתַיּוּת"],
+    "page_start": 629,
+    "page_end": 629,
+    "gloss_es": "Ingenuidad",
+    "text": "פְּתַיּוּת: Ingenuidad, candidez, simpleza (Prov 9:13)."
+  },
+  {
+    "id": "heb-002525",
+    "lemma": "פְּתִיגִיל",
+    "headword_line": "פְּתִיגִיל",
+    "headword_tokens": ["פְּתִיגִיל"],
+    "page_start": 629,
+    "page_end": 629,
+    "gloss_es": "Ropaje de gala",
+    "text": "פְּתִיגִיל: Sedas, ropaje de gala (Is 3:24)."
+  },
+  {
+    "id": "heb-002526",
+    "lemma": "פָּתִיל",
+    "headword_line": "פָּתִיל (pl. פְּתִילִים)",
+    "headword_tokens": ["פָּתִיל"],
+    "page_start": 629,
+    "page_end": 629,
+    "gloss_es": "Cordón, hilo",
+    "text": "פָּתִיל: Cuerda, cordón, cinta, hiladillo (Gn 38:18, Ex 28:28, Nm 15:38, Ez 40:3, Eclo 6:30)."
+  },
+  {
+    "id": "heb-002527",
+    "lemma": "פָּתַל",
+    "headword_line": "פָּתַל",
+    "headword_tokens": ["פָּתַל"],
+    "page_start": 629,
+    "page_end": 629,
+    "gloss_es": "Torcer, luchar",
+    "text": "פָּתַל\nNifal (נִפְתַּל): Competir, rivalizar (Gn 30:8). Participio: taimado, astuto (Job 5:13, Prov 8:8).\nHitpael: Ser sagaz o cauto (2 Sm 22:27, Sal 18:27)."
+  },
+  {
+    "id": "heb-002528",
+    "lemma": "פְּתַלְתֹּל",
+    "headword_line": "פְּתַלְתֹּל",
+    "headword_tokens": ["פְּתַלְתֹּל"],
+    "page_start": 629,
+    "page_end": 629,
+    "gloss_es": "Retorcido",
+    "text": "פְּתַלְתֹּל: Retorcido, tortuoso (Dt 32:5)."
+  },
+  {
+    "id": "heb-002529",
+    "lemma": "פֶּתֶן",
+    "headword_line": "פֶּתֶן (pl. פְּתָנִים)",
+    "headword_tokens": ["פֶּתֶן"],
+    "page_start": 629,
+    "page_end": 629,
+    "gloss_es": "Áspid, serpiente",
+    "text": "פֶּתֶן: Serpiente, áspid (Sal 58:5, 91:13, Eclo 39:30). חֹר-פֶּתֶן hura del áspid (Is 11:8, Job 20:16)."
+  },
+  {
+    "id": "heb-002530",
+    "lemma": "פֶּתַע",
+    "headword_line": "פֶּתַע",
+    "headword_tokens": ["פֶּתַע"],
+    "page_start": 629,
+    "page_end": 629,
+    "gloss_es": "Instante, de repente",
+    "text": "פֶּתַע (adv.): De repente, al instante, de improviso, súbitamente (Nm 6:9, 35:22, Is 29:5, Prov 6:15)."
+  },
+  {
+    "id": "heb-002531",
+    "lemma": "פָּתַר",
+    "headword_line": "פָּתַר",
+    "headword_tokens": ["פָּתַר"],
+    "page_start": 629,
+    "page_end": 629,
+    "gloss_es": "Interpretar",
+    "text": "פָּתַר\nQal: Interpretar; descifrar, descubrir la clave de un sueño (Gn 40:8, 16, 22, 41:8, 12)."
+  },
+  {
+    "id": "heb-002532",
+    "lemma": "פִּתְרוֹן",
+    "headword_line": "פִּתְרוֹן (pl. פִּתְרֹנִים)",
+    "headword_tokens": ["פִּתְרוֹן"],
+    "page_start": 629,
+    "page_end": 629,
+    "gloss_es": "Interpretación",
+    "text": "פִּתְרוֹן: Interpretación (de sueños) (Gn 40:5, 8, 12, 18, 41:11)."
+  },
+  {
+    "id": "heb-002533",
+    "lemma": "פַּתְשֶׁגֶן",
+    "headword_line": "פַּתְשֶׁגֶן",
+    "headword_tokens": ["פַּתְשֶׁגֶן"],
+    "page_start": 629,
+    "page_end": 629,
+    "gloss_es": "Copia",
+    "text": "פַּתְשֶׁגֶן: Copia, transcripción, duplicado (Est 3:14, 4:8, 8:13)."
+  },
+  {
+    "id": "heb-002534",
+    "lemma": "פָּתַת",
+    "headword_line": "פָּתַת",
+    "headword_tokens": ["פָּתַת"],
+    "page_start": 629,
+    "page_end": 630,
+    "gloss_es": "Desmigar",
+    "text": "פָּתַת\nQal: Migar, desmigar, hacer pedazos (Lv 2:6)."
+  },
+  {
+    "id": "heb-002535",
+    "lemma": "צֵאָה",
+    "headword_line": "צֵאָה",
+    "headword_tokens": ["צֵאָה"],
+    "page_start": 629,
+    "page_end": 629,
+    "gloss_es": "Excremento",
+    "text": "צֵאָה (est. צֵאת): Excremento, boñiga, heces (Dt 23:14, Ez 4:12)."
+  },
+  {
+    "id": "heb-002536",
+    "lemma": "צוֹאָה",
+    "headword_line": "צוֹאָה",
+    "headword_tokens": ["צוֹאָה"],
+    "page_start": 629,
+    "page_end": 629,
+    "gloss_es": "Estiércol, suciedad",
+    "text": "צוֹאָה: Estiércol, excremento; suciedad, inmundicia (2 Re 18:27, Is 4:4, 28:8, Prov 30:12)."
+  },
+  {
+    "id": "heb-002537",
+    "lemma": "צוֹאִים",
+    "headword_line": "צוֹאִים",
+    "headword_tokens": ["צוֹאִים"],
+    "page_start": 629,
+    "page_end": 629,
+    "gloss_es": "Sucio, inmundo",
+    "text": "צוֹאִים (pl.): Sucio, manchado, mugriento, inmundo (Zac 3:3)."
+  },
+  {
+    "id": "heb-002538",
+    "lemma": "צֶאֱלִים",
+    "headword_line": "צֶאֱלִים",
+    "headword_tokens": ["צֶאֱלִים"],
+    "page_start": 629,
+    "page_end": 629,
+    "gloss_es": "Loto",
+    "text": "צֶאֱלִים: Árboles de loto (Ziziphus lotus) (Job 40:21)."
+  },
+  {
+    "id": "heb-002539",
+    "lemma": "צֹאן",
+    "headword_line": "צֹאן",
+    "headword_tokens": ["צֹאן"],
+    "page_start": 629,
+    "page_end": 630,
+    "gloss_es": "Ganado menor",
+    "text": "צֹאן: Ganado menor (ovejas y cabras); rebaño. a) Genérico (Ez 45:15, Prov 27:23). b) Rebaño (Gn 27:9, Ex 9:3, Sal 65:14). c) Metáfora: El pueblo de Dios (Jr 23, Ez 34, Salmos)."
+  },
+  {
+    "id": "heb-002540",
+    "lemma": "צֶאֱצָאִים",
+    "headword_line": "צֶאֱצָאִים",
+    "headword_tokens": ["צֶאֱצָאִים"],
+    "page_start": 630,
+    "page_end": 630,
+    "gloss_es": "Vástagos, retoños",
+    "text": "צֶאֱצָאִים (pl.): Vástagos, retoños. a) Hijos, descendencia (Is 22:24, 44:3, Job 21:8). b) Vegetación, productos de la tierra (Is 34:1, 42:5)."
+  },
+  {
+    "id": "heb-002541",
+    "lemma": "צָב",
+    "headword_line": "צָב",
+    "headword_tokens": ["צָב"],
+    "page_start": 630,
+    "page_end": 630,
+    "gloss_es": "Carro, lagarto",
+    "text": "צָב: 1. Carro cubierto (Nm 7:3, Is 66:20). 2. Lagarto (Lv 11:29)."
+  },
+  {
+    "id": "heb-002542",
+    "lemma": "צָבָא",
+    "headword_line": "צָבָא",
+    "headword_tokens": ["צָבָא"],
+    "page_start": 630,
+    "page_end": 630,
+    "gloss_es": "Prestar servicio",
+    "text": "צָבָא\nQal: Prestar servicio, militar o cultual. Combatir (Nm 31:7, Is 31:4, Zac 14:12). Servicio del templo (Ex 38:8, Nm 8:24, 1 Sm 2:22).\nHifil: Hacer leva, reclutar, movilizar (2 Re 25:19, Jr 52:25)."
+  },
+  {
+    "id": "heb-002543",
+    "lemma": "צָבָא",
+    "headword_line": "צָבָא (pl. צְבָאוֹת)",
+    "headword_tokens": ["צָבָא", "צְבָאוֹת"],
+    "page_start": 630,
+    "page_end": 631,
+    "gloss_es": "Ejército, hueste",
+    "text": "צָבָא (pl. צְבָאוֹת): Ejército, hueste, escuadrón, regimiento; guerra, combate, servicio.\n1. Ejército, tropa (Jue 8:6, Sal 44:10, Dn 10:1). 2. צְבָא הַשָּׁמַיִם el ejército del cielo/astros (Dt 4:19, 17:3, Jr 8:2). 3. Título divino: יְהוָה צְבָאוֹת Señor de los Ejércitos."
+  },
+  {
+    "id": "heb-002544",
+    "lemma": "צְבִיָּה",
+    "headword_line": "צְבִיָּה",
+    "headword_tokens": ["צְבִיָּה", "צְבָאוֹת"],
+    "page_start": 631,
+    "page_end": 631,
+    "gloss_es": "Gacela",
+    "text": "צְבִיָּה (pl. צְבָאוֹת): Gacela (m. y f.) (Cant 2:7, 3:5, 1 Cr 12:9)."
+  },
+  {
+    "id": "heb-002545",
+    "lemma": "צָבָה",
+    "headword_line": "צָבָה",
+    "headword_tokens": ["צָבָה"],
+    "page_start": 631,
+    "page_end": 631,
+    "gloss_es": "Hincharse",
+    "text": "צָבָה\nQal: Hincharse, inflamarse (Nm 5:27).\nHifil: Hinchar (Nm 5:22)."
+  },
+  {
+    "id": "heb-002546",
+    "lemma": "צָבֶה",
+    "headword_line": "צָבֶה",
+    "headword_tokens": ["צָבֶה"],
+    "page_start": 631,
+    "page_end": 631,
+    "gloss_es": "Hinchado",
+    "text": "צָבֶה (adj.): Hinchado (Nm 5:21)."
+  },
+  {
+    "id": "heb-002547",
+    "lemma": "צָבוּעַ",
+    "headword_line": "צָבוּעַ",
+    "headword_tokens": ["צָבוּעַ"],
+    "page_start": 631,
+    "page_end": 631,
+    "gloss_es": "Hiena",
+    "text": "צָבוּעַ: Hiena (animal moteado) (Jr 12:9, Eclo 13:18)."
+  },
+  {
+    "id": "heb-002548",
+    "lemma": "צָבַט",
+    "headword_line": "צָבַט",
+    "headword_tokens": ["וַיִּצְבָּט"],
+    "page_start": 631,
+    "page_end": 631,
+    "gloss_es": "Ofrecer",
+    "text": "צָבַט\nQal (וַיִּצְבָּט): Ofrecer, tender granos tostados (Rut 2:14)."
+  },
+  {
+    "id": "heb-002549",
+    "lemma": "צְבִי",
+    "headword_line": "צְבִי [I]",
+    "headword_tokens": ["צְבִי"],
+    "page_start": 631,
+    "page_end": 631,
+    "gloss_es": "Joya, gala",
+    "text": "צְבִי [I]: Joya, perla; flor, prez, ornato, esplendor. צְבִי תִפְאָרֶת prez y orgullo (Is 4:2, 23:9, 28:1, Jr 3:19, Ez 7:20)."
+  },
+  {
+    "id": "heb-002550",
+    "lemma": "צְבִי",
+    "headword_line": "צְבִי [II] (pl. צְבָאיִם)",
+    "headword_tokens": ["צְבִי", "צְבָאיִם"],
+    "page_start": 631,
+    "page_end": 631,
+    "gloss_es": "Gacela",
+    "text": "צְבִי [II]: Gacela (Dt 12:15, Is 13:14, Prov 6:5, Cant 2:9). Símbolo de agilidad (2 Sm 2:18)."
+  },
+  {
+    "id": "heb-002551",
+    "lemma": "צְבִיָּה",
+    "headword_line": "צְבִיָּה",
+    "headword_tokens": ["צְבִיָּה"],
+    "page_start": 631,
+    "page_end": 631,
+    "gloss_es": "Gacela (hembra)",
+    "text": "צְבִיָּה: Gacela hembra (Cant 4:5, 7:4)."
+  },
+  {
+    "id": "heb-002552",
+    "lemma": "צֶבַע",
+    "headword_line": "צֶבַע (pl. צְבָעִים)",
+    "headword_tokens": ["צֶבַע"],
+    "page_start": 631,
+    "page_end": 631,
+    "gloss_es": "Color, paño teñido",
+    "text": "צֶבַע: Paño tejido, de colores; tinte (Jue 5:30)."
+  },
+  {
+    "id": "heb-002553",
+    "lemma": "צָבַר",
+    "headword_line": "צָבַר",
+    "headword_tokens": ["צָבַר"],
+    "page_start": 631,
+    "page_end": 631,
+    "gloss_es": "Acumular, amontonar",
+    "text": "צָבַר\nQal: Acumular, amontonar, acopiar, atesorar, apilar, almacenar (Gn 41:35, 49, Hab 1:10, Zac 9:3, Sal 39:7, Job 27:16)."
+  },
+  {
+    "id": "heb-002554",
+    "lemma": "צִבּוּר",
+    "headword_line": "צִבּוּר (pl. צִבֻּרִים)",
+    "headword_tokens": ["צִבּוּר"],
+    "page_start": 631,
+    "page_end": 631,
+    "gloss_es": "Montón",
+    "text": "צִבּוּר: Montón, pila (2 Re 10:8)."
+  },
+  {
+    "id": "heb-002555",
+    "lemma": "צְבָתִים",
+    "headword_line": "צְבָתִים",
+    "headword_tokens": ["צְבָתִים"],
+    "page_start": 631,
+    "page_end": 631,
+    "gloss_es": "Manojos",
+    "text": "צְבָתִים (pl.): Manojo de espigas, gavillas (Rut 2:16)."
+  },
+  {
+    "id": "heb-002556",
+    "lemma": "צַד",
+    "headword_line": "צַד (pl. צִדִּים)",
+    "headword_tokens": ["צַד"],
+    "page_start": 631,
+    "page_end": 631,
+    "gloss_es": "Lado, costado",
+    "text": "צַד (c. suf. צִדּוֹ): Costado, flanco, lado; mano; cuesta (Gn 6:16, Ex 25:32, 2 Sm 2:16, Is 60:4). מִצַּד al lado de, junto a (Dt 31:26). בַּצַּד de soslayo (Ez 34:21)."
+  },
+  {
+    "id": "heb-002557",
+    "lemma": "צָדָה",
+    "headword_line": "צָדָה [I]",
+    "headword_tokens": ["צָדָה"],
+    "page_start": 631,
+    "page_end": 631,
+    "gloss_es": "Acechar",
+    "text": "צָדָה [I]\nQal (צֹדֶה): Acechar con intención hostil (Ex 21:13, 1 Sm 24:12)."
+  },
+  {
+    "id": "heb-002558",
+    "lemma": "צָדָה",
+    "headword_line": "צָדָה [II]",
+    "headword_tokens": ["נִצְדּוּ"],
+    "page_start": 631,
+    "page_end": 631,
+    "gloss_es": "Estar desolado",
+    "text": "צָדָה [II]\nNifal (נִצְדּוּ): Estar derruido, desolado (Sof 3:6)."
+  },
+  {
+    "id": "heb-002559",
+    "lemma": "צְדִיָּה",
+    "headword_line": "צְדִיָּה",
+    "headword_tokens": ["צְדִיָּה"],
+    "page_start": 631,
+    "page_end": 631,
+    "gloss_es": "Intención, malicia",
+    "text": "צְדִיָּה: Intención, premeditación, malicia (Nm 35:20, 22)."
+  },
+  {
+    "id": "heb-002560",
+    "lemma": "צַדִּיק",
+    "headword_line": "צַדִּיק (pl. צַדִּיקִים)",
+    "headword_tokens": ["צַדִּיק"],
+    "page_start": 631,
+    "page_end": 632,
+    "gloss_es": "Justo, honrado",
+    "text": "צַדִּיק: Honrado, honesto, íntegro, recto; justo, que tiene razón; inocente. a) Ético (Gn 6:9, Is 60:21). b) Jurídico: tener razón (Is 41:26, Sal 145:17). c) Forense: inocente ante el tribunal (Ex 23:7, Am 5:12, Job 32:1)."
+  },
+  {
+    "id": "heb-002561",
+    "lemma": "צָדַק",
+    "headword_line": "צָדַק",
+    "headword_tokens": ["צָדַק"],
+    "page_start": 631,
+    "page_end": 632,
+    "gloss_es": "Ser justo, inocente",
+    "text": "צָדַק\nQal: Ser honrado, justo, inocente; tener razón o derecho; salir absuelto (Job 9:20, 40:8, Is 45:25).\nNifal: Ser reivindicado o purificado (Dn 8:14).\nPiel: Justificar, declarar inocente; dar la razón (Job 32:2, 33:32, Ez 16:51).\nHifil (הִצְדִּיק): Hacer justicia; absolver, declarar inocente (Ex 23:7, Dt 25:1, Is 53:11).\nHitpael: Justificarse, probar la inocencia (Gn 44:16)."
+  },
+  {
+    "id": "heb-002562",
+    "lemma": "צֶדֶק",
+    "headword_line": "צֶדֶק",
+    "headword_tokens": ["צֶדֶק"],
+    "page_start": 632,
+    "page_end": 632,
+    "gloss_es": "Justicia, derecho",
+    "text": "צֶדֶק: Justicia, derecho; honradez, inocencia; victoria. a) Sustantivo: (Is 11:5, Sal 85:11, Ecl 3:16). b) Adjetivo: אַבְנֵי-צֶדֶק pesas cabales (Lv 19:36). c) Adverbial: בְּצֶדֶק rectamente, justamente (Is 11:4, Sal 9:9)."
+  },
+  {
+    "id": "heb-002563",
+    "lemma": "צְדָקָה",
+    "headword_line": "צְדָקָה (pl. צְדָקוֹת)",
+    "headword_tokens": ["צְדָקָה"],
+    "page_start": 632,
+    "page_end": 633,
+    "gloss_es": "Justicia, generosidad",
+    "text": "צְדָקָה: Justicia, derecho, honradez, rectitud; mérito, crédito; justificación; generosidad, limosna. a) Justicia (Is 5:7, Sal 51:16, Dn 9:7). b) Derecho (2 Sm 19:29). c) Generosidad/Limosna (Sal 112:3, Eclo 3:14, 40:17)."
+  },
+  {
+    "id": "heb-002564",
+    "lemma": "צָהַב",
+    "headword_line": "צָהַב",
+    "headword_tokens": ["יִצְהִיב"],
+    "page_start": 633,
+    "page_end": 633,
+    "gloss_es": "Amarillo, brillar",
+    "text": "צָהַב\nHifil (יִצְהִיב): Quedarse perplejo o abochornado (Eclo 10:10).\nHofal (מֻצְהָב): Amarillo, dorado, brillante (Esd 8:27)."
+  },
+  {
+    "id": "heb-002565",
+    "lemma": "צָהֹב",
+    "headword_line": "צָהֹב",
+    "headword_tokens": ["צָהֹב"],
+    "page_start": 633,
+    "page_end": 633,
+    "gloss_es": "Amarillo",
+    "text": "צָהֹב: Amarillo, amarillento (Lv 13:30, 32, 36)."
+  },
+  {
+    "id": "heb-002566",
+    "lemma": "צָהַל",
+    "headword_line": "צָהַל",
+    "headword_tokens": ["צָהַל"],
+    "page_start": 633,
+    "page_end": 633,
+    "gloss_es": "Relinchar, gritar",
+    "text": "צָהַל\nQal: a) Relinchar (Jr 50:11, Eclo 33:6). b) Gritar de júbilo o satisfacción (Is 12:6, 24:14, 54:1). c) Quejarse, gritar de dolor (Is 10:30).\nHifil: Abrillantar, dar brillo (Sal 104:15)."
+  },
+  {
+    "id": "heb-002567",
+    "lemma": "צָהַר",
+    "headword_line": "צָהַר",
+    "headword_tokens": ["יַצְהִירוּ"],
+    "page_start": 633,
+    "page_end": 633,
+    "gloss_es": "Exprimir aceite, brillar",
+    "text": "צָהַר\nHifil: Exprimir aceite (Job 24:11). Brillar (Eclo 43:3)."
+  },
+  {
+    "id": "heb-002568",
+    "lemma": "צֹהַר",
+    "headword_line": "צֹהַר",
+    "headword_tokens": ["צֹהַר"],
+    "page_start": 633,
+    "page_end": 633,
+    "gloss_es": "Tragaluz",
+    "text": "צֹהַר: Tragaluz, abertura para la luz (Gn 6:16)."
+  },
+  {
+    "id": "heb-002569",
+    "lemma": "צָהֳרַיִם",
+    "headword_line": "צָהֳרַיִם",
+    "headword_tokens": ["צָהֳרַיִם"],
+    "page_start": 633,
+    "page_end": 633,
+    "gloss_es": "Mediodía",
+    "text": "צָהֳרַיִם (du.): Mediodía (Sal 55:18, Is 58:10). בַּצָּהֳרַיִם al mediodía (Gn 43:16). מִשְׁכַּב הַצָּהֳרַיִם siesta (2 Sm 4:5)."
+  },
+  {
+    "id": "heb-002570",
+    "lemma": "צַו",
+    "headword_line": "צַו",
+    "headword_tokens": ["צַו"],
+    "page_start": 633,
+    "page_end": 633,
+    "gloss_es": "Precepto, inmundicia",
+    "text": "צַו: a) Precepto, norma (Os 5:11). b) Sonido o juego sonoro (Is 28:10, 13)."
+  },
+  {
+    "id": "heb-002571",
+    "lemma": "צַוָּאר",
+    "headword_line": "צַוָּאר (pl. צַוָּארִים)",
+    "headword_tokens": ["צַוָּאר"],
+    "page_start": 633,
+    "page_end": 633,
+    "gloss_es": "Cuello, garganta",
+    "text": "צַוָּאר (pl. צַוָּארוֹת): Cuello, pescuezo, garganta, cogote, nuca, cerviz (Gn 27:16, 41:42, Cant 1:10). נָפַל עַל-צַוָּאר echarse al cuello, abrazar (Gn 33:4, 45:14). Rendir el cuello al yugo (Jr 27:8)."
+  },
+  {
+    "id": "heb-002572",
+    "lemma": "צַוָּארִי",
+    "headword_line": "צַוָּארִי",
+    "headword_tokens": ["צַוָּארִי"],
+    "page_start": 633,
+    "page_end": 633,
+    "gloss_es": "Collar",
+    "text": "צַוָּארִי (pl.): Collar, gargantilla (Cant 4:9)."
+  },
+  {
+    "id": "heb-002573",
+    "lemma": "צוּד",
+    "headword_line": "צוּד",
+    "headword_tokens": ["צוּד"],
+    "page_start": 633,
+    "page_end": 634,
+    "gloss_es": "Cazar, atrapar",
+    "text": "צוּד\nQal: Cazar; dar caza, batir. a) Propio (Job 38:39, Gn 27:3). b) Metafórico: atrapar personas (Jr 16:16, Miq 7:2, Sal 140:12, Lam 4:18).\nPolel (צוֹדֵד): Cazar, atrapar almas (Ez 13:18, 20)."
+  },
+  {
+    "id": "heb-002574",
+    "lemma": "צָוָה",
+    "headword_line": "צָוָה",
+    "headword_tokens": ["צָוָה"],
+    "page_start": 634,
+    "page_end": 634,
+    "gloss_es": "Mandar, ordenar",
+    "text": "צָוָה\nPiel (צִוָּה): Mandar, ordenar, prescribir, decretar; instruir, promulgar; encargar, encomendar; nombrar. a) Mandar (Gn 3:11, Dt 4:23, Is 5:6, Jr 35:8). b) Nombrar (2 Sm 7:11). c) Enviar bendición o salvación (Lv 25:21, Sal 44:5, Am 9:4). d) Hacer testamento (2 Re 20:1).\nPual (צֻוָּה): Recibir órdenes, ser mandado (Gn 45:19, Lv 8:35, Ez 12:7)."
+  },
+  {
+    "id": "heb-002575",
+    "lemma": "צוּחַ",
+    "headword_line": "צוּחַ",
+    "headword_tokens": ["יִצְוָחוּ"],
+    "page_start": 634,
+    "page_end": 634,
+    "gloss_es": "Gritar, clamar",
+    "text": "צוּחַ\nQal (יִצְוָחוּ): Gritar, clamar (Is 42:11)."
+  },
+  {
+    "id": "heb-002576",
+    "lemma": "צְוָחָה",
+    "headword_line": "צְוָחָה",
+    "headword_tokens": ["צְוָחָה"],
+    "page_start": 634,
+    "page_end": 634,
+    "gloss_es": "Grito, clamor",
+    "text": "צְוָחָה: Grito, clamor, lamento (Is 24:11, Jr 14:2, Sal 144:14)."
+  },
+  {
+    "id": "heb-002577",
+    "lemma": "צוּלָה",
+    "headword_line": "צוּלָה",
+    "headword_tokens": ["צוּלָה"],
+    "page_start": 634,
+    "page_end": 634,
+    "gloss_es": "Profundidades",
+    "text": "צוּלָה: Océano, profundidades del mar (Is 44:27)."
+  },
+  {
+    "id": "heb-002578",
+    "lemma": "צוּם",
+    "headword_line": "צוּם",
+    "headword_tokens": ["צוּם"],
+    "page_start": 634,
+    "page_end": 634,
+    "gloss_es": "Ayunar",
+    "text": "צוּם\nQal (צָם): Ayunar, guardar ayuno (Jue 20:26, 2 Sm 12:21, Is 58:3, Jon 3:5, Neh 1:4)."
+  },
+  {
+    "id": "heb-002579",
+    "lemma": "צוֹם",
+    "headword_line": "צוֹם",
+    "headword_tokens": ["צוֹם"],
+    "page_start": 634,
+    "page_end": 634,
+    "gloss_es": "Ayuno",
+    "text": "צוֹם (pl. צוֹמוֹת): Ayuno. Asociado a llanto y luto (Is 58:6, Jl 1:14, Zac 8:19). קָרָא צוֹם proclamar un ayuno (1 Re 21:9)."
+  },
+  {
+    "id": "heb-002580",
+    "lemma": "צוּף",
+    "headword_line": "צוּף [I]",
+    "headword_tokens": ["צוּף"],
+    "page_start": 634,
+    "page_end": 635,
+    "gloss_es": "Fluir, flotar",
+    "text": "צוּף [I]\nQal: Fluir, desbordarse el agua (Lam 3:54).\nHifil (הֵצִיף): Precipitar aguas (Dn 11:4); hacer flotar (2 Re 6:6)."
+  },
+  {
+    "id": "heb-002581",
+    "lemma": "צוּף",
+    "headword_line": "צוּף [II]",
+    "headword_tokens": ["צוּף"],
+    "page_start": 635,
+    "page_end": 635,
+    "gloss_es": "Panal",
+    "text": "צוּף [II] (pl. צוּפִים): Panal, miel fluida (Sal 19:11, Prov 16:24)."
+  },
+  {
+    "id": "heb-002582",
+    "lemma": "צוּץ",
+    "headword_line": "צוּץ",
+    "headword_tokens": ["צוּץ"],
+    "page_start": 635,
+    "page_end": 635,
+    "gloss_es": "Florecer, brillar",
+    "text": "צוּץ\nQal: Florecer, prosperar (Ez 7:10).\nHifil (הֵצִיץ): a) Florecer, echar flores o botones (Nm 17:23, Is 27:6, Sal 72:16, 92:8). b) Brillar (Sal 132:18). c) Mirar, observar (Cant 2:9)."
+  },
+  {
+    "id": "heb-002583",
+    "lemma": "צוּק",
+    "headword_line": "צוּק [I]",
+    "headword_tokens": ["צוּק"],
+    "page_start": 635,
+    "page_end": 635,
+    "gloss_es": "Fundirse",
+    "text": "צוּק [I]\nQal (יָצוּק): Fundirse, derretirse el metal (Job 28:2, 29:6)."
+  },
+  {
+    "id": "heb-002584",
+    "lemma": "צוּק",
+    "headword_line": "צוּק [II]",
+    "headword_tokens": ["צוּק"],
+    "page_start": 635,
+    "page_end": 635,
+    "gloss_es": "Oprimir, estrechar",
+    "text": "צוּק [II]\nHifil (הֵצִיק): Estrechar, apretar, asediar, oprimir (Dt 28:53, Is 29:2, Jr 19:9). Importunar (Jue 14:17, 16:16). Oprimir (Is 51:13, Job 32:18, Eclo 4:9).\nHofal: Ptc. (מוּצָק) Oprimido (Eclo 4:9)."
+  },
+  {
+    "id": "heb-002585",
+    "lemma": "צוּק",
+    "headword_line": "צוּק",
+    "headword_tokens": ["צוּק"],
+    "page_start": 635,
+    "page_end": 635,
+    "gloss_es": "Aprieto",
+    "text": "צוּק: Aprieto, angustia (Dn 9:25)."
+  },
+  {
+    "id": "heb-002586",
+    "lemma": "צוּקָה",
+    "headword_line": "צוּקָה",
+    "headword_tokens": ["צוּקָה"],
+    "page_start": 635,
+    "page_end": 635,
+    "gloss_es": "Aprieto, opresión",
+    "text": "צוּקָה: Aprieto, opresión, angustia (Is 8:22, Prov 1:27). אֶרֶץ צָרָה וְצוּקָה tierra de angustia y opresión (Is 30:6)."
+  },
+  {
+    "id": "heb-002587",
+    "lemma": "צוּר",
+    "headword_line": "צוּר [I]",
+    "headword_tokens": ["צוּר"],
+    "page_start": 635,
+    "page_end": 635,
+    "gloss_es": "Sitiar, cercar",
+    "text": "צוּר [I]\nQal: Sitiar, asediar, cercar, rodear (Dt 20:12, 19, 2 Sm 11:1, Jr 21:4, Dn 1:1). Encerrar dinero (Dt 14:25). Proteger (Cant 8:9)."
+  },
+  {
+    "id": "heb-002588",
+    "lemma": "צוּר",
+    "headword_line": "צוּר [II]",
+    "headword_tokens": ["צוּר"],
+    "page_start": 635,
+    "page_end": 635,
+    "gloss_es": "Hostilizar",
+    "text": "צוּר [II]\nQal: Ser enemigo, hostilizar, provocar, atacar (Ex 23:22, Dt 2:9, 19, Est 8:11)."
+  },
+  {
+    "id": "heb-002589",
+    "lemma": "צוּר",
+    "headword_line": "צוּר [III]",
+    "headword_tokens": ["וַיָּצַר"],
+    "page_start": 635,
+    "page_end": 636,
+    "gloss_es": "Formar, modelar",
+    "text": "צוּר [III]\nQal (וַיָּצַר): Formar, modelar, labrar (Ex 32:4, 1 Re 7:15)."
+  },
+  {
+    "id": "heb-002590",
+    "lemma": "צוּר",
+    "headword_line": "צוּר (pl. צוּרִים)",
+    "headword_tokens": ["צוּר"],
+    "page_start": 636,
+    "page_end": 636,
+    "gloss_es": "Roca, montaña",
+    "text": "צוּר (c. suf. צוּרִי): Roca, peña, montaña (Ex 17:6, Sal 78:20). b) Título divino: Roca, Montaña (Dt 32:31, Is 26:4). צוּרִי mi Roca (Sal 19:15)."
+  },
+  {
+    "id": "heb-002591",
+    "lemma": "צוּרָה",
+    "headword_line": "צוּרָה",
+    "headword_tokens": ["צוּרָה"],
+    "page_start": 636,
+    "page_end": 636,
+    "gloss_es": "Figura, estructura",
+    "text": "צוּרָה: Figura (Sal 49:15); estructura, forma (Ez 43:11)."
+  },
+  {
+    "id": "heb-002592",
+    "lemma": "צַוָּרֹנִים",
+    "headword_line": "צַוָּרֹנִים",
+    "headword_tokens": ["צַוָּרֹנִים"],
+    "page_start": 636,
+    "page_end": 636,
+    "gloss_es": "Collar",
+    "text": "צַוָּרֹנִים (pl.): Collar, gargantilla (Cant 4:9)."
+  },
+  {
+    "id": "heb-002593",
+    "lemma": "צוּת",
+    "headword_line": "צוּת",
+    "headword_tokens": ["אֲצִיתֶנָּה"],
+    "page_start": 636,
+    "page_end": 636,
+    "gloss_es": "Quemar",
+    "text": "צוּת\nHifil (אֲצִיתֶנָּה): Quemar, abrasar (Is 27:4)."
+  },
+  {
+    "id": "heb-002594",
+    "lemma": "צַח",
+    "headword_line": "צַח",
+    "headword_tokens": ["צַח"],
+    "page_start": 636,
+    "page_end": 636,
+    "gloss_es": "Blanco, claro",
+    "text": "צַח (pl. צַחּוֹת): Blanco (Cant 5:10). Ardor deslumbrante (Is 18:4). Hablar claro (Is 32:4)."
+  },
+  {
+    "id": "heb-002595",
+    "lemma": "צָחָה",
+    "headword_line": "צָחָה",
+    "headword_tokens": ["צָחָה"],
+    "page_start": 636,
+    "page_end": 636,
+    "gloss_es": "Seco, árido",
+    "text": "צָחָה: Seco, reseco, árido (Is 5:13, Jr 4:11)."
+  },
+  {
+    "id": "heb-002596",
+    "lemma": "צָחַח",
+    "headword_line": "צָחַח",
+    "headword_tokens": ["צָחַח"],
+    "page_start": 636,
+    "page_end": 636,
+    "gloss_es": "Ser blanco",
+    "text": "צָחַח\nQal: Ser blanco, cándido, albo (Lam 4:7)."
+  },
+  {
+    "id": "heb-002597",
+    "lemma": "צְחִיחַ",
+    "headword_line": "צְחִיחַ",
+    "headword_tokens": ["צְחִיחַ"],
+    "page_start": 636,
+    "page_end": 636,
+    "gloss_es": "Roca pelada",
+    "text": "צְחִיחַ: Roca pelada, cima rocosa (Ez 24:7, 26:4). Peñascos (Neh 4:7)."
+  },
+  {
+    "id": "heb-002598",
+    "lemma": "צְחִיחָה",
+    "headword_line": "צְחִיחָה",
+    "headword_tokens": ["צְחִיחָה"],
+    "page_start": 636,
+    "page_end": 636,
+    "gloss_es": "Terreno árido",
+    "text": "צְחִיחָה: Zona rocosa o terreno abrasado (Sal 68:7)."
+  },
+  {
+    "id": "heb-002599",
+    "lemma": "צַחֲנָה",
+    "headword_line": "צַחֲנָה",
+    "headword_tokens": ["צַחֲנָה"],
+    "page_start": 636,
+    "page_end": 636,
+    "gloss_es": "Hedor",
+    "text": "צַחֲנָה: Hedor, pestilencia (Jl 2:20, Eclo 11:12)."
+  },
+  {
+    "id": "heb-002600",
+    "lemma": "צַחְצָחוֹת",
+    "headword_line": "צַחְצָחוֹת",
+    "headword_tokens": ["צַחְצָחוֹת"],
+    "page_start": 636,
+    "page_end": 636,
+    "gloss_es": "Tierra árida",
+    "text": "צַחְצָחוֹת: Tierra árida, sequedad extrema (Is 58:11)."
   }
 ]
