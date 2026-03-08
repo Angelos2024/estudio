@@ -680,27 +680,13 @@ const HEBREW_DICT_STATE = {
     lexico: []
 };
 
-function stripHebrewDiacritics(text) {
-    return String(text || '')
-        .normalize('NFD')
-        .replace(/[\u0591-\u05C7]/g, '')
-        .replace(/־/g, ' ')
-        .trim();
-}
 
 function normalizeHebrewLemmaForLookup(text) {
-    return stripHebrewDiacritics(text)
-        .replace(/[^\u05D0-\u05EA\s]/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
-}
-
-function normalizeHebrewSpacing(text) {
-    return normalizeHebrewLemmaForLookup(text);
-}
-
-function normalizeHebrewCompact(text) {
-    return normalizeHebrewLemmaForLookup(text).replace(/\s+/g, '');
+    try {
+        return String(text || '').normalize('NFC').replace(/\s+/g, ' ').trim();
+    } catch (_) {
+        return String(text || '').replace(/\s+/g, ' ').trim();
+    }
 }
 
 async function fetchJsonWithFallback(urls) {
@@ -743,32 +729,31 @@ function findHebrewDictionaryEntry(rawHebrew) {
     const state = HEBREW_DICT_STATE;
     const source = Array.isArray(state.entries) ? state.entries : [];
     const index = state.index && typeof state.index === 'object' ? state.index : {};
-    const query = normalizeHebrewSpacing(rawHebrew);
-    const compactQuery = normalizeHebrewCompact(rawHebrew);
-    if (!compactQuery) return null;
+   const query = normalizeHebrewLemmaForLookup(rawHebrew);
+    if (!query) return null;
 
     const byId = new Map(source.map(entry => [entry.id, entry]));
-    const byLemma = new Map(source.map(entry => [normalizeHebrewCompact(entry?.lemma), entry]));
-    const byHeadword = new Map(source.map(entry => [normalizeHebrewCompact(entry?.headword_line), entry]));
+     const byLemma = new Map(source.map(entry => [normalizeHebrewLemmaForLookup(entry?.lemma), entry]));
+    const byHeadword = new Map(source.map(entry => [normalizeHebrewLemmaForLookup(entry?.headword_line), entry]));
 
-    const indexedIds = index[compactQuery] || index[query] || [];
-    if (Array.isArray(indexedIds) && indexedIds.length) {
+    const indexedIds = index[query] || [];
+        if (Array.isArray(indexedIds) && indexedIds.length) {
         const exactById = byId.get(indexedIds[0]);
         if (exactById) return exactById;
     }
 
-    if (byLemma.has(compactQuery)) return byLemma.get(compactQuery);
-    if (byHeadword.has(compactQuery)) return byHeadword.get(compactQuery);
+if (byLemma.has(query)) return byLemma.get(query);
+    if (byHeadword.has(query)) return byHeadword.get(query);
 
    return null;
 }
 
 function findHebrewLexicoEntries(rawHebrew) {
     const source = Array.isArray(HEBREW_DICT_STATE.lexico) ? HEBREW_DICT_STATE.lexico : [];
-    const compactQuery = normalizeHebrewCompact(rawHebrew);
-    if (!compactQuery || !source.length) return [];
+    const query = normalizeHebrewLemmaForLookup(rawHebrew);
+    if (!query || !source.length) return [];
 
-    return source.filter(entry => normalizeHebrewCompact(entry?.palabra) === compactQuery);
+    return source.filter(entry => normalizeHebrewLemmaForLookup(entry?.palabra) === query);
 }
 
 function renderHebrewLexicoSupplement(rawHebrew) {
@@ -931,8 +916,8 @@ async function updateDictionaryComparison(items, rawQuery) {
     const hebrewHtml = hebrewEntry
         ? `${renderStructuredHebrewEntry(hebrewEntry)}${renderHebrewLexicoSupplement(hebrewCandidate)}`        : `<div class="trilingual-brief mb-3">
              <div class="trilingual-title">B. Hebreo</div>
-             <div class="trilingual-line"><strong>Consulta normalizada:</strong> <span class="hebrew">${escapeHtml(normalizeHebrewLemmaForLookup(hebrewCandidate) || hebrewCandidate)}</span></div>
-           </div>
+             <div class="trilingual-line"><strong>Consulta exacta:</strong> <span class="hebrew">${escapeHtml(normalizeHebrewLemmaForLookup(hebrewCandidate) || hebrewCandidate)}</span></div>
+                        </div>
 <div class="comparison-pre comparison-pre--hebrew">No se encontró un id correspondiente en hebrewdic.json para este candidato.</div>
  ${renderHebrewLexicoSupplement(hebrewCandidate)}`;   
     tbody.innerHTML = `
