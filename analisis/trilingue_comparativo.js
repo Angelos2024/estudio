@@ -635,41 +635,99 @@ const firstPartTokenCount = normalizeFuzzy(firstPart).split(/\s+/).filter(Boolea
  * RENDERIZADO UNIFICADO
  * Asegura que se vean las 3 columnas pase lo que pase.
  */
+let trilingualDisplayItems = [];
+let trilingualSelectedIndex = 0;
+let trilingualRawQuery = '';
+
+function getTrilingualResultsTbody() {
+    if (typeof resultsTbodyEl !== 'undefined' && resultsTbodyEl) return resultsTbodyEl;
+    return document.getElementById('resultsTbody');
+}
+
+function getSelectedTrilingualItems() {
+    if (!Array.isArray(trilingualDisplayItems) || !trilingualDisplayItems.length) return [];
+    const safeIndex = Math.max(0, Math.min(trilingualSelectedIndex, trilingualDisplayItems.length - 1));
+    const selected = trilingualDisplayItems[safeIndex];
+    const rest = trilingualDisplayItems.filter((_, idx) => idx !== safeIndex);
+    return [selected, ...rest];
+}
+
+function selectTrilingualCandidate(index) {
+    if (!Array.isArray(trilingualDisplayItems) || !trilingualDisplayItems.length) return;
+    const safeIndex = Number(index);
+    if (!Number.isInteger(safeIndex) || safeIndex < 0 || safeIndex >= trilingualDisplayItems.length) return;
+
+    trilingualSelectedIndex = safeIndex;
+    const tbody = getTrilingualResultsTbody();
+    if (!tbody) return;
+
+    tbody.querySelectorAll('.result-word').forEach(btn => {
+        const isActive = Number(btn.dataset.index) === trilingualSelectedIndex;
+        btn.classList.toggle('is-active', isActive);
+        btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+    });
+
+    updateDictionaryComparison(getSelectedTrilingualItems(), trilingualRawQuery);
+}
+
 function renderResults(items, rawQuery = '') {
+    const tbody = getTrilingualResultsTbody();
+
     // Usamos la función de buscador2.js para procesar las glosas si vienen del hebreo
-    const displayItems = typeof buildDisplayResults === 'function' 
-        ? buildDisplayResults(items, rawQuery) 
+    const displayItems = typeof buildDisplayResults === 'function'
+        ? buildDisplayResults(items, rawQuery)
         : items;
-    
+
+    trilingualRawQuery = rawQuery;
+
     if (!displayItems || !displayItems.length) {
-        if (resultsTbodyEl) {
-            resultsTbodyEl.innerHTML = '<tr><td colspan="3" class="muted">Sin resultados precisos para esta entrada.</td></tr>';
+        trilingualDisplayItems = [];
+        trilingualSelectedIndex = 0;
+        if (tbody) {
+            tbody.innerHTML = '<tr><td colspan="3" class="muted">Sin resultados precisos para esta entrada.</td></tr>';
         }
         updateDictionaryComparison([], rawQuery);
         return;
     }
 
-    const limitedItems = displayItems.slice(0, 4);
+    trilingualDisplayItems = displayItems.slice(0, 4);
+    trilingualSelectedIndex = 0;
 
-    if (!resultsTbodyEl) return;
+    if (!tbody) {
+        updateDictionaryComparison(getSelectedTrilingualItems(), rawQuery);
+        return;
+    }
 
-    updateDictionaryComparison(limitedItems, rawQuery);
-
-    resultsTbodyEl.innerHTML = limitedItems.map(e => {
-        // Extraer griego de cualquier posible llave en el JSON
+    tbody.innerHTML = trilingualDisplayItems.map((e, index) => {
         const griego = e.gr || e.equivalencia_griega || e.greek || '—';
+        const isActive = index === trilingualSelectedIndex;
         return `
-        <tr>
-            <td class="he">${escapeHtml(e.he)}</td>
+        <tr data-result-index="${index}">
+            <td class="he">
+                <button type="button" class="result-word${isActive ? ' is-active' : ''}" data-index="${index}" aria-pressed="${isActive ? 'true' : 'false'}">
+                    ${escapeHtml(e.he)}
+                </button>
+            </td>
             <td class="gr" style="font-family: 'Times New Roman', serif; font-size: 1.2rem; color: #1e3a8a;">
-                ${escapeHtml(griego)}
+                <button type="button" class="result-word${isActive ? ' is-active' : ''}" data-index="${index}" aria-pressed="${isActive ? 'true' : 'false'}" style="font-family: inherit; font-size: inherit; color: inherit;">
+                    ${escapeHtml(griego)}
+                </button>
             </td>
             <td class="es">
                 ${e._isSynthetic ? `<small style="color:var(--muted)">[Sintético]</small> ` : ''}
                 ${escapeHtml(e.es || '—')}
             </td>
         </tr>
-    `}).join('');
+    `;
+    }).join('');
+
+    tbody.querySelectorAll('.result-word').forEach(btn => {
+        btn.addEventListener('click', () => {
+            selectTrilingualCandidate(Number(btn.dataset.index));
+        });
+    });
+
+    updateDictionaryComparison(getSelectedTrilingualItems(), rawQuery);
 }
 
 
