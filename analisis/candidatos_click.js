@@ -1,8 +1,8 @@
 (function () {
   const state = {
     rows: [],
-    activeRow: 0,
-    rawQuery: ''
+    rawQuery: '',
+    selectedByLang: { he: '—', gr: '—', es: '—' }
   };
 
   function escapeHtml(text) {
@@ -14,14 +14,25 @@
       .replace(/'/g, '&#39;');
   }
 
-  function splitSelectableOptions(value) {
+  function splitWords(value, lang) {
     const raw = String(value || '').trim();
     if (!raw) return [];
-    const options = raw
-      .split(/[,;·/]+/)
-      .map((item) => String(item || '').trim())
-      .filter(Boolean);
-    return Array.from(new Set(options.length ? options : [raw]));
+
+    const normalized = raw
+      .replace(/[;,·/]/g, ' ')
+      .replace(/[\u05BE]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    const words = normalized.split(' ').map((w) => w.trim()).filter(Boolean);
+    const unique = Array.from(new Set(words));
+
+    if (!unique.length) return [];
+
+    if (lang === 'es') {
+      return unique.map((word) => word.toLowerCase());
+    }
+    return unique;
   }
 
   function createSelectableRow(entry) {
@@ -29,56 +40,66 @@
     const grRaw = entry?.gr || entry?.equivalencia_griega || entry?.greek || '';
     const esRaw = entry?.es || entry?.equivalencia_espanol || entry?.equivalencia || '';
 
-    const heOptions = splitSelectableOptions(heRaw);
-    const grOptions = splitSelectableOptions(grRaw);
-    const esOptions = splitSelectableOptions(esRaw);
-
     return {
       entry,
-      options: { he: heOptions, gr: grOptions, es: esOptions },
-      selected: {
-        he: heOptions[0] || '—',
-        gr: grOptions[0] || '—',
-        es: esOptions[0] || '—'
+      words: {
+        he: splitWords(heRaw, 'he'),
+        gr: splitWords(grRaw, 'gr'),
+        es: splitWords(esRaw, 'es')
       }
     };
   }
 
-  function renderSelectableOptions(row, rowIndex, lang) {
-    const options = row?.options?.[lang] || [];
-    if (!options.length) return '<span class="result-option-text">—</span>';
-
-    return options.map((option, optionIndex) => {
-      const isSelected = (row?.selected?.[lang] || '') === option;
-      return `<button type="button" class="result-option-chip ${isSelected ? 'is-selected' : ''}" data-role="result-option" data-row="${rowIndex}" data-lang="${lang}" data-option-index="${optionIndex}">${escapeHtml(option)}</button>`;
-    }).join('');
+  function ensureInitialSelection() {
+    const first = state.rows[0];
+    state.selectedByLang = {
+      he: first?.words?.he?.[0] || '—',
+      gr: first?.words?.gr?.[0] || '—',
+      es: first?.words?.es?.[0] || '—'
+    };
   }
 
-  function renderRowsFromSelectionState() {
+  function isWordSelected(lang, word) {
+    return String(state.selectedByLang?.[lang] || '') === String(word || '');
+  }
+
+  function renderWords(rowIndex, lang) {
+    const words = state.rows[rowIndex]?.words?.[lang] || [];
+    if (!words.length) return '<span class="result-option-text">—</span>';
+
+    return words.map((word, wordIndex) => {
+      const selected = isWordSelected(lang, word);
+      return `<button type="button" class="result-word ${selected ? 'is-active' : ''}" data-role="result-word" data-row="${rowIndex}" data-lang="${lang}" data-word-index="${wordIndex}">${escapeHtml(word)}</button>`;
+    }).join(' ');
+  }
+
+  function renderRows() {
     const tbody = document.getElementById('resultsTbody');
     if (!tbody) return;
+
     tbody.innerHTML = state.rows.map((row, rowIndex) => `
-      <tr class="result-row ${rowIndex === state.activeRow ? 'result-row--active' : ''}" data-row-index="${rowIndex}">
-        <td class="he">${renderSelectableOptions(row, rowIndex, 'he')}</td>
-        <td class="gr" style="font-family: 'Times New Roman', serif; font-size: 1.2rem; color: #1e3a8a;">${renderSelectableOptions(row, rowIndex, 'gr')}</td>
-        <td class="es">${row.entry._isSynthetic ? `<small style="color:var(--muted)">[Sintético]</small> ` : ''}${renderSelectableOptions(row, rowIndex, 'es')}</td>
+      <tr data-row-index="${rowIndex}">
+        <td class="he">${renderWords(rowIndex, 'he')}</td>
+        <td class="gr" style="font-family: 'Times New Roman', serif; font-size: 1.2rem; color: #1e3a8a;">${renderWords(rowIndex, 'gr')}</td>
+        <td class="es">${row.entry._isSynthetic ? `<small style="color:var(--muted)">[Sintético]</small> ` : ''}${renderWords(rowIndex, 'es')}</td>
       </tr>
     `).join('');
   }
 
-  function getActiveSelectedEntry() {
-    const row = state.rows[state.activeRow];
-    if (!row) return null;
+  function buildSelectedEntry() {
+    const baseEntry = state.rows[0]?.entry;
+    if (!baseEntry) return null;
+
     return {
-      ...row.entry,
-      he: row.selected.he,
-      gr: row.selected.gr,
-      es: row.selected.es
+      ...baseEntry,
+      he: state.selectedByLang.he,
+      gr: state.selectedByLang.gr,
+      es: state.selectedByLang.es
     };
   }
 
   function refreshComparisonAndSummary() {
-    const selectedEntry = getActiveSelectedEntry();
+    const selectedEntry = buildSelectedEntry();
     const api = window.TrilingueComparativoAPI;
 
     if (!selectedEntry) {
@@ -93,7 +114,7 @@
       summaryApi.renderLemmaSummaryForSearch(state.rawQuery, {
         ok: true,
         matches: [selectedEntry],
-        diag: 'Resumen actualizado con el candidato seleccionado manualmente.'
+        diag: 'Resumen actualizado con selección manual por palabra e idioma.'
       }).catch(() => {});
     }
   }
@@ -104,47 +125,44 @@
 
     if (!items.length) {
       state.rows = [];
-      state.activeRow = 0;
+      state.selectedByLang = { he: '—', gr: '—', es: '—' };
       return;
     }
 
     state.rows = items.map((entry) => createSelectableRow(entry));
-    state.activeRow = 0;
-    renderRowsFromSelectionState();
+    ensureInitialSelection();
+    renderRows();
     refreshComparisonAndSummary();
   }
 
   function onResultsClick(event) {
     const target = event.target instanceof HTMLElement
-      ? event.target.closest('[data-role="result-option"]')
+      ? event.target.closest('[data-role="result-word"]')
       : null;
     if (!target) return;
 
     const rowIndex = Number.parseInt(target.dataset.row || '', 10);
     const lang = String(target.dataset.lang || '');
-    const optionIndex = Number.parseInt(target.dataset.optionIndex || '', 10);
+    const wordIndex = Number.parseInt(target.dataset.wordIndex || '', 10);
 
-    const row = state.rows[rowIndex];
-    const options = row?.options?.[lang];
-    const optionValue = Array.isArray(options) ? options[optionIndex] : null;
-    if (!row || !optionValue) return;
+    const words = state.rows[rowIndex]?.words?.[lang] || [];
+    const wordValue = words[wordIndex];
+    if (!wordValue || !['he', 'gr', 'es'].includes(lang)) return;
 
-    row.selected[lang] = optionValue;
-    state.activeRow = rowIndex;
+    state.selectedByLang[lang] = wordValue;
+
     if (!state.rawQuery) {
       state.rawQuery = String(document.getElementById('query')?.value || '').trim();
     }
 
-    renderRowsFromSelectionState();
+    renderRows();
     refreshComparisonAndSummary();
   }
 
   function init() {
     window.addEventListener('trilingue:results-rendered', onResultsRendered);
     const tbody = document.getElementById('resultsTbody');
-    if (tbody) {
-      tbody.addEventListener('click', onResultsClick);
-    }
+    if (tbody) tbody.addEventListener('click', onResultsClick);
   }
 
   if (document.readyState === 'loading') {

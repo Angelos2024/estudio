@@ -671,7 +671,7 @@ function renderResults(items, rawQuery = '') {
         </tr>
     `}).join('');
 
-    updateDictionaryComparison(limitedItems, rawQuery);
+ updateDictionaryComparison(limitedItems, rawQuery);
     notifyRenderedResults(limitedItems, rawQuery);
 }
 
