@@ -757,6 +757,15 @@ async function ensureHebrewDictionaryLoaded() {
     return HEBREW_DICT_STATE;
 }
 
+function isExactHebrewDictionaryMatch(entry, strictCompactQuery) {
+    if (!entry || !strictCompactQuery) return false;
+
+    const lemmaStrict = normalizeHebrewStrictCompact(entry?.lemma);
+    const headwordStrict = normalizeHebrewStrictCompact(entry?.headword_line);
+
+    return lemmaStrict === strictCompactQuery || headwordStrict === strictCompactQuery;
+}
+
 function findHebrewDictionaryEntry(rawHebrew) {
     const state = HEBREW_DICT_STATE;
     const source = Array.isArray(state.entries) ? state.entries : [];
@@ -764,34 +773,26 @@ function findHebrewDictionaryEntry(rawHebrew) {
 
     const strictQuery = normalizeHebrewSpacing(rawHebrew);
     const strictCompactQuery = normalizeHebrewCompact(rawHebrew);
-    const looseQuery = normalizeHebrewLoose(rawHebrew);
-    const looseCompactQuery = normalizeHebrewLooseCompact(rawHebrew);
 
-    if (!strictCompactQuery && !looseCompactQuery) return null;
+    if (!strictCompactQuery) return null;
 
     const byId = new Map(source.map(entry => [entry.id, entry]));
-    const byLemmaStrict = new Map(source.map(entry => [normalizeHebrewStrictCompact(entry?.lemma), entry]));
-    const byHeadwordStrict = new Map(source.map(entry => [normalizeHebrewStrictCompact(entry?.headword_line), entry]));
-    const byLemmaLoose = new Map(source.map(entry => [normalizeHebrewLooseCompact(entry?.lemma), entry]));
-    const byHeadwordLoose = new Map(source.map(entry => [normalizeHebrewLooseCompact(entry?.headword_line), entry]));
 
     const strictIndexedIds = index[strictCompactQuery] || index[strictQuery] || [];
     if (Array.isArray(strictIndexedIds) && strictIndexedIds.length) {
-        const exactById = byId.get(strictIndexedIds[0]);
-        if (exactById) return exactById;
+        for (const id of strictIndexedIds) {
+            const indexedEntry = byId.get(id);
+            if (isExactHebrewDictionaryMatch(indexedEntry, strictCompactQuery)) {
+                return indexedEntry;
+            }
+        }
     }
 
-    if (byLemmaStrict.has(strictCompactQuery)) return byLemmaStrict.get(strictCompactQuery);
-    if (byHeadwordStrict.has(strictCompactQuery)) return byHeadwordStrict.get(strictCompactQuery);
-
-    const looseIndexedIds = index[looseCompactQuery] || index[looseQuery] || [];
-    if (Array.isArray(looseIndexedIds) && looseIndexedIds.length) {
-        const exactById = byId.get(looseIndexedIds[0]);
-        if (exactById) return exactById;
+    for (const entry of source) {
+        if (isExactHebrewDictionaryMatch(entry, strictCompactQuery)) {
+            return entry;
+        }
     }
-
-    if (byLemmaLoose.has(looseCompactQuery)) return byLemmaLoose.get(looseCompactQuery);
-    if (byHeadwordLoose.has(looseCompactQuery)) return byHeadwordLoose.get(looseCompactQuery);
 
     return null;
 }
@@ -918,22 +919,24 @@ async function updateDictionaryComparison(items, rawQuery) {
     }
 
     const hebrewCandidate = String(primary.he || primary.hebrew || primary.palabra || '').trim();
-    if (!hebrewCandidate) {
-        tbody.innerHTML = '<tr><td colspan="2" class="muted">La primera fila no contiene hebreo utilizable para consultar el diccionario.</td></tr>';
+    const hebrewLookupQuery = /[\u0590-\u05FF]/.test(String(rawQuery || '')) ? String(rawQuery || '').trim() : hebrewCandidate;
+
+    if (!hebrewLookupQuery) {
+        tbody.innerHTML = '<tr><td colspan="2" class="muted">No hay una palabra hebrea exacta para consultar el diccionario.</td></tr>';
         return;
     }
 
     tbody.innerHTML = '<tr><td colspan="2" class="muted">Consultando diccionario hebreo…</td></tr>';
 
     await ensureHebrewDictionaryLoaded();
-     const hebrewEntry = findHebrewDictionaryEntry(hebrewCandidate);
+     const hebrewEntry = findHebrewDictionaryEntry(hebrewLookupQuery);
     const hebrewHtml = hebrewEntry
         ? renderStructuredHebrewEntry(hebrewEntry)
         : `<div class="trilingual-brief mb-3">
              <div class="trilingual-title">B. Hebreo</div>
-             <div class="trilingual-line"><strong>Consulta normalizada:</strong> <span class="hebrew">${escapeHtml(normalizeHebrewLemmaForLookup(hebrewCandidate) || hebrewCandidate)}</span></div>
+             <div class="trilingual-line"><strong>Consulta exacta:</strong> <span class="hebrew">${escapeHtml(hebrewLookupQuery)}</span></div>
            </div>
- <div class="comparison-pre comparison-pre--hebrew">No se encontró un id correspondiente en hebrewdic.json para este candidato.</div>`;
+ <div class="comparison-pre comparison-pre--hebrew">No se encontró una coincidencia exacta en hebrewdic.json para esta palabra.</div>`;
    
     tbody.innerHTML = `
       <tr>
