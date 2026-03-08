@@ -753,23 +753,30 @@ function findHebrewDictionaryEntry(rawHebrew) {
     const state = HEBREW_DICT_STATE;
     const source = Array.isArray(state.entries) ? state.entries : [];
     const index = state.index && typeof state.index === 'object' ? state.index : {};
-   const query = normalizeHebrewLemmaForLookup(rawHebrew);
+    const query = normalizeHebrewLemmaForLookup(rawHebrew);
     if (!query) return null;
 
     const byId = new Map(source.map(entry => [entry.id, entry]));
-     const byLemma = new Map(source.map(entry => [normalizeHebrewLemmaForLookup(entry?.lemma), entry]));
-    const byHeadword = new Map(source.map(entry => [normalizeHebrewLemmaForLookup(entry?.headword_line), entry]));
+    const isExactHebrewDictionaryMatch = (entry) => {
+        if (!entry || typeof entry !== 'object') return false;
+        const lemma = normalizeHebrewLemmaForLookup(entry?.lemma);
+        const headword = normalizeHebrewLemmaForLookup(entry?.headword_line);
+        return lemma === query || headword === query;
+    };
 
     const indexedIds = index[query] || [];
-        if (Array.isArray(indexedIds) && indexedIds.length) {
-        const exactById = byId.get(indexedIds[0]);
-        if (exactById) return exactById;
+    if (Array.isArray(indexedIds) && indexedIds.length) {
+        for (const id of indexedIds) {
+            const exactById = byId.get(id);
+            if (isExactHebrewDictionaryMatch(exactById)) return exactById;
+        }
     }
 
-if (byLemma.has(query)) return byLemma.get(query);
-    if (byHeadword.has(query)) return byHeadword.get(query);
+    for (const entry of source) {
+        if (isExactHebrewDictionaryMatch(entry)) return entry;
+    }
 
-   return null;
+    return null;
 }
 
 function findHebrewLexicoEntries(rawHebrew) {
@@ -810,11 +817,11 @@ function collectUnifiedLookupCandidates({ rawHebrew, lemmaCandidates = [], stron
     return { hebrewCandidates, strongSet };
 }
 
-function findHebrewUnifiedEntries(rawHebrew, options = {}) {  
-  const source = Array.isArray(HEBREW_DICT_STATE.unified) ? HEBREW_DICT_STATE.unified : [];
-        if (!source.length) return [];
+function findHebrewUnifiedEntries(rawHebrew, options = {}) {
+    const source = Array.isArray(HEBREW_DICT_STATE.unified) ? HEBREW_DICT_STATE.unified : [];
+    if (!source.length) return [];
 
-     const { hebrewCandidates, strongSet } = collectUnifiedLookupCandidates({ rawHebrew, ...options });
+    const { hebrewCandidates, strongSet } = collectUnifiedLookupCandidates({ rawHebrew, ...options });
     if (!hebrewCandidates.size && !strongSet.size) return [];
 
     const results = [];
@@ -822,6 +829,8 @@ function findHebrewUnifiedEntries(rawHebrew, options = {}) {
 
     source.forEach(entry => {
         const entryHebrew = new Set([
+            entry?.strong_detail?.lemma,
+            entry?.lemma,
             entry?.hebreo,
             entry?.forma,
             ...(Array.isArray(entry?.hebreos) ? entry.hebreos : []),
@@ -834,12 +843,14 @@ function findHebrewUnifiedEntries(rawHebrew, options = {}) {
         const strongMatch = !!entryStrong && strongSet.has(entryStrong);
         if (!hebrewMatch && !strongMatch) return;
 
-        const dedupeKey = `${entryStrong}|${normalizeHebrewLemmaForLookup(entry?.hebreo)}|${normalizeHebrewLemmaForLookup(entry?.forma)}`;
+        const lemmaKey = normalizeHebrewLemmaForLookup(entry?.strong_detail?.lemma || entry?.lemma || entry?.hebreo || entry?.forma);
+        const dedupeKey = `${entryStrong}|${lemmaKey}`;
         if (seen.has(dedupeKey)) return;
         seen.add(dedupeKey);
         results.push(entry);
     });
-     return results;
+
+    return results;
 }
 
 function extractStrongCandidatesFromText(text) {
@@ -906,14 +917,20 @@ function renderHebrewUnifiedSupplement(rawHebrew, options = {}) {
     return unifiedEntries.map(entry => {
         const fullJson = escapeHtml(JSON.stringify(entry, null, 2));
         const strong = normalizeStrongForLookup(entry?.strong) || '—';
-        const lema = entry?.hebreo || entry?.forma || rawHebrew || '—';
+        const lema = entry?.strong_detail?.lemma || entry?.lemma || entry?.hebreo || entry?.forma || rawHebrew || '—';
+        const transliteracion = entry?.strong_detail?.transliteracion || entry?.transliteracion || '—';
+        const definicion = entry?.strong_detail?.definicion || entry?.definicion || '—';
+        const defRv = entry?.strong_detail?.def_rv || entry?.def_rv || '—';
 
         return `
           <div class="trilingual-brief mt-3">
             <div class="trilingual-title">Complemento · diccionario_unificado.min.json</div>
             <div class="trilingual-line"><strong>Strong:</strong> ${escapeHtml(String(strong))}</div>
             <div class="trilingual-line"><strong>Lema:</strong> <span class="hebrew">${escapeHtml(lema)}</span></div>
-           <div class="trilingual-line"><strong>Glosa:</strong> ${escapeHtml(entry?.glosa || '—')}</div>
+            <div class="trilingual-line"><strong>Transliteración:</strong> ${escapeHtml(transliteracion)}</div>
+            <div class="trilingual-line"><strong>Glosa:</strong> ${escapeHtml(entry?.glosa || '—')}</div>
+            <div class="trilingual-line"><strong>Definición:</strong> ${escapeHtml(definicion)}</div>
+            <div class="trilingual-line"><strong>Definición RV:</strong> ${escapeHtml(defRv)}</div>
             <div class="trilingual-line"><strong>Entrada completa:</strong></div>
             <pre class="comparison-pre comparison-pre--hebrew">${fullJson}</pre>
           </div>
