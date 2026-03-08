@@ -469,13 +469,17 @@
       text-decoration:underline;
       text-underline-offset:2px;
     }
-    .result-word.is-active{
-      background:color-mix(in srgb, var(--primary) 16%, #ffffff);
-      color:var(--text);
-      border-radius:4px;
-      padding:0 .22rem;
-      font-weight:700;
-    }
+.result-word.is-active{
+  background:#ffffff;
+  color:#111;
+  border:1px solid rgba(75,39,67,.45);
+  border-radius:6px;
+  padding:0 .25rem;
+  font-weight:700;
+  box-shadow:
+    0 0 0 2px rgba(75,39,67,.10),
+    0 0 10px rgba(75,39,67,.16);
+}
 
     
     .trace-box{ white-space:pre-wrap; font-family:ui-monospace,Consolas,monospace; }
