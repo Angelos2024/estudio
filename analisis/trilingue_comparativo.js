@@ -898,7 +898,7 @@ function renderHebrewLexicoSupplement(rawHebrew) {
 
         return `
           <div class="trilingual-brief mt-3">
-            <div class="trilingual-title">Complemento · léxico_hebreo.json</div>
+            <div class="dict-entry-kicker">Diccionario A</div>
             <div class="trilingual-line"><strong>Palabra:</strong> <span class="hebrew">${escapeHtml(entry?.palabra || rawHebrew || '—')}</span></div>
             <div class="trilingual-line"><strong>Descripción:</strong> ${escapeHtml(entry?.descripcion || '—')}</div>
             ${morfologia.length ? `<div class="trilingual-line"><strong>Morfología:</strong> ${morfologia.map(item => escapeHtml(item)).join(' · ')}</div>` : ''}
@@ -925,7 +925,7 @@ function renderHebrewUnifiedSupplement(rawHebrew, options = {}) {
         return `
           <div class="trilingual-brief mt-3 dict-entry">
             <div class="dict-entry-header">
-              <div class="dict-entry-kicker">Diccionario unificado</div>
+              <div class="dict-entry-kicker">Diccionario B</div>
               <div class="dict-entry-title hebrew">${escapeHtml(lema)}</div>
             </div>
             <div class="trilingual-line"><strong>Lema:</strong> <span class="hebrew">${escapeHtml(lema)}</span></div>
