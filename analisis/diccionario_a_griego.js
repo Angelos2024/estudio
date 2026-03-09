@@ -89,13 +89,16 @@
     }
 
     const masterBlock = result.master
-      ? `<div class="mb-3">
-          <div class="fw-bold mb-1">A1. masterdiccionario</div>
-          <div><strong>Lema:</strong> ${esc(result.master.lemma)}</div>
-          <div><strong>Forma léxica:</strong> ${esc(result.master.formaLexica)}</div>
-          <div class="mt-2">${esc(result.master.definicion)}</div>
+            ? `<div class="trilingual-brief mt-3 dict-entry">
+          <div class="dict-entry-header">
+            <div class="dict-entry-kicker">Diccionario A</div>
+            <div class="dict-entry-title greek">${esc(result.master.lemma)}</div>
+          </div>
+          <div class="trilingual-line"><strong>Lema:</strong> <span class="greek">${esc(result.master.lemma)}</span></div>
+          <div class="trilingual-line"><strong>Forma léxica:</strong> <span class="greek">${esc(result.master.formaLexica)}</span></div>
+          <div class="trilingual-line mt-2"><strong>Definición:</strong> ${esc(result.master.definicion)}</div>
         </div>`
-      : '<div class="mb-3"><div class="fw-bold mb-1">A1. masterdiccionario</div><div class="muted">Sin entrada directa para este término.</div></div>';
+    : '<div class="trilingual-brief mt-3"><div class="dict-entry-kicker">Diccionario A</div><div class="muted">Sin entrada directa para este término.</div></div>';
 
         return masterBlock;
   }
