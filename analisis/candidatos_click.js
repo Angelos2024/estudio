@@ -1,25 +1,32 @@
 (function () {
-  const SEARCH_INDEX_URLS = {
-    es: ['../search/index-es.json', './search/index-es.json', '/search/index-es.json'],
-    he: ['../search/index-he.json', './search/index-he.json', '/search/index-he.json'],
-    gr: ['../search/index-gr.json', './search/index-gr.json', '/search/index-gr.json']
-  };
+
   const LXX_FREQ_MIN_URLS = [
     '../LXX/frecuencias/min.json',
     './LXX/frecuencias/min.json',
     '/LXX/frecuencias/min.json'
   ];
 
-  const NT_BOOKS = new Set([
-    'mateo', 'marcos', 'lucas', 'juan', 'hechos', 'romanos',
-    '1_corintios', '2_corintios', 'galatas', 'efesios', 'filipenses', 'colosenses',
-    '1_tesalonicenses', '2_tesalonicenses', '1_timoteo', '2_timoteo', 'tito', 'filemon',
-    'hebreos', 'santiago', '1_pedro', '2_pedro', '1_juan', '2_juan', '3_juan',
-    'judas', 'apocalipsis'
-  ]);
+   const ES_FREQ_MIN_URLS = [
+    '../librosRV1960/frecuencias/min.json',
+    './librosRV1960/frecuencias/min.json',
+    '/librosRV1960/frecuencias/min.json'
+  ];
+  const HE_FREQ_MIN_URLS = [
+    '../IdiomaORIGEN/frecuencias/min.json',
+    './IdiomaORIGEN/frecuencias/min.json',
+    '/IdiomaORIGEN/frecuencias/min.json'
+  ];
+  const RKANT_FREQ_MIN_URLS = [
+    '../RKANT/min.json',
+    './RKANT/min.json',
+    '/RKANT/min.json'
+  ];
 
   const jsonCache = new Map();
   let lxxFrequencyIndexPromise = null;
+  let esFrequencyIndexPromise = null;
+  let heFrequencyIndexPromise = null;
+  let rkantFrequencyIndexPromise = null;
 
   const state = {
     rows: [],
@@ -105,24 +112,7 @@
     throw lastError || new Error('No se pudo cargar el índice de búsqueda.');
   }
 
-  async function getIndexForLang(lang) {
-    const urls = SEARCH_INDEX_URLS[lang];
-    const data = await fetchJsonWithFallback(urls);
-    return data?.tokens && typeof data.tokens === 'object' ? data.tokens : {};
-  }
-
-
-  function buildBookCountRows(refs) {
-    const counts = new Map();
-    refs.forEach((ref) => {
-      const [book] = String(ref || '').split('|');
-      if (!book) return;
-      counts.set(book, (counts.get(book) || 0) + 1);
-    });
-    return [...counts.entries()]
-      .map(([book, count]) => ({ book, label: book.replace(/_/g, ' ').replace(/\b\w/g, (m) => m.toUpperCase()), count }))
-      .sort((a, b) => b.count - a.count);
-  }
+  
 
 function buildRowsFromBookCounts(bookCounts) {
     if (!bookCounts || typeof bookCounts !== 'object') return [];
@@ -136,39 +126,14 @@ function buildRowsFromBookCounts(bookCounts) {
       .sort((a, b) => b.count - a.count);
   }
 
-  function filterOtRefs(refs) {
-    return refs.filter((ref) => {
-      const [book] = String(ref || '').split('|');
-      return book && !NT_BOOKS.has(book);
-    });
-  }
-
-  async function refsForWord(lang, word) {
-    const index = await getIndexForLang(lang);
-    if (lang === 'es') {
-      const key = normalizeSpanish(word);
-      return Array.isArray(index[key]) ? index[key] : [];
-    }
-    if (lang === 'gr') {
-      const key = normalizeGreek(word);
-      return Array.isArray(index[key]) ? index[key] : [];
-    }
-    const exact = Array.isArray(index[word]) ? index[word] : [];
-    if (exact.length) return exact;
-    const fallback = normalizeHebrew(word);
-    return Array.isArray(index[fallback]) ? index[fallback] : [];
-  }
-
- async function getLxxFrequencyIndex() {
-    if (lxxFrequencyIndexPromise) return lxxFrequencyIndexPromise;
-    lxxFrequencyIndexPromise = (async () => {
-      const payload = await fetchJsonWithFallback(LXX_FREQ_MIN_URLS);
+  async function buildFrequencyIndex(urls, normalizeWord) {
+      const payload = await fetchJsonWithFallback(urls);
       const entries = Array.isArray(payload) ? payload : [];
       const index = new Map();
 
       entries.forEach((entry) => {
-        const key = normalizeGreek(entry?.palabra || '');
-        if (!key) return;
+        const key = normalizeWord(entry?.palabra || '');
+                if (!key) return;
         const sourceBooks = entry?.libros && typeof entry.libros === 'object' ? entry.libros : null;
         if (!sourceBooks) return;
 
@@ -182,7 +147,12 @@ function buildRowsFromBookCounts(bookCounts) {
       });
 
       return index;
-    })();
+    }
+
+ async function getLxxFrequencyIndex() {
+    if (lxxFrequencyIndexPromise) return lxxFrequencyIndexPromise;
+    lxxFrequencyIndexPromise = buildFrequencyIndex(LXX_FREQ_MIN_URLS, normalizeGreek);
+
 
     try {
       return await lxxFrequencyIndexPromise;
@@ -192,11 +162,62 @@ function buildRowsFromBookCounts(bookCounts) {
     }
   }
 
- async function rowsForLxxWord(word) {
-    const key = normalizeGreek(word);
+ async function getEsFrequencyIndex() {
+    if (esFrequencyIndexPromise) return esFrequencyIndexPromise;
+    esFrequencyIndexPromise = buildFrequencyIndex(ES_FREQ_MIN_URLS, normalizeSpanish);
+
+    try {
+      return await esFrequencyIndexPromise;
+    } catch (error) {
+      esFrequencyIndexPromise = null;
+      throw error;
+    }
+  }
+
+  async function getHeFrequencyIndex() {
+    if (heFrequencyIndexPromise) return heFrequencyIndexPromise;
+    heFrequencyIndexPromise = buildFrequencyIndex(HE_FREQ_MIN_URLS, normalizeHebrew);
+
+    try {
+      return await heFrequencyIndexPromise;
+    } catch (error) {
+      heFrequencyIndexPromise = null;
+      throw error;
+    }
+  }
+
+  async function getRkantFrequencyIndex() {
+    if (rkantFrequencyIndexPromise) return rkantFrequencyIndexPromise;
+    rkantFrequencyIndexPromise = buildFrequencyIndex(RKANT_FREQ_MIN_URLS, normalizeGreek);
+
+    try {
+      return await rkantFrequencyIndexPromise;
+    } catch (error) {
+      rkantFrequencyIndexPromise = null;
+      throw error;
+    }
+  }
+
+  async function rowsFromFrequencyIndex(word, normalizeWord, getIndex) {
+    const key = normalizeWord(word);
     if (!key) return [];
-    const index = await getLxxFrequencyIndex();
-    return buildRowsFromBookCounts(index.get(key));
+    const index = await getIndex();
+        return buildRowsFromBookCounts(index.get(key));
+  }
+   async function rowsForEsWord(word) {
+    return rowsFromFrequencyIndex(word, normalizeSpanish, getEsFrequencyIndex);
+  }
+
+  async function rowsForHeWord(word) {
+    return rowsFromFrequencyIndex(word, normalizeHebrew, getHeFrequencyIndex);
+  }
+
+  async function rowsForRkantWord(word) {
+    return rowsFromFrequencyIndex(word, normalizeGreek, getRkantFrequencyIndex);
+  }
+
+ async function rowsForLxxWord(word) {
+    return rowsFromFrequencyIndex(word, normalizeGreek, getLxxFrequencyIndex);
   }
   async function updateDonutFromSelection() {
     const donut = window.AnalisisComparativoOccurrenceDonut;
@@ -204,20 +225,21 @@ function buildRowsFromBookCounts(bookCounts) {
     state.loadingDonut = true;
     try {
       const [esResult, heResult, grRkantResult, grLxxResult] = await Promise.allSettled([
-        refsForWord('es', state.selectedByLang.es),
-        refsForWord('he', state.selectedByLang.he),
-refsForWord('gr', state.selectedByLang.gr),
+        rowsForEsWord(state.selectedByLang.es),
+        rowsForHeWord(state.selectedByLang.he),
+        rowsForRkantWord(state.selectedByLang.gr),
         rowsForLxxWord(state.selectedByLang.gr)
       ]);
 
-      const esRefs = filterOtRefs(esResult.status === 'fulfilled' ? esResult.value : []);
-      const heRefs = filterOtRefs(heResult.status === 'fulfilled' ? heResult.value : []);
-      const grRkantRefs = grRkantResult.status === 'fulfilled' ? grRkantResult.value : [];
+      const esRows = esResult.status === 'fulfilled' ? esResult.value : [];
+      const heRows = heResult.status === 'fulfilled' ? heResult.value : [];
+      const grRkantRows = grRkantResult.status === 'fulfilled' ? grRkantResult.value : [];
       const grLxxRows = grLxxResult.status === 'fulfilled' ? grLxxResult.value : [];
 
       donut.setData({
-        he: buildBookCountRows(heRefs),
-         gr_rkant: buildBookCountRows(grRkantRefs),
+         es: esRows,
+        he: heRows,
+        gr_rkant: grRkantRows,
         gr_lxx: grLxxRows
       });
        } finally {
