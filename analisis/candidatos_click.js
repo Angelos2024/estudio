@@ -48,21 +48,33 @@
     const raw = String(value || '').trim();
     if (!raw) return [];
 
-    const normalized = raw
+let normalized = raw
       .replace(/[;,·/]/g, ' ')
-      .replace(/[\u05BE]/g, ' ')
       .replace(/\s+/g, ' ')
       .trim();
 
-    const words = normalized.split(' ').map((w) => w.trim()).filter(Boolean);
-    const unique = Array.from(new Set(words));
+     // Mantener el ajuste del maqaf restringido a hebreo para no tocar otros idiomas.
+    if (lang === 'he') {
+      normalized = normalized.replace(/[־]/g, ' ');
+    }
 
-    if (!unique.length) return [];
+
+    const words = normalized.split(' ').map((w) => w.trim()).filter(Boolean);
+    if (!words.length) return [];
 
     if (lang === 'es') {
-      return unique.map((word) => word.toLowerCase());
+      // Dedupe case-insensitive en español, preservando la forma original visible.
+      const seen = new Set();
+      const out = [];
+      words.forEach((word) => {
+        const key = normalizeSpanish(word);
+        if (!key || seen.has(key)) return;
+        seen.add(key);
+        out.push(word);
+      });
+      return out;
     }
-    return unique;
+return Array.from(new Set(words));
   }
 
   function normalizeSpanish(text) {
