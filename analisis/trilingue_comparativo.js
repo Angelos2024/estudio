@@ -800,6 +800,36 @@ function findHebrewLexicoEntries(rawHebrew) {
     return source.filter(entry => normalizeHebrewLemmaForLookup(entry?.palabra) === query);
 }
 
+function normalizeHebrewComparableKey(text) {
+    const normalized = normalizeHebrewLemmaForLookup(text);
+    if (!normalized) return '';
+
+    return normalized
+        .normalize('NFD')
+        .replace(/[֑-ׇ]/g, '')
+        .replace(/[־\-‐‑‒–—]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .normalize('NFC');
+}
+
+function buildHebrewLookupVariants(value) {
+    const variants = new Set();
+    const base = normalizeHebrewLemmaForLookup(value);
+    if (!base) return variants;
+
+    variants.add(base);
+
+    const comparable = normalizeHebrewComparableKey(base);
+    if (comparable) variants.add(comparable);
+
+    if (comparable.startsWith('ה') && comparable.length > 2) {
+        variants.add(comparable.slice(1));
+    }
+
+    return variants;
+}
+
 function normalizeStrongForLookup(value) {
     const text = String(value || '').trim();
     if (!text) return '';
@@ -847,8 +877,7 @@ function collectUnifiedLookupCandidates({ rawHebrew, lemmaCandidates = [], stron
     const strongSet = new Set();
 
     const pushHebrew = (value) => {
-        const normalized = normalizeHebrewLemmaForLookup(value);
-        if (normalized) hebrewCandidates.add(normalized);
+        buildHebrewLookupVariants(value).forEach(candidate => hebrewCandidates.add(candidate));
     };
 
     const pushStrong = (value) => {
@@ -881,8 +910,8 @@ function findHebrewUnifiedEntries(rawHebrew, options = {}) {
             entry?.forma,
             ...(Array.isArray(entry?.hebreos) ? entry.hebreos : []),
             ...(Array.isArray(entry?.formas) ? entry.formas : [])
-        ].map(value => normalizeHebrewLemmaForLookup(value)).filter(Boolean));
-
+        ].flatMap(value => Array.from(buildHebrewLookupVariants(value))).filter(Boolean));
+         
         const entryStrong = normalizeStrongForLookup(entry?.strong);
 
         const hebrewMatch = Array.from(hebrewCandidates).some(candidate => entryHebrew.has(candidate));
