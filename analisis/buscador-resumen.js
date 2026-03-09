@@ -994,15 +994,7 @@ heWord: heb || (lang === 'he' ? rawQuery : ''),
       }, true);
     }
 
-    const exampleBtn = $('exampleBtn');
-    if (exampleBtn) {
-      exampleBtn.addEventListener('click', () => {
-        setTimeout(() => {
-          const query = $('query')?.value || '';
-          if (query) renderLemmaSummaryForSearch(query).catch(() => {});
-        }, 0);
-      }, true);
-    }
+ 
   }
 
   function init() {

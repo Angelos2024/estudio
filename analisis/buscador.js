@@ -4,7 +4,6 @@ const alefatoFilesEl = $("alefatoFiles");
 const clearBtn = $("clearBtn");
 const queryEl = $("query");
 const searchBtn = $("searchBtn");
-const exampleBtn = $("exampleBtn");
 const resultsTbodyEl = $("resultsTbody");
 const matchTierEl = $("matchTier");
 const resultCountEl = $("resultCount");

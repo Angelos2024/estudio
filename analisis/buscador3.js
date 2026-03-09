@@ -508,8 +508,7 @@ if (resultCountEl) resultCountEl.textContent = '0 resultados';
 if (alefatoFilesEl) alefatoFilesEl.addEventListener('change', (e) => handleFiles(e.target.files));
 if (clearBtn) clearBtn.addEventListener('click', clearAll);
 if (searchBtn) searchBtn.addEventListener('click', doSearch);
-if (exampleBtn) exampleBtn.addEventListener('click', () => { if (queryEl) queryEl.value = 'מִכְתָּבִים'; doSearch(); });if (queryEl) queryEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') doSearch(); });
-
+if (queryEl) queryEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') doSearch(); });
 if (normalizeEl) normalizeEl.addEventListener('change', () => { if (entries.length) rebuildIndexes(); if (queryEl && queryEl.value.trim()) doSearch(); });
 if (splitHyphenatedEl) splitHyphenatedEl.addEventListener('change', () => { if (entries.length) rebuildIndexes(); if (queryEl && queryEl.value.trim()) doSearch(); });
 
