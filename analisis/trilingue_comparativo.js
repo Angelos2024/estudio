@@ -1058,31 +1058,14 @@ function renderStructuredHebrewEntry(entry) {
 }
 
 function renderGreekComparisonCell(entry, rawQuery) {
-    const heb = entry?.he || entry?.hebrew || entry?.palabra || '—';
     const greek = entry?.gr || entry?.equivalencia_griega || entry?.greek || '—';
-    const spanish = entry?.es || entry?.equivalencia_espanol || entry?.equivalencia || '—';
-    const candidates = Array.isArray(entry?.candidatos) ? entry.candidatos.filter(Boolean).slice(0, 6) : [];
-    return `
-      <div class="trilingual-brief mb-3">
-        <div class="trilingual-title">Candidato trilingüe seleccionado</div>
-        <div class="trilingual-line"><strong>Consulta:</strong> ${escapeHtml(rawQuery || '—')}</div>
-        <div class="trilingual-line"><strong>Hebreo candidato final:</strong> <span class="hebrew">${escapeHtml(heb)}</span></div>
-        <div class="trilingual-line"><strong>Griego (LXX):</strong> <span class="greek">${escapeHtml(greek)}</span></div>
-        <div class="trilingual-line"><strong>Español:</strong> ${escapeHtml(spanish)}</div>
-      </div>
-      <div class="mb-3">
-        <div class="fw-bold mb-2">A. Griego</div>
-        <p class="mb-2">Esta columna toma la equivalencia griega de la fila principal del buscador trilingüe. Si luego agregas un diccionario griego en JSON, aquí se puede sustituir por su artículo estructurado completo.</p>
-        <pre class="comparison-pre comparison-pre--greek">${escapeHtml(greek)}</pre>
-      </div>
-      ${candidates.length ? `
-      <div>
-        <div class="fw-bold mb-2">Candidatos léxicos visibles</div>
-        <div class="d-flex flex-wrap gap-2">${candidates.map(item => `<span class="tag">${escapeHtml(item)}</span>`).join('')}</div>
-      </div>` : ''}
-    `;
-}
+    if (window.AnalisisDiccionarioAGriego?.renderGreekDictionaryCell) {
+        return window.AnalisisDiccionarioAGriego.renderGreekDictionaryCell(greek, rawQuery);
+    }
 
+    return `<pre class="comparison-pre comparison-pre--greek">${escapeHtml(greek)}</pre>`;
+
+ }
 async function updateDictionaryComparison(items, rawQuery) {
     const tbody = document.getElementById('dictionaryComparisonTbody');
     if (!tbody) return;
@@ -1099,9 +1082,11 @@ async function updateDictionaryComparison(items, rawQuery) {
         return;
     }
 
-    tbody.innerHTML = '<tr><td colspan="2" class="muted">Consultando diccionario hebreo…</td></tr>';
-
+    tbody.innerHTML = '<tr><td colspan="2" class="muted">Consultando diccionarios…</td></tr>';
     await ensureHebrewDictionaryLoaded();
+     if (window.AnalisisDiccionarioAGriego?.ensureLoaded) {
+        await window.AnalisisDiccionarioAGriego.ensureLoaded();
+    }
       const hebrewEntry = findHebrewDictionaryEntry(hebrewCandidate);
     const hebrewBlocks = [];
 
