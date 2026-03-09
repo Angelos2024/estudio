@@ -87,8 +87,12 @@
 
   function normalizeHebrew(text) {
     return String(text || '')
-      .replace(/[\u0591-\u05C7]/g, '')
       .replace(/[\u200E\u200F\u202A-\u202E\u2066-\u2069\u200C\u200D\uFEFF]/g, '')
+      .replace(/[\u05BE\-—]/g, ' ')
+      .replace(/\u05BA/g, '\u05B9')
+      .replace(/[^\u05D0-\u05EA\u05B0-\u05BB\u05BC\u05C1\u05C2\u05C7\s]/g, '')
+      .normalize('NFC')
+      .replace(/\s+/g, ' ')
       .trim();
   }
 
