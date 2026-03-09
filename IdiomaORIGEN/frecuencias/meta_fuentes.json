@@ -5,12 +5,7 @@
     "heTitle": "דברי הימים א",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Writings"
-    ]
+    "direction": "rtl"
   },
   {
     "archivo": "1 reyes.json",
@@ -18,12 +13,7 @@
     "heTitle": "מלכים א",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Prophets"
-    ]
+    "direction": "rtl"
   },
   {
     "archivo": "1 samuel.json",
@@ -31,12 +21,7 @@
     "heTitle": "שמואל א",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Prophets"
-    ]
+    "direction": "rtl"
   },
   {
     "archivo": "2 cronicas.json",
@@ -44,12 +29,7 @@
     "heTitle": "דברי הימים ב",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Writings"
-    ]
+    "direction": "rtl"
   },
   {
     "archivo": "2 reyes.json",
@@ -57,12 +37,7 @@
     "heTitle": "מלכים ב",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Prophets"
-    ]
+    "direction": "rtl"
   },
   {
     "archivo": "2 samuel.json",
@@ -70,12 +45,7 @@
     "heTitle": "שמואל ב",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Prophets"
-    ]
+    "direction": "rtl"
   },
   {
     "archivo": "abdias.json",
@@ -83,12 +53,7 @@
     "heTitle": "עובדיה",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Prophets"
-    ]
+    "direction": "rtl"
   },
   {
     "archivo": "amos.json",
@@ -96,12 +61,7 @@
     "heTitle": "עמוס",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Prophets"
-    ]
+    "direction": "rtl"
   },
   {
     "archivo": "cantares.json",
@@ -109,12 +69,7 @@
     "heTitle": "שיר השירים",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Writings"
-    ]
+    "direction": "rtl"
   },
   {
     "archivo": "daniel.json",
@@ -122,12 +77,7 @@
     "heTitle": "דניאל",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Writings"
-    ]
+    "direction": "rtl"
   },
   {
     "archivo": "deuteronomio.json",
@@ -135,12 +85,7 @@
     "heTitle": "דברים",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Torah"
-    ]
+    "direction": "rtl"
   },
   {
     "archivo": "eclesiastes.json",
@@ -148,12 +93,7 @@
     "heTitle": "קהלת",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Writings"
-    ]
+    "direction": "rtl"
   },
   {
     "archivo": "esdras.json",
@@ -161,12 +101,7 @@
     "heTitle": "עזרא",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Writings"
-    ]
+    "direction": "rtl"
   },
   {
     "archivo": "ester.json",
@@ -174,12 +109,7 @@
     "heTitle": "אסתר",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Writings"
-    ]
+    "direction": "rtl"
   },
   {
     "archivo": "exodo.json",
@@ -187,12 +117,7 @@
     "heTitle": "שמות",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Torah"
-    ]
+    "direction": "rtl"
   },
   {
     "archivo": "ezequiel.json",
@@ -200,12 +125,7 @@
     "heTitle": "יחזקאל",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Prophets"
-    ]
+    "direction": "rtl"
   },
   {
     "archivo": "genesis.json",
@@ -213,12 +133,7 @@
     "heTitle": "בראשית",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Torah"
-    ]
+    "direction": "rtl"
   },
   {
     "archivo": "habacuc.json",
@@ -226,12 +141,7 @@
     "heTitle": "חבקוק",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Prophets"
-    ]
+    "direction": "rtl"
   },
   {
     "archivo": "hageo.json",
@@ -239,12 +149,7 @@
     "heTitle": "חגי",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Prophets"
-    ]
+    "direction": "rtl"
   },
   {
     "archivo": "isaias.json",
@@ -252,12 +157,7 @@
     "heTitle": "ישעיהו",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Prophets"
-    ]
+    "direction": "rtl"
   },
   {
     "archivo": "jeremias.json",
@@ -265,12 +165,7 @@
     "heTitle": "ירמיהו",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Prophets"
-    ]
+    "direction": "rtl"
   },
   {
     "archivo": "job.json",
@@ -278,12 +173,7 @@
     "heTitle": "איוב",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Writings"
-    ]
+    "direction": "rtl"
   },
   {
     "archivo": "joel.json",
@@ -291,12 +181,7 @@
     "heTitle": "יואל",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Prophets"
-    ]
+    "direction": "rtl"
   },
   {
     "archivo": "jonas.json",
@@ -304,12 +189,7 @@
     "heTitle": "יונה",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Prophets"
-    ]
+    "direction": "rtl"
   },
   {
     "archivo": "josue.json",
@@ -317,12 +197,7 @@
     "heTitle": "יהושע",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Prophets"
-    ]
+    "direction": "rtl"
   },
   {
     "archivo": "jueces.json",
@@ -330,12 +205,7 @@
     "heTitle": "שופטים",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Prophets"
-    ]
+    "direction": "rtl"
   },
   {
     "archivo": "lamentaciones.json",
@@ -343,12 +213,7 @@
     "heTitle": "איכה",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Writings"
-    ]
+    "direction": "rtl"
   },
   {
     "archivo": "levitico.json",
@@ -356,12 +221,7 @@
     "heTitle": "ויקרא",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Torah"
-    ]
+    "direction": "rtl"
   },
   {
     "archivo": "malaquias.json",
@@ -369,12 +229,7 @@
     "heTitle": "מלאכי",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Prophets"
-    ]
+    "direction": "rtl"
   },
   {
     "archivo": "miqueas.json",
@@ -382,12 +237,7 @@
     "heTitle": "מיכה",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Prophets"
-    ]
+    "direction": "rtl"
   },
   {
     "archivo": "nahum.json",
@@ -395,12 +245,7 @@
     "heTitle": "נחום",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Prophets"
-    ]
+    "direction": "rtl"
   },
   {
     "archivo": "nehemias.json",
@@ -408,12 +253,7 @@
     "heTitle": "נחמיה",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Writings"
-    ]
+    "direction": "rtl"
   },
   {
     "archivo": "numeros.json",
@@ -421,12 +261,7 @@
     "heTitle": "במדבר",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Torah"
-    ]
+    "direction": "rtl"
   },
   {
     "archivo": "oseas.json",
@@ -434,12 +269,7 @@
     "heTitle": "הושע",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Prophets"
-    ]
+    "direction": "rtl"
   },
   {
     "archivo": "proverbios.json",
@@ -447,12 +277,7 @@
     "heTitle": "משלי",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Writings"
-    ]
+    "direction": "rtl"
   },
   {
     "archivo": "rut.json",
@@ -460,12 +285,7 @@
     "heTitle": "רות",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Writings"
-    ]
+    "direction": "rtl"
   },
   {
     "archivo": "salmos.json",
@@ -473,12 +293,7 @@
     "heTitle": "תהילים",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Writings"
-    ]
+    "direction": "rtl"
   },
   {
     "archivo": "sofonias.json",
@@ -486,12 +301,7 @@
     "heTitle": "צפניה",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Prophets"
-    ]
+    "direction": "rtl"
   },
   {
     "archivo": "zacarias.json",
@@ -499,11 +309,6 @@
     "heTitle": "זכריה",
     "language": "he",
     "versionTitle": "Tanach with Nikkud",
-    "versionSource": "http://www.tanach.us/Tanach.xml",
-    "direction": "rtl",
-    "categorias": [
-      "Tanakh",
-      "Prophets"
-    ]
+    "direction": "rtl"
   }
 ]
