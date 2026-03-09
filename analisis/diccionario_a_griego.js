@@ -1,15 +1,9 @@
 (function () {
-  const MORPH_FILES = [
-    'mt', 'mk', 'lk', 'jn', 'ac', 'ro', '1co', '2co', 'ga', 'eph', 'php', 'col',
-    '1th', '2th', '1ti', '2ti', 'tit', 'phm', 'heb', 'jas', '1pe', '2pe', '1jn', '2jn', '3jn', 'jud', 're'
-  ].map(code => `../diccionario/${code}-morphgnt.translit.json`);
 
   const state = {
     loaded: false,
     loadPromise: null,
-    masterByLemma: new Map(),
-    glossByWord: new Map(),
-    morphByWord: new Map()
+    masterByLemma: new Map()
   };
 
   function normalizeGreek(value) {
@@ -55,64 +49,13 @@
     });
   }
 
-  async function loadUnifiedGreekDictionary() {
-    const rows = await fetchJson('../diccionario/diccionarioG_unificado.min.json');
-    if (!Array.isArray(rows)) return;
-    rows.forEach(row => {
-      if (!Array.isArray(row) || row.length < 2) return;
-      const key = normalizeGreek(row[0]);
-      const gloss = String(row[1] || '').trim();
-      if (!key || !gloss) return;
-      if (!state.glossByWord.has(key)) state.glossByWord.set(key, new Set());
-      state.glossByWord.get(key).add(gloss);
-    });
-  }
-
-  function consumeMorphWord(word, bookCode) {
-    if (!word || typeof word !== 'object') return;
-    const greek = String(word.g || '').trim();
-    const lemma = String(word.lemma || '').trim();
-    const translit = String(word.tr || '').trim();
-    const key = normalizeGreek(greek || lemma);
-    if (!key) return;
-    if (!state.morphByWord.has(key)) state.morphByWord.set(key, []);
-    const bucket = state.morphByWord.get(key);
-    if (bucket.some(entry => normalizeGreek(entry.lemma) === normalizeGreek(lemma) && entry.translit === translit)) return;
-    bucket.push({ lemma: lemma || greek, translit: translit || '—', book: bookCode.toUpperCase() });
-  }
-
-  function loadMorphBook(payload, bookCode) {
-    const chapters = payload?.chapters;
-    if (!Array.isArray(chapters)) return;
-    chapters.forEach(chapter => {
-      if (!Array.isArray(chapter)) return;
-      chapter.forEach(verse => {
-        if (!Array.isArray(verse)) return;
-        verse.forEach(word => consumeMorphWord(word, bookCode));
-      });
-    });
-  }
-
-  async function loadMorphIndexes() {
-    await Promise.all(MORPH_FILES.map(async url => {
-      try {
-        const payload = await fetchJson(url);
-        const bookCode = (payload?.book || '').toLowerCase() || url.split('/').pop().split('-')[0];
-        loadMorphBook(payload, bookCode);
-      } catch (error) {
-        console.warn('[diccionario_a_griego] No se pudo cargar', url, error);
-      }
-    }));
-  }
-
+  
   function ensureLoaded() {
     if (state.loaded) return Promise.resolve();
     if (state.loadPromise) return state.loadPromise;
 
     state.loadPromise = Promise.all([
-      loadMasterDictionary(),
-      loadUnifiedGreekDictionary(),
-      loadMorphIndexes()
+            loadMasterDictionary()
     ]).then(() => {
       state.loaded = true;
     }).catch(error => {
@@ -128,16 +71,7 @@
     if (!key) return null;
 
     const master = state.masterByLemma.get(key) || null;
-    const glosses = Array.from(state.glossByWord.get(key) || []).slice(0, 8);
-    const morph = (state.morphByWord.get(key) || []).slice(0, 6);
-
-    let resolvedMaster = master;
-    if (!resolvedMaster && morph.length) {
-      const lemmaKey = normalizeGreek(morph[0].lemma);
-      resolvedMaster = state.masterByLemma.get(lemmaKey) || null;
-    }
-
-    return { token, key, master: resolvedMaster, glosses, morph };
+        return { token, key, master };
   }
 
   function esc(value) {
@@ -149,7 +83,6 @@
 
   function renderGreekDictionaryCell(rawGreek, rawQuery) {
     const result = lookupGreekWord(rawGreek);
-    const safeGreek = esc(rawGreek || '—');
 
     if (!result) {
       return `<div class="comparison-pre comparison-pre--greek">Sin término griego utilizable para consulta.</div>`;
@@ -164,24 +97,7 @@
         </div>`
       : '<div class="mb-3"><div class="fw-bold mb-1">A1. masterdiccionario</div><div class="muted">Sin entrada directa para este término.</div></div>';
 
-    const glossBlock = result.glosses.length
-      ? `<div class="mb-3"><div class="fw-bold mb-1">A2. diccionarioG_unificado.min.json</div><div class="d-flex flex-wrap gap-2">${result.glosses.map(g => `<span class="tag">${esc(g)}</span>`).join('')}</div></div>`
-      : '<div class="mb-3"><div class="fw-bold mb-1">A2. diccionarioG_unificado.min.json</div><div class="muted">Sin glosas coincidentes.</div></div>';
-
-    const morphBlock = result.morph.length
-      ? `<div><div class="fw-bold mb-1">A3. MorphGNT transliterado</div>${result.morph.map(item => `<div class="small">${esc(item.book)} · <span class="greek">${esc(item.lemma)}</span> · ${esc(item.translit)}</div>`).join('')}</div>`
-      : '<div><div class="fw-bold mb-1">A3. MorphGNT transliterado</div><div class="muted">Sin ocurrencias indexadas.</div></div>';
-
-    return `
-      <div class="trilingual-brief mb-3">
-        <div class="trilingual-title">Candidato trilingüe seleccionado</div>
-        <div class="trilingual-line"><strong>Consulta:</strong> ${esc(rawQuery || '—')}</div>
-        <div class="trilingual-line"><strong>Griego seleccionado:</strong> <span class="greek">${safeGreek}</span></div>
-      </div>
-      ${masterBlock}
-      ${glossBlock}
-      ${morphBlock}
-    `;
+        return masterBlock;
   }
 
   window.AnalisisDiccionarioAGriego = {
