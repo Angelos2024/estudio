@@ -3,7 +3,9 @@
   const state = {
     loaded: false,
     loadPromise: null,
-    masterByLemma: new Map()
+     masterByLemma: new Map(),
+    masterByForm: new Map(),
+    masterEntries: []
   };
 
   function normalizeGreek(value) {
@@ -19,9 +21,116 @@
   }
 
   function splitGreekTokens(text) {
-    const raw = String(text || '').replace(/[·/]/g, ' ');
+ const raw = String(text || '')
+      .replace(/[·/,؛]/g, ' ')
+      .replace(/[\u2014\u2013]/g, ' ');
     return raw.split(/\s+/).map(x => x.trim()).filter(Boolean);
   }
+
+  function addToIndex(map, key, entry) {
+    if (!key) return;
+    if (!map.has(key)) map.set(key, entry);
+  }
+
+  function buildGreekLemmaCandidates(key) {
+    const variants = new Set([key]);
+    const replaceEnding = (ending, replacement) => {
+      if (!key.endsWith(ending) || key.length <= ending.length) return;
+      variants.add(key.slice(0, -ending.length) + replacement);
+    };
+// --- 1. SUSTANTIVOS Y ADJETIVOS (Segunda y Primera Declinación) ---
+  // Casos oblicuos de masculinos/neutros -> Nominativo -ος / -ον
+  replaceEnding('ου', ['ος', 'ον']);
+  replaceEnding('ῳ',  ['ος', 'ον', 'α']);
+  replaceEnding('ον', 'ος'); // Podría ser neutro o acusativo masc.
+  replaceEnding('οι', 'ος');
+  replaceEnding('ους', 'ος');
+  replaceEnding('α',  ['ος', 'ον', 'η', 'ας']); // Neutros plurales o casos de la 1ra
+  
+  // Casos de la Primera Declinación (Femeninos) -> Nominativo -η / -α / -ας
+  replaceEnding('ης', ['η', 'α']);
+  replaceEnding('ῃ',  ['η', 'α']);
+  replaceEnding('ην', ['η', 'α']);
+  replaceEnding('αι', ['η', 'α']);
+  replaceEnding('ων', ['ος', 'η', 'α', 'ις']); // Genitivos plurales (muy común)
+  replaceEnding('ας', ['α', 'ης', 'η']);
+
+  // --- 2. TERCERA DECLINACIÓN (Temas en consonante e -ις) ---
+  replaceEnding('ιος', 'ις');
+  replaceEnding('εως', 'ις');
+  replaceEnding('ει',  'ις');
+  replaceEnding('ιν',  'ις');
+  replaceEnding('ες',  'ις');
+  
+  // --- 3. VERBOS (Formas Flexionadas a Lemas -ω o -ομαι) ---
+  // El griego bíblico está lleno de verbos en presente, aoristo y participios
+  replaceEnding('ειν', 'ω');       // Infinitivos
+  replaceEnding('εις', 'ω');       // 2da persona
+  replaceEnding('ει',  'ω');       // 3ra persona
+  replaceEnding('ομεν', 'ω');      // 1ra plural
+  replaceEnding('ετε',  'ω');      // 2da plural
+  replaceEnding('ουσι', 'ω');      // 3ra plural
+  replaceEnding('ουσιν', 'ω');     // 3ra plural con n-efelquística
+  
+  // Formas de verbos deponentes o pasivos -> -ομαι
+  replaceEnding('εται', 'ομαι');
+  replaceEnding('ονται', 'ομαι');
+  replaceEnding('εσθαι', 'ομαι');
+  replaceEnding('ουται', 'οομαι'); // Verbos contractos
+
+  // --- 4. PARTICIPIOS (Clave para la lectura bíblica) ---
+  // Los participios suelen terminar en -ων, -οντος, -μενος
+  replaceEnding('οντος', 'ω');
+  replaceEnding('οντα',  'ω');
+  replaceEnding('μενος', ['ω', 'ομαι']);
+  replaceEnding('μενον', ['ω', 'ομαι']);
+  replaceEnding('μενου', ['ω', 'ομαι']);
+
+    if (key.endsWith('ν') && key.length > 2) variants.add(key.slice(0, -1));
+
+    return Array.from(variants);
+  }
+
+  function levenshtein(a, b) {
+    if (a === b) return 0;
+    if (!a) return b.length;
+    if (!b) return a.length;
+    const rows = a.length + 1;
+    const cols = b.length + 1;
+    const matrix = Array.from({ length: rows }, () => new Array(cols).fill(0));
+    for (let i = 0; i < rows; i += 1) matrix[i][0] = i;
+    for (let j = 0; j < cols; j += 1) matrix[0][j] = j;
+    for (let i = 1; i < rows; i += 1) {
+      for (let j = 1; j < cols; j += 1) {
+        const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+        matrix[i][j] = Math.min(
+          matrix[i - 1][j] + 1,
+          matrix[i][j - 1] + 1,
+          matrix[i - 1][j - 1] + cost
+        );
+      }
+    }
+    return matrix[rows - 1][cols - 1];
+  }
+
+  function findFuzzyMaster(key) {
+    if (!key || key.length < 3) return null;
+    const prefix = key.slice(0, 3);
+    let best = null;
+
+    for (const entry of state.masterEntries) {
+      const lemmaKey = entry.key;
+      if (!lemmaKey || (!lemmaKey.startsWith(prefix) && !prefix.startsWith(lemmaKey.slice(0, 2)))) continue;
+      const distance = levenshtein(key, lemmaKey);
+      if (distance > 2) continue;
+      if (!best || distance < best.distance || (distance === best.distance && lemmaKey.length < best.entry.key.length)) {
+        best = { entry, distance };
+      }
+    }
+
+    return best?.entry || null;
+  }
+
 
   async function fetchJson(url) {
     const response = await fetch(url, { cache: 'no-store' });
@@ -39,12 +148,23 @@
     items.forEach(item => {
       const lemma = item?.lemma;
       const key = normalizeGreek(lemma);
-      if (!key || state.masterByLemma.has(key)) return;
-      state.masterByLemma.set(key, {
+       if (!key) return;
+      const entry = {
+        key,
         lemma: lemma || item?.['Forma lexica'] || '—',
         formaLexica: item?.['Forma lexica'] || '—',
         formaTexto: item?.['Forma flexionada del texto'] || '—',
         definicion: pickMasterDefinition(item) || 'Sin definición disponible.'
+         };
+
+      if (!state.masterByLemma.has(key)) {
+        state.masterByLemma.set(key, entry);
+        state.masterEntries.push(entry);
+      }
+
+      addToIndex(state.masterByForm, key, entry);
+      splitGreekTokens(entry.formaTexto).forEach(token => {
+        addToIndex(state.masterByForm, normalizeGreek(token), entry);
       });
     });
   }
@@ -70,8 +190,23 @@
     const key = normalizeGreek(token);
     if (!key) return null;
 
-    const master = state.masterByLemma.get(key) || null;
-        return { token, key, master };
+    let master = state.masterByLemma.get(key)
+      || state.masterByForm.get(key)
+      || null;
+
+    if (!master) {
+      const variants = buildGreekLemmaCandidates(key);
+      for (const variant of variants) {
+        master = state.masterByLemma.get(variant) || state.masterByForm.get(variant) || null;
+        if (master) break;
+      }
+    }
+
+    if (!master) {
+      master = findFuzzyMaster(key);
+    }
+
+    return { token, key, master };
   }
 
   function esc(value) {
