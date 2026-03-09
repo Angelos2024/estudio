@@ -693,6 +693,7 @@ if (typeof window !== 'undefined') {
 
 
 const HEBREW_DICT_STATE = {
+        loadAttempted: false,
     loaded: false,
     entries: [],
      index: {},
@@ -729,24 +730,34 @@ async function fetchJsonWithFallback(urls) {
 
 
 async function ensureHebrewDictionaryLoaded() {
-    if (HEBREW_DICT_STATE.loaded) return HEBREW_DICT_STATE;
-    try {
+
+if (HEBREW_DICT_STATE.loaded || HEBREW_DICT_STATE.loadAttempted) return HEBREW_DICT_STATE;
+    HEBREW_DICT_STATE.loadAttempted = true;
+
+    async function loadOptionalJson(urls, fallbackValue) {
+        try {
+            return await fetchJsonWithFallback(urls);
+        } catch (_) {
+            return fallbackValue;
+        }
+    }
+        try {
         const [entriesData, indexData, lexicoData, unifiedData] = await Promise.all([
-            fetchJsonWithFallback(['../dic/hebrewdic.json', './hebrewdic.json', '/dic/hebrewdic.json']),
-            fetchJsonWithFallback(['../dic/diccionario_index_by_lemma.json', './diccionario_index_by_lemma.json', '/dic/diccionario_index_by_lemma.json']),
-            fetchJsonWithFallback(['../diccionario/lexico_hebreo.json', './lexico_hebreo.json', '/diccionario/lexico_hebreo.json']),
-            fetchJsonWithFallback(['../diccionario/diccionario_unificado.min.json', './diccionario_unificado.min.json', '/diccionario/diccionario_unificado.min.json'])
+             loadOptionalJson(['../dic/hebrewdic.json', '/dic/hebrewdic.json'], []),
+            loadOptionalJson(['../dic/diccionario_index_by_lemma.json', '/dic/diccionario_index_by_lemma.json'], {}),
+            loadOptionalJson(['../diccionario/lexico_hebreo.json', '/diccionario/lexico_hebreo.json'], []),
+            loadOptionalJson(['../diccionario/diccionario_unificado.min.json', '/diccionario/diccionario_unificado.min.json'], [])
         ]);
 
-        HEBREW_DICT_STATE.entries = entriesData;
-        HEBREW_DICT_STATE.index = indexData;
+        HEBREW_DICT_STATE.entries = Array.isArray(entriesData) ? entriesData : [];
+        HEBREW_DICT_STATE.index = indexData && typeof indexData === 'object' ? indexData : {};
         HEBREW_DICT_STATE.lexico = Array.isArray(lexicoData) ? lexicoData : [];
         HEBREW_DICT_STATE.unified = Array.isArray(unifiedData) ? unifiedData : [];
                 buildUnifiedStrongIndex();
         HEBREW_DICT_STATE.loaded = true;
     } catch (error) {
-        console.error('No se pudieron cargar los archivos del diccionario hebreo.', error);
-                HEBREW_DICT_STATE.loaded = false;
+         console.warn('No se pudieron cargar algunos recursos del diccionario hebreo.', error);
+        HEBREW_DICT_STATE.loaded = true;
     }
     return HEBREW_DICT_STATE;
 }
@@ -1064,8 +1075,9 @@ function renderGreekComparisonCell(entry, rawQuery) {
     }
 
     return `<pre class="comparison-pre comparison-pre--greek">${escapeHtml(greek)}</pre>`;
+    }
 
- }
+ 
 async function updateDictionaryComparison(items, rawQuery) {
     const tbody = document.getElementById('dictionaryComparisonTbody');
     if (!tbody) return;
