@@ -4,22 +4,10 @@
     he: ['../search/index-he.json', './search/index-he.json', '/search/index-he.json'],
     gr: ['../search/index-gr.json', './search/index-gr.json', '/search/index-gr.json']
   };
-  const LXX_FILES = [
-    'lxx_rahlfs_1935_1Chr.json', 'lxx_rahlfs_1935_1Esdr.json', 'lxx_rahlfs_1935_1Kgs.json', 'lxx_rahlfs_1935_1Macc.json',
-    'lxx_rahlfs_1935_1Sam.json', 'lxx_rahlfs_1935_2Chr.json', 'lxx_rahlfs_1935_2Esdr.json', 'lxx_rahlfs_1935_2Kgs.json',
-    'lxx_rahlfs_1935_2Macc.json', 'lxx_rahlfs_1935_2Sam.json', 'lxx_rahlfs_1935_3Macc.json', 'lxx_rahlfs_1935_4Macc.json',
-    'lxx_rahlfs_1935_Amos.json', 'lxx_rahlfs_1935_Bar.json', 'lxx_rahlfs_1935_BelOG.json', 'lxx_rahlfs_1935_BelTh.json',
-    'lxx_rahlfs_1935_DanOG.json', 'lxx_rahlfs_1935_DanTh.json', 'lxx_rahlfs_1935_Deut.json', 'lxx_rahlfs_1935_Eccl.json',
-    'lxx_rahlfs_1935_EpJer.json', 'lxx_rahlfs_1935_Esth.json', 'lxx_rahlfs_1935_Exod.json', 'lxx_rahlfs_1935_Ezek.json',
-    'lxx_rahlfs_1935_Gen.json', 'lxx_rahlfs_1935_Hab.json', 'lxx_rahlfs_1935_Hag.json', 'lxx_rahlfs_1935_Hos.json',
-    'lxx_rahlfs_1935_Isa.json', 'lxx_rahlfs_1935_Jdt.json', 'lxx_rahlfs_1935_Jer.json', 'lxx_rahlfs_1935_Job.json',
-    'lxx_rahlfs_1935_Joel.json', 'lxx_rahlfs_1935_Jonah.json', 'lxx_rahlfs_1935_JoshA.json', 'lxx_rahlfs_1935_JoshB.json',
-    'lxx_rahlfs_1935_JudgA.json', 'lxx_rahlfs_1935_JudgB.json', 'lxx_rahlfs_1935_Lam.json', 'lxx_rahlfs_1935_Lev.json',
-    'lxx_rahlfs_1935_Mal.json', 'lxx_rahlfs_1935_Mic.json', 'lxx_rahlfs_1935_Nah.json', 'lxx_rahlfs_1935_Num.json',
-    'lxx_rahlfs_1935_Obad.json', 'lxx_rahlfs_1935_Odes.json', 'lxx_rahlfs_1935_Prov.json', 'lxx_rahlfs_1935_Ps.json',
-    'lxx_rahlfs_1935_PsSol.json', 'lxx_rahlfs_1935_Ruth.json', 'lxx_rahlfs_1935_Sir.json', 'lxx_rahlfs_1935_Song.json',
-    'lxx_rahlfs_1935_SusOG.json', 'lxx_rahlfs_1935_SusTh.json', 'lxx_rahlfs_1935_TobBA.json', 'lxx_rahlfs_1935_TobS.json',
-    'lxx_rahlfs_1935_Wis.json', 'lxx_rahlfs_1935_Zech.json', 'lxx_rahlfs_1935_Zeph.json'
+  const LXX_FREQ_MIN_URLS = [
+    '../LXX/frecuencias/min.json',
+    './LXX/frecuencias/min.json',
+    '/LXX/frecuencias/min.json'
   ];
 
   const NT_BOOKS = new Set([
@@ -31,8 +19,8 @@
   ]);
 
   const jsonCache = new Map();
-   const lxxFileCache = new Map();
-  const lxxSearchCache = new Map();
+  let lxxFrequencyIndexPromise = null;
+
 
   const state = {
     rows: [],
@@ -124,20 +112,7 @@
     return data?.tokens && typeof data.tokens === 'object' ? data.tokens : {};
   }
 
- async function loadLxxFile(file) {
-    if (lxxFileCache.has(file)) return lxxFileCache.get(file);
-    const promise = fetch(`../LXX/${file}`, { cache: 'force-cache' }).then((response) => {
-      if (!response.ok) throw new Error(`No se pudo cargar ${file} (HTTP ${response.status}).`);
-      return response.json();
-    });
-    lxxFileCache.set(file, promise);
-    try {
-      return await promise;
-    } catch (error) {
-      lxxFileCache.delete(file);
-      throw error;
-    }
-  }
+
   function buildBookCountRows(refs) {
     const counts = new Map();
     refs.forEach((ref) => {
@@ -147,6 +122,18 @@
     });
     return [...counts.entries()]
       .map(([book, count]) => ({ book, label: book.replace(/_/g, ' ').replace(/\b\w/g, (m) => m.toUpperCase()), count }))
+      .sort((a, b) => b.count - a.count);
+  }
+
+ function buildRowsFromBookCounts(bookCounts) {
+    if (!bookCounts || typeof bookCounts !== 'object') return [];
+    return Object.entries(bookCounts)
+      .filter(([, count]) => Number.isFinite(Number(count)) && Number(count) > 0)
+      .map(([book, count]) => ({
+        book,
+        label: book.replace(/_/g, ' ').replace(/\b\w/g, (m) => m.toUpperCase()),
+        count: Number(count)
+      }))
       .sort((a, b) => b.count - a.count);
   }
 
@@ -173,53 +160,56 @@
     return Array.isArray(index[fallback]) ? index[fallback] : [];
   }
 
-  async function refsForLxxWord(word) {
-    const key = normalizeGreek(word);
-    if (!key) return [];
-    if (lxxSearchCache.has(key)) return lxxSearchCache.get(key);
+  async function getLxxFrequencyIndex() {
+    if (lxxFrequencyIndexPromise) return lxxFrequencyIndexPromise;
+    lxxFrequencyIndexPromise = (async () => {
+      const payload = await fetchJsonWithFallback(LXX_FREQ_MIN_URLS);
+      const entries = Array.isArray(payload) ? payload : [];
+      const index = new Map();
 
-    const refs = [];
-    const seen = new Set();
+      entries.forEach((entry) => {
+        const key = normalizeGreek(entry?.palabra || '');
+        if (!key) return;
+        const sourceBooks = entry?.libros && typeof entry.libros === 'object' ? entry.libros : null;
+        if (!sourceBooks) return;
 
-    for (const file of LXX_FILES) {
-      try {
-        const data = await loadLxxFile(file);
-        const text = data?.text || {};
-        for (const [book, chapters] of Object.entries(text)) {
-          for (const [chapter, verses] of Object.entries(chapters || {})) {
-            for (const [verse, tokens] of Object.entries(verses || {})) {
-              const hit = (tokens || []).some((token) => {
-                const lemmaKey = normalizeGreek(token?.lemma || '');
-                const wordKey = normalizeGreek(token?.w || '');
-                return lemmaKey === key || wordKey === key;
-              });
-              if (!hit) continue;
-              const ref = `${book}|${chapter}|${verse}`;
-              if (seen.has(ref)) continue;
-              seen.add(ref);
-              refs.push(ref);
-            }
-          }
-        }
-      } catch (_) {
-        continue;
-      }
+        const target = index.get(key) || Object.create(null);
+        Object.entries(sourceBooks).forEach(([book, count]) => {
+          const safeCount = Number(count) || 0;
+          if (safeCount <= 0) return;
+          target[book] = (target[book] || 0) + safeCount;
+        });
+        index.set(key, target);
+      });
+
+      return index;
+    })();
+
+     try {
+      return await lxxFrequencyIndexPromise;
+    } catch (error) {
+      lxxFrequencyIndexPromise = null;
+      throw error;
+    }
     }
 
-    lxxSearchCache.set(key, refs);
-    return refs;
+   async function rowsForLxxWord(word) {
+    const key = normalizeGreek(word);
+    if (!key) return [];
+    const index = await getLxxFrequencyIndex();
+    return buildRowsFromBookCounts(index.get(key));
   }
   async function updateDonutFromSelection() {
     const donut = window.AnalisisComparativoOccurrenceDonut;
     if (!donut?.setData || state.loadingDonut) return;
     state.loadingDonut = true;
     try {
-      const [esRefsRaw, heRefsRaw, grRkantRefsRaw, grLxxRefsRaw] = await Promise.all([
-              refsForWord('es', state.selectedByLang.es),
+      const [esRefsRaw, heRefsRaw, grRkantRefsRaw, grLxxRows] = await Promise.all([
+                    refsForWord('es', state.selectedByLang.es),
         refsForWord('he', state.selectedByLang.he),
 refsForWord('gr', state.selectedByLang.gr),
-        refsForLxxWord(state.selectedByLang.gr)
-              ]);
+        rowsForLxxWord(state.selectedByLang.gr)
+                      ]);
       const esRefs = filterOtRefs(esRefsRaw);
       const heRefs = filterOtRefs(heRefsRaw);
  const grRkantRefs = grRkantRefsRaw;
@@ -228,8 +218,8 @@ refsForWord('gr', state.selectedByLang.gr),
         es: buildBookCountRows(esRefs),
         he: buildBookCountRows(heRefs),
          gr_rkant: buildBookCountRows(grRkantRefs),
-        gr_lxx: buildBookCountRows(grLxxRefs)
-      });
+        gr_lxx: grLxxRows
+              });
     } catch (_) {
       donut.setData({ es: [], he: [], gr_rkant: [], gr_lxx: [] });
           } finally {
