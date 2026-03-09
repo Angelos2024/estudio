@@ -21,7 +21,6 @@
   const jsonCache = new Map();
   let lxxFrequencyIndexPromise = null;
 
-
   const state = {
     rows: [],
     rawQuery: '',
@@ -125,7 +124,7 @@
       .sort((a, b) => b.count - a.count);
   }
 
- function buildRowsFromBookCounts(bookCounts) {
+function buildRowsFromBookCounts(bookCounts) {
     if (!bookCounts || typeof bookCounts !== 'object') return [];
     return Object.entries(bookCounts)
       .filter(([, count]) => Number.isFinite(Number(count)) && Number(count) > 0)
@@ -160,7 +159,7 @@
     return Array.isArray(index[fallback]) ? index[fallback] : [];
   }
 
-  async function getLxxFrequencyIndex() {
+ async function getLxxFrequencyIndex() {
     if (lxxFrequencyIndexPromise) return lxxFrequencyIndexPromise;
     lxxFrequencyIndexPromise = (async () => {
       const payload = await fetchJsonWithFallback(LXX_FREQ_MIN_URLS);
@@ -185,15 +184,15 @@
       return index;
     })();
 
-     try {
+    try {
       return await lxxFrequencyIndexPromise;
     } catch (error) {
       lxxFrequencyIndexPromise = null;
       throw error;
     }
-    }
+  }
 
-   async function rowsForLxxWord(word) {
+ async function rowsForLxxWord(word) {
     const key = normalizeGreek(word);
     if (!key) return [];
     const index = await getLxxFrequencyIndex();
@@ -204,25 +203,24 @@
     if (!donut?.setData || state.loadingDonut) return;
     state.loadingDonut = true;
     try {
-      const [esRefsRaw, heRefsRaw, grRkantRefsRaw, grLxxRows] = await Promise.all([
-                    refsForWord('es', state.selectedByLang.es),
+      const [esResult, heResult, grRkantResult, grLxxResult] = await Promise.allSettled([
+        refsForWord('es', state.selectedByLang.es),
         refsForWord('he', state.selectedByLang.he),
 refsForWord('gr', state.selectedByLang.gr),
         rowsForLxxWord(state.selectedByLang.gr)
-                      ]);
-      const esRefs = filterOtRefs(esRefsRaw);
-      const heRefs = filterOtRefs(heRefsRaw);
- const grRkantRefs = grRkantRefsRaw;
-      const grLxxRefs = grLxxRefsRaw;
-            donut.setData({
-        es: buildBookCountRows(esRefs),
+      ]);
+
+      const esRefs = filterOtRefs(esResult.status === 'fulfilled' ? esResult.value : []);
+      const heRefs = filterOtRefs(heResult.status === 'fulfilled' ? heResult.value : []);
+      const grRkantRefs = grRkantResult.status === 'fulfilled' ? grRkantResult.value : [];
+      const grLxxRows = grLxxResult.status === 'fulfilled' ? grLxxResult.value : [];
+
+      donut.setData({
         he: buildBookCountRows(heRefs),
          gr_rkant: buildBookCountRows(grRkantRefs),
         gr_lxx: grLxxRows
-              });
-    } catch (_) {
-      donut.setData({ es: [], he: [], gr_rkant: [], gr_lxx: [] });
-          } finally {
+      });
+       } finally {
       state.loadingDonut = false;
     }
   }
