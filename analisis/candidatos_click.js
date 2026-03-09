@@ -55,9 +55,8 @@ let normalized = raw
 
      // Mantener el ajuste del maqaf restringido a hebreo para no tocar otros idiomas.
     if (lang === 'he') {
-      normalized = normalized.replace(/[־]/g, ' ');
-    }
-
+      return Array.from(new Set(tokenizeHebrewForLookup(normalized)));
+          }
 
     const words = normalized.split(' ').map((w) => w.trim()).filter(Boolean);
     if (!words.length) return [];
@@ -107,6 +106,11 @@ return Array.from(new Set(words));
       .replace(/\s+/g, ' ')
       .trim();
   }
+   function tokenizeHebrewForLookup(text) {
+    const normalized = normalizeHebrew(text);
+    if (!normalized) return [];
+    return normalized.match(/[^ \t\r\n]+/g) || [];
+  }
 
   async function fetchJsonWithFallback(urls) {
     let lastError = null;
@@ -148,18 +152,24 @@ function buildRowsFromBookCounts(bookCounts) {
       const index = new Map();
 
       entries.forEach((entry) => {
-        const key = normalizeWord(entry?.palabra || '');
-                if (!key) return;
+         const rawWord = entry?.palabra || '';
+        const keys = normalizeWord === normalizeHebrew
+          ? tokenizeHebrewForLookup(rawWord)
+          : [normalizeWord(rawWord)].filter(Boolean);
+        if (!keys.length) return;
+
         const sourceBooks = entry?.libros && typeof entry.libros === 'object' ? entry.libros : null;
         if (!sourceBooks) return;
 
-        const target = index.get(key) || Object.create(null);
-        Object.entries(sourceBooks).forEach(([book, count]) => {
-          const safeCount = Number(count) || 0;
-          if (safeCount <= 0) return;
-          target[book] = (target[book] || 0) + safeCount;
+         keys.forEach((key) => {
+          const target = index.get(key) || Object.create(null);
+          Object.entries(sourceBooks).forEach(([book, count]) => {
+            const safeCount = Number(count) || 0;
+            if (safeCount <= 0) return;
+            target[book] = (target[book] || 0) + safeCount;
+          });
+          index.set(key, target);
         });
-        index.set(key, target);
       });
 
       return index;
@@ -225,8 +235,23 @@ function buildRowsFromBookCounts(bookCounts) {
   }
 
   async function rowsForHeWord(word) {
-    return rowsFromFrequencyIndex(word, normalizeHebrew, getHeFrequencyIndex);
-  }
+   const index = await getHeFrequencyIndex();
+    const tokens = tokenizeHebrewForLookup(word);
+    if (!tokens.length) return [];
+
+    const merged = Object.create(null);
+    tokens.forEach((token) => {
+      const counts = index.get(token);
+      if (!counts) return;
+      Object.entries(counts).forEach(([book, count]) => {
+        const safeCount = Number(count) || 0;
+        if (safeCount <= 0) return;
+        merged[book] = (merged[book] || 0) + safeCount;
+      });
+    });
+
+    return buildRowsFromBookCounts(merged);
+      }
 
   async function rowsForRkantWord(word) {
     return rowsFromFrequencyIndex(word, normalizeGreek, getRkantFrequencyIndex);
