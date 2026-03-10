@@ -44715,5 +44715,2443 @@
     "page_end": 896,
     "gloss_es": "Rejabías; Roboán.",
     "text": "רְחַבְיָה y רְחַבְיָהוּ n. pr. Rejabías 1 Cr 23,17. רְחַבְעָם n. pr. Roboán, rey de Judá 1 Re 12,1."
+  },
+  {
+    "id": "heb-004501",
+    "lemma": "רְחוֹב",
+    "headword_line": "רְחוֹב Ver רְחַב; רַחוּם Rejún; רָחֵל Raquel.",
+    "headword_tokens": ["רְחוֹב", "רַחוּם", "רָחֵל"],
+    "page_start": 896,
+    "page_end": 896,
+    "gloss_es": "Rejob; Rejún; Raquel.",
+    "text": "רְחוֹב Ver רְחַב. רַחוּם n. pr. Rejún. a) Magistrado persa Esd 4,8. b) Notable del pueblo Neh 10,26. c) Levita 3,17. רָחֵל n. pr. Raquel Gn 29,16."
+  },
+  {
+    "id": "heb-004502",
+    "lemma": "רַחַם",
+    "headword_line": "רַחַם n. pr. Raján 1 Cr 2,44.",
+    "headword_tokens": ["רַחַם"],
+    "page_start": 896,
+    "page_end": 896,
+    "gloss_es": "n. pr. Raján.",
+    "text": "רַחַם n. pr. Raján 1 Cr 2,44."
+  },
+  {
+    "id": "heb-004503",
+    "lemma": "רִיבַי",
+    "headword_line": "רִיבַי n. pr. Ribay 2 Sm 23,29; רִיפַת Rifat.",
+    "headword_tokens": ["רִיבַי", "רִיפַת"],
+    "page_start": 896,
+    "page_end": 896,
+    "gloss_es": "n. pr. Ribay; Rifat.",
+    "text": "רִיבַי n. pr. Ribay 2 Sm 23,29. רִיפַת n. pr. Rifat Gn 10,3 1 Cr 1,6."
+  },
+  {
+    "id": "heb-004504",
+    "lemma": "רֵכָב",
+    "headword_line": "רֵכָב n. pr. Recab.",
+    "headword_tokens": ["רֵכָב"],
+    "page_start": 896,
+    "page_end": 896,
+    "gloss_es": "n. pr. Recab.",
+    "text": "רֵכָב n. pr. Recab. a) Benjaminita 2 Sm 4,5. b) Padre de Jonadab 2 Re 10,15. c) Padre de Malquías Neh 3,14."
+  },
+  {
+    "id": "heb-004505",
+    "lemma": "רֵכָבִים",
+    "headword_line": "רֵכָבִים patrón. Recabitas Jr 35,5.",
+    "headword_tokens": ["רֵכָבִים"],
+    "page_start": 896,
+    "page_end": 896,
+    "gloss_es": "patrón. Recabitas.",
+    "text": "רֵכָבִים patrón. Recabitas Jr 35, 5.18."
+  },
+  {
+    "id": "heb-004506",
+    "lemma": "רֵכָה",
+    "headword_line": "רֵכָה loe. Recá, en Judá, 1 Cr 4,12.",
+    "headword_tokens": ["רֵכָה"],
+    "page_start": 896,
+    "page_end": 896,
+    "gloss_es": "loc. Recá.",
+    "text": "רֵכָה loe. Recá, en Judá, 1 Cr 4,12."
+  },
+  {
+    "id": "heb-004507",
+    "lemma": "רָכָל",
+    "headword_line": "רָכָל loe. 1 Sm 30,29. Carmelo (La Vega).",
+    "headword_tokens": ["רָכָל", "כַּרְמֶל"],
+    "page_start": 896,
+    "page_end": 896,
+    "gloss_es": "loc. Racal.",
+    "text": "רָכָל loe. ISm 30,29. Según G, lg. כַּרְמֶל Carmeló (La Vega)."
+  },
+  {
+    "id": "heb-004508",
+    "lemma": "רָם",
+    "headword_line": "רָם n. pr. Ram; רָמָה Ramá; רִמּוֹן Rimón; רֹמַמְתִּי עֶזֶר Romamú-Ezer.",
+    "headword_tokens": ["רָם", "רָמָה", "רִמּוֹן", "רֹמַמְתִּי", "עֶזֶר"],
+    "page_start": 896,
+    "page_end": 896,
+    "gloss_es": "n. pr. Ram; loc. Ramá; Rimón; n. pr. Romamú-Ezer.",
+    "text": "רָם n. pr. Ram. a) Judaíta. b) Yerajmeelita. רָמָה loe. Ramá Jos 18,25 Jue 4,5. רִמּוֹן n. pr. Rimón 2 Sm 4,2; loe. Rimón Jos 19,13. רֹמַמְתִּי עֶזֶר n. pr. Romamú-Ezer 1 Cr 25,4.31."
+  },
+  {
+    "id": "heb-004509",
+    "lemma": "רָמַת",
+    "headword_line": "רָמַת Jos 19,21; רַמָּתִי Ramatita; רָפָאֵל Rafael; רִנָּה Riná; רִסָּה Risá.",
+    "headword_tokens": ["רָמַת", "רַמָּתִי", "רָפָאֵל", "רִנָּה", "רִסָּה"],
+    "page_start": 896,
+    "page_end": 897,
+    "gloss_es": "Ramat; Ramatita; Rafael; Riná; Risá.",
+    "text": "רָמַת Jos 19,21. רַמָּתִי gent. Ramatita 1 Cr 27,27. רָפָאֵל n. pr. Rafael 1 Cr 26,7. רִנָּה n. pr. Riná 1 Cr 4,20. רִסָּה loe. Risá (Orvalló) Nm 33,21."
+  },
+  {
+    "id": "heb-004510",
+    "lemma": "רֶסֶן",
+    "headword_line": "רֶסֶן loe. Resen, entre Nínive y Calaj, Gn 10, 12.",
+    "headword_tokens": ["רֶסֶן"],
+    "page_start": 897,
+    "page_end": 897,
+    "gloss_es": "loc. Resen.",
+    "text": "רֶסֶן loe. Resen, entre Nínive y Calaj, Gn 10, 12."
+  },
+  {
+    "id": "heb-004511",
+    "lemma": "רְעוּ",
+    "headword_line": "רְעוּ n. pr. Reú Gn 11,18.",
+    "headword_tokens": ["רְעוּ"],
+    "page_start": 897,
+    "page_end": 897,
+    "gloss_es": "n. pr. Reú.",
+    "text": "רְעוּ n. pr. Reú Gn 11,18."
+  },
+  {
+    "id": "heb-004512",
+    "lemma": "רְעוּאֵל",
+    "headword_line": "רְעוּאֵל n. pr. Reguiel.",
+    "headword_tokens": ["רְעוּאֵל"],
+    "page_start": 897,
+    "page_end": 897,
+    "gloss_es": "n. pr. Reguiel.",
+    "text": "רְעוּאֵל n. pr. Reguiel. a) Hijo de Esaú Gn 36,4. b) Suegro de Moisés Ex 2,18. c) Benjaminita 1 Cr 9,8."
+  },
+  {
+    "id": "heb-004513",
+    "lemma": "רְעֵלָיָה",
+    "headword_line": "רְעֵלָיָה n. pr. Reelayas Esd 2,2; רַעְמָה Raamá.",
+    "headword_tokens": ["רְעֵלָיָה", "רַעְמָה"],
+    "page_start": 897,
+    "page_end": 897,
+    "gloss_es": "n. pr. Reelayas; Raamá.",
+    "text": "רְעֵלָיָה n. pr. Reelayas Esd 2,2. רַעְמָה n. pr. Raamá Gn 10,7. 2 geog. Raamá Ez 27,22."
+  },
+  {
+    "id": "heb-004514",
+    "lemma": "רַעְמְיָה",
+    "headword_line": "רַעְמְיָה Neh 7,7; רַעְמְסֵס Ramsés.",
+    "headword_tokens": ["רַעְמְיָה", "רַעְמְסֵס"],
+    "page_start": 897,
+    "page_end": 897,
+    "gloss_es": "n. pr. Raamías; loc. Ramsés.",
+    "text": "רַעְמְיָה Neh 7,7. רַעְמְסֵס loe. Ramsés Ex 1,11 12,37. Se trata de Qantir."
+  },
+  {
+    "id": "heb-004515",
+    "lemma": "רָפָא",
+    "headword_line": "רָפָא n. pr. Rafa; רְפָאִים Refaítas.",
+    "headword_tokens": ["רָפָא", "רְפָאִים"],
+    "page_start": 897,
+    "page_end": 897,
+    "gloss_es": "n. pr. Rafa; gent. Refaítas.",
+    "text": "רָפָא n. pr. Rafa. a) 1 Cr 4,12. b) 8,2. c) Progenitor de gigantes 1 Cr 20,6. רְפָאִים gent. Refaítas, antiguo pueblo de Palestina Gn 14,5."
+  },
+  {
+    "id": "heb-004516",
+    "lemma": "רָפָה",
+    "headword_line": "רָפָה n. pr. Rafá; רְפוּאִי Rafu.",
+    "headword_tokens": ["רָפָה", "רְפוּאִי"],
+    "page_start": 897,
+    "page_end": 897,
+    "gloss_es": "n. pr. Rafá; Rafu.",
+    "text": "רָפָה n. pr. Rafá 2 Sm 21,20. רְפוּאִי n. pr. Rafu Nm 13,9."
+  },
+  {
+    "id": "heb-004517",
+    "lemma": "רֶפַח",
+    "headword_line": "רֶפַח n. pr. Réfaj 1 Cr 7,25; רְפִידִים Rafidín.",
+    "headword_tokens": ["רֶפַח", "רְפִידִים"],
+    "page_start": 897,
+    "page_end": 897,
+    "gloss_es": "n. pr. Réfaj; loc. Rafidín.",
+    "text": "רֶפַח n. pr. Réfaj 1 Cr 7,25. רְפִידִים loe. Rafidín Ex 17,1 19,2."
+  },
+  {
+    "id": "heb-004518",
+    "lemma": "רְפָיָה",
+    "headword_line": "רְפָיָה n. pr. Refayas.",
+    "headword_tokens": ["רְפָיָה"],
+    "page_start": 897,
+    "page_end": 897,
+    "gloss_es": "n. pr. Refayas.",
+    "text": "רְפָיָה n. pr. Refayas. a) 1 Cr 3,21. b) 4,42. c) 7,2. d) 9,43. e) Neh 3,9."
+  },
+  {
+    "id": "heb-004519",
+    "lemma": "רִצְיָא",
+    "headword_line": "רִצְיָא n. pr. Risiá 1 Cr 7,39.",
+    "headword_tokens": ["רִצְיָא"],
+    "page_start": 897,
+    "page_end": 897,
+    "gloss_es": "n. pr. Risiá.",
+    "text": "רִצְיָא n. pr. Risiá 1 Cr 7,39."
+  },
+  {
+    "id": "heb-004520",
+    "lemma": "רְצִין",
+    "headword_line": "רְצִין n. pr. Razín.",
+    "headword_tokens": ["רְצִין"],
+    "page_start": 897,
+    "page_end": 897,
+    "gloss_es": "n. pr. Razín.",
+    "text": "רְצִין n. pr. Razín. a) Rey de Damasco 2 Re 15,37 Is 7,1. b) Donado Esd 2,48."
+  },
+  {
+    "id": "heb-004521",
+    "lemma": "רֶצֶף",
+    "headword_line": "רֶצֶף loe. Résef 2 Re 19,12.",
+    "headword_tokens": ["רֶצֶף"],
+    "page_start": 897,
+    "page_end": 897,
+    "gloss_es": "loc. Résef.",
+    "text": "רֶצֶף loe. Résef, en territorio sirio, 2 Re 19,12 Is 37,12."
+  },
+  {
+    "id": "heb-004522",
+    "lemma": "רִצְפָּה",
+    "headword_line": "רִצְפָּה n. pr. Rispá 2 Sm 3,7.",
+    "headword_tokens": ["רִצְפָּה"],
+    "page_start": 897,
+    "page_end": 897,
+    "gloss_es": "n. pr. Rispá.",
+    "text": "רִצְפָּה n. pr. Rispá 2 Sm 3,7."
+  },
+  {
+    "id": "heb-004523",
+    "lemma": "רֶקֶם",
+    "headword_line": "רֶקֶם n. pr. Requen; loe. Requen.",
+    "headword_tokens": ["רֶקֶם"],
+    "page_start": 897,
+    "page_end": 897,
+    "gloss_es": "Requen.",
+    "text": "רֶקֶם n. pr. Requen. a) Madianita Jos 13,21. b) 1 Cr 2,43. c) 7,16. 2 loe. Requen, en Benjamín, Jos 18,27."
+  },
+  {
+    "id": "heb-004524",
+    "lemma": "רַקַּת",
+    "headword_line": "רַקַּת loe. Racat Jos 19,35; רֶשֶׁף Résef.",
+    "headword_tokens": ["רַקַּת", "רֶשֶׁף"],
+    "page_start": 897,
+    "page_end": 897,
+    "gloss_es": "loc. Racat; n. pr. Résef.",
+    "text": "רַקַּת loe. Racat Jos 19,35. רֶשֶׁף n.pr. Résef 1 Cr 7,25."
+  },
+  {
+    "id": "heb-004525",
+    "lemma": "רִתְמָה",
+    "headword_line": "רִתְמָה loe. Ritmá (Retamar) Nm 33,18; שִׂבְמָה Sibmá.",
+    "headword_tokens": ["רִתְמָה", "שִׂבְמָה"],
+    "page_start": 897,
+    "page_end": 898,
+    "gloss_es": "loc. Ritmá; Sibmá.",
+    "text": "רִתְמָה loe. Ritmá (Retamar) Nm 33,18. שִׂבְמָה loe. Sibmá Nm 32,38 Jos 13,19."
+  },
+  {
+    "id": "heb-004526",
+    "lemma": "שְׂגוּב",
+    "headword_line": "שְׂגוּב n. pr. Segub.",
+    "headword_tokens": ["שְׂגוּב"],
+    "page_start": 898,
+    "page_end": 898,
+    "gloss_es": "n. pr. Segub.",
+    "text": "שְׂגוּב n. pr. Segub. a) Hijo de Jiel 1 Re 16,34. b) Judaíta 1 Cr 2,21."
+  },
+  {
+    "id": "heb-004527",
+    "lemma": "שָׂרִיד",
+    "headword_line": "שָׂרִיד Jos 19,10. Ver שָׂרִיד.",
+    "headword_tokens": ["שָׂרִיד"],
+    "page_start": 898,
+    "page_end": 898,
+    "gloss_es": "Sarid.",
+    "text": "שָׂרִיד Jos 19,10. Ver שָׂרִיד."
+  },
+  {
+    "id": "heb-004528",
+    "lemma": "שִׂדִּים",
+    "headword_line": "שִׂדִּים En עֵמֶק הַשִּׂדִּים Valle de Sidín Gn 14,3; שׂוֹכֹה Socó.",
+    "headword_tokens": ["שִׂדִּים", "עֵמֶק הַשִּׂדִּים", "שׂוֹכֹה"],
+    "page_start": 898,
+    "page_end": 898,
+    "gloss_es": "Sidín; loc. Socó.",
+    "text": "שִׂדִּים En עֵמֶק הַשִּׂדִּים Valle de Sidín Gn 14,3. שׂוֹכֹה loe. Socó Jos 15,35 1 Sm 17,1."
+  },
+  {
+    "id": "heb-004529",
+    "lemma": "שׂוֹכוֹ",
+    "headword_line": "שׂוֹכוֹ Ver anterior.",
+    "headword_tokens": ["שׂוֹכוֹ"],
+    "page_start": 898,
+    "page_end": 898,
+    "gloss_es": "Socó.",
+    "text": "שׂוֹכוֹ Ver anterior."
+  },
+  {
+    "id": "heb-004530",
+    "lemma": "שׂוּכָתִים",
+    "headword_line": "שׂוּכָתִים gent. Sucateos 1 Cr 2,55.",
+    "headword_tokens": ["שׂוּכָתִים"],
+    "page_start": 898,
+    "page_end": 898,
+    "gloss_es": "gent. Sucateos.",
+    "text": "שׂוּכָתִים gent. Sucateos 1 Cr 2,55."
+  },
+  {
+    "id": "heb-004531",
+    "lemma": "שׂוֹכֹה",
+    "headword_line": "שׂוֹכֹה Ver Socó.",
+    "headword_tokens": ["שׂוֹכֹה"],
+    "page_start": 898,
+    "page_end": 898,
+    "gloss_es": "Socó.",
+    "text": "שׂוֹכֹה a."
+  },
+  {
+    "id": "heb-004532",
+    "lemma": "שׂוֹרֵק",
+    "headword_line": "שׂוֹרֵק En נַחַל שׂוֹרֵק Valle de Sorec Jue 16,4.",
+    "headword_tokens": ["שׂוֹרֵק", "נַחַל שׂוֹרֵק"],
+    "page_start": 898,
+    "page_end": 898,
+    "gloss_es": "Sorec.",
+    "text": "שׂוֹרֵק En נַחַל שׂוֹרֵק Valle de Sorec Jue 16,4. Se trata de wadi es-Sarar."
+  },
+  {
+    "id": "heb-004533",
+    "lemma": "שִׂרְיֹן",
+    "headword_line": "שִׂרְיֹן Dt 4,48. Lg. Sirión.",
+    "headword_tokens": ["שִׂרְיֹן"],
+    "page_start": 898,
+    "page_end": 898,
+    "gloss_es": "Sirión (Hermón).",
+    "text": "שִׂרְיֹן Dt 4,48. Lg. שִׂרְיֹן Sirión. Véase."
+  },
+  {
+    "id": "heb-004534",
+    "lemma": "שׂוֹכֹה",
+    "headword_line": "שׂוֹכֹה Ver שׂוֹכֹה.",
+    "headword_tokens": ["שׂוֹכֹה"],
+    "page_start": 898,
+    "page_end": 898,
+    "gloss_es": "Socó.",
+    "text": "שׂוֹכֹה Ver שׂוֹכֹה."
+  },
+  {
+    "id": "heb-004535",
+    "lemma": "שַׂכְיָה",
+    "headword_line": "שַׂכְיָה n. pr. Saquías 1 Cr 8,10.",
+    "headword_tokens": ["שַׂכְיָה"],
+    "page_start": 898,
+    "page_end": 898,
+    "gloss_es": "n. pr. Saquías.",
+    "text": "שַׂכְיָה n. pr. Saquías 1 Cr 8,10."
+  },
+  {
+    "id": "heb-004536",
+    "lemma": "שָׂכָר",
+    "headword_line": "שָׂכָר n. pr. Sacar.",
+    "headword_tokens": ["שָׂכָר"],
+    "page_start": 898,
+    "page_end": 898,
+    "gloss_es": "n. pr. Sacar.",
+    "text": "שָׂכָר n. pr. Sacar. a) 1 Cr 11,35. b) Corajita 26,4."
+  },
+  {
+    "id": "heb-004537",
+    "lemma": "שַׂלְמָא",
+    "headword_line": "שַׂלְמָא n. pr. Salmá.",
+    "headword_tokens": ["שַׂלְמָא"],
+    "page_start": 898,
+    "page_end": 898,
+    "gloss_es": "n. pr. Salmá.",
+    "text": "שַׂלְמָא n. pr. Salmá. a) 1 Cr 2,11. b) 1 Cr 2,51."
+  },
+  {
+    "id": "heb-004538",
+    "lemma": "שַׂלְמָה",
+    "headword_line": "שַׂלְמָה n. pr. Salmá; שַׁלְמוּן Salmón; שַׁלְמַי Salmay.",
+    "headword_tokens": ["שַׂלְמָה", "שַׁלְמוּן", "שַׁלְמַי"],
+    "page_start": 898,
+    "page_end": 898,
+    "gloss_es": "n. pr. Salmá; Salmón; Salmay.",
+    "text": "שַׂלְמָה n. pr. Salmá Rut 4,20. שַׁלְמוּן Ver anterior. שַׁלְמַי n. pr. Salmay Esd 2,46."
+  },
+  {
+    "id": "heb-004539",
+    "lemma": "שַׂמְלָה",
+    "headword_line": "שַׂמְלָה n. pr. Samlá Gn 36,36.",
+    "headword_tokens": ["שַׂמְלָה"],
+    "page_start": 898,
+    "page_end": 898,
+    "gloss_es": "n. pr. Samlá.",
+    "text": "שַׂמְלָה n. pr. Samlá Gn 36,36s."
+  },
+  {
+    "id": "heb-004540",
+    "lemma": "שְׂנִיר",
+    "headword_line": "שְׂנִיר n. pr. Senir (Hermón) Dt 3,9; שֵׂעִיר Seír.",
+    "headword_tokens": ["שְׂנִיר", "שֵׂעִיר"],
+    "page_start": 898,
+    "page_end": 898,
+    "gloss_es": "Senir; Seír.",
+    "text": "שְׂנִיר n. pr. Senir, denominación del monte Hermón, Dt 3,9 Ez 27,5. שֵׂעִיר n. pr. Seír Gn 36,20. 2 geog. Seír, región de Edom Gn 33,16."
+  },
+  {
+    "id": "heb-004541",
+    "lemma": "שְׂעִירָה",
+    "headword_line": "שְׂעִירָה loe. Seim Jue 3,26.",
+    "headword_tokens": ["שְׂעִירָה"],
+    "page_start": 899,
+    "page_end": 899,
+    "gloss_es": "loc. Seira.",
+    "text": "שְׂעִירָה loe. Seim Jue 3,26. Por contexto, en la serranía de Efraín."
+  },
+  {
+    "id": "heb-004542",
+    "lemma": "שְׂעֹרִים",
+    "headword_line": "שְׂעֹרִים n. pr. Seorin 1 Cr 24,8; שְׂרָיָה Serayas.",
+    "headword_tokens": ["שְׂעֹרִים", "שְׂרָיָה"],
+    "page_start": 899,
+    "page_end": 899,
+    "gloss_es": "Seorin; Serayas.",
+    "text": "שְׂעֹרִים n. pr. Seorin 1 Cr 24,8. שְׂרָיָה n. pr. Serayas. a) Sumo sacerdote 2 Re 25,18."
+  },
+  {
+    "id": "heb-004543",
+    "lemma": "שִׂפְמוֹת",
+    "headword_line": "שִׂפְמוֹת loe. Sifemot 1 Sm 30,28.",
+    "headword_tokens": ["שִׂפְמוֹת"],
+    "page_start": 899,
+    "page_end": 899,
+    "gloss_es": "loc. Sifemot.",
+    "text": "שִׂפְמוֹת loe. Sifemot 1 Sm 30,28."
+  },
+  {
+    "id": "heb-004544",
+    "lemma": "שַׂרְאֶצֶר",
+    "headword_line": "שַׂרְאֶצֶר n. pr. Saréser; שְׂרָיָהוּ Serayas; שָׂרָה Sara; שִׂרְיֹן Sirión.",
+    "headword_tokens": ["שַׂרְאֶצֶר", "שְׂרָיָהוּ", "שָׂרָה", "שִׂרְיֹן"],
+    "page_start": 899,
+    "page_end": 899,
+    "gloss_es": "Saréser; Serayas; Sara; Sirión.",
+    "text": "שַׂרְאֶצֶר n. pr. Saréser. a) 2 Re 19,37. b) Zac 7,2. שְׂרָיָהוּ n. pr. Serayas Jr 36,26. שָׂרָה n. pr. Sara. שִׂרְיֹן n. pr. Sirión (Hermón) Dt 3,9."
+  },
+  {
+    "id": "heb-004545",
+    "lemma": "שְׂרוּג",
+    "headword_line": "שְׂרוּג n. pr. Serug Gn 11,20; שְׂרָפִים Serafines; שֶׂרַח Seraj; שָׂרַי Saray (Sara).",
+    "headword_tokens": ["שְׂרוּג", "שְׂרָפִים", "שֶׂרַח", "שָׂרַי"],
+    "page_start": 899,
+    "page_end": 899,
+    "gloss_es": "Serug; Serafines; Seraj; Sara.",
+    "text": "שְׂרוּג n. pr. Serug Gn 11,20. שְׂרָפִים Serafines Is 6,2. שֶׂרַח n. pr. Seraj Gn 46,17. שָׂרַי n. pr. Saray (Sara) Gn 11,29."
+  },
+  {
+    "id": "heb-004546",
+    "lemma": "שָׂרִיד",
+    "headword_line": "שָׂרִיד loe. Sarid Jos 19,10.",
+    "headword_tokens": ["שָׂרִיד"],
+    "page_start": 899,
+    "page_end": 899,
+    "gloss_es": "loc. Sarid.",
+    "text": "שָׂרִיד loe. Sarid Jos 19,10. Actual T. Shadud."
+  },
+  {
+    "id": "heb-004547",
+    "lemma": "שָׂרַף",
+    "headword_line": "שָׂרַף n.pr. Saraf 1 Cr 4,22; שְׁבָא Sebá; שָׁאוּל Saúl; שְׁבַנְאֵל Subael.",
+    "headword_tokens": ["שָׂרַף", "שְׁבָא", "שָׁאוּל", "שְׁבַנְאֵל"],
+    "page_start": 899,
+    "page_end": 899,
+    "gloss_es": "Saraf; Sebá; Saúl; Subael.",
+    "text": "שָׂרַף n.pr. Saraf 1 Cr 4,22. שְׁבָא n. pr. Sebá. שָׁאוּל n. pr. Saúl. a) Rey de Israel. b) Rey de Edom. שְׁבַנְאֵל 1 Cr 26,24."
+  },
+  {
+    "id": "heb-004548",
+    "lemma": "שְׁאֵל",
+    "headword_line": "שְׁאֵל n. pr. Seal Esd 10,29.",
+    "headword_tokens": ["שְׁאֵל"],
+    "page_start": 899,
+    "page_end": 899,
+    "gloss_es": "n. pr. Seal.",
+    "text": "שְׁאֵל n. pr. Seal Esd 10,29."
+  },
+  {
+    "id": "heb-004549",
+    "lemma": "שְׁבָט",
+    "headword_line": "שְׁבָט Sebat (mes); שְׁאַלְתִּיאֵל Sealtiel; שׁוֹבַי Sobay.",
+    "headword_tokens": ["שְׁבָט", "שְׁאַלְתִּיאֵל", "שׁוֹבַי"],
+    "page_start": 899,
+    "page_end": 899,
+    "gloss_es": "Sebat; Sealtiel; Sobay.",
+    "text": "שְׁבָט mes Sebat Zac 1,7. שְׁאַלְתִּיאֵל n. pr. Sealtiel Ag 1,1. שׁוֹבַי n. pr. Sobay Esd 2,42."
+  },
+  {
+    "id": "heb-004550",
+    "lemma": "שׁוֹבִי",
+    "headword_line": "שׁוֹבִי n. pr. Sobí; שְׁאָר יָשׁוּב Sear Yasub; שֶׁבְנָא Sobná.",
+    "headword_tokens": ["שׁוֹבִי", "שְׁאָר יָשׁוּב", "שֶׁבְנָא"],
+    "page_start": 899,
+    "page_end": 899,
+    "gloss_es": "Sobí; Sear Yasub; Sobná.",
+    "text": "שׁוֹבִי n. pr. Sobí 2 Sm 17,27. שְׁאָר יָשׁוּב n. pr. Sear Yasub Is 7,3. שֶׁבְנָא n. pr. Sobná 2 Re 19,2."
+  },
+  {
+    "id": "heb-004551",
+    "lemma": "שֶׁאֱרָה",
+    "headword_line": "שֶׁאֱרָה n.pr. Seerá 1 Cr 7,24.",
+    "headword_tokens": ["שֶׁאֱרָה"],
+    "page_start": 899,
+    "page_end": 899,
+    "gloss_es": "n. pr. Seerá.",
+    "text": "שֶׁאֱרָה n.pr. Seerá 1 Cr 7,24."
+  },
+  {
+    "id": "heb-004552",
+    "lemma": "שֶׁבְנָה",
+    "headword_line": "שֶׁבְנָה n. pr. Sebná; שְׁבַנְיָה Sebanías.",
+    "headword_tokens": ["שֶׁבְנָה", "שְׁבַנְיָה"],
+    "page_start": 899,
+    "page_end": 900,
+    "gloss_es": "Sebná; Sebanías.",
+    "text": "שֶׁבְנָה n. pr. Sebná 2 Re 25,18. שְׁבַנְיָה n. pr. Sebanías Neh 9,4."
+  },
+  {
+    "id": "heb-004553",
+    "lemma": "שְׁבַנְיָהוּ",
+    "headword_line": "שְׁבַנְיָהוּ n. pr. Sebanías 1 Cr 15,24; שֶׁבַע Sebá.",
+    "headword_tokens": ["שְׁבַנְיָהוּ", "שֶׁבַע"],
+    "page_start": 900,
+    "page_end": 900,
+    "gloss_es": "Sebanías; Sebá.",
+    "text": "שְׁבַנְיָהוּ n. pr. Sebanías 1 Cr 15,24. שֶׁבַע n. pr. Sebá 2 Sm 20,1."
+  },
+  {
+    "id": "heb-004554",
+    "lemma": "שִׁבְעָה",
+    "headword_line": "שִׁבְעָה top. Seba (Berseba) Gn 26,33.",
+    "headword_tokens": ["שִׁבְעָה"],
+    "page_start": 900,
+    "page_end": 900,
+    "gloss_es": "Seba.",
+    "text": "שִׁבְעָה top. Seba, nombre del pozo de Berseba, Gn 26,33."
+  },
+  {
+    "id": "heb-004555",
+    "lemma": "שֶׁבֶר",
+    "headword_line": "שֶׁבֶר n. pr. Séber 1 Cr 2,48.",
+    "headword_tokens": ["שֶׁבֶר"],
+    "page_start": 900,
+    "page_end": 900,
+    "gloss_es": "n. pr. Séber.",
+    "text": "שֶׁבֶר n. pr. Séber 1 Cr 2,48."
+  },
+  {
+    "id": "heb-004556",
+    "lemma": "שְׁבָרִים",
+    "headword_line": "שְׁבָרִים top. Sebarín Jos 7,5.",
+    "headword_tokens": ["שְׁבָרִים"],
+    "page_start": 900,
+    "page_end": 900,
+    "gloss_es": "loc. Sebarín.",
+    "text": "שְׁבָרִים top. Sebarín (Las Canteras) Jos 7,5."
+  },
+  {
+    "id": "heb-004557",
+    "lemma": "שַׁבְּתַי",
+    "headword_line": "שַׁבְּתַי n. pr. Sabtay Esd 10,15.",
+    "headword_tokens": ["שַׁבְּתַי"],
+    "page_start": 900,
+    "page_end": 900,
+    "gloss_es": "n. pr. Sabtay.",
+    "text": "שַׁבְּתַי n. pr. Sabtay Esd 10,15."
+  },
+  {
+    "id": "heb-004558",
+    "lemma": "שָׁגֶה",
+    "headword_line": "שָׁגֶה n. pr. Sagué 1 Cr 11,34.",
+    "headword_tokens": ["שָׁגֶה"],
+    "page_start": 900,
+    "page_end": 900,
+    "gloss_es": "n. pr. Sagué.",
+    "text": "שָׁגֶה n. pr. Sagué 1 Cr 11,34."
+  },
+  {
+    "id": "heb-004559",
+    "lemma": "שְׁדֵיאוּר",
+    "headword_line": "שְׁדֵיאוּר n. pr. Sedeur Nm 1,5; שַׁדְרַךְ Sadmc.",
+    "headword_tokens": ["שְׁדֵיאוּר", "שַׁדְרַךְ"],
+    "page_start": 900,
+    "page_end": 900,
+    "gloss_es": "Sedeur; Sadmc.",
+    "text": "שְׁדֵיאוּר n. pr. Sedeur Nm 1,5. שַׁדְרַךְ n. pr. Sadmc Dn 1,7."
+  },
+  {
+    "id": "heb-004560",
+    "lemma": "שׁוּבָאֵל",
+    "headword_line": "שׁוּבָאֵל n. pr. Subael; שׁוֹבָב Sobab.",
+    "headword_tokens": ["שׁוּבָאֵל", "שׁוֹבָב"],
+    "page_start": 900,
+    "page_end": 900,
+    "gloss_es": "Subael; Sobab.",
+    "text": "שׁוּבָאֵל n. pr. Subael. a) 1 Cr 24,20. b) 25,20. שׁוֹבָב n. pr. Sobab. a) 2 Sm 5,14. b) 1 Cr 2,18."
+  },
+  {
+    "id": "heb-004561",
+    "lemma": "שׁוֹבָךְ",
+    "headword_line": "שׁוֹבָךְ n. pr. Sobac 2 Sm 10,16.",
+    "headword_tokens": ["שׁוֹבָךְ"],
+    "page_start": 900,
+    "page_end": 900,
+    "gloss_es": "n. pr. Sobac.",
+    "text": "שׁוֹבָךְ n. pr. Sobac 2Sm 10,16."
+  },
+  {
+    "id": "heb-004562",
+    "lemma": "שׁוֹבָל",
+    "headword_line": "שׁוֹבָל n. pr. Sobal.",
+    "headword_tokens": ["שׁוֹבָל"],
+    "page_start": 900,
+    "page_end": 900,
+    "gloss_es": "n. pr. Sobal.",
+    "text": "שׁוֹבָל n. pr. Sobal. a) Gn 36,20. b) 1 Cr 2,52."
+  },
+  {
+    "id": "heb-004563",
+    "lemma": "שׁוֹבֵק",
+    "headword_line": "שׁוֹבֵק n. pr. Sobec Neh 10,25.",
+    "headword_tokens": ["שׁוֹבֵק"],
+    "page_start": 900,
+    "page_end": 900,
+    "gloss_es": "n. pr. Sobec.",
+    "text": "שׁוֹבֵק n. pr. Sobec Neh 10,25."
+  },
+  {
+    "id": "heb-004564",
+    "lemma": "שָׁוֵה",
+    "headword_line": "שָׁוֵה Valle de Savé Gn 14,17; שׁוּחַ Suj.",
+    "headword_tokens": ["שָׁוֵה", "שׁוּחַ"],
+    "page_start": 900,
+    "page_end": 900,
+    "gloss_es": "Savé; Suj.",
+    "text": "שָׁוֵה En עֵמֶק שָׁוֵה Valle de Savé Gn 14,17. שׁוּחַ n. pr. Suj Gn 25,2."
+  },
+  {
+    "id": "heb-004565",
+    "lemma": "שׁוּחָה",
+    "headword_line": "שׁוּחָה n. pr. Sujá 1 Cr 4,11; שׁוּחִי Sujita.",
+    "headword_tokens": ["שׁוּחָה", "שׁוּחִי"],
+    "page_start": 900,
+    "page_end": 900,
+    "gloss_es": "n. pr. Sujá; gent. Sujita.",
+    "text": "שׁוּחָה n. pr. Sujá 1 Cr 4,11. שׁוּחִי gent. Sujita Job 2,11."
+  },
+  {
+    "id": "heb-004566",
+    "lemma": "שׁוּחָם",
+    "headword_line": "שׁוּחָם n. pr. Suján Nm 26,42.",
+    "headword_tokens": ["שׁוּחָם"],
+    "page_start": 900,
+    "page_end": 900,
+    "gloss_es": "n. pr. Suján.",
+    "text": "שׁוּחָם n. pr. Suján Nm 26,42."
+  },
+  {
+    "id": "heb-004567",
+    "lemma": "שׁוּחָמִי",
+    "headword_line": "שׁוּחָמִי patron. Sujanita Nm 26,42.",
+    "headword_tokens": ["שׁוּחָמִי"],
+    "page_start": 900,
+    "page_end": 900,
+    "gloss_es": "patrón. Sujanita.",
+    "text": "שׁוּחָמִי patron. Sujanita Nm 26,42s."
+  },
+  {
+    "id": "heb-004568",
+    "lemma": "שׁוּלַמִּית",
+    "headword_line": "שׁוּלַמִּית n. pr. Sulamita Cant 7,1.",
+    "headword_tokens": ["שׁוּלַמִּית"],
+    "page_start": 900,
+    "page_end": 900,
+    "gloss_es": "Sulamita.",
+    "text": "שׁוּלַמִּית n. pr. Sulamita Cant 7,1."
+  },
+  {
+    "id": "heb-004569",
+    "lemma": "שׁוֹמֵר",
+    "headword_line": "שׁוֹמֵר n. pr. Somer 1 Cr 7,32.",
+    "headword_tokens": ["שׁוֹמֵר"],
+    "page_start": 900,
+    "page_end": 900,
+    "gloss_es": "n. pr. Somer.",
+    "text": "שׁוֹמֵר n. pr. Somer 1 Cr 7,32."
+  },
+  {
+    "id": "heb-004570",
+    "lemma": "שׁוּנִי",
+    "headword_line": "שׁוּנִי Suní; Sunita.",
+    "headword_tokens": ["שׁוּנִי"],
+    "page_start": 900,
+    "page_end": 900,
+    "gloss_es": "Suní.",
+    "text": "שׁוּנִי n. pr. y patron. Suní/Sunita Gn 46,16 Nm 26,15."
+  },
+  {
+    "id": "heb-004571",
+    "lemma": "שׁוּנֵם",
+    "headword_line": "שׁוּנֵם loe. Sunán Jos 19,18; שׁוּנַמִּית Sunamita.",
+    "headword_tokens": ["שׁוּנֵם", "שׁוּנַמִּית"],
+    "page_start": 900,
+    "page_end": 900,
+    "gloss_es": "loc. Sunán; gent. Sunamita.",
+    "text": "שׁוּנֵם loe. Sunán Jos 19,18. שׁוּנַמִּית gent. Sunamita 1 Re 1,3."
+  },
+  {
+    "id": "heb-004572",
+    "lemma": "שׁוֹעַ",
+    "headword_line": "שׁוֹעַ geog. Soá Ez 23,23.",
+    "headword_tokens": ["שׁוֹעַ"],
+    "page_start": 900,
+    "page_end": 900,
+    "gloss_es": "geog. Soá.",
+    "text": "שׁוֹעַ geog. Soá, región relacionada con Babilonia, Ez 23,23."
+  },
+  {
+    "id": "heb-004573",
+    "lemma": "שׁוּעַ",
+    "headword_line": "שׁוּעַ n. pr. Súa Gn 38,2.",
+    "headword_tokens": ["שׁוּעַ"],
+    "page_start": 900,
+    "page_end": 900,
+    "gloss_es": "n. pr. Súa.",
+    "text": "שׁוּעַ n. pr. Súa Gn 38,2."
+  },
+  {
+    "id": "heb-004574",
+    "lemma": "שׁוּעָא",
+    "headword_line": "שׁוּעָא n. pr. Súa 1 Cr 7,32; שׁוּעָל Sual.",
+    "headword_tokens": ["שׁוּעָא", "שׁוּעָל"],
+    "page_start": 900,
+    "page_end": 900,
+    "gloss_es": "Súa; Sual.",
+    "text": "שׁוּעָא n.pr. Súa 1 Cr 7,32. שׁוּעָל n.pr. Sual 1 Cr 7,36."
+  },
+  {
+    "id": "heb-004575",
+    "lemma": "שׁוּפָמִי",
+    "headword_line": "שׁוּפָמִי patron. Sufanita Nm 26,39.",
+    "headword_tokens": ["שׁוּפָמִי"],
+    "page_start": 900,
+    "page_end": 900,
+    "gloss_es": "patrón. Sufanita.",
+    "text": "שׁוּפָמִי patron. Sujanita Nm 26,39."
+  },
+  {
+    "id": "heb-004576",
+    "lemma": "שׁוּר",
+    "headword_line": "שׁוּר geog. Sur Gn 16,7.",
+    "headword_tokens": ["שׁוּר"],
+    "page_start": 900,
+    "page_end": 900,
+    "gloss_es": "geog. Sur.",
+    "text": "שׁוּר geog. Sur Gn 16,7 25,18. Región al noroeste del Sinaí."
+  },
+  {
+    "id": "heb-004577",
+    "lemma": "שׁוּשַׁן",
+    "headword_line": "שׁוּשַׁן loe. Susa Est 1,2; שׁוּתֶלַח Sutélaj.",
+    "headword_tokens": ["שׁוּשַׁן", "שׁוּתֶלַח"],
+    "page_start": 901,
+    "page_end": 901,
+    "gloss_es": "loc. Susa; n. pr. Sutélaj.",
+    "text": "שׁוּשַׁן loe. Susa, capital persa Est 1,2. שׁוּתֶלַח n. pr. Sutélaj Nm 26,35."
+  },
+  {
+    "id": "heb-004578",
+    "lemma": "שִׁיחוֹר",
+    "headword_line": "שִׁיחוֹר Ver Sijor; שַׁחֲצִים Sajasín.",
+    "headword_tokens": ["שִׁיחוֹר", "שַׁחֲצִים"],
+    "page_start": 901,
+    "page_end": 901,
+    "gloss_es": "Sijor; Sajasín.",
+    "text": "שִׁיחוֹר Ver שִׁיחוֹר. שַׁחֲצִים loe. Sajasín Jos 19,22."
+  },
+  {
+    "id": "heb-004579",
+    "lemma": "שְׁחַרְיָה",
+    "headword_line": "שְׁחַר.ְיָה n. pr. Sejarías 1 Cr 8,26; שַׁחֲתֵם Sajmin.",
+    "headword_tokens": ["שְׁחַרְיָה", "שַׁחֲתֵם"],
+    "page_start": 901,
+    "page_end": 901,
+    "gloss_es": "Sejarías; Sajmin.",
+    "text": "שְׁחַרְיָה n. pr. Sejarías 1 Cr 8,26. שַׁחֲתֵם n. pr. Sajmin 1 Cr 8,8."
+  },
+  {
+    "id": "heb-004580",
+    "lemma": "שִׁטִּים",
+    "headword_line": "שִׁטִּים top. Abel-Sitim; Najal-Sitim.",
+    "headword_tokens": ["שִׁטִּים"],
+    "page_start": 901,
+    "page_end": 901,
+    "gloss_es": "Sitim.",
+    "text": "שִׁטִּים top. En composición: אָבֵל הַשִּׁטִּים y נַחַל הַשִּׁטִּים."
+  },
+  {
+    "id": "heb-004581",
+    "lemma": "שִׁטְרַי",
+    "headword_line": "שִׁטְרַי n. pr. Sitray 1 Cr 27,29; שִׁיאֹן Sión.",
+    "headword_tokens": ["שִׁטְרַי", "שִׁיאֹן"],
+    "page_start": 901,
+    "page_end": 901,
+    "gloss_es": "Sitray; Sión.",
+    "text": "שִׁטְרַי n. pr. Sitray 1 Cr 27,29. שִׁיאֹן loe. Sión Jos 19,19."
+  },
+  {
+    "id": "heb-004582",
+    "lemma": "שִׁיזָא",
+    "headword_line": "שִׁיזָא n. pr. Sizá 1 Cr 11,42; שִׁיחוֹר Sijor; שִׁילֹה Siló; שִׁילוֹנִי Silonita.",
+    "headword_tokens": ["שִׁיזָא", "שִׁיחוֹר", "שִׁילֹה", "שִׁילוֹנִי"],
+    "page_start": 901,
+    "page_end": 901,
+    "gloss_es": "Sizá; río Sijor; loc. Siló; gent. Silonita.",
+    "text": "שִׁיזָא n. pr. Sizá 1 Cr 11,42. שִׁיחוֹר geog. Sijor, río de Egipto Jr 2,18. שִׁילֹה loe. Siló Jue 21,19. שִׁילוֹנִי gent. Silonita 1 Re 11,29."
+  },
+  {
+    "id": "heb-004583",
+    "lemma": "שִׁימוֹן",
+    "headword_line": "שִׁימוֹן n. pr. Simón 1 Cr 4,20.",
+    "headword_tokens": ["שִׁימוֹן"],
+    "page_start": 901,
+    "page_end": 901,
+    "gloss_es": "Simón.",
+    "text": "שִׁימוֹן n. pr. Simón 1 Cr 4,20."
+  },
+  {
+    "id": "heb-004584",
+    "lemma": "שִׁישָׁא",
+    "headword_line": "שִׁישָׁא n. pr. Sisá 1 Re 4,3; שִׁישַׁק Sisac; שְׁכֶם Siquén.",
+    "headword_tokens": ["שִׁישָׁא", "שִׁישַׁק", "שְׁכֶם"],
+    "page_start": 901,
+    "page_end": 901,
+    "gloss_es": "Sisá; faraón Sisac; loc. Siquén.",
+    "text": "שִׁישָׁא n. pr. Sisá 1 Re 4,3. שִׁישַׁק n. pr. Sisac, faraón 1 Re 11,40. שְׁכֶם n. pr. Siquén; loe. Siquén Gn 12,6."
+  },
+  {
+    "id": "heb-004585",
+    "lemma": "שְׁכֶם",
+    "headword_line": "שְׁכֶם n. pr. Siquén.",
+    "headword_tokens": ["שְׁכֶם"],
+    "page_start": 901,
+    "page_end": 901,
+    "gloss_es": "Siquén.",
+    "text": "שְׁכֶם n. pr. Siquén. a) Nm 26,31. b) 1 Cr 7,19."
+  },
+  {
+    "id": "heb-004586",
+    "lemma": "שְׁכֶמִי",
+    "headword_line": "שְׁכֶמִי patrón. Siquemita Nm 26,31.",
+    "headword_tokens": ["שְׁכֶמִי"],
+    "page_start": 901,
+    "page_end": 901,
+    "gloss_es": "Siquemita.",
+    "text": "שְׁכֶמִי patrón. Siquemita Nm 26,31."
+  },
+  {
+    "id": "heb-004587",
+    "lemma": "שְׁכַנְיָה",
+    "headword_line": "שְׁכַנְיָה n. pr. Secanías; שְׁכַנְיָהוּ Secanías.",
+    "headword_tokens": ["שְׁכַנְיָה", "שְׁכַנְיָהוּ"],
+    "page_start": 901,
+    "page_end": 901,
+    "gloss_es": "Secanías.",
+    "text": "שְׁכַנְיָה n. pr. Secanías Esd 8,3. שְׁכַנְיָהוּ n. pr. Secanías 1 Cr 24,11."
+  },
+  {
+    "id": "heb-004588",
+    "lemma": "שִׁכָּרוֹן",
+    "headword_line": "שִׁכָּרוֹן loe. Sicrón Jos 15,11.",
+    "headword_tokens": ["שִׁכָּרוֹן"],
+    "page_start": 901,
+    "page_end": 901,
+    "gloss_es": "loc. Sicrón.",
+    "text": "שִׁכָּרוֹן loe. Sicrón Jos 15,11. Actual T. el-Ful."
+  },
+  {
+    "id": "heb-004589",
+    "lemma": "שֵׁלָה",
+    "headword_line": "שֵׁלָה n. pr. Selá Gn 38,5; שַׁלּוּם Salún.",
+    "headword_tokens": ["שֵׁלָה", "שַׁלּוּם"],
+    "page_start": 901,
+    "page_end": 902,
+    "gloss_es": "n. pr. Selá; Salún.",
+    "text": "שֵׁלָה n. pr. Selá Gn 38,5. שַׁלּוּם n. pr. Salún. a) Rey de Israel. b) Rey de Judá Jr 22,11."
+  },
+  {
+    "id": "heb-004590",
+    "lemma": "שֶׁלֶמְיָה",
+    "headword_line": "שֶׁלֶמְיָה n. pr. Selemías.",
+    "headword_tokens": ["שֶׁלֶמְיָה"],
+    "page_start": 902,
+    "page_end": 902,
+    "gloss_es": "n. pr. Selemías.",
+    "text": "שֶׁלֶמְיָה n. pr. Selemías. a) Jr 37,3. b) 37,13. c) Esd 10,39. d) 13,13."
+  },
+  {
+    "id": "heb-004591",
+    "lemma": "שֶׁלֶמְיָה",
+    "headword_line": "שֶׁלֶמ.ְיָה n. pr. Selemías.",
+    "headword_tokens": ["שֶׁלֶמְיָה"],
+    "page_start": 902,
+    "page_end": 902,
+    "gloss_es": "Selemías.",
+    "text": "שֶׁלֶמְיָה n. pr. Selemías Jr 36,14."
+  },
+  {
+    "id": "heb-004592",
+    "lemma": "שְׁלֹמִית",
+    "headword_line": "שְׁלֹמִית n. pr. Selomit; שַׁלּוּן Salún; שֶׁלַח Sélaj; שֶׁלַח Siloé.",
+    "headword_tokens": ["שְׁלֹמִית", "שַׁלּוּן", "שֶׁלַח"],
+    "page_start": 902,
+    "page_end": 902,
+    "gloss_es": "n. pr. Selomit; Salún; Sélaj; top. Siloé.",
+    "text": "שְׁלֹמִית n. pr. Selomit Lv 24,11. שַׁלּוּן n. pr. Salún Neh 3,15. שֶׁלַח n. pr. Sélaj Gn 11,12. שֶׁלַח top. Siloé Is 8,6."
+  },
+  {
+    "id": "heb-004593",
+    "lemma": "שַׁלְמֹן",
+    "headword_line": "שַׁלְמֹן n. pr. Salmón Os 10,14.",
+    "headword_tokens": ["שַׁלְמֹן"],
+    "page_start": 902,
+    "page_end": 902,
+    "gloss_es": "Salmón.",
+    "text": "שַׁלְמֹן n. pr. Salmón Os 10,14."
+  },
+  {
+    "id": "heb-004594",
+    "lemma": "שִׁלְחִי",
+    "headword_line": "שִׁלְחִי n. pr. Siljí 1 Re 22,42.",
+    "headword_tokens": ["שִׁלְחִי"],
+    "page_start": 902,
+    "page_end": 902,
+    "gloss_es": "n. pr. Siljí.",
+    "text": "שִׁלְחִי n. pr. Siljí 1 Re 22,42 2 Cr 20,31."
+  },
+  {
+    "id": "heb-004595",
+    "lemma": "שַׁלְמַנְאֶסֶר",
+    "headword_line": "שַׁלְמַנְאֶסֶר n. pr. Salmanasar (V), rey asirio.",
+    "headword_tokens": ["שַׁלְמַנְאֶסֶר"],
+    "page_start": 902,
+    "page_end": 902,
+    "gloss_es": "Salmanasar.",
+    "text": "שַׁלְמַנְאֶסֶר n. pr. Salmanasar (V), rey asirio 2 Re 17,3."
+  },
+  {
+    "id": "heb-004596",
+    "lemma": "שִׁלְחִים",
+    "headword_line": "שִׁל.ְחִים loe. Siljín Jos 15,32; שֶׁלֶף Sélef.",
+    "headword_tokens": ["שִׁלְחִים", "שֶׁלֶף"],
+    "page_start": 902,
+    "page_end": 902,
+    "gloss_es": "loc. Siljín; n. pr. Sélef.",
+    "text": "שִׁלְחִים loe. Siljín (Canales), en el Negueb, Jos 15,32. שֶׁלֶף n. pr. Sélef Gn 10,26."
+  },
+  {
+    "id": "heb-004597",
+    "lemma": "שִׁלֵּם",
+    "headword_line": "שִׁלֵּם n. pr. Silén Gn 46,24.",
+    "headword_tokens": ["שִׁלֵּם"],
+    "page_start": 902,
+    "page_end": 902,
+    "gloss_es": "n. pr. Silén.",
+    "text": "שִׁלֵּם n. pr. Silén Gn 46,24 Nm 26,49."
+  },
+  {
+    "id": "heb-004598",
+    "lemma": "שֶׁלֶשׁ",
+    "headword_line": "שֶׁלֶשׁ n. pr. Seles 1 Cr 7,35.",
+    "headword_tokens": ["שֶׁלֶשׁ"],
+    "page_start": 902,
+    "page_end": 902,
+    "gloss_es": "n. pr. Seles.",
+    "text": "שֶׁלֶשׁ n. pr. Seles 1 Cr 7,35."
+  },
+  {
+    "id": "heb-004599",
+    "lemma": "שָׁלִישָׁה",
+    "headword_line": "שָׁלִישָׁה geog. Salisá 1 Sm 9,4.",
+    "headword_tokens": ["שָׁלִישָׁה"],
+    "page_start": 902,
+    "page_end": 902,
+    "gloss_es": "geog. Salisá.",
+    "text": "שָׁלִישָׁה geog. Salisá, zona noroccidental de la montaña de Efraín, 1 Sm 9,4."
+  },
+  {
+    "id": "heb-004600",
+    "lemma": "שְׁלֹמֹה",
+    "headword_line": "שְׁלֹמֹה n. pr. Salomón, rey de Israel.",
+    "headword_tokens": ["שְׁלֹמֹה"],
+    "page_start": 902,
+    "page_end": 902,
+    "gloss_es": "Salomón.",
+    "text": "שְׁלֹמֹה n. pr. Salomón, rey de Israel 2 Sm 5,14 1 Re 2,1-11,43 Sal 127,1."
+  },
+  {
+    "id": "heb-004601",
+    "lemma": "שְׁלֵשָׁה",
+    "headword_line": "שְׁלֵשָׁה n. pr. Selesa 1 Cr 7,37.",
+    "headword_tokens": [
+      "שְׁלֵשָׁה"
+    ],
+    "page_start": 902,
+    "page_end": 902,
+    "gloss_es": "n. pr. Selesa",
+    "text": "שְׁלֵשָׁה n. pr. Selesa 1 Cr 7,37."
+  },
+  {
+    "id": "heb-004602",
+    "lemma": "שַׁלְתִּיאֵל",
+    "headword_line": "שַׁלְתִּיאֵל Ver שְׁאַלְתִּיאֵל.",
+    "headword_tokens": [
+      "שַׁלְתִּיאֵל",
+      "שְׁלֹמוֹת",
+      "שֵׁם",
+      "שְׁלֹמִי"
+    ],
+    "page_start": 902,
+    "page_end": 902,
+    "gloss_es": "Sealtiel; Selomot; Sem; Salomí.",
+    "text": "שַׁלְתִּיאֵל Ver שְׁאַלְתִּיאֵל. שְׁלֹמוֹת n. pr. Selomot, nombre de tres levitas 1 Cr 23,9; 24,22; 26,25. שֵׁם n. pr. Sem, hijo de Noé, Gn 5,32. שְׁלֹמִי n. pr. Salomí Nm 34,27."
+  },
+  {
+    "id": "heb-004603",
+    "lemma": "שַׁמָּא",
+    "headword_line": "שַׁמָּא n. pr. Samá 1 Cr 7,37.",
+    "headword_tokens": [
+      "שַׁמָּא"
+    ],
+    "page_start": 902,
+    "page_end": 902,
+    "gloss_es": "n. pr. Samá",
+    "text": "שַׁמָּא n. pr. Samá 1 Cr 7,37."
+  },
+  {
+    "id": "heb-004604",
+    "lemma": "שֶׁמְאֵבֶר",
+    "headword_line": "שֶׁמְאֵבֶר n. pr. Seméber Gn 14,2.",
+    "headword_tokens": [
+      "שֶׁמְאֵבֶר"
+    ],
+    "page_start": 902,
+    "page_end": 902,
+    "gloss_es": "n. pr. Seméber",
+    "text": "שֶׁמְאֵבֶר n. pr. Seméber Gn 14,2."
+  },
+  {
+    "id": "heb-004605",
+    "lemma": "שִׁלֵּמִי",
+    "headword_line": "שִׁלֵּמִי patron. Silenita Nm 26,49.",
+    "headword_tokens": [
+      "שִׁלֵּמִי"
+    ],
+    "page_start": 902,
+    "page_end": 902,
+    "gloss_es": "patron. Silenita",
+    "text": "שִׁלֵּמִי patron. Silenita Nm 26,49."
+  },
+  {
+    "id": "heb-004606",
+    "lemma": "שְׁלֻמִיאֵל",
+    "headword_line": "שְׁלֻמִיאֵל n. pr. Salumiel Nm 1,6 10,19.",
+    "headword_tokens": [
+      "שְׁלֻמִיאֵל"
+    ],
+    "page_start": 902,
+    "page_end": 902,
+    "gloss_es": "n. pr. Salumiel",
+    "text": "שְׁלֻמִיאֵל n. pr. Salumiel Nm 1,6 10,19."
+  },
+  {
+    "id": "heb-004607",
+    "lemma": "שִׁמְאָה",
+    "headword_line": "שִׁמְאָה n. pr. Simá 1 Cr 8,32.",
+    "headword_tokens": [
+      "שִׁמְאָה",
+      "שְׁמַע"
+    ],
+    "page_start": 902,
+    "page_end": 903,
+    "gloss_es": "n. pr. Simá; loc. Semá.",
+    "text": "שִׁמְאָה n. pr. Simá 1 Cr 8,32. שְׁמַע loc. Semá Jos 15,26. Actual Kh. el-Far. שַׁמְגַּר n. pr. Sangar Jue 3,31."
+  },
+  {
+    "id": "heb-004608",
+    "lemma": "שַׁמָּע",
+    "headword_line": "שַׁמָּע n. pr. Samá 1 Cr 11,44.",
+    "headword_tokens": [
+      "שַׁמָּע"
+    ],
+    "page_start": 903,
+    "page_end": 903,
+    "gloss_es": "n. pr. Samá",
+    "text": "שַׁמָּע n. pr. Samá 1 Cr 11,44."
+  },
+  {
+    "id": "heb-004609",
+    "lemma": "שֶׁמֶד",
+    "headword_line": "שֶׁמֶד n. pr. Sémed 1 Cr 8,12.",
+    "headword_tokens": [
+      "שֶׁמֶד"
+    ],
+    "page_start": 903,
+    "page_end": 903,
+    "gloss_es": "n. pr. Sémed",
+    "text": "שֶׁמֶד n. pr. Sémed 1 Cr 8,12."
+  },
+  {
+    "id": "heb-004610",
+    "lemma": "שִׁמְעָא",
+    "headword_line": "שִׁמ.ְעָא n. pr. Simeá.",
+    "headword_tokens": [
+      "שִׁמְעָא"
+    ],
+    "page_start": 903,
+    "page_end": 903,
+    "gloss_es": "n. pr. Simeá",
+    "text": "שִׁמְעָא n. pr. Simeá. a) Hermano de David 1 Cr 2,13. b) Hijo de David 1 Cr 3,5. c) Levitas 1 Cr 6,15.24."
+  },
+  {
+    "id": "heb-004611",
+    "lemma": "שַׁמָּה",
+    "headword_line": "שַׁמָּה n. pr. Samá.",
+    "headword_tokens": [
+      "שַׁמָּה"
+    ],
+    "page_start": 903,
+    "page_end": 903,
+    "gloss_es": "n. pr. Samá",
+    "text": "שַׁמָּה n. pr. Samá. a) Descendiente de Esaú Gn 36,13. b) Hermano de David 1 Sm 16,9."
+  },
+  {
+    "id": "heb-004612",
+    "lemma": "שִׁמְעָה",
+    "headword_line": "שִׁמְעָה n. pr. Simeá.",
+    "headword_tokens": [
+      "שִׁמְעָה",
+      "שַׁמְהוּת"
+    ],
+    "page_start": 903,
+    "page_end": 903,
+    "gloss_es": "n. pr. Simeá; Samhut.",
+    "text": "שִׁמְעָה n. pr. Simeá 2 Sm 21,21. שַׁמְהוּת n. pr. Samhut 1 Cr 27,8."
+  },
+  {
+    "id": "heb-004613",
+    "lemma": "שִׁמְעָה",
+    "headword_line": "שִׁמְעָה n. pr. Semaá 1 Cr 12,3.",
+    "headword_tokens": [
+      "שִׁמְעָה"
+    ],
+    "page_start": 903,
+    "page_end": 903,
+    "gloss_es": "n. pr. Semaá",
+    "text": "שִׁמְעָה n. pr. Semaá 1 Cr 12,3."
+  },
+  {
+    "id": "heb-004614",
+    "lemma": "שַׁמְהוּת",
+    "headword_line": "שַׁמְהוּת Ver anterior.",
+    "headword_tokens": [
+      "שַׁמְהוּת"
+    ],
+    "page_start": 903,
+    "page_end": 903,
+    "gloss_es": "Samhut",
+    "text": "שַׁמְהוּת Ver anterior."
+  },
+  {
+    "id": "heb-004615",
+    "lemma": "שִׁמְעוֹן",
+    "headword_line": "שִׁמְעוֹן n. pr. Simeón.",
+    "headword_tokens": [
+      "שִׁמְעוֹן"
+    ],
+    "page_start": 903,
+    "page_end": 903,
+    "gloss_es": "n. pr. Simeón",
+    "text": "שִׁמְעוֹן n. pr. Simeón. a) Hijo de Jacob Gn 29,33. b) Judío Esd 10,31."
+  },
+  {
+    "id": "heb-004616",
+    "lemma": "שְׁמוּאֵל",
+    "headword_line": "שְׁמוּאֵל n. pr. Samuel.",
+    "headword_tokens": [
+      "שְׁמוּאֵל"
+    ],
+    "page_start": 903,
+    "page_end": 903,
+    "gloss_es": "n. pr. Samuel",
+    "text": "שְׁמוּאֵל n. pr. Samuel. a) Simeonita Nm 34,20. b) Juez y profeta 1 Sm 1,20. c) Isacarita 1 Cr 7,2."
+  },
+  {
+    "id": "heb-004617",
+    "lemma": "שַׁמּוּעַ",
+    "headword_line": "שַׁמּוּעַ n. pr. Samúa.",
+    "headword_tokens": [
+      "שַׁמּוּעַ",
+      "שִׁמְעוֹנִי"
+    ],
+    "page_start": 903,
+    "page_end": 903,
+    "gloss_es": "Samúa; simeonita.",
+    "text": "שַׁמּוּעַ n. pr. Samúa. a) Nm 13,4. b) 2 Sm 5,14. c) Neh 11,17. d) Neh 12,18. שִׁמְעוֹנִי gent. Simeonita Nm 26,14."
+  },
+  {
+    "id": "heb-004618",
+    "lemma": "שִׁמְעִי",
+    "headword_line": "שִׁמְעִי n. pr. Semeí.",
+    "headword_tokens": [
+      "שִׁמְעִי"
+    ],
+    "page_start": 903,
+    "page_end": 903,
+    "gloss_es": "n. pr. Semeí",
+    "text": "שִׁמְעִי n. pr. Semeí. a) Hijo de Guersón Ex 6,17. b) Levitas. c) Benjaminitas 2 Sm 16,5. d) Superintendente 1 Cr 27,27."
+  },
+  {
+    "id": "heb-004619",
+    "lemma": "שַׁמַּי",
+    "headword_line": "שַׁמַּי n. pr. Samay; שְׁמִידָע Semidá; שָׁמִיר Samir.",
+    "headword_tokens": [
+      "שַׁמַּי",
+      "שְׁמִידָע",
+      "שָׁמִיר"
+    ],
+    "page_start": 903,
+    "page_end": 903,
+    "gloss_es": "Samay; Semidá; Samir.",
+    "text": "שַׁמַּי n. pr. Samay. a) 1 Cr 2,28. b) 2,44. c) 4,17. שְׁמִידָע n. pr. Semidá Nm 36,32. שָׁמִיר n. pr. Samir 1 Cr 24,24."
+  },
+  {
+    "id": "heb-004620",
+    "lemma": "שְׁמַעְיָה",
+    "headword_line": "שְׁמַעְיָה n. pr. Semayas.",
+    "headword_tokens": [
+      "שְׁמַעְיָה",
+      "שָׁמִיר",
+      "שְׁמִירָמוֹת"
+    ],
+    "page_start": 903,
+    "page_end": 903,
+    "gloss_es": "Semayas; Samir; Semiramot.",
+    "text": "שְׁמַעְיָה n. pr. Semayas. a) Profetas. b) Davidita. c) Levitas. 2 שָׁמִיר loe. Samir Jos 15,48. שְׁמִירָמוֹת n. pr. Semiramot 1 Cr 15,18."
+  },
+  {
+    "id": "heb-004621",
+    "lemma": "שֶׁמַע",
+    "headword_line": "שֶׁמַע n. pr. Semá.",
+    "headword_tokens": [
+      "שֶׁמַע"
+    ],
+    "page_start": 903,
+    "page_end": 903,
+    "gloss_es": "n. pr. Semá",
+    "text": "שֶׁמַע n. pr. Semá. a) 1 Cr 2,43. b) 1 Cr 5,8. c) 1 Cr 8,13. d) Neh 8,4."
+  },
+  {
+    "id": "heb-004622",
+    "lemma": "שְׁמַעְיָהוּ",
+    "headword_line": "שְׁמַעְיָהוּ n. pr. Semayas; שֹׁמְרוֹנִים Samaritanos.",
+    "headword_tokens": [
+      "שְׁמַעְיָהוּ",
+      "שֹׁמְרוֹנִים"
+    ],
+    "page_start": 903,
+    "page_end": 904,
+    "gloss_es": "Semayas; Samaritanos.",
+    "text": "שְׁמַעְיָהוּ n. pr. Semayas. a) Jr 26,20. b) 29,24. c) 36,12. d) Levitas. שֹׁמְרוֹנִים gent. Samaritanos 2 Re 17,29."
+  },
+  {
+    "id": "heb-004623",
+    "lemma": "שִׁמְרָת",
+    "headword_line": "שִׁמְרָת n. pr. Simrat 1 Cr 8,21.",
+    "headword_tokens": [
+      "שִׁמְרָת"
+    ],
+    "page_start": 904,
+    "page_end": 904,
+    "gloss_es": "n. pr. Simrat",
+    "text": "שִׁמְרָת n. pr. Simrat 1 Cr 8,21."
+  },
+  {
+    "id": "heb-004624",
+    "lemma": "שִׁמְשׁוֹן",
+    "headword_line": "שִׁמְשׁוֹן n. pr. Sansón; שִׁמְשְׁרַי Samseray.",
+    "headword_tokens": [
+      "שִׁמְשׁוֹן",
+      "שִׁמְשְׁרַי"
+    ],
+    "page_start": 904,
+    "page_end": 904,
+    "gloss_es": "Sansón; Samseray.",
+    "text": "שִׁמְשׁוֹן n. pr. Sansón Jue 13-16. שִׁמְשְׁרַי n. pr. Samseray 1 Cr 8,26."
+  },
+  {
+    "id": "heb-004625",
+    "lemma": "שֶׁמֶר",
+    "headword_line": "שֶׁמֶר n. pr. Sémer.",
+    "headword_tokens": [
+      "שֶׁמֶר"
+    ],
+    "page_start": 904,
+    "page_end": 904,
+    "gloss_es": "n. pr. Sémer",
+    "text": "שֶׁמֶר n. pr. Sémer. a) Propietario de Samaría 1 Re 16,24. b) Levita 1 Cr 6,31. c) Aserita 7,34."
+  },
+  {
+    "id": "heb-004626",
+    "lemma": "שִׁנְאָב",
+    "headword_line": "שִׁנְאָב n. pr. Sinab Gn 14,2; שֶׁנְאַצַּר Senasar.",
+    "headword_tokens": [
+      "שִׁנְאָב",
+      "שֶׁנְאַצַּר"
+    ],
+    "page_start": 904,
+    "page_end": 904,
+    "gloss_es": "Sinab; Senasar.",
+    "text": "שִׁנְאָב n. pr. Sinab Gn 14,2. שֶׁנְאַצַּר n. pr. Senasar 1 Cr 3,18."
+  },
+  {
+    "id": "heb-004627",
+    "lemma": "שִׁנְעָר",
+    "headword_line": "שִׁנְעָר geog. Senaar (Babilonia); שַׁעַלְבִים Saalín; שִׁמְרוֹן Símrón.",
+    "headword_tokens": [
+      "שִׁנְעָר",
+      "שַׁעַלְבִים",
+      "שִׁמְרוֹן"
+    ],
+    "page_start": 904,
+    "page_end": 904,
+    "gloss_es": "Senaar; Saalín; Símrón.",
+    "text": "שִׁנְעָר geog. Senaar Gn 10,10. שַׁעַלְבִים loe. Saalín Jue 1,35. שִׁמְרוֹן n. pr. Símrón Gn 46,13; loe. Símrón Jos 11,1."
+  },
+  {
+    "id": "heb-004628",
+    "lemma": "שֹׁמְרוֹן",
+    "headword_line": "שֹׁמְרוֹן Samaría (Capital y montaña); שִׁמְרִי Sumí.",
+    "headword_tokens": [
+      "שֹׁמְרוֹן",
+      "שִׁמְרִי"
+    ],
+    "page_start": 904,
+    "page_end": 904,
+    "gloss_es": "Samaría; Sumí.",
+    "text": "שֹׁמְרוֹן Samaría 1 Re 16,24. שִׁמְרִי n.pr. Sumí. a) 1 Cr 4,37. b) 11,45. c) Levitas."
+  },
+  {
+    "id": "heb-004629",
+    "lemma": "שְׁמַרְיָה",
+    "headword_line": "שְׁמַרְיָה n. pr. Semarías.",
+    "headword_tokens": [
+      "שְׁמַרְיָה"
+    ],
+    "page_start": 904,
+    "page_end": 904,
+    "gloss_es": "n. pr. Semarías",
+    "text": "שְׁמַarְיָה n. pr. Semarías. a) 2 Cr 11,19. b) Esd 10,32.41."
+  },
+  {
+    "id": "heb-004630",
+    "lemma": "שְׁמַרְיָהוּ",
+    "headword_line": "שְׁמַר.ְיָהוּ n. pr. Semarías 1 Cr 12,6; שִׁמְרוֹנִי Simronita; שַׁעַלְבֹנִי Saalbonita.",
+    "headword_tokens": [
+      "שְׁמַרְיָהוּ",
+      "שִׁמְרוֹנִי",
+      "שַׁעַלְבֹנִי"
+    ],
+    "page_start": 904,
+    "page_end": 904,
+    "gloss_es": "Semarías; Simronita; Saalbonita.",
+    "text": "שְׁמַרְיָהוּ n. pr. Semarías 1 Cr 12,6. שִׁמְרוֹנִי patrón. Simronita Nm 26,24. שַׁעַלְבֹנִי gent. Saalbonita 2 Sm 23,32."
+  },
+  {
+    "id": "heb-004631",
+    "lemma": "שַׁעֲלִים",
+    "headword_line": "שַׁעֲלִים geog. Saalín 1 Sm 9,4; שַׁעַף Sáaf.",
+    "headword_tokens": [
+      "שַׁעֲלִים",
+      "שַׁעַף"
+    ],
+    "page_start": 904,
+    "page_end": 904,
+    "gloss_es": "Saalín; Sáaf.",
+    "text": "שַׁעֲלִים geog. En אֶרֶץ שַׁעֲלִים comarca de Saalín 1 Sm 9,4. שַׁעַף n. pr. Sáaf lC r 2,47."
+  },
+  {
+    "id": "heb-004632",
+    "lemma": "שְׁעַרְיָה",
+    "headword_line": "שְׁעַרְיָה n. pr. Seañas 1 Cr 8,38.",
+    "headword_tokens": [
+      "שְׁעַרְיָה"
+    ],
+    "page_start": 904,
+    "page_end": 904,
+    "gloss_es": "n. pr. Seañas (Searías).",
+    "text": "שְׁעַרְיָה n. pr. Seañas 1 Cr 8,38."
+  },
+  {
+    "id": "heb-004633",
+    "lemma": "שַׁעֲרַיִם",
+    "headword_line": "שַׁעֲרַיִם loe. Saarain (Dospuertas).",
+    "headword_tokens": [
+      "שַׁעֲרַיִם"
+    ],
+    "page_start": 904,
+    "page_end": 904,
+    "gloss_es": "Saarain.",
+    "text": "שַׁעֲרַיִם loe. Saarain. a) Sefela Jos 15,36. b) Simeón 1 Cr 4,31."
+  },
+  {
+    "id": "heb-004634",
+    "lemma": "שַׁעֲשְׁגַז",
+    "headword_line": "שַׁעֲשְׁגַז n. pr. Sagsegaz Est 2,14.",
+    "headword_tokens": [
+      "שַׁעֲשְׁגַז"
+    ],
+    "page_start": 904,
+    "page_end": 904,
+    "gloss_es": "n. pr. Sagsegaz",
+    "text": "שַׁעֲשְׁגַז n. pr. Sagsegaz Est 2,14."
+  },
+  {
+    "id": "heb-004635",
+    "lemma": "שְׁפוֹ",
+    "headword_line": "שְׁפוֹ Ver שְׁפִי.",
+    "headword_tokens": [
+      "שְׁפוֹ"
+    ],
+    "page_start": 904,
+    "page_end": 904,
+    "gloss_es": "Sefó.",
+    "text": "שְׁפוֹ Ver שְׁפִי."
+  },
+  {
+    "id": "heb-004636",
+    "lemma": "שְׁפוּפָן",
+    "headword_line": "שְׁפוּפָן n. pr. Sesufán 1 Cr 8,5.",
+    "headword_tokens": [
+      "שְׁפוּפָן"
+    ],
+    "page_start": 904,
+    "page_end": 904,
+    "gloss_es": "n. pr. Sefufán.",
+    "text": "שְׁפוּפָן n. pr. Sesufán 1 Cr 8,5."
+  },
+  {
+    "id": "heb-004637",
+    "lemma": "שָׁפָט",
+    "headword_line": "שָׁפָט n. pr. Safat.",
+    "headword_tokens": [
+      "שָׁפָט"
+    ],
+    "page_start": 904,
+    "page_end": 904,
+    "gloss_es": "n. pr. Safat.",
+    "text": "שָׁפָט n. pr. Safat. a) Nm 13,5. b) Padre de Elíseo 1 Re 19,16. c) 1 Cr 3,22. d) 1 Cr 5,12. e) 1 Cr 27,29."
+  },
+  {
+    "id": "heb-004638",
+    "lemma": "שָׁפָט",
+    "headword_line": "שָׁפָט (Continuación).",
+    "headword_tokens": [
+      "שָׁפָט"
+    ],
+    "page_start": 905,
+    "page_end": 905,
+    "gloss_es": "Safat (cont.)",
+    "text": "שָׁפָט. Descendiente de Zorobabel 1 Cr 3,22. d) Gadita 5,12. e) Superintendente de David 27,29."
+  },
+  {
+    "id": "heb-004639",
+    "lemma": "שִׁפְעִי",
+    "headword_line": "שִׁפְעִי n. pr. Sifeí 1 Cr 4,37.",
+    "headword_tokens": [
+      "שִׁפְעִי"
+    ],
+    "page_start": 905,
+    "page_end": 905,
+    "gloss_es": "n. pr. Sifí.",
+    "text": "שִׁפְעִי n. pr. Sifeí 1 Cr 4,37."
+  },
+  {
+    "id": "heb-004640",
+    "lemma": "שְׁפַטְיָה",
+    "headword_line": "שְׁפַטְיָה n. pr. Sefatías.",
+    "headword_tokens": [
+      "שְׁפַטְיָה"
+    ],
+    "page_start": 905,
+    "page_end": 905,
+    "gloss_es": "n. pr. Sefatías.",
+    "text": "שְׁפַטְיָה n. pr. Sefatías. a) Hijo de David 2 Sm 3,4. b) Jr 38,1. c) 1 Cr 9,8. d) Esd 2,4. e) Esd 2,57. f) Neh 11,4."
+  },
+  {
+    "id": "heb-004641",
+    "lemma": "שְׁפַטְיָהוּ",
+    "headword_line": "שְׁפַטְיָהוּ n. pr. Sefatías.",
+    "headword_tokens": [
+      "שְׁפַטְיָהוּ"
+    ],
+    "page_start": 905,
+    "page_end": 905,
+    "gloss_es": "n. pr. Sefatías.",
+    "text": "שְׁפַטְיָהוּ n. pr. Sefatías. a) 1 Cr 12,6. b) 1 Cr 27,16. c) Hijo de Josafát 2 Cr 21,2."
+  },
+  {
+    "id": "heb-004642",
+    "lemma": "שִׁפְטָן",
+    "headword_line": "שִׁפְטָן n. pr. Siftán Nm 34,24.",
+    "headword_tokens": [
+      "שִׁפְטָן"
+    ],
+    "page_start": 905,
+    "page_end": 905,
+    "gloss_es": "n. pr. Siftán.",
+    "text": "שִׁפְטָן n. pr. Siftán Nm 34,24."
+  },
+  {
+    "id": "heb-004643",
+    "lemma": "שְׁפִי",
+    "headword_line": "שְׁפִי n. pr. Seft 1 Cr 1,40; שַׁפִיר Sapir.",
+    "headword_tokens": [
+      "שְׁפִי",
+      "שַׁפִיר"
+    ],
+    "page_start": 905,
+    "page_end": 905,
+    "gloss_es": "n. pr. Sefi; loc. Safir.",
+    "text": "שְׁפִי n. pr. Seft 1 Cr 1,40. Leer así שְׁפוֹ Gn 36,23. שַׁפִיר loe. Sapir Miq 1,11."
+  },
+  {
+    "id": "heb-004644",
+    "lemma": "הַשְּׁפֵלָה",
+    "headword_line": "הַשּׁפֵלָה geog. Sefela (Tierra Baja).",
+    "headword_tokens": [
+      "הַשְּׁפֵלָה"
+    ],
+    "page_start": 905,
+    "page_end": 905,
+    "gloss_es": "La Sefela.",
+    "text": "הַשְּׁפֵלָה geog. Sefela (Tierra Baja). Llanura costera de Judá Dt 1,7 Jos 11,16."
+  },
+  {
+    "id": "heb-004645",
+    "lemma": "שִׁפְמָה",
+    "headword_line": "שִׁפְמָה loe. Sefán Nm 34,10.",
+    "headword_tokens": [
+      "שִׁפְמָה"
+    ],
+    "page_start": 905,
+    "page_end": 905,
+    "gloss_es": "loc. Sifmá.",
+    "text": "שִׁפְמָה loe. Sefán (Sifmá) Nm 34,10."
+  },
+  {
+    "id": "heb-004646",
+    "lemma": "שָׁפָם",
+    "headword_line": "שָׁפָם n. pr. Safán 1 Cr 5,12.",
+    "headword_tokens": [
+      "שָׁפָם"
+    ],
+    "page_start": 905,
+    "page_end": 905,
+    "gloss_es": "n. pr. Safán.",
+    "text": "שָׁפָם n. pr. Safán 1 Cr 5,12. 1 Cr 7,12 prob. שׁוּפָם Sufán."
+  },
+  {
+    "id": "heb-004647",
+    "lemma": "שִׁפְמִי",
+    "headword_line": "שִׁפְמִי gent. Sefanita 1 Cr 27,27.",
+    "headword_tokens": [
+      "שִׁפְמִי"
+    ],
+    "page_start": 905,
+    "page_end": 905,
+    "gloss_es": "Sifmita.",
+    "text": "שִׁפְמִי gent. Sefanita 1 Cr 27,27."
+  },
+  {
+    "id": "heb-004648",
+    "lemma": "שָׁפָן",
+    "headword_line": "שָׁפָן n. pr. Safán.",
+    "headword_tokens": [
+      "שָׁפָן"
+    ],
+    "page_start": 905,
+    "page_end": 905,
+    "gloss_es": "n. pr. Safán.",
+    "text": "שָׁפָן n. pr. Safán. a) Escriba 2 Re 22,8. b) Padre de Ajiqán 2 Re 22,12. c) Padre de Elasa 29,3."
+  },
+  {
+    "id": "heb-004649",
+    "lemma": "שֶׁפֶר",
+    "headword_line": "שֶׁפֶר En הַר שֶׁפֶר monte Séfer Nm 33,23.",
+    "headword_tokens": [
+      "שֶׁפֶר",
+      "הַר שֶׁפֶר"
+    ],
+    "page_start": 905,
+    "page_end": 905,
+    "gloss_es": "Monte Séfer.",
+    "text": "שֶׁפֶר En הַר שֶׁפֶר monte Séfer Nm 33,23."
+  },
+  {
+    "id": "heb-004650",
+    "lemma": "שִׁפְרָה",
+    "headword_line": "שִׁפְרָה n.pr. Sifra Ex 1,15.",
+    "headword_tokens": [
+      "שִׁפְרָה"
+    ],
+    "page_start": 905,
+    "page_end": 905,
+    "gloss_es": "n. pr. Sifra.",
+    "text": "שִׁפְרָה n.pr. Sé/ora Ex 1,15."
+  },
+  {
+    "id": "heb-004651",
+    "lemma": "שֶׁרֵבְיָה",
+    "headword_line": "שֶׁרֵבְיָה n. pr. Serebías Esd 8,18.",
+    "headword_tokens": [
+      "שֶׁרֵבְיָה"
+    ],
+    "page_start": 905,
+    "page_end": 905,
+    "gloss_es": "n. pr. Serebías.",
+    "text": "שֶׁרֵבְיָה n. pr. Serebías Esd 8,18 Neh 9,4."
+  },
+  {
+    "id": "heb-004652",
+    "lemma": "שָׁרוּחֶן",
+    "headword_line": "שָׁרוּחֶן loe. Sarujén Jos 19,6.",
+    "headword_tokens": [
+      "שָׁרוּחֶן"
+    ],
+    "page_start": 905,
+    "page_end": 905,
+    "gloss_es": "loc. Sarujén.",
+    "text": "שָׁרוּחֶן loe. Sarujén Jos 19,6. Actual T. Far'ah."
+  },
+  {
+    "id": "heb-004653",
+    "lemma": "שָׁרוֹן",
+    "headword_line": "שָׁרוֹן geog. Sarón; שָׁרוֹנִי Saronita.",
+    "headword_tokens": [
+      "שָׁרוֹן",
+      "שָׁרוֹנִי"
+    ],
+    "page_start": 905,
+    "page_end": 905,
+    "gloss_es": "Sarón; Saronita.",
+    "text": "שָׁרוֹן geog. Sarón, llanura costera Is 35,2. שָׁרוֹנִי gent. Saronita 1 Cr 27,29."
+  },
+  {
+    "id": "heb-004654",
+    "lemma": "שָׁרַי",
+    "headword_line": "שָׁרַי n. pr. Saray Esd 10,40.",
+    "headword_tokens": [
+      "שָׁרַי"
+    ],
+    "page_start": 905,
+    "page_end": 905,
+    "gloss_es": "n. pr. Saray.",
+    "text": "שָׁרַי n. pr. Saray Esd 10,40."
+  },
+  {
+    "id": "heb-004655",
+    "lemma": "שֶׁרֶשׁ",
+    "headword_line": "שֶׁרֶשׁ n. pr. Seres 1 Cr 7,16; שֵׁשְׁבַּצַּר Sesbasar.",
+    "headword_tokens": [
+      "שֶׁרֶשׁ",
+      "שֵׁשְׁבַּצַּר"
+    ],
+    "page_start": 905,
+    "page_end": 905,
+    "gloss_es": "Seres; Sesbasar.",
+    "text": "שֶׁרֶשׁ n. pr. Seres 1 Cr 7,16. שֵׁשְׁבַּצַּר n. pr. Sesbasar Esd 1,8."
+  },
+  {
+    "id": "heb-004656",
+    "lemma": "שָׁשַׁי",
+    "headword_line": "שָׁשַׁי n. pr. Sasay Esd 10,40.",
+    "headword_tokens": [
+      "שָׁשַׁי"
+    ],
+    "page_start": 905,
+    "page_end": 905,
+    "gloss_es": "n. pr. Sasay.",
+    "text": "שָׁשַׁי n. pr. Sasay Esd 10,40."
+  },
+  {
+    "id": "heb-004657",
+    "lemma": "שֵׁשַׁי",
+    "headword_line": "שֵׁשַׁי n. pr. Sesay Nm 13,22; שֵׁשַׁךְ Sesac.",
+    "headword_tokens": [
+      "שֵׁשַׁי",
+      "שֵׁשַׁךְ"
+    ],
+    "page_start": 905,
+    "page_end": 905,
+    "gloss_es": "n. pr. Sesay; Sesac.",
+    "text": "שֵׁשַׁי n. pr. Sesay Nm 13,22. שֵׁשַׁךְ geog. Sesac (Babilonia) Jr 25,26."
+  },
+  {
+    "id": "heb-004658",
+    "lemma": "שֵׁשָׁן",
+    "headword_line": "שֵׁשָׁן n. pr. Sesán 1 Cr 2,31; שָׁשַׁק Sasac.",
+    "headword_tokens": [
+      "שֵׁשָׁן",
+      "שָׁשַׁק"
+    ],
+    "page_start": 905,
+    "page_end": 905,
+    "gloss_es": "n. pr. Sesán; Sasac.",
+    "text": "שֵׁשָׁן n. pr. Sesán 1 Cr 2,31. שָׁשַׁק n. pr. Sasac 1 Cr 8,14.25."
+  },
+  {
+    "id": "heb-004659",
+    "lemma": "שֵׁת",
+    "headword_line": "שֵׁת n. pr. Set Gn 4,25.",
+    "headword_tokens": [
+      "שֵׁת"
+    ],
+    "page_start": 905,
+    "page_end": 905,
+    "gloss_es": "n. pr. Set.",
+    "text": "שֵׁת n. pr. Set Gn 4,25."
+  },
+  {
+    "id": "heb-004660",
+    "lemma": "שֻׁתַלְחִי",
+    "headword_line": "שֻׁתַלְחִי patrón. Sutalajita Nm 26,35.",
+    "headword_tokens": [
+      "שֻׁתַלְחִי"
+    ],
+    "page_start": 905,
+    "page_end": 905,
+    "gloss_es": "patrón. Sutalajita.",
+    "text": "שֻׁתַלְחִי patrón. Sutalajita Nm 26,35."
+  },
+  {
+    "id": "heb-004661",
+    "lemma": "שֵׁתָר",
+    "headword_line": "שֵׁתָר n. pr. Setar Est 1,14; תַּאֲנַת שִׁילֹה Taanat Siló.",
+    "headword_tokens": [
+      "שֵׁתָר",
+      "תַּאֲנַת שִׁילֹה"
+    ],
+    "page_start": 905,
+    "page_end": 906,
+    "gloss_es": "n. pr. Setar; loc. Taanat Siló.",
+    "text": "שֵׁתָר n. pr. Setar Est 1,14. תַּאֲנַת שִׁילֹה loe. Taanat Siló Jos 16,16."
+  },
+  {
+    "id": "heb-004662",
+    "lemma": "תַּאֲרֵעַ",
+    "headword_line": "תַּאֲרֵעַ n. pr. Tarea 1 Cr 8,35; תָּבוֹר Tabor; תּוּבַל Tubal.",
+    "headword_tokens": [
+      "תַּאֲרֵעַ",
+      "תָּבוֹר",
+      "תּוּבַל"
+    ],
+    "page_start": 906,
+    "page_end": 906,
+    "gloss_es": "n. pr. Tarea; geog. Tabor; Tubal.",
+    "text": "תַּאֲרֵעַ n. pr. Tarea 1 Cr 8,35. תָּבוֹר geog. Tabor Jr 46,18. תּוּבַל n. pr. Tubal Gn 10,2."
+  },
+  {
+    "id": "heb-004663",
+    "lemma": "תִּבְנִי",
+    "headword_line": "תִּבְנִי n. pr. Tibní 1 Re 16,21.",
+    "headword_tokens": [
+      "תִּבְנִי"
+    ],
+    "page_start": 906,
+    "page_end": 906,
+    "gloss_es": "n. pr. Tibní.",
+    "text": "תִּבְנִי n. pr. Tibní 1 Re 16,21."
+  },
+  {
+    "id": "heb-004664",
+    "lemma": "תַּבְעֵרָה",
+    "headword_line": "תַּבְעֵרָה loe. Tobera Nm 11,3; תֶּבֶץ Tebes; תִּגְלַת פִּלְאֶסֶר Tiglat Pileser; תִּדְעָל Tideal; תּוּבַל קַיִן Tubalcaín; תּוֹגַרְמָה Togarma; תּוֹחַ Toj; תּוֹלָד Tolad; תּוֹלָע Tolá.",
+    "headword_tokens": [
+      "תַּבְעֵרָה",
+      "תֶּבֶץ",
+      "תִּגְלַת פִּלְאֶסֶר",
+      "תִּדְעָל",
+      "תּוּבַל קַיִן",
+      "תּוֹגַרְמָה",
+      "תּוֹחַ",
+      "תּוֹלָד",
+      "תּוֹלָע"
+    ],
+    "page_start": 906,
+    "page_end": 906,
+    "gloss_es": "Tobera; Tebes; Tiglat Pileser; Tideal; Tubalcaín; Togarma; Toj; Tolad; Tolá.",
+    "text": "תַּבְעֵרָה loe. Tobera Nm 11,3. תֶּבֶץ loe. Tebes Jue 9,50. תִּגְלַת פִּלְאֶסֶר n. pr. Tiglat Pileser 2 Re 15,29. תִּדְעָל n. pr. Tideal Gn 14,1. תּוּבַל קַיִן n. pr. Tubalcaín Gn 4,22. תּוֹגַרְמָה n. pr. Togarma Gn 10,3. תּוֹחַ n. pr. Toj 1 Cr 6,19. תּוֹלָד loe. Tolad lC r 4,29. תּוֹלָע n. pr. Tolá Jue 10,1."
+  },
+  {
+    "id": "heb-004665",
+    "lemma": "תּוֹלָעִי",
+    "headword_line": "תּוֹלָעִי patron. Tolaíta Nm 26,23.",
+    "headword_tokens": [
+      "תּוֹלָעִי"
+    ],
+    "page_start": 906,
+    "page_end": 906,
+    "gloss_es": "Tolaíta.",
+    "text": "תּוֹלָעִי patron. Tolaíta Nm 26,23."
+  },
+  {
+    "id": "heb-004666",
+    "lemma": "תַּחַן",
+    "headword_line": "תַּחַן n. pr. Taján.",
+    "headword_tokens": [
+      "תַּחַן"
+    ],
+    "page_start": 906,
+    "page_end": 906,
+    "gloss_es": "n. pr. Taján.",
+    "text": "תַּחַן n. pr. Taján. a) Nm 26,35. b) 1 Cr 7,25."
+  },
+  {
+    "id": "heb-004667",
+    "lemma": "תְּחִנָּה",
+    "headword_line": "תְּחִנָּה n. pr. Tejiná 1 Cr 4,12.",
+    "headword_tokens": [
+      "תְּחִנָּה"
+    ],
+    "page_start": 906,
+    "page_end": 906,
+    "gloss_es": "n. pr. Tejiná.",
+    "text": "תְּחִנָּה n. pr. Tejiná 1 Cr 4,12."
+  },
+  {
+    "id": "heb-004668",
+    "lemma": "תַּחֲנִי",
+    "headword_line": "תַּחֲנִי patron. Tajanita Nm 26,35; תַּחְפַּנְחֵס Tafnes; תַּחְפְּנֵס Tafnes (Reina).",
+    "headword_tokens": [
+      "תַּחֲנִי",
+      "תַּחְפַּנְחֵס",
+      "תַּחְפְּנֵס"
+    ],
+    "page_start": 906,
+    "page_end": 906,
+    "gloss_es": "Tajanita; loc. Tafnes; n. pr. Tafnes.",
+    "text": "תַּחֲנִי patron. Tajanita Nm 26,35. תַּחְפַּנְחֵס loe. Tafnes Jr 2,16. תַּחְפְּנֵס n. pr. Tafnes 1 Re 11,19."
+  },
+  {
+    "id": "heb-004669",
+    "lemma": "תַּחַשׁ",
+    "headword_line": "תַּחַשׁ n. pr. Tajas Gn 22,24; תַּחַת Tájat.",
+    "headword_tokens": [
+      "תַּחַשׁ",
+      "תַּחַת"
+    ],
+    "page_start": 906,
+    "page_end": 906,
+    "gloss_es": "Tajas; Tájat.",
+    "text": "תַּחַשׁ n. pr. Tajas Gn 22,24. תַּחַת n. pr. Tájat 1 Cr 6,9; loe. Tájat Nm 33,26."
+  },
+  {
+    "id": "heb-004670",
+    "lemma": "תִּילוֹן",
+    "headword_line": "תִּילוֹן n. pr. Tilón 1 Cr 4,20.",
+    "headword_tokens": [
+      "תִּילוֹן"
+    ],
+    "page_start": 906,
+    "page_end": 907,
+    "gloss_es": "n. pr. Tilón.",
+    "text": "תִּילוֹן n. pr. Tilón 1 Cr 4,20."
+  },
+  {
+    "id": "heb-004671",
+    "lemma": "תֵּימָא",
+    "headword_line": "תֵּימָא n. pr. Temá; loe. Temá; תַּלְמַי Talmay.",
+    "headword_tokens": [
+      "תֵּימָא",
+      "תַּלְמַי"
+    ],
+    "page_start": 907,
+    "page_end": 907,
+    "gloss_es": "Temá; Talmay.",
+    "text": "תֵּימָא n. pr. Temá Gn 25,15; loe. Temá Is 21,14. תַּלְמַי n. pr. Talmay Nm 13,22."
+  },
+  {
+    "id": "heb-004672",
+    "lemma": "תֶּלְאַשָּׂר",
+    "headword_line": "תֶּלְאַשָּׂר Ver תְּלַאשָּׂר.",
+    "headword_tokens": [
+      "תֶּלְאַשָּׂר"
+    ],
+    "page_start": 907,
+    "page_end": 907,
+    "gloss_es": "Telasar.",
+    "text": "תֶּלְאַשָּׂר Ver תְּלַאשָּׂר."
+  },
+  {
+    "id": "heb-004673",
+    "lemma": "תַּמּוּז",
+    "headword_line": "תַּמּוּז n. pr. Tamuz Ez 8,14; תֵּימָן Temán; תֶּמַח Témaj.",
+    "headword_tokens": [
+      "תַּמּוּז",
+      "תֵּימָן",
+      "תֶּמַח"
+    ],
+    "page_start": 907,
+    "page_end": 907,
+    "gloss_es": "Tamuz; Temán; Témaj.",
+    "text": "תַּמּוּז n. pr. Tamuz Ez 8,14. תֵּימָן n. pr. Temán Gn 36,11; geog. Temán Am 1,12. תֶּמַח n. pr. Témaj Esd 2,53."
+  },
+  {
+    "id": "heb-004674",
+    "lemma": "תִּמְנָה",
+    "headword_line": "תִּמְנָה loe. Timná.",
+    "headword_tokens": [
+      "תִּמְנָה"
+    ],
+    "page_start": 907,
+    "page_end": 907,
+    "gloss_es": "loc. Timná.",
+    "text": "תִּמְנָה loe. Timná. a) Judá Jos 15,57. b) Dan Jos 15,10 Jue 14,1."
+  },
+  {
+    "id": "heb-004675",
+    "lemma": "תֵּימְנִי",
+    "headword_line": "תֵּימְנִי n. pr. Temní 1 Cr 4,6; תֵּימָנִי Temanita.",
+    "headword_tokens": [
+      "תֵּימְנִי",
+      "תֵּימָנִי"
+    ],
+    "page_start": 907,
+    "page_end": 907,
+    "gloss_es": "n. pr. Temní; gent. Temanita.",
+    "text": "תֵּימְנִי n. pr. Temní 1 Cr 4,6. תֵּימָנִי adj. y gent. Temanita Gn 36,34 Job 2,11."
+  },
+  {
+    "id": "heb-004676",
+    "lemma": "תִּמְנִי",
+    "headword_line": "תִּמְנִי gent. Timnita Jue 15,6; תִּרְיָא Tiriá.",
+    "headword_tokens": [
+      "תִּמְנִי",
+      "תִּרְיָא"
+    ],
+    "page_start": 907,
+    "page_end": 907,
+    "gloss_es": "Timnita; Tiriá.",
+    "text": "תִּמְנִי gent. Timnita Jue 15,6. תִּרְיָא n. pr. Tiriá 1 Cr 4,16."
+  },
+  {
+    "id": "heb-004677",
+    "lemma": "תִּירָס",
+    "headword_line": "תִּירָס n. pr. Tirás Gn 10,2; תִּמְנָע Timná.",
+    "headword_tokens": [
+      "תִּירָס",
+      "תִּמְנָע"
+    ],
+    "page_start": 907,
+    "page_end": 907,
+    "gloss_es": "Tirás; Timná.",
+    "text": "תִּירָס n. pr. Tirás Gn 10,2. תִּמְנָע n. pr. Timná Gn 36,12."
+  },
+  {
+    "id": "heb-004678",
+    "lemma": "תּוֹכֶן",
+    "headword_line": "תּוֹכֶן loe. Toquen 1 Cr 4,32; תֵּל אָבִיב Tel Abib; תֵּל חַרְשָׁא Tel Jarsá; תֵּל מֶלַח Tel Mélaj; תִּמְנַת סֶרַח Timná Séraj; תְּלַאשָּׂר Telasar; תָּמָר Tamar.",
+    "headword_tokens": [
+      "תּוֹכֶן",
+      "תֵּל אָבִיב",
+      "תֵּל חַרְשָׁא",
+      "תֵּל מֶלַח",
+      "תִּמְנַת סֶרַח",
+      "תְּלַאשָּׂר",
+      "תָּמָר"
+    ],
+    "page_start": 907,
+    "page_end": 908,
+    "gloss_es": "Toquen; Tel Abib; Tel Jarsá; Tel Mélaj; Timná Séraj; Telasar; Tamar.",
+    "text": "תּוֹכֶן loe. Toquen 1 Cr 4,32. תֵּל אָבִיב Ez 3,15. תֵּל חַרְשָׁא Esd 2,59. תֵּל מֶלַח Esd 2,59. תִּמְנַת סֶרַח Jos 19,50. תְּלַאשָּׂר Is 37,12. תָּמָר n. pr. Tamar Gn 38,6; loe. Tamar Ez 47,19."
+  },
+  {
+    "id": "heb-004679",
+    "lemma": "תַּנְחֻמֶת",
+    "headword_line": "תַּנְחֻמֶת n. pr. Tanjumet 2 Re 25,23; תֹּעוּ Tou.",
+    "headword_tokens": [
+      "תַּנְחֻמֶת",
+      "תֹּעוּ"
+    ],
+    "page_start": 908,
+    "page_end": 908,
+    "gloss_es": "Tanjumet; Tou.",
+    "text": "תַּנְחֻמֶת n. pr. Tanjumet 2 Re 25,23. תֹּעוּ n. pr. Tou 1 Cr 18,9."
+  },
+  {
+    "id": "heb-004680",
+    "lemma": "תֹּעִי",
+    "headword_line": "תֹּעִי Ver anterior.",
+    "headword_tokens": [
+      "תֹּעִי"
+    ],
+    "page_start": 908,
+    "page_end": 908,
+    "gloss_es": "Toí",
+    "text": "תֹּעִי Ver anterior (Toí)."
+  },
+  {
+    "id": "heb-004681",
+    "lemma": "תַּעֲנָךְ",
+    "headword_line": "תַּעֲנָךְ loe. Taanac Jos 17,11; תַּפּוּחַ Tapúaj.",
+    "headword_tokens": [
+      "תַּעֲנָךְ",
+      "תַּפּוּחַ"
+    ],
+    "page_start": 908,
+    "page_end": 908,
+    "gloss_es": "Taanac; Tapúaj.",
+    "text": "תַּעֲנָךְ loe. Taanac Jos 17,11. תַּפּוּחַ loe. Tapúaj (El Manzano) Jos 15,34."
+  },
+  {
+    "id": "heb-004682",
+    "lemma": "תֹּפֶל",
+    "headword_line": "תֹּפֶל loe. Tofel Dt 1,1.",
+    "headword_tokens": [
+      "תֹּפֶל"
+    ],
+    "page_start": 908,
+    "page_end": 908,
+    "gloss_es": "Tofel",
+    "text": "תֹּפֶל loe. Tofel Dt 1,1. Ubicación desconocida."
+  },
+  {
+    "id": "heb-004683",
+    "lemma": "תִּפְסַח",
+    "headword_line": "תִּפ.ְסַח loe. Tápsaco 1 Re 5,4; תֹּפֶת Tófet; תִּקְוָה Ticuá.",
+    "headword_tokens": [
+      "תִּפְסַח",
+      "תֹּפֶת",
+      "תִּקְוָה"
+    ],
+    "page_start": 908,
+    "page_end": 908,
+    "gloss_es": "Tápsaco; Tófet; Ticuá.",
+    "text": "תִּפְסַח loe. Tápsaco 1 Re 5,4. תֹּפֶת top. Tófet 2 Re 23,10. תִּקְוָה n. pr. Ticuá 2 Re 22,14."
+  },
+  {
+    "id": "heb-004684",
+    "lemma": "תְּקוֹעַ",
+    "headword_line": "תְּקוֹעַ loe. Tecua/Tecoa Am 1,1.",
+    "headword_tokens": [
+      "תְּקוֹעַ"
+    ],
+    "page_start": 908,
+    "page_end": 908,
+    "gloss_es": "Tecoa.",
+    "text": "תְּקוֹעַ loe. Tecua/Tecoa Jos 15,59 2 Sm 14,2 Jr 6,1 Am 1,1 2 Cr 11,6."
+  },
+  {
+    "id": "heb-004685",
+    "lemma": "תְּקוֹעִי",
+    "headword_line": "תְּקוֹעִי gent. Tecoíta; תַּרְאֲלָה Taralá; תִּרְהָקָה Tifjaca; תֶּרַח Téraj.",
+    "headword_tokens": [
+      "תְּקוֹעִי",
+      "תַּרְאֲלָה",
+      "תִּרְהָקָה",
+      "תֶּרַח"
+    ],
+    "page_start": 908,
+    "page_end": 908,
+    "gloss_es": "Tecoíta; Taralá; Tifjaca; Téraj.",
+    "text": "תְּקוֹעִי gent. Tecoíta 2 Sm 23,26. תַּרְאֲלָה loe. Taralá Jos 18,27. תִּרְהָקָה n. pr. Tifjaca 2 Re 19,9. תֶּרַח n. pr. Téraj Gn 11,24; loe. Téraj Nm 33,27."
+  },
+  {
+    "id": "heb-004686",
+    "lemma": "תִּרְחֲנָה",
+    "headword_line": "תִּרְחֲנָה n. pr. Tirjaná 1 Cr 2,48.",
+    "headword_tokens": [
+      "תִּרְחֲנָה"
+    ],
+    "page_start": 908,
+    "page_end": 908,
+    "gloss_es": "n. pr. Tirjaná",
+    "text": "תִּרְחֲנָה n. pr. Tirjaná 1 Cr 2,48."
+  },
+  {
+    "id": "heb-004687",
+    "lemma": "תִּרְעָתִים",
+    "headword_line": "תִּרְעָתִים gent. Tírateos 1 Cr 2,55; תִּרְצָה Tirsá.",
+    "headword_tokens": [
+      "תִּרְעָתִים",
+      "תִּרְצָה"
+    ],
+    "page_start": 908,
+    "page_end": 908,
+    "gloss_es": "Tírateos; Tirsá.",
+    "text": "תִּרְעָתִים gent. Tírateos 1 Cr 2,55. תִּרְצָה n.pr. Tirsá Nm 26,33; loe. Tirsá 1 Re 14,17."
+  },
+  {
+    "id": "heb-004688",
+    "lemma": "תֶּרֶשׁ",
+    "headword_line": "תֶּרֶשׁ n. pr. Teres Est 2,21; תַּרְשִׁישׁ Tarsis.",
+    "headword_tokens": [
+      "תֶּרֶשׁ",
+      "תַּרְשִׁישׁ"
+    ],
+    "page_start": 908,
+    "page_end": 908,
+    "gloss_es": "Teres; Tarsis.",
+    "text": "תֶּרֶשׁ n. pr. Teres Est 2,21. תַּרְשִׁישׁ n. pr. Tarsis Est 1,14; geog. Tarsis Is 2,16."
+  },
+  {
+    "id": "heb-004689",
+    "lemma": "תַּרְתָּק",
+    "headword_line": "תַּרְתָּק n. pr. Tartac 2 Re 17,31.",
+    "headword_tokens": [
+      "תַּרְתָּק"
+    ],
+    "page_start": 908,
+    "page_end": 908,
+    "gloss_es": "n. pr. Tartac",
+    "text": "תַּרְתָּק n. pr. Tartac, dios adorado en Avá, 2 Re 17,31."
+  },
+  {
+    "id": "heb-004690",
+    "lemma": "תִּשְׁבִּי",
+    "headword_line": "תִּשְׁבִּי gent. Tesbita 1 Re 17,1.",
+    "headword_tokens": [
+      "תִּשְׁבִּי"
+    ],
+    "page_start": 908,
+    "page_end": 924,
+    "gloss_es": "Tesbita; Inicio Glosario Español-Hebreo.",
+    "text": "תִּשְׁבִּי gent. Tesbita 1 Re 17,1. GLOSARIO ESPAÑOL-HEBREO BÍBLICO Preparado por Víctor Morla-Asensio."
+  },
+  {
+    "id": "heb-004691",
+    "lemma": "לְ / אֶל",
+    "headword_line": "a prep. לְ / אֶל",
+    "headword_tokens": [
+      "לְ",
+      "אֶל"
+    ],
+    "page_start": 924,
+    "page_end": 926,
+    "gloss_es": "A (preposición).",
+    "text": "a prep. לְ / אֶל. abajar יָרַד Hi. Abajarse שָׁפֵל. abajo תַּחַת / מַטָּה. abandonar עָזַב / נָטַשׁ. abatir שָׁפֵל Hi. / שָׁחָה Hi."
+  },
+  {
+    "id": "heb-004692",
+    "lemma": "עָכַר",
+    "headword_line": "arruinar שָׁחַת / עָכַר",
+    "headword_tokens": [
+      "עָכַר",
+      "שָׁחַת"
+    ],
+    "page_start": 926,
+    "page_end": 933,
+    "gloss_es": "Arruinar / Perturbar.",
+    "text": "arruinar שָׁחַת / עָכַר Hitp. Quedar arruinado שָׁמֵם / חָרֵב. asaltar פָּשַׁט / גּוּד."
+  },
+  {
+    "id": "heb-004693",
+    "lemma": "חַיָּה",
+    "headword_line": "bestia חַיָּה / בְּהֵמָה",
+    "headword_tokens": [
+      "חַיָּה",
+      "בְּהֵמָה"
+    ],
+    "page_start": 933,
+    "page_end": 934,
+    "gloss_es": "Bestia / Animal.",
+    "text": "bestia חַיָּה / בְּהֵמָה. bestial בָּעַר. bien טוֹב. boca פֶּה / חֵךְ. bocado פַּת."
+  },
+  {
+    "id": "heb-004694",
+    "lemma": "לָשׁוֹן",
+    "headword_line": "borde שָׂפָה / לָשׁוֹן",
+    "headword_tokens": [
+      "שָׂפָה",
+      "לָשׁוֹן"
+    ],
+    "page_start": 934,
+    "page_end": 934,
+    "gloss_es": "Borde / Lengua.",
+    "text": "borde שָׂפָה / קָצָה. De un río לָשׁוֹן. borrar מָחָה. bosque יַעַר. botín שָׁלָל."
+  },
+  {
+    "id": "heb-004695",
+    "lemma": "זְרוֹעַ",
+    "headword_line": "brazo זְרוֹעַ / יָד",
+    "headword_tokens": [
+      "זְרוֹעַ",
+      "יָד"
+    ],
+    "page_start": 934,
+    "page_end": 936,
+    "gloss_es": "Brazo.",
+    "text": "brazo זְרוֹעַ / יָד. brazalete אֶצְעָדָה. brillar אוֹר / נָגַהּ. bronce נְחֹשֶׁת. buey שׁוֹר / אֶלֶף."
+  },
+  {
+    "id": "heb-004696",
+    "lemma": "בּוּז",
+    "headword_line": "burla בּוּז / לַעַג",
+    "headword_tokens": [
+      "בּוּז",
+      "לַעַג"
+    ],
+    "page_start": 936,
+    "page_end": 939,
+    "gloss_es": "Burla / Desprecio.",
+    "text": "burla בּוּז / לַעַג. burlar הֵתֵל / בָּזָה. buscar בִּקֵּשׁ / דָּרַשׁ."
+  },
+  {
+    "id": "heb-004697",
+    "lemma": "לָקַח",
+    "headword_line": "capturar לָקַח / שָׁבָה",
+    "headword_tokens": [
+      "לָקַח",
+      "שָׁבָה"
+    ],
+    "page_start": 939,
+    "page_end": 943,
+    "gloss_es": "Capturar / Tomar.",
+    "text": "capturar לָקַח / שָׁבָה. cara פָּנִים. carnero אַיִל. castigar יָסַר / נָקַם. cimentar יָסַד."
+  },
+  {
+    "id": "heb-004698",
+    "lemma": "סֵתֶר",
+    "headword_line": "clandestino סֵתֶר",
+    "headword_tokens": [
+      "סֵתֶר"
+    ],
+    "page_start": 943,
+    "page_end": 944,
+    "gloss_es": "Clandestino / Escondite.",
+    "text": "clandestino סֵתֶר. clavar תָּקַע. clavo מַסְמֵר. cobijo צֵל. cocinar בִּשֵּׁל. cólera אַף / חֵמָה."
+  },
+  {
+    "id": "heb-004699",
+    "lemma": "בִּין",
+    "headword_line": "comprender בִּין / יָדַע",
+    "headword_tokens": [
+      "בִּין",
+      "יָדַע"
+    ],
+    "page_start": 944,
+    "page_end": 950,
+    "gloss_es": "Comprender / Entender.",
+    "text": "columna עַמּוּד. comarca כִּכָּר. comer אָכַל. compañero חָבֵר. compasión חֶמְלָה / רַחֲמִים. comprender בִּין."
+  },
+  {
+    "id": "heb-004700",
+    "lemma": "יָדַע",
+    "headword_line": "conocer יָדַע",
+    "headword_tokens": [
+      "יָדַע"
+    ],
+    "page_start": 950,
+    "page_end": 955,
+    "gloss_es": "Conocer.",
+    "text": "conocer יָדַע. conquista מוֹרָשָׁה. consejo עֵצָה. contar סָפַר."
+  },
+  {
+    "id": "heb-004701",
+    "lemma": "בּוֹא",
+    "headword_line": "בּוֹא (Ho.); גָּלָה (Ni./Ho.); שָׁבָה (Ni.)",
+    "headword_tokens": ["בּוֹא", "גָּלָה", "שָׁבָה"],
+    "page_start": 955,
+    "page_end": 968,
+    "gloss_es": "Demasía; Depositar; Demasiado; Demencia; Demente; Depósito; Demoler; Demolición; Depravación.",
+    "text": "demasía: נוֹתָר. depositar: יָצַג (Hi.), יָצַק (Hi.), נוּחַ (Hi.), שָׁמַר, שִׁית. demasiado: רַב. demencia: תִּמָּהוֹן, שִׁגָּעוֹן. demente: הָלַל (Poal), שֻׁגַּע (Pu.). depósito: מַטְמוֹן, בְּרֵכָה, אָסָף, אוֹצָר, מִשְׁמֶרֶת. demoler: נָתַץ, הָרַס, שָׁחַת, שָׁדַד, שָׁמַד, שָׁמַם. demolición: שִׁפְלָה. depravación: הֶבֶל, רִשְׁעָה, רֶשַׁע, זִמָּה."
+  },
+  {
+    "id": "heb-004702",
+    "lemma": "רָשָׁע",
+    "headword_line": "Glosario: D (cont.)",
+    "headword_tokens": ["רָשָׁע", "עָוָה", "יָמִין"],
+    "page_start": 968,
+    "page_end": 981,
+    "gloss_es": "Depravado; Depravar; Deprimido; Deprimir; Depurar; Derecha; Derecho; Derogar; Derramar; Derretir; Derribar; Derrota; Derruir; Desafiar; Desagradar; Desalentar; Desalojar; Desaparecer.",
+    "text": "depravado: רָשָׁע, עִקֵּשׁ, מֵרַע. depravar: עָוָה. deprimido: כֵּהֶה, זָעַף. deprimir: דָּאַב, כָּאָה. depurar: פָּזַז. derecha: יָמִין. derecho (sust.): צְדָקָה, צֶדֶק, מִשְׁפָּט, חֻקָּה, דִּין. derecho (adj.): יָשָׁר. derogar: פָּרַר. derramar: זָלַב, יָצַק, יָרַד, נָגַר, נָסַךְ, נָזַל, שָׁפַךְ. derretir: מָסָה, נָתַךְ. derribar: יָרַד, הָרַס, הָדַף, כָּשַׁל, נָפַל, נָתַץ, פָּרַץ, שָׁמַד, שָׁפֵל. derrota: מַכָּה, מַגֵּפָה. derrotar: כָּנַע, חָלַשׁ, כָּשַׁל, נָגַף. derruir: שָׁדַד, פָּרַץ, נָתַץ, הָרַס. desafiar: גָּבַר, חָרָה, יָעַד, מָרָה. desagradar: רָעַע. desalentado: מָס. desalojar: יָרַשׁ, רִיק, שָׁלַח. desamparar: עָזַב, נָטַשׁ. desanimar: מָסָה, מָסַס. desaparecer: כָּחַד, חָלַף, אָבַד, עָבַר. desaparejar: פָּתַח."
+  },
+  {
+    "id": "heb-004703",
+    "lemma": "כַּבִּיר",
+    "headword_line": "Glosario: D-F",
+    "headword_tokens": ["כַּבִּיר", "עֹשֶׁר", "נְכָסִים"],
+    "page_start": 981,
+    "page_end": 885,
+    "gloss_es": "Fortuna; fosa; fracasar; fracaso; fractura; fraguar; franja; franqueza; frasco; fraude; fregar; frenar; freno; frente; fresco; frío; frondoso; frontera; frotar; fructificar; fruición.",
+    "text": "fortuna: כַּבִּיר, עֹשֶׁר, נְכָסִים, נַחֲלָה, מַטְמוֹן. fosa: שׁוּחָה, שְׁאוֹל, קֶבֶר, גּוּמַץ, בּוֹר, שַׁחַת. fracasar: כָּרַת, חָטָא, אָבַד, כָּשַׁל, פָּרַר. fracaso: נֵכָר, מִשְׁבָּת, מַפֶּלֶת, בֹּשֶׁת. fractura: שֶׁבֶר. fraguar: יָעַץ, יָצַק. franja: כָּנָף. franqueza: תֹּם. frasco: פַּךְ. fraude: שֶׁקֶר, רְמִיָּה, עָוְלָה, מִרְמָה. fregar: רוּחַ, מָחָה, מָרַק. frenar: עָצַר, בָּלַם. freno: מֶתֶג. frente: פֵּאָה, מֵצַח. fresco: קַר, רַעֲנָן. frío: קֶרַח, קָרָה, קֹר. frondoso: רַעֲנָן, עָנָף. frontera: סָבִיב, חֵיק, גְּבוּל. frotar: מָרַח. fructificar: פָּרָא. fruición: עֹנֶג."
+  },
+  {
+    "id": "heb-004704",
+    "lemma": "קוֹץ",
+    "headword_line": "Glosario: G-H",
+    "headword_tokens": ["קוֹץ", "מְעָרָה", "גַּלְגַּל"],
+    "page_start": 985,
+    "page_end": 987,
+    "gloss_es": "Gruta; gualdrapas; guapo; guardar; guardarropa; guardia; guardián; guarecer; guarida; guarnición; gubia; guerra; guerrear; guerrero; guía; guiar; guijarro; guijo; guiñar; guirnalda; guisado; guisar; gula; gusano.",
+    "text": "gruta: נְצוּרִים, נִקְרָה, מְעָרָה, מְחִלָּה. guapo: יָפֶה. guardar: יָתַר, טָמַן, גָּנַן, אָגַר, נָטַר, כָּמַס, שָׁמַר, צָפַן, נָצַר. guardarropa: מֶלְתָּחָה. guardia: נָצַר, מַטָּרָה, שָׁמַר, מִשְׁמֶרֶת. guardián: נֹצֵר, מְלְצַר. guarecer: סָכַךְ, גָּנַן, חָסָה. guarida: סֻכָּה, מְעוֹנָה, מָעוֹן. guarnición: נְצִיב, מַצֵּבָה. gubia: מַקְצוּעָה. guerra: מִלְחָמָה. guerrear: לָחַם. guerrero: גִּבּוֹר. guía: מִנְהָג. guiar: אָשַׁר, יָבַל, יָרָה, נָהַל, נָהַג, נָחָה. guijarro: צֹר, חָצָץ, אֶבֶן. guiñar: קָרַץ. guirnalda: עֲטָרָה. guisar: בִּשֵּׁל. gusano: רִמָּה, תּוֹלֵעָה."
+  },
+  {
+    "id": "heb-004705",
+    "lemma": "יָד",
+    "headword_line": "Glosario: H (cont.)",
+    "headword_tokens": ["יָד", "יָרַשׁ", "תְּאֵנָה"],
+    "page_start": 987,
+    "page_end": 988,
+    "gloss_es": "Heredar; higuera; hija.",
+    "text": "heredar: נָחַל, יָרַשׁ. higuera: תְּאֵנָה. hija: בַּת, נַעֲרָה."
+  },
+  {
+    "id": "heb-004706",
+    "lemma": "כָּבֵד",
+    "headword_line": "Glosario: H (cont.)",
+    "headword_tokens": ["כָּבֵד", "הִלּוּלִים"],
+    "page_start": 988,
+    "page_end": 1004,
+    "gloss_es": "Honor; honorarios; honra; honradez; honrado; honrar; hontanar; hora; horadar; horca; horda; horizonte; hormiga; horno; horrible; horror; hortaliza; hospedar; hostigar; hostilidad; hoya; hoyo; hoz; hucha; hueco; huella; huérfano; huerto; hueso; huésped; hueste; huevo; huida; huir; humanidad; humano; humo; humedad; húmedo; humildad; humilde.",
+    "text": "honor: כָּבוֹד, יְקָר, הוֹד, הָדָר, תִּפְאֶרֶת. honorarios: אֶתְנַן. honra: יְקָר, הָדָר. honradez: תֹּם, צְדָקָה, יֹשֶׁר, אֱמֶת, אֱמוּנָה. honrado: תָּמִים, צַדִּיק, יָשָׁר. honrar: אָדַר, הָדַר, כָּבֵד, פָּאַר. hontanar: מָקוֹר, מַעְיָן. hora: עֵת. horadar: בָּקַע. horca: עֵץ. horda: קָהָל. horizonte: כָּנָף. hormiga: נְמָלָה. horno: תַּנּוּר, כּוּר, כִּבְשָׁן. horrible: נּוֹרָא. horror: שְׁמָמָה, שַׁמָּה, פַּחַד, יִרְאָה. hortaliza: יָרָק. hospedar: גּוּר, לִין. hostigar: מָרַר. hostilidad: אֵיבָה, מִלְחָמָה. hoyo: שׁוּחָה, פַּחַת, מַכְמוֹרֶת. hoz: מַגָּל, חֶרְמֵשׁ. hucha: אָרוֹן. hueco: נָבוּב, רִיק. huella: אָשֶׁר. huérfano: יָתוֹם. huerto: גַּן. hueso: עֶצֶם. huésped: גֵּר. hueste: צָבָא, מַחֲנֶה, הָמוֹן. huevo: בֵּיצָה. huida: מָנוֹס, מְנוּסָה. huir: בָּרַח, נוּס, נוּד, שָׂרַד. humanidad: אָדָם. humano: אֱנוֹשׁ, אִישׁ. humo: עָשָׁן. humedad: רְסִיס. húmedo: לַח. humildad: עֲנָוָה. humilde: שָׁפָל, עָנִי."
+  },
+  {
+    "id": "heb-004707",
+    "lemma": "חִלֵּל",
+    "headword_line": "Glosario: H-M",
+    "headword_tokens": ["חִלֵּל", "מָרַק", "בָּשַׁר"],
+    "page_start": 1004,
+    "page_end": 1005,
+    "gloss_es": "Mancillar; mancha; manchar; mandamiento; mandar; mandato; mandíbula; mando; manejar; manifestar; manjar; mano; manojo; manosear; mansión; manta; manteca; mantel; mantener; mantenimiento; mantequilla; manto; manumisión; manutención; manzano; maña; mañana; mañoso; maqueta; maquinar; mar; maravilla; maravilloso; marcar; marco; marcha; marchante.",
+    "text": "mancillar: חִלֵּל. mancha: מּוּם, טֻמְאָה. manchar: גָּאַל, טִמֵּא, טִנֵּף. mandamiento: מִצְוָה. mandar: צִוָּה, מָשַׁל, שָׁלַח. mandato: מַאֲמָר, חֹק, אִמְרָה. mandíbula: לְחִי, מַתְלְּעוֹת. mando: יָד, מִמְשָׁלָה. manifestar: גִּלָּה, יָדַע, נָגַד, רָאָה. manjar: מַעֲדָנִים, מַטְעַמִּים. mano: יָד, כַּף. manojo: עֲמֵרָה, אֲגֻדָּה. mansión: מָעוֹן, זְבֻל, בַּיִת. manta: שִׂמְלָה, שְׂמִיכָה. manteca: חֶמְאָה. mantener: חִיָּה, כִּלְכֵּל, סָמַךְ, עָמַד. manto: אַדֶּרֶת, מְעִיל. manzano: תַּפּוּחַ. maña: חָכְמָה. mañana: בֹּקֶר, מָחָר. maquinar: נָכַל, יָעַץ, חָשַׁב, זָמַם. mar: יָם. maravilla: פֶּלֶא. marcar: תָּוָה. marcha: מַסַּע."
+  },
+  {
+    "id": "heb-004708",
+    "lemma": "תּוֹךְ",
+    "headword_line": "Glosario: M-N",
+    "headword_tokens": ["תּוֹךְ", "קֶרֶב"],
+    "page_start": 1005,
+    "page_end": 1008,
+    "gloss_es": "Medio; mediodía; medir; meditación; meditar; medroso; médula; mejilla; mejor; melena; melodía; mellizos; memorable; memoria; mencionar; mendigar; menear; menesteroso; menguar; menor; menospreciar; mensaje; mensajero; menstruación; mensurar; mentalidad; mentir; mentira; menudo; meollo; mercader; mercadería; mercancía; merced; merecer; mermar; mes; mesa.",
+    "text": "medio: תּוֹךְ, קֶרֶב, חֲצִי. mediodía: צָהֳרַיִם, תֵּימָן, דָּרוֹם. medir: מָדַד, תָּכַן. meditación: הָגוּת, הִגָּיוֹן, שִׂיחַ. meditar: הָגָה, שִׂיחַ, חָשַׁב. médula: מֹחַ. mejilla: לְחִי. mejor: טוֹב, מֵיטָב, רֵאשִׁית. melena: שֵׂעָר, פֶּרַע. memoria: זֵכֶר. mencionar: זָכַר. mendigar: בִּקֵּשׁ, שָׁאַל. menear: נוּעַ. menesteroso: דַּל, אֶבְיוֹן. menguar: חָסֵר, דָּלַל, מָעַט. menor: קָטָן, צָעִיר. menospreciar: בָּזָה. mensaje: שְׁמוּעָה. mensajero: מַלְאָךְ, מְבַשֵּׂר. mentir: כִּזֵּב, שִׁקֵּר. mentira: שֶׁקֶר, כָּחָשׁ. menudo: קָטָן. mercader: סֹחֵר, רֹכֵל. mercancía: מִמְכָּר, סְחֹרָה. mes: חֹדֶשׁ. mesa: שֻׁלְחָן."
+  },
+  {
+    "id": "heb-004709",
+    "lemma": "בְּ",
+    "headword_line": "Glosario: M-P",
+    "headword_tokens": ["בְּ", "בָּשַׂר"],
+    "page_start": 1008,
+    "page_end": 1011,
+    "gloss_es": "Mosquito; mostrar; mote; moteado; motín; motivo; mover; movilizar; mozo; mozuelo; muchacho; muchedumbre; mucho; muda; mudanza; mudar; mudo; mueca; muelle; muerte; muerto; mugido; mugir; mugriento; mujer; muladar; mulo; multa; multar; multiplicar; multitud; mundo; municipio; muñeca; muralla; murciélago; murmullar; murmullo; murmurar; muro; músculo; música; musitar; muslo; mustiarse; mutación; mutilación; mutilado; mutilar; mutuamente.",
+    "text": "mosquito: כִּנִּים. mostrar: גִּלָּה, יָדַע, נָגַד, רָאָה. motín: הָמוֹן. mover: נוּעַ, רָעַד. movilizar: זָעַק, צָבָא, קָבַץ. mozo: נַעַר. muchacho: יֶלֶד, נַעַר. muchedumbre: הָמוֹן, רֹב. mucho: רַב, מְאֹד. mudar: חָלַף, שָׁנָה. mudo: אִלֵּם. muerte: מָוֶת. muerto: מֵת, נְבֵלָה. mujer: אִשָּׁה, נְקֵבָה. mulo: פֶּרֶד. multiplicar: רָבָה. multitud: הָמוֹן, רֹב. mundo: אֶרֶץ. muralla: חוֹמָה. murmurar: רָגַן, לוּן. muro: קִיר. músculo: שְׁרִיר. música: זִמְרָה. muslo: יָרֵךְ. mutilar: פָּצַע."
+  },
+  {
+    "id": "heb-004710",
+    "lemma": "טוֹב",
+    "headword_line": "Glosario: N (cont.)",
+    "headword_tokens": ["טוֹב", "בָּשַׂר"],
+    "page_start": 1011,
+    "page_end": 1011,
+    "gloss_es": "Buenas noticias.",
+    "text": "dar buenas noticias: בָּשַׂר טוֹב. traer buenas noticias: בִּשֵּׂר. recibir buenas noticias: הִתְבַּשֵּׂר. novel: חָדָשׁ. noveno: תְּשִׁיעִי. noventa: תִּשְׁעִים. noviazgo: כְּלוּלוֹת. novilunio: חֹדֶשׁ. novillo: פָּר, עֵגֶל. novio: חָתָן, דּוֹד. nubarrón: עָנָן, עֲרָפֶל. nube: עָב, עָנָן. nublado: עָנָן, עֲרָפֶל."
+  },
+  {
+    "id": "heb-004711",
+    "lemma": "חָשַׁךְ",
+    "headword_line": "Glosario: N-P",
+    "headword_tokens": ["חָשַׁךְ", "כָּל", "סָפַר"],
+    "page_start": 1011,
+    "page_end": 1026,
+    "gloss_es": "Nublar; nubosidad; nuca; nudo; nuera; nueva; nueve; nuevo; nulidad; nulo; numerar; número; numeroso; nutrido; obedecer; obediencia; obesidad; obeso; óbito; objetar; objetividad; objeto; oblación; oblea; obligación; obligar; obnubilarse; óbolo; obra; obrar; obrero; obsequio; observar; obstáculo; obstinación; obstinado; obstinarse; obstruir; obtener; obturar; ocasión; occidente; océano; ocio; octavo; ocultamiento; ocultar; oculto; ocupación; ocupar; ocuparse; ocurrir; ocho; odiar; odio; odioso; odre; oeste; ofender.",
+    "text": "nublar: חָשַׁךְ, עִיב. nuca: עֹרֶף. nuera: כַּלָּה. nueva: שְׁמוּעָה. nueve: תֵּשַׁע. nuevo: חָדָשׁ. numerar: סָפַר. número: מִסְפָּר. numeroso: רַב, עָצוּם. obedecer: שָׁמַע. obediencia: מִשְׁמַעַת. óbito: מָוֶת. objeto: כְּלִי. oblación: קָרְבָּן, מִנְחָה. oblea: רָקִיק. obra: מַעֲשֶׂה. obrar: פָּעַל, עָשָׂה. obrero: שָׂכִיר. obsequio: מַתָּנָה, בְּרָכָה. observar: שָׁמַר, רָאָה. obstáculo: תְּלָאָה. obstruir: סָתַם, עָצַר. obtener: מָצָא. ocasión: עֵת, פַּעַם. occidente: מַעֲרָב. océano: תְּהוֹם. octavo: שְׁמִינִי. ocultar: הֶחְבִּיא, טָמַן, כִּחֵד, כִּסָּה, סָתַר, צָפַן. ocurrir: הָיָה, קָרָה. ocho: שְׁמֹנֶה. odiar: שָׂנֵא, שָׂטַם. odio: שִׂנְאָה. odre: נֹאד, נֵבֶל. oeste: יָם, מַעֲרָב. ofender: חָטָא, פָּשַׁע."
+  },
+  {
+    "id": "heb-004712",
+    "lemma": "אָמַר",
+    "headword_line": "Glosario: P",
+    "headword_tokens": ["אָמַר", "קָרָא", "יָרַשׁ"],
+    "page_start": 1026,
+    "page_end": 1029,
+    "gloss_es": "Pronunciar; propagarse; propalar; propiedad; propietario; propina; propinar; proponer; proporción; proporcionar; propósito; propuesta; prorratear; prorrogar; prosapia.",
+    "text": "pronunciar: אָמַר, קָרָא. propagarse: פָּשָׂה. propiedad: נַחֲלָה, אֲחֻזָּה, מִקְנֶה. propietario: בַּעַל. proponer: אָמַר, יָעַץ. proporción: מִסְפָּר. proporcionar: נָתַן. propósito: חֵפֶץ. propuesta: עֵצָה. prorrogar: הֶאֱרִיךְ. prosapia: זֶרַע."
+  },
+  {
+    "id": "heb-004713",
+    "lemma": "שֵׁנָה",
+    "headword_line": "Glosario: Q-R",
+    "headword_tokens": ["שֵׁנָה", "חָלַץ", "שֹׁרֶשׁ"],
+    "page_start": 1029,
+    "page_end": 1038,
+    "gloss_es": "Quitar; quizá; raigón; raíz; rajar; ralea; rama; ramaje; rambla; ramblada.",
+    "text": "quitar: חָלַץ, לָקַח, הֵסִיר. quizá: אוּלַי. raíz: שֹׁרֶשׁ. rajar: בָּקַע. rama: עָנָף, סַרְעַפָּה. ramaje: פֹּארָה. rambla: נַחַל."
+  },
+  {
+    "id": "heb-004714",
+    "lemma": "עֹשֶׁר",
+    "headword_line": "Glosario: R",
+    "headword_tokens": ["עֹשֶׁר", "הוֹן", "מָמוֹן"],
+    "page_start": 1038,
+    "page_end": 1038,
+    "gloss_es": "Riqueza; risa; risco; rito; ritual; rival.",
+    "text": "riqueza: עֹשֶׁר, הוֹן, מָמוֹן, חַיִל, כָּבוֹד. risa: שְׂחוֹק. risco: מָצוֹד. rito: חֻקָּה, תּוֹרָה. rival: צָר, אוֹיֵב, שָׂטָן."
+  },
+  {
+    "id": "heb-004715",
+    "lemma": "עָקַשׁ",
+    "headword_line": "Glosario: R-S",
+    "headword_tokens": ["עָקַשׁ", "גָּנַב", "שֶׁבֶר"],
+    "page_start": 1038,
+    "page_end": 1052,
+    "gloss_es": "Tramposo; tranca; trancar; trance; tranquilidad; tranquilizar; tranquilo; transcribir; transcripción; transformar; transgredir; transitar; tránsito; transmutarse; transportar; transporte; trapo; tras; trasero; trashumar; trasladar; traslado; traslucirse; traspasar; traspiés; trasquilar; trastocar; trastornar; trastorno; trasvasar; tratado; tratamiento; tratante; tratar; trato; través; trayecto; trayectoria; traza; trazar; trecho.",
+    "text": "tramposo: עִקֵּשׁ, נוֹכֵל. tranca: בְּרִיחַ. trancar: סָגַר, נָעַל. tranquilidad: שַׁלְוָה, שֶׁקֶט, נַחַת. tranquilizar: נִחַם. tranquilo: שָׁקֵט, שַׁאֲנָן. transformar: הָפַךְ. transgredir: עָבַר, חָטָא. transitar: עָבַר. transportar: נָשָׂא, הֵבִיא. tras: אַחַר. trasladar: הֶעְתִּיק, הֵסִיר. traspasar: עָבַר, דָּקַר. trasquilar: גָּזַז. trastornar: הָפַךְ. tratar: עָשָׂה, גָּמַל. traza: תַּבְנִית. trazar: חָקַק, כָּתַב."
+  },
+  {
+    "id": "heb-004716",
+    "lemma": "בְּלִי",
+    "headword_line": "Equivalencias Morfemáticas",
+    "headword_tokens": ["בְּלִי", "אֵין", "יַחַד"],
+    "page_start": 1052,
+    "page_end": 1062,
+    "gloss_es": "Catálogo de equivalencias morfemáticas Español-Hebreo.",
+    "text": "I. Morfemas privativos: a(n)-: בְּלִי (an-ónimo). des-: אָבַד (des-atinado), אֵין תִּקְוָה (des-esperado). in-: אֵין חֵקֶר (in-sondable). II. Morfemas conjuntivos: co(n)-: יַחַד (co-aligarse), עִם (co-heredar). III. Morfemas partitivos: ex-: מִן (ex-traer). IV. Morfemas de movimiento: retro-: אָחוֹר (retro-ceder). V. Morfemas adverbiales: -mente: בְּאֵיבָה (hostil-mente). X. Morfemas causativos: en-: הִגְדִּיל (en-grandecer), הֵרִים (en-altecer)."
+  },
+  {
+    "id": "heb-004717",
+    "lemma": "אָב",
+    "headword_line": "אָב Est. cstr. אֲבִי; Pl. אָבֹות cstr. אֲבֹות.",
+    "headword_tokens": ["אָב", "אֲבִי", "אָבֹות"],
+    "page_start": 1,
+    "page_end": 2,
+    "gloss_es": "Padre; fuente, origen; antepasado, abuelo; fundador, inventor; consejero, protector; Dios como padre.",
+    "text": "1. Padre biológico: Gn 2:24 אֶת־אָבִיו וְאֶת־אִמּוֹ (a su padre y a su madre). 2. Fuente u origen: Gn 4:20 אֲבִי יֹשֵׁב אֹהֶל (padre de los que habitan en tiendas). 3. Antepasado o abuelo: Gn 28:13 אַבְרָהָם אָבִיךָ (Abraham tu antepasado/abuelo). 4. Título honorífico (Protector): Gn 45:8 וַיְשִׂימֵנִי לְאָב לְפַרְעֹה (me puso por padre/consejero de Faraón). 5. Atributo divino: Is 63:16 כִּי־אַתָּה אָבִינוּ (porque tú eres nuestro padre). 6. Onomástica: אֲבִימֶלֶךְ (Abimélec), אֲבִישָׁלוֹם (Abishalom). Nota: אָבֹות es plural masculino."
   }
 ]
