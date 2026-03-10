@@ -287,37 +287,7 @@
     .page-nav .btn{ display:flex; align-items:center; gap:.35rem; }
 
 
-    .trilingual-quick-box{
-      min-width:330px;
-      border:1px solid var(--bd);
-      border-radius:10px;
-      background:#ffffff;
-      padding:.45rem .6rem;
-    }
-    .trilingual-grid-head,
-    .trilingual-grid-body{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:.4rem;
-      text-align:center;
-    }
-    .trilingual-grid-head{
-      font-size:.78rem;
-      font-weight:700;
-      margin-bottom:.2rem;
-    }
-    .trilingual-grid-body span{
-      border:1px solid var(--bd);
-      border-radius:6px;
-      min-height:2rem;
-      padding:.22rem .3rem;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:var(--soft-bg);
-      overflow-wrap:anywhere;
-      word-break:break-word;
-    }
+   
 
     /* Greek font */
     .greek{
@@ -575,9 +545,7 @@
         line-height:1.1;
         white-space:nowrap;
       }
-      .trilingual-quick-box{
-        min-width:100%;
-      }
+ 
       .top-actions{
         width:auto;
         justify-content:flex-end;
