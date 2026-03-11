@@ -127,6 +127,56 @@ body {
   color: #3e3133;
   line-height: 1.65;
 }
+#panel-nosotros {
+  display: grid;
+  gap: 0.95rem;
+}
+
+#panel-nosotros .nosotros-intro {
+  background: linear-gradient(145deg, #fff 0%, #f8efe8 100%);
+  border: 1px solid color-mix(in srgb, var(--border) 70%, #fff);
+  border-radius: 14px;
+  padding: 0.9rem 1rem;
+  box-shadow: 0 10px 22px rgba(75, 39, 67, 0.08);
+}
+
+#panel-nosotros .nosotros-intro p {
+  margin: 0;
+}
+
+#panel-nosotros .nosotros-intro p + p {
+  margin-top: 0.7rem;
+}
+
+#panel-nosotros .nosotros-block {
+  background: #fff;
+  border: 1px solid color-mix(in srgb, var(--border) 76%, #fff);
+  border-left: 4px solid var(--accent-soft);
+  border-radius: 12px;
+  padding: 0.85rem 0.95rem;
+}
+
+#panel-nosotros .nosotros-block h3 {
+  margin: 0 0 0.45rem;
+  color: var(--accent);
+  font-size: 1rem;
+}
+
+#panel-nosotros .nosotros-block p,
+#panel-nosotros .nosotros-block li {
+  font-size: 0.98rem;
+}
+
+#panel-nosotros .nosotros-columns {
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+}
+
+#panel-nosotros ul {
+  margin: 0;
+  padding-left: 1.1rem;
+}
 #panel-politicas .policy-notes {
   margin-top: 1rem;
   display: grid;
