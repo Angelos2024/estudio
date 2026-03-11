@@ -73,8 +73,8 @@
             </ul>
           </div>
           <button id="btnCopyText" class="btn btn-soft btn-sm" type="button">Copiar</button>
-          <button id="btnAboutExtractor" class="btn btn-soft btn-sm" type="button" disabled>Acerca de</button>
-        </div>
+          <button id="btnAboutExtractor" class="btn btn-soft btn-sm" type="button">Acerca de</button>
+                  </div>
       </div>
     </div>
   </header>
@@ -894,6 +894,7 @@ const rightLabel = document.getElementById('rightLabel');
 
 
 const btnCopyText = document.getElementById('btnCopyText');
+const btnAboutExtractor = document.getElementById('btnAboutExtractor');
 const btnViewMode = document.getElementById('btnViewMode');
 const btnToggleOrig = document.getElementById('btnToggleOrig');
     const btnPrevPage = document.getElementById('btnPrevPage');
@@ -1590,6 +1591,10 @@ btnToggleOrig.addEventListener('click', () => {
   const isVisible = !document.body.classList.contains('orig-hidden');
   setOriginalVisible(!isVisible);
 });
+btnAboutExtractor?.addEventListener('click', () => {
+  window.location.href = './acerca.html';
+});
+
     window.addEventListener('resize', scheduleSyncVerseHeights);
 btnPrevPage?.addEventListener('click', () => {
   const slug = btnPrevPage.dataset.book;
