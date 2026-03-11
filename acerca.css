@@ -128,6 +128,36 @@ body {
   line-height: 1.65;
 }
 
+#panel-creemos .belief-list {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: grid;
+  gap: 0.9rem;
+}
+
+#panel-creemos .belief-item {
+  padding: 0.8rem 0.85rem;
+  margin-left: 0.25rem;
+  background: #fff;
+  border: 1px solid color-mix(in srgb, var(--border) 80%, #fff);
+  border-radius: 12px;
+  box-shadow: 0 8px 18px rgba(75, 39, 67, 0.08);
+}
+
+#panel-creemos .key-term {
+  display: inline;
+  color: var(--accent);
+  font-weight: 800;
+  letter-spacing: 0.03em;
+}
+
+#panel-creemos .ref {
+  display: block;
+  margin-top: 0.45rem;
+  color: var(--muted);
+  font-style: italic;
+  font-weight: 600;
+}
 @keyframes fade-in {
   from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
