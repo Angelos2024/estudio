@@ -1099,12 +1099,15 @@ function renderStructuredHebrewEntry(entry) {
 
 function renderGreekComparisonCell(entry, rawQuery) {
     const greek = entry?.gr || entry?.equivalencia_griega || entry?.greek || '—';
+        const blocks = [];
     if (window.AnalisisDiccionarioAGriego?.renderGreekDictionaryCell) {
-        return window.AnalisisDiccionarioAGriego.renderGreekDictionaryCell(greek, rawQuery);
-    }
+ blocks.push(window.AnalisisDiccionarioAGriego.renderGreekDictionaryCell(greek, rawQuery));
+    } else {
+        blocks.push(`<pre class="comparison-pre comparison-pre--greek">${escapeHtml(greek)}</pre>`);    }
 
-    return `<pre class="comparison-pre comparison-pre--greek">${escapeHtml(greek)}</pre>`;
-    }
+if (window.AnalisisDiccionarioBEric?.renderEricDictionaryCell) {
+        blocks.push(window.AnalisisDiccionarioBEric.renderEricDictionaryCell(rawQuery, entry));
+            }
 
  
 async function updateDictionaryComparison(items, rawQuery) {
@@ -1127,6 +1130,9 @@ async function updateDictionaryComparison(items, rawQuery) {
     await ensureHebrewDictionaryLoaded();
      if (window.AnalisisDiccionarioAGriego?.ensureLoaded) {
         await window.AnalisisDiccionarioAGriego.ensureLoaded();
+         }
+    if (window.AnalisisDiccionarioBEric?.ensureLoaded) {
+        await window.AnalisisDiccionarioBEric.ensureLoaded();
     }
       const hebrewEntry = findHebrewDictionaryEntry(hebrewCandidate);
     const hebrewBlocks = [];
