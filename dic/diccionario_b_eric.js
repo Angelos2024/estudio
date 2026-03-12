@@ -116,9 +116,7 @@ const FALLBACK_JSON_COLLECTION = [
   function getTexts(entry, lang) {
     const fields = lang === 'he'
       ? ['he', 'hebrew', 'hebreo', 'palabra', 'lemma', 'lemmas', 'texto_hebreo']
-            : lang === 'gr'
-        ? ['gr', 'greek', 'griego', 'equivalencia_griega', 'lxx', 'texto_hebreo', 'transliteracion']
-                : ['es', 'spanish', 'espanol', 'español', 'equivalencia_espanol', 'equivalencia_español', 'traduccion'];
+            : : ['gr', 'greek', 'griego', 'equivalencia_griega', 'lxx', 'texto_hebreo', 'transliteracion'];
 
     const values = [];
     fields.forEach((field) => {
@@ -130,15 +128,45 @@ const FALLBACK_JSON_COLLECTION = [
       }
     });
 
-    return values.map(v => v.trim()).filter(Boolean);
+ return values
+      .map(v => v.trim())
+      .filter(Boolean)
+      .filter((value) => {
+        if (lang === 'he') return hasHebrewChars(value);
+        return hasGreekChars(value);
+      });
+  }
+
+  function collectSearchTerms(rawTerms, lang) {
+    return rawTerms
+      .map((term) => String(term || '').trim())
+      .filter(Boolean)
+      .filter((term) => (lang === 'he' ? hasHebrewChars(term) : hasGreekChars(term)))
+      .map(normalize)
+      .filter(Boolean);
+  }
+
+  function getSpanishTexts(entry) {
+    const fields = ['es', 'spanish', 'espanol', 'español', 'equivalencia_espanol', 'equivalencia_español', 'traduccion'];
+    const values = [];
+    fields.forEach((field) => {
+      const value = entry?.[field];
+      if (Array.isArray(value)) {
+        value.forEach(v => values.push(String(v || '').trim()));
+      } else if (value != null) {
+        values.push(String(value).trim());
+      }
+    });
+    return values.filter(Boolean);    
   }
 
   function findFirstMatchByLanguageOrder(terms) {
-    const safeTerms = terms.map(normalize).filter(Boolean);
-    if (!safeTerms.length || !state.entries.length) return null;
+const langs = ['he', 'gr'];
 
-    const langs = ['he', 'gr', 'es'];
     for (const lang of langs) {
+        const safeTerms = collectSearchTerms(terms, lang);
+      if (!safeTerms.length) continue;
+
       const matched = state.entries.filter((entry) => {
         const texts = getTexts(entry, lang).map(normalize);
         if (!texts.length) return false;
@@ -165,6 +193,9 @@ const FALLBACK_JSON_COLLECTION = [
   function hasHebrewChars(value) {
     return /[\u0590-\u05FF]/.test(String(value || ''));
   }
+  function hasGreekChars(value) {
+    return /[\u0370-\u03FF\u1F00-\u1FFF]/.test(String(value || ''));
+  }
   function renderEricDictionaryCell(rawQuery, primaryEntry) {
     const terms = [
       rawQuery,
@@ -186,7 +217,7 @@ const FALLBACK_JSON_COLLECTION = [
     const isHebrewText = hasHebrewChars(sourceText);
     const sourceLabel = isHebrewText ? 'Texto hebreo' : 'Texto griego';
     const sourceClass = isHebrewText ? 'hebrew' : 'greek';
-    const spanish = getTexts(hit, 'es')[0] || '—';
+    const spanish = getSpanishTexts(hit)[0] || '—';
     const transliteracion = String(hit?.transliteracion || '').trim() || '—';
     const definicion = String(hit?.observacion || '').trim() || '—';
 
