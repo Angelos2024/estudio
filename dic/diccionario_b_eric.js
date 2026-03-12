@@ -116,8 +116,7 @@ const FALLBACK_JSON_COLLECTION = [
   function getTexts(entry, lang) {
     const fields = lang === 'he'
       ? ['he', 'hebrew', 'hebreo', 'palabra', 'lemma', 'lemmas', 'texto_hebreo']
-            : : ['gr', 'greek', 'griego', 'equivalencia_griega', 'lxx', 'texto_hebreo', 'transliteracion'];
-
+      : ['gr', 'greek', 'griego', 'equivalencia_griega', 'lxx', 'texto_hebreo', 'transliteracion'];
     const values = [];
     fields.forEach((field) => {
       const value = entry?.[field];
