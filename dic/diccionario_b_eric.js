@@ -178,6 +178,61 @@
       .filter(Boolean);
   }
 
+  function isExactNormalizedMatch(text, term) {
+    return text === term;
+  }
+
+  
+  function isPartialNormalizedMatch(text, term) {
+    if (!text || !term) return false;
+    if (text === term) return true;
+
+ if (term.includes(' ')) {
+      return text.includes(term);
+          }
+
+     const tokens = text.split(' ').filter(Boolean);
+    return tokens.includes(term);
+  }
+       function filterMatchesByLanguageAndTerms(lang, terms, mode) {
+    if (!terms.length) return [];
+
+        const matcher = mode === 'partial' ? isPartialNormalizedMatch : isExactNormalizedMatch;
+
+     return state.entries.filter((entry) => {
+      if (lang === 'he' || lang === 'gr') {
+        if ((entry?.__lang || detectEntryLang(entry)) !== lang) return false;
+      }
+
+      const texts = (lang === 'es' ? getSpanishTexts(entry) : getTexts(entry, lang)).map(normalize);
+      if (!texts.length) return false;
+
+      return terms.some((term) => texts.some((text) => matcher(text, term)));
+    });
+     }
+
+
+  function runOrderedSearch(terms, mode) {
+      const hebrewTerms = collectSearchTerms(terms, 'he');
+    
+
+   const hebrewMatches = filterMatchesByLanguageAndTerms('he', hebrewTerms, mode);
+    if (hebrewMatches.length) return sortMatches(hebrewMatches);
+
+    const greekTerms = collectSearchTerms(terms, 'gr');
+   
+
+       const greekMatches = filterMatchesByLanguageAndTerms('gr', greekTerms, mode);
+    if (greekMatches.length) return sortMatches(greekMatches);
+
+
+    const spanishTerms = collectSpanishTerms(terms);
+ const spanishMatches = filterMatchesByLanguageAndTerms('es', spanishTerms, mode);
+    if (spanishMatches.length) return sortMatches(spanishMatches);
+
+    return [];
+  }
+
   function sortMatches(entries) {
     return entries
       .map((entry, index) => ({ entry, index, rank: Number(entry?.__sourceIndex ?? Number.MAX_SAFE_INTEGER) }))
@@ -186,83 +241,20 @@
   }
 
   function findFirstMatchByLanguageOrder(terms) {
-    const hebrewTerms = collectSearchTerms(terms, 'he');
-    if (hebrewTerms.length) {
-      const matched = state.entries.filter((entry) => {
-        if ((entry?.__lang || detectEntryLang(entry)) !== 'he') return false;
-        const texts = getTexts(entry, 'he').map(normalize);
-        if (!texts.length) return false;
-        return hebrewTerms.some((term) => texts.some((text) => text === term || text.includes(term)));
-      });
+    const exactMatches = runOrderedSearch(terms, 'exact');
+    if (exactMatches.length) return exactMatches[0];
 
-      if (matched.length) return sortMatches(matched)[0];
-    }
-
-    const greekTerms = collectSearchTerms(terms, 'gr');
-    if (greekTerms.length) {
-      const matched = state.entries.filter((entry) => {
-        if ((entry?.__lang || detectEntryLang(entry)) !== 'gr') return false;
-        const texts = getTexts(entry, 'gr').map(normalize);
-        if (!texts.length) return false;
-        return greekTerms.some((term) => texts.some((text) => text === term || text.includes(term)));
-      });
-
-      if (matched.length) return sortMatches(matched)[0];
-    }
-
-    // Fallback español: útil cuando el usuario busca "Dios", "griegos", etc.
-    const spanishTerms = collectSpanishTerms(terms);
-    if (spanishTerms.length) {
-      const matched = state.entries.filter((entry) => {
-        const texts = getSpanishTexts(entry).map(normalize);
-        if (!texts.length) return false;
-        return spanishTerms.some((term) => texts.some((text) => text === term || text.includes(term)));
-      });
-
-      if (matched.length) return sortMatches(matched)[0];
-    }
-
-    return null;
+    const partialMatches = runOrderedSearch(terms, 'partial');
+    return partialMatches[0] || null;
   }
 
 function findMatchesByLanguageOrder(terms) {
-    const hebrewTerms = collectSearchTerms(terms, 'he');
-    if (hebrewTerms.length) {
-      const matched = state.entries.filter((entry) => {
-        if ((entry?.__lang || detectEntryLang(entry)) !== 'he') return false;
-        const texts = getTexts(entry, 'he').map(normalize);
-        if (!texts.length) return false;
-        return hebrewTerms.some((term) => texts.some((text) => text === term || text.includes(term)));
-      });
+    const exactMatches = runOrderedSearch(terms, 'exact');
+    if (exactMatches.length) return exactMatches;
 
-      if (matched.length) return sortMatches(matched);
-    }
-
-    const greekTerms = collectSearchTerms(terms, 'gr');
-    if (greekTerms.length) {
-      const matched = state.entries.filter((entry) => {
-        if ((entry?.__lang || detectEntryLang(entry)) !== 'gr') return false;
-        const texts = getTexts(entry, 'gr').map(normalize);
-        if (!texts.length) return false;
-        return greekTerms.some((term) => texts.some((text) => text === term || text.includes(term)));
-      });
-
-      if (matched.length) return sortMatches(matched);
-    }
-
-    const spanishTerms = collectSpanishTerms(terms);
-    if (spanishTerms.length) {
-      const matched = state.entries.filter((entry) => {
-        const texts = getSpanishTexts(entry).map(normalize);
-        if (!texts.length) return false;
-        return spanishTerms.some((term) => texts.some((text) => text === term || text.includes(term)));
-      });
-
-      if (matched.length) return sortMatches(matched);
-    }
-
-    return [];
+    return runOrderedSearch(terms, 'partial');
   }
+  
 
   function collectDefinitions(matches, lang) {
     const seen = new Set();
