@@ -1,7 +1,5 @@
 (function (global) {
-  const BOOK_ORDER = [
-    'genesis','éxodo','exodo','levítico','levitico','números','numeros','deuteronomio','josué','josue','jueces','rut','samuel1','samuel2','reyes1','reyes2','crónicas1','cronicas1','crónicas2','cronicas2','esdras','nehemías','nehemias','ester','job','salmos','proverbios','eclesiastes','cantares','isaías','isaias','jeremías','jeremias','lamentaciones','ezequiel','daniel','oseas','joel','amós','amos','abdías','abdias','jonás','jonas','miqueas','nahúm','nahum','habacuc','sofonías','sofonias','hageo','zacarias','zacarías','malaquias'
-  ];
+
 
   const state = {
     loaded: false,
@@ -31,9 +29,6 @@
       .trim();
   }
 
-  function normalizeBookKey(value) {
-    return normalize(value).replace(/[^a-z0-9\u0370-\u03ff\u1f00-\u1fff\u0590-\u05ff]+/g, '');
-  }
 
   function flattenPayload(payload) {
     if (Array.isArray(payload)) return payload;
@@ -85,8 +80,9 @@
           merged.push({
             ...entry,
             book: entry.book || entry.libro || entry.book_name || entry.nombre_libro || source.book,
-            __lang: detectEntryLang(entry)
-          });
+            __lang: detectEntryLang(entry),
+            __sourceIndex: merged.length
+                      });
         });
       } catch (_) {
         // Continúa con el siguiente archivo.
@@ -115,15 +111,7 @@
     return state.loadPromise;
   }
 
-  function getBookRank(entry) {
-    const candidates = [entry?.book, entry?.libro, entry?.book_name, entry?.nombre_libro, entry?.archivo, entry?.file].filter(Boolean);
-    for (const candidate of candidates) {
-      const key = normalizeBookKey(candidate);
-      const index = BOOK_ORDER.findIndex((name) => key.includes(normalizeBookKey(name)));
-      if (index >= 0) return index + 1;
-    }
-    return Number.MAX_SAFE_INTEGER;
-  }
+
 
   function getSourceText(entry) {
     return String(
@@ -192,8 +180,8 @@
 
   function sortMatches(entries) {
     return entries
-      .map((entry, index) => ({ entry, index, rank: getBookRank(entry) }))
-      .sort((a, b) => (a.rank - b.rank) || (a.index - b.index))
+      .map((entry, index) => ({ entry, index, rank: Number(entry?.__sourceIndex ?? Number.MAX_SAFE_INTEGER) }))
+            .sort((a, b) => (a.rank - b.rank) || (a.index - b.index))
       .map((item) => item.entry);
   }
 
