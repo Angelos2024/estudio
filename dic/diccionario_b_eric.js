@@ -16,6 +16,15 @@
     '../dic/diccionario_eric/data.json'
   ];
 
+const FALLBACK_JSON_COLLECTION = [
+    { url: '../dic/diccionario_eric/diccionario_1tesalonicenses.json', book: '1 Tesalonicenses' },
+    { url: '../dic/diccionario_eric/diccionario_2tesalonicenses.json', book: '2 Tesalonicenses' },
+    { url: '../dic/diccionario_eric/diccionario_salmos.json', book: 'Salmos' },
+    { url: '../dic/diccionario_eric/diccionario_qohelet.json', book: 'Qohelet' },
+    { url: '../dic/diccionario_eric/diccionario_shir_hashirim.json', book: 'Shir Hashirim' },
+    { url: '../dic/diccionario_eric/diccionario_parashot.json', book: 'Parashot' }
+  ];
+
   function normalize(value) {
     return String(value || '')
       .normalize('NFD')
@@ -52,6 +61,26 @@
         // Se intenta la siguiente fuente.
       }
     }
+     const merged = [];
+    for (const source of FALLBACK_JSON_COLLECTION) {
+      try {
+        const response = await fetch(source.url, { cache: 'no-store' });
+        if (!response.ok) continue;
+        const payload = await response.json();
+        const rows = flattenPayload(payload);
+        rows.forEach((entry) => {
+          if (!entry || typeof entry !== 'object') return;
+          merged.push({
+            ...entry,
+            book: entry.book || entry.libro || entry.book_name || entry.nombre_libro || source.book
+          });
+        });
+      } catch (_) {
+        // Se continúa con la siguiente colección.
+      }
+    }
+
+    if (merged.length) return merged;
     return [];
   }
 
@@ -86,10 +115,10 @@
 
   function getTexts(entry, lang) {
     const fields = lang === 'he'
-      ? ['he', 'hebrew', 'hebreo', 'palabra', 'lemma', 'lemmas']
-      : lang === 'gr'
-        ? ['gr', 'greek', 'griego', 'equivalencia_griega', 'lxx']
-        : ['es', 'spanish', 'espanol', 'español', 'equivalencia_espanol', 'equivalencia_español', 'traduccion'];
+      ? ['he', 'hebrew', 'hebreo', 'palabra', 'lemma', 'lemmas', 'texto_hebreo']
+            : lang === 'gr'
+        ? ['gr', 'greek', 'griego', 'equivalencia_griega', 'lxx', 'texto_hebreo', 'transliteracion']
+                : ['es', 'spanish', 'espanol', 'español', 'equivalencia_espanol', 'equivalencia_español', 'traduccion'];
 
     const values = [];
     fields.forEach((field) => {
