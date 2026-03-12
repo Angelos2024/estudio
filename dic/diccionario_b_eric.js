@@ -225,6 +225,62 @@
     return null;
   }
 
+function findMatchesByLanguageOrder(terms) {
+    const hebrewTerms = collectSearchTerms(terms, 'he');
+    if (hebrewTerms.length) {
+      const matched = state.entries.filter((entry) => {
+        if ((entry?.__lang || detectEntryLang(entry)) !== 'he') return false;
+        const texts = getTexts(entry, 'he').map(normalize);
+        if (!texts.length) return false;
+        return hebrewTerms.some((term) => texts.some((text) => text === term || text.includes(term)));
+      });
+
+      if (matched.length) return sortMatches(matched);
+    }
+
+    const greekTerms = collectSearchTerms(terms, 'gr');
+    if (greekTerms.length) {
+      const matched = state.entries.filter((entry) => {
+        if ((entry?.__lang || detectEntryLang(entry)) !== 'gr') return false;
+        const texts = getTexts(entry, 'gr').map(normalize);
+        if (!texts.length) return false;
+        return greekTerms.some((term) => texts.some((text) => text === term || text.includes(term)));
+      });
+
+      if (matched.length) return sortMatches(matched);
+    }
+
+    const spanishTerms = collectSpanishTerms(terms);
+    if (spanishTerms.length) {
+      const matched = state.entries.filter((entry) => {
+        const texts = getSpanishTexts(entry).map(normalize);
+        if (!texts.length) return false;
+        return spanishTerms.some((term) => texts.some((text) => text === term || text.includes(term)));
+      });
+
+      if (matched.length) return sortMatches(matched);
+    }
+
+    return [];
+  }
+
+  function collectDefinitions(matches, lang) {
+    const seen = new Set();
+    const out = [];
+
+    for (const entry of matches) {
+      const entryLang = entry?.__lang || detectEntryLang(entry);
+      if (lang && entryLang && entryLang !== lang) continue;
+
+      const text = String(entry?.observacion || '').trim();
+      const key = normalize(text);
+      if (!text || !key || seen.has(key)) continue;
+      seen.add(key);
+      out.push(text);
+    }
+
+    return out;
+  }
   function esc(value) {
     return String(value || '')
       .replace(/&/g, '&amp;')
@@ -249,7 +305,8 @@
       primaryEntry?.spanish
     ].filter(Boolean);
 
-    const hit = findFirstMatchByLanguageOrder(terms);
+const matches = findMatchesByLanguageOrder(terms);
+    const hit = matches[0] || null;
 
     if (!hit) {
       return '<div class="trilingual-brief mt-3"><div class="dict-entry-kicker">Diccionario · Prof. Eric de Jesús Rodríguez Mendoza</div><div class="muted">Sin coincidencias en la base de diccionario Eric.</div></div>';
@@ -262,7 +319,8 @@
     const sourceClass = isHebrewText ? 'hebrew' : 'greek';
     const spanish = getSpanishTexts(hit)[0] || '—';
     const transliteracion = String(hit?.transliteracion || '').trim() || '—';
-    const definicion = String(hit?.observacion || '').trim() || '—';
+     const allDefinitions = collectDefinitions(matches, detectedLang);
+    const definicion = allDefinitions.length ? allDefinitions.join('\n') : '—';
 
     return `
       <div class="trilingual-brief mt-3 dict-entry">
@@ -272,8 +330,8 @@
         <div class="trilingual-line"><strong>${sourceLabel}:</strong> <span class="${sourceClass}">${esc(sourceText || '—')}</span></div>
         <div class="trilingual-line"><strong>Transliteración:</strong> ${esc(transliteracion)}</div>
         <div class="trilingual-line"><strong>Equivalencia español:</strong> ${esc(spanish)}</div>
-        <div class="trilingual-line"><strong>Definición:</strong> ${esc(definicion)}</div>
-      </div>
+        <div class="trilingual-line"><strong>Definición:</strong> ${esc(definicion).replace(/\n/g, '<br>')}</div>
+              </div>
     `;
   }
 
