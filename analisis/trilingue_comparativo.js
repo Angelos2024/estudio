@@ -1103,11 +1103,15 @@ function renderGreekComparisonCell(entry, rawQuery) {
     if (window.AnalisisDiccionarioAGriego?.renderGreekDictionaryCell) {
  blocks.push(window.AnalisisDiccionarioAGriego.renderGreekDictionaryCell(greek, rawQuery));
     } else {
-        blocks.push(`<pre class="comparison-pre comparison-pre--greek">${escapeHtml(greek)}</pre>`);    }
+        blocks.push(`<pre class="comparison-pre comparison-pre--greek">${escapeHtml(greek)}</pre>`);    
+    }
 
 if (window.AnalisisDiccionarioBEric?.renderEricDictionaryCell) {
         blocks.push(window.AnalisisDiccionarioBEric.renderEricDictionaryCell(rawQuery, entry));
             }
+
+    return blocks.join('');
+}
 
  
 async function updateDictionaryComparison(items, rawQuery) {
