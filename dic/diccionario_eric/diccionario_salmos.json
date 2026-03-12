@@ -329,13 +329,6 @@
     "observacion": "Matiz contextual trabajado en el estudio de Salmos."
   },
   {
-    "id": 48,
-    "texto_hebreo": "אֱלֹהִים",
-    "transliteracion": "’Elohim",
-    "equivalencia_espanol": "‘Elohim",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
     "id": 49,
     "texto_hebreo": "אֹהֶל",
     "transliteracion": "’Ohel",
@@ -345,9 +338,9 @@
   {
     "id": 50,
     "texto_hebreo": "אֲדֹנָי",
-    "transliteracion": "’Adonay",
-    "equivalencia_espanol": "precisión léxica/contextual en el estudio de Salmos",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
+    "transliteracion": "’Adonai",
+    "equivalencia_espanol": "Adonai, señor, Dios.",
+    "observacion": "Adonai en principio Hebreo, Señor, soberano, amo, dueño, señor, poseedor. N. T. A) En general. Amo, dueño, señor."
   },
   {
     "id": 51,
