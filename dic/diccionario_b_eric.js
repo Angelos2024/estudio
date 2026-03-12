@@ -162,6 +162,9 @@ const FALLBACK_JSON_COLLECTION = [
       .replace(/>/g, '&gt;');
   }
 
+  function hasHebrewChars(value) {
+    return /[\u0590-\u05FF]/.test(String(value || ''));
+  }
   function renderEricDictionaryCell(rawQuery, primaryEntry) {
     const terms = [
       rawQuery,
@@ -179,21 +182,25 @@ const FALLBACK_JSON_COLLECTION = [
       return '<div class="trilingual-brief mt-3"><div class="dict-entry-kicker">Diccionario B · Prof. Eric de Jesús Rodríguez Mendoza</div><div class="muted">Sin coincidencias en la base de diccionario Eric.</div></div>';
     }
 
-    const hebrew = getTexts(hit, 'he')[0] || '—';
-    const greek = getTexts(hit, 'gr')[0] || '—';
+    const sourceText = String(hit?.texto_hebreo || hit?.he || hit?.hebrew || hit?.hebreo || '').trim();
+    const isHebrewText = hasHebrewChars(sourceText);
+    const sourceLabel = isHebrewText ? 'Texto hebreo' : 'Texto griego';
+    const sourceClass = isHebrewText ? 'hebrew' : 'greek';
     const spanish = getTexts(hit, 'es')[0] || '—';
-    const book = hit?.book || hit?.libro || hit?.book_name || hit?.nombre_libro || '—';
+    const transliteracion = String(hit?.transliteracion || '').trim() || '—';
+    const definicion = String(hit?.observacion || '').trim() || '—';
+
 
     return `
       <div class="trilingual-brief mt-3 dict-entry">
         <div class="dict-entry-header">
           <div class="dict-entry-kicker">Diccionario · Prof. Eric de Jesús Rodríguez Mendoza</div>
-          <div class="dict-entry-title">${esc(spanish)}</div>
+
         </div>
-        <div class="trilingual-line"><strong>Libro:</strong> ${esc(book)}</div>
-        <div class="trilingual-line"><strong>Hebreo:</strong> <span class="hebrew">${esc(hebrew)}</span></div>
-        <div class="trilingual-line"><strong>Griego:</strong> <span class="greek">${esc(greek)}</span></div>
-        <div class="trilingual-line"><strong>Español:</strong> ${esc(spanish)}</div>
+        <div class="trilingual-line"><strong>${sourceLabel}:</strong> <span class="${sourceClass}">${esc(sourceText || '—')}</span></div>
+        <div class="trilingual-line"><strong>Transliteración:</strong> ${esc(transliteracion)}</div>
+        <div class="trilingual-line"><strong>Equivalencia español:</strong> ${esc(spanish)}</div>
+        <div class="trilingual-line"><strong>Definición:</strong> ${esc(definicion)}</div>
       </div>
     `;
   }
