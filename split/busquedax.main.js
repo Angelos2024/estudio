@@ -1105,8 +1105,8 @@ bookList.className = 'mt-2 d-grid gap-1';
         state.last = { term, lang, refs: [], groupsByCorpus: [] };
         return;
       }
- const needsSpanishBridge = !isCompoundQuery && lang === 'es' && (enabledCorpora.has('gr') || enabledCorpora.has('lxx') || enabledCorpora.has('he'));
-      const esIndexPromise = (enabledCorpora.has('es') || needsSpanishBridge)
+ const needsSpanishBridge = !isCompoundQuery && lang === 'es' && (enabledCorpora.has('gr') || enabledCorpora.has('he'));
+       const esIndexPromise = (enabledCorpora.has('es') || needsSpanishBridge)
         ? loadIndex('es', options)
         : Promise.resolve(null);
       const grIndexPromise = enabledCorpora.has('gr') ? loadIndex('gr', options) : Promise.resolve(null);
@@ -1137,8 +1137,8 @@ bookList.className = 'mt-2 d-grid gap-1';
       let greekTerm = null;
       let greekCandidate = null;
 
-      if (!isCompoundQuery && lang === 'es' && (enabledCorpora.has('gr') || enabledCorpora.has('lxx'))) {
-        greekEntry = await findGreekEntryFromSpanish(term, options);
+      if (!isCompoundQuery && lang === 'es' && enabledCorpora.has('gr')) {
+              greekEntry = await findGreekEntryFromSpanish(term, options);
         if (greekEntry?.lemma) {
           greekTerm = normalizeGreek(greekEntry.lemma);
         }
@@ -1162,8 +1162,8 @@ bookList.className = 'mt-2 d-grid gap-1';
         if (lang === 'gr') {
           refs.forEach((ref) => directEsRefs.push(ref));
           mapLxxRefsToHebrewRefs(initialLxxMatches.refs).forEach((ref) => directEsRefs.push(ref));
-      } else if (lang === 'he' && (enabledCorpora.has('gr') || enabledCorpora.has('lxx'))) {
-         refs.forEach((ref) => directEsRefs.push(ref));
+      } else if (lang === 'he' && enabledCorpora.has('gr')) {
+               refs.forEach((ref) => directEsRefs.push(ref));
         }
         directEsRefs.forEach((ref) => {
           if (esSeen.has(ref)) return;
@@ -1276,8 +1276,8 @@ for (const token of esSearchTokens) {
         lxxMatches.texts = lxxTexts;
         lxxMatches.highlightTerms = lxxTerms;
       }
-      if (enforceSpanishReferenceCorrespondence && enabledCorpora.has('lxx')) {
-        lxxMatches.refs = scopedLxxRefsFromSpanish.slice();
+      if (false && enforceSpanishReferenceCorrespondence && enabledCorpora.has('lxx')) {
+              lxxMatches.refs = scopedLxxRefsFromSpanish.slice();
         lxxMatches.texts = new Map();
         lxxMatches.highlightTerms = greekTerm ? [greekTerm] : [];
       }
@@ -1353,7 +1353,7 @@ if (enforceSpanishReferenceCorrespondence && enabledCorpora.has('he')) {
         `Transliteración: ${translitLabel}`,
         `POS: ${posTag}`,
         `RKANT: ${enabledCorpora.has('gr') ? grRefs.length : '—'}`,
-        `LXX: ${enabledCorpora.has('lxx') ? lxxMatches.refs.length : '—'}`,
+
         `Hebreo: ${enabledCorpora.has('he') ? heRefs.length : '—'}`,
         `RVR1960: ${enabledCorpora.has('es') ? esRefs.length : '—'}`
       ]);
@@ -1432,8 +1432,8 @@ if (enforceSpanishReferenceCorrespondence && enabledCorpora.has('he')) {
           })
         );
       }
-      if (greekTerm && lxxMatches.refs.length) {
-        samplesTasks.push(
+      if (false && greekTerm && lxxMatches.refs.length) {
+              samplesTasks.push(
           buildSamplesForRefs(lxxMatches.refs, 'lxx', 3, lxxMatches.texts, options).then((lxxSamples) => {
             cards.push(buildCorrespondenceCard({
               title: 'LXX (AT)',
@@ -1495,7 +1495,6 @@ if (enforceSpanishReferenceCorrespondence && enabledCorpora.has('he')) {
 
       const corpusConfigs = [
         { lang: 'gr', refs: grRefs, preloaded: null },
-        { lang: 'lxx', refs: lxxMatches.refs, preloaded: lxxMatches.texts },
         { lang: 'he', refs: heRefs, preloaded: null },
         { lang: 'es', refs: esRefs, preloaded: null }
       ]

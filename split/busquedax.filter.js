@@ -140,10 +140,10 @@
 
   function getCorporaForScope(scope) {
       if (scope === 'es') return ['es'];
-      if (scope === 'gr') return ['gr', 'lxx'];
+      if (scope === 'gr') return ['gr'];
       if (scope === 'he') return ['he'];
-     return ['gr', 'lxx', 'he', 'es'];
-    }
+     return ['gr', 'he', 'es'];
+         }
 
   function normalizeByLang(text, lang) {
       if (lang === 'gr') return normalizeGreek(text);
