@@ -1118,16 +1118,33 @@ async function updateDictionaryComparison(items, rawQuery) {
     const tbody = document.getElementById('dictionaryComparisonTbody');
     if (!tbody) return;
 
+ const fallbackEricOnly = async (message) => {
+        tbody.innerHTML = '<tr><td colspan="2" class="muted">Consultando diccionario Eric…</td></tr>';
+        if (window.AnalisisDiccionarioBEric?.ensureLoaded) {
+            await window.AnalisisDiccionarioBEric.ensureLoaded();
+        }
+        const ericBlock = window.AnalisisDiccionarioBEric?.renderEricDictionaryCell
+            ? window.AnalisisDiccionarioBEric.renderEricDictionaryCell(rawQuery, null)
+            : '<div class="comparison-pre comparison-pre--hebrew">Sin datos en el diccionario Eric.</div>';
+
+        tbody.innerHTML = `
+          <tr>
+            <td><div class="comparison-pre comparison-pre--greek">${escapeHtml(message)}</div></td>
+            <td>${ericBlock}</td>
+          </tr>
+        `;
+    };
+
     const primary = Array.isArray(items) && items.length ? items[0] : null;
     if (!primary) {
-        tbody.innerHTML = '<tr><td colspan="2" class="muted">Sin candidato principal para comparar.</td></tr>';
-        return;
+ await fallbackEricOnly('Sin candidato principal para comparar en el corpus trilingüe. Se muestra coincidencia directa por consulta.');
+         return;
     }
 
     const hebrewCandidate = String(primary.he || primary.hebrew || primary.palabra || '').trim();
     if (!hebrewCandidate) {
-        tbody.innerHTML = '<tr><td colspan="2" class="muted">La primera fila no contiene hebreo utilizable para consultar el diccionario.</td></tr>';
-        return;
+        await fallbackEricOnly('La primera fila no contiene hebreo utilizable para el comparador principal. Se muestra coincidencia directa por consulta.');
+                return;
     }
 
     tbody.innerHTML = '<tr><td colspan="2" class="muted">Consultando diccionarios…</td></tr>';

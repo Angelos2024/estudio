@@ -255,5 +255,54 @@ Aquí tienes las entradas correspondientes a la sección del Salmo 1:
     "transliteracion": "Mishpat",
     "equivalencia_espanol": "juicio / debido proceso",
     "observacion": "Contexto legal donde los Resha'im no podrán sostenerse debido a su falta de peso y coherencia espiritual."
+  },
+  {
+    "id": 37,
+    "texto_hebreo": "רָגְשׁוּ",
+    "transliteracion": "Rageshu",
+    "equivalencia_espanol": "varían / se agitan",
+    "observacion": "Proveniente del verbo Ragash. Describe la acción de las naciones de estar en constante cambio o agitación emocional."
+  },
+  {
+    "id": 38,
+    "texto_hebreo": "רֶגֶשׁ",
+    "transliteracion": "Regesh",
+    "equivalencia_espanol": "sentimiento / emoción",
+    "observacion": "Se refiere a lo que es variable y voluble. Es la senda de los gentiles, basada en altibajos eufóricos o falta de ganas."
+  },
+  {
+    "id": 39,
+    "texto_hebreo": "גּוֹי",
+    "transliteracion": "Goy",
+    "equivalencia_espanol": "nación / gentil",
+    "observacion": "Originalmente define a un pueblo sin origen establecido o producto de mestizajes. No tiene un sentido intrínsecamente negativo, pues Abraham es padre de multitud de Goyim."
+  },
+  {
+    "id": 40,
+    "texto_hebreo": "קָדוֹשׁ",
+    "transliteracion": "Qadosh",
+    "equivalencia_espanol": "santo / apartado",
+    "observacion": "Cualidad de aquello que es apartado para Hashem. Yisra'el es llamado una nación (Goy) que posee esta característica."
+  },
+  {
+    "id": 41,
+    "texto_hebreo": "לְאֹם",
+    "transliteracion": "Leóm",
+    "equivalencia_espanol": "nación / ciudad-estado",
+    "observacion": "Se refiere específicamente a estructuras de poder con capacidad de invasión o conquista."
+  },
+  {
+    "id": 42,
+    "texto_hebreo": "דָּבָר",
+    "transliteracion": "Davar",
+    "equivalencia_espanol": "palabra / promesa",
+    "observacion": "En el contexto de la escritura, es aquello que no vuelve vacío, sino que realiza la voluntad divina y produce fruto."
+  },
+  {
+    "id": 43,
+    "texto_hebreo": "רִיק",
+    "transliteracion": "Riq",
+    "equivalencia_espanol": "vacío / sin fruto",
+    "observacion": "Aquello que no tiene desarrollo ni capacidad de prolongar la vida. Es en lo que las naciones depositan su confianza."
   }
 ]
