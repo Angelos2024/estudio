@@ -1,1661 +1,2865 @@
 [
   {
     "id": 1,
-    "texto_hebreo": "שִׁיר הַשִּׁירִים",
-    "transliteracion": "Shir Hashirim",
-    "equivalencia_espanol": "Canto de los Cánticos",
-    "observacion": "Título del libro; se trabaja como cántico mayor/superlativo."
+    "texto_hebreo": "שִׁיר",
+    "transliteracion": "Shir",
+    "equivalencia_espanol": "Canto; canción",
+    "observacion": "En el contexto de Shir Hashirim, se refiere a la composición lírica de más alta categoría o excelencia."
   },
   {
     "id": 2,
-    "texto_hebreo": "שִׁיר",
-    "transliteracion": "Shir",
-    "equivalencia_espanol": "cántico",
-    "observacion": "Se usa para enlazar cántico con proclamación/evangelio en el marco del estudio."
+    "texto_hebreo": "שִׁירִים",
+    "transliteracion": "Shirim",
+    "equivalencia_espanol": "Cánticos; canciones",
+    "observacion": "Plural de Shir. Indica una pluralidad de grados o la máxima excelencia en la poesía hebrea."
   },
   {
     "id": 3,
-    "texto_hebreo": "חַג",
-    "transliteracion": "Jag / Hag",
-    "equivalencia_espanol": "fiesta",
-    "observacion": "Se explica con matiz de centro/punto y se vincula al contexto de Pésaj."
+    "texto_hebreo": "מָשִׁיחַ",
+    "transliteracion": "Mashiaj",
+    "equivalencia_espanol": "Mesías; Ungido",
+    "observacion": "Relacionado con el cordero santificado y sacrificado en Pèsaj, cuya sepultura cumple la profecía del grano de trigo."
   },
   {
     "id": 4,
-    "texto_hebreo": "שְׁלֹמֹה",
-    "transliteracion": "Shlomó / Shlomoh",
-    "equivalencia_espanol": "Shalom de El / Shalom de Hashem",
-    "observacion": "Se enfatiza el valor teológico del nombre más que solo el personaje histórico."
+    "texto_hebreo": "שָׁלוֹם",
+    "transliteracion": "Shalom",
+    "equivalencia_espanol": "Paz; pago; completo",
+    "observacion": "No es solo ausencia de guerra, sino el pago total de las deudas y el estado de plenitud absoluta."
   },
   {
     "id": 5,
-    "texto_hebreo": "שָׁלוֹם",
-    "transliteracion": "Shalom",
-    "equivalencia_espanol": "completitud; pago de deudas; ausencia de deudas",
-    "observacion": "No se reduce a 'paz'; incluye plenitud, reconciliación y estado completo."
+    "texto_hebreo": "שְׁלֹמֹה",
+    "transliteracion": "Shlomó",
+    "equivalencia_espanol": "Salomón",
+    "observacion": "Nombre que significa 'el Shalom de El'. Se sugiere que el verdadero protagonista es la paz divina."
   },
   {
     "id": 6,
-    "texto_hebreo": "מָשַׁךְ",
-    "transliteracion": "Mashaj",
-    "equivalencia_espanol": "atraer; sacar detrás de sí",
-    "observacion": "Usado para leer Cnt 1:4 como acción de arrastre/atracción del amado."
+    "texto_hebreo": "פֶּסַח",
+    "transliteracion": "Pèsaj",
+    "equivalencia_espanol": "Pascua; salto",
+    "observacion": "Tiempo del sacrificio donde Yehoshua' es presentado y sacrificado, coincidiendo con la alegoría de la tierra tragando el grano."
   },
   {
     "id": 7,
-    "texto_hebreo": "מָשְׁכֵנִי",
-    "transliteracion": "Moshejni / Mashjeni",
-    "equivalencia_espanol": "sácame/arrástrame detrás de ti",
-    "observacion": "Forma verbal aplicada a la corrección de Cnt 1:4."
+    "texto_hebreo": "רוּחַ",
+    "transliteracion": "Rúaj",
+    "equivalencia_espanol": "Espíritu; viento; hálito",
+    "observacion": "La fuerza inspiradora que viene sobre Salomón al final de su vida para la redacción de sus libros."
   },
   {
     "id": 8,
-    "texto_hebreo": "נָשַׁק",
-    "transliteracion": "Nashaq",
-    "equivalencia_espanol": "besar; entrar en comunión",
-    "observacion": "El beso se interpreta como contacto, cercanía y comunión, no solo gesto físico."
+    "texto_hebreo": "קֹדֶשׁ",
+    "transliteracion": "Qódesh",
+    "equivalencia_espanol": "Santidad; apartado",
+    "observacion": "Atributo aplicado al espíritu (Haqódesh) que inspira el cántico y la profecía."
   },
   {
     "id": 9,
-    "texto_hebreo": "פֶּה",
-    "transliteracion": "Peh",
-    "equivalencia_espanol": "boca",
-    "observacion": "Se subraya como fuente exclusiva de palabra/procedencia ('la boca de Hashem')."
+    "texto_hebreo": "מִדְרָשׁ",
+    "transliteracion": "Midrash",
+    "equivalencia_espanol": "Estudio; investigación; exégesis",
+    "observacion": "Género literario y método de interpretación que analiza la inspiración de los escritos salomónicos."
   },
   {
     "id": 10,
-    "texto_hebreo": "דּוֹד",
-    "transliteracion": "Dod",
-    "equivalencia_espanol": "amado",
-    "observacion": "En Cnt 1:2 se conecta con la lectura alegórica de los 'amados'."
+    "texto_hebreo": "תַּלְמוּד",
+    "transliteracion": "Talmud",
+    "equivalencia_espanol": "Instrucción; aprendizaje",
+    "observacion": "Obra que documenta las discusiones sobre la clasificación y el género literario de libros como Daniel y Cantares."
   },
   {
     "id": 11,
-    "texto_hebreo": "דּוֹדִים",
-    "transliteracion": "Dodim",
-    "equivalencia_espanol": "amados; amores",
-    "observacion": "En el estudio se privilegia el matiz de 'amados' (personas) según contexto."
+    "texto_hebreo": "הַשֵּׁם",
+    "transliteracion": "Hashem",
+    "equivalencia_espanol": "El Nombre",
+    "observacion": "Designación reverencial de la Divinidad, asociada al Shalom que Mashiaj otorga, distinto al del mundo."
   },
   {
     "id": 12,
-    "texto_hebreo": "יַיִן",
-    "transliteracion": "Yayin",
-    "equivalencia_espanol": "vino",
-    "observacion": "Puede llevar matiz negativo (doctrina errada/placer que nubla) o positivo (gozo) según el pasaje."
+    "texto_hebreo": "אֵל",
+    "transliteracion": "’El",
+    "equivalencia_espanol": "Dios; Poderoso",
+    "observacion": "Raíz de autoridad divina presente en el nombre de Salomón y en el concepto de la paz de Dios."
   },
   {
     "id": 13,
-    "texto_hebreo": "כֹּהֵן",
-    "transliteracion": "Kohen",
-    "equivalencia_espanol": "sacerdote; hombre libre",
-    "observacion": "Se resalta su función representativa de profecía y consulta de la voluntad divina."
+    "texto_hebreo": "פֶּה",
+    "transliteracion": "Peh",
+    "equivalencia_espanol": "Boca",
+    "observacion": "Citado en Cantares 1:2. Simboliza la dependencia y la gestión, como el pueblo de Egipto dependía de la 'boca' de José."
   },
   {
     "id": 14,
-    "texto_hebreo": "רוּחַ",
-    "transliteracion": "Ruaj / Rúaj",
-    "equivalencia_espanol": "ánimo; aliento; rúaj",
-    "observacion": "Se emplea en sentido de interioridad/voluntad y obra de transformación."
+    "texto_hebreo": "אֲדֹנָי",
+    "transliteracion": "’Adonay",
+    "equivalencia_espanol": "Señor; mis Señores",
+    "observacion": "Título de señorío vinculado al Canto de los Cantares en relación con el Shalom divino."
   },
   {
     "id": 15,
-    "texto_hebreo": "שֶׁמֶן",
-    "transliteracion": "Shemen",
-    "equivalencia_espanol": "aceite",
-    "observacion": "En varios pasajes se asocia a unción y subordinación total."
+    "texto_hebreo": "κανών",
+    "transliteracion": "Kanón",
+    "equivalencia_espanol": "Caña; regla; norma",
+    "observacion": "Se refiere a la medición y clasificación de los libros inspirados, tema central en el debate del siglo I sobre Cantares."
   },
   {
     "id": 16,
-    "texto_hebreo": "שְׁמָנִים",
-    "transliteracion": "Shmanin / Shemanim",
-    "equivalencia_espanol": "aceites",
-    "observacion": "Plural destacado en Cnt 1:3 para la alegoría de perfumes/aceites."
+    "texto_hebreo": "הוֹשֵׁעַ",
+    "transliteracion": "Hoshea'",
+    "equivalencia_espanol": "Oseas",
+    "observacion": "Profeta cuyo libro contiene composiciones alegóricas similares en estructura al Shir Hashirim."
   },
   {
     "id": 17,
-    "texto_hebreo": "יִצְהָר",
-    "transliteracion": "Yitzhar",
-    "equivalencia_espanol": "aceite fino",
-    "observacion": "Se distingue como aceite de mejor calidad."
+    "texto_hebreo": "יְשַׁעְיָהוּ",
+    "transliteracion": "Yeshayahu",
+    "equivalencia_espanol": "Isaías",
+    "observacion": "Libro profético citado como ejemplo de fragmentos de composiciones líricas y alegóricas."
   },
   {
     "id": 18,
-    "texto_hebreo": "מֵישָׁרִים",
-    "transliteracion": "Meysharim / Meisharim",
-    "equivalencia_espanol": "rectitud",
-    "observacion": "Se precisa como rectitud en sentido de 'no torcerse'."
+    "texto_hebreo": "דָּנִיֵּאל",
+    "transliteracion": "Daniyyel",
+    "equivalencia_espanol": "Daniel",
+    "observacion": "Libro cuya clasificación en la Biblia hebrea fue debatida por su estructura apocalíptica, no por su falta de inspiración."
   },
   {
     "id": 19,
-    "texto_hebreo": "שָׁחוֹר",
-    "transliteracion": "Shajor / Shahor",
-    "equivalencia_espanol": "negro",
-    "observacion": "Se explica como bloqueo de la luz; se evita lectura racial/étnica."
+    "texto_hebreo": "לָשׁוֹן",
+    "transliteracion": "Lashon / Leshon",
+    "equivalencia_espanol": "Lengua; idioma",
+    "observacion": "Se refiere tanto a la lengua de la Biblia como a los dialectos en circulación entre los descendientes de Ever[cite: 20]."
   },
   {
     "id": 20,
-    "texto_hebreo": "נָאוָה",
-    "transliteracion": "Navá / Navah",
-    "equivalencia_espanol": "hermosa; decorosa",
-    "observacion": "Se usa con matiz de decoro/adecuación, no solo belleza estética."
+    "texto_hebreo": "הַמִּקְרָא",
+    "transliteracion": "Hamiqrá",
+    "equivalencia_espanol": "La lectura; la Biblia",
+    "observacion": "Designación técnica para el lenguaje particular del pueblo de Yisra'el en las Escrituras[cite: 20]."
   },
   {
     "id": 21,
-    "texto_hebreo": "קֵדָר",
-    "transliteracion": "Qedar / Kedar",
-    "equivalencia_espanol": "Qedar (descendiente de Ismael)",
-    "observacion": "Se mantiene como referencia genealógica y simbólica en la comparación."
+    "texto_hebreo": "עֵבֶר",
+    "transliteracion": "Ever",
+    "equivalencia_espanol": "Eber",
+    "observacion": "Padre de los hebreos; sus descendientes hablaban diversos dialectos antes de la formación del hebreo bíblico[cite: 20]."
   },
   {
     "id": 22,
-    "texto_hebreo": "נֶפֶשׁ",
-    "transliteracion": "Nefesh",
-    "equivalencia_espanol": "ser; persona",
-    "observacion": "En Cnt 1:7 se usa como ser/persona viviente, no abstracción separada."
+    "texto_hebreo": "תְּהִלִּים",
+    "transliteracion": "Tehilim",
+    "equivalencia_espanol": "Alabanzas; Salmos",
+    "observacion": "Colección de expresiones e himnos que sirven de antecedente lingüístico al Shir Hashirim[cite: 22, 24]."
   },
   {
     "id": 23,
-    "texto_hebreo": "חָבֵר",
-    "transliteracion": "Javer / Javer",
-    "equivalencia_espanol": "compañero",
-    "observacion": "Se usa para relación de cercanía/compañerismo."
+    "texto_hebreo": "סֵפֶר",
+    "transliteracion": "Sefer",
+    "equivalencia_espanol": "Libro; escrito",
+    "observacion": "Término usado para referirse a obras completas o rollos específicos como el de Salmos[cite: 24]."
   },
   {
     "id": 24,
-    "texto_hebreo": "חֲבֵרִים",
-    "transliteracion": "Javerim / Javerim",
-    "equivalencia_espanol": "compañeros",
-    "observacion": "Plural de javer; se conserva como equivalencia relacional."
+    "texto_hebreo": "תַּרְגּוּם",
+    "transliteracion": "Targum",
+    "equivalencia_espanol": "Traducción; interpretación",
+    "observacion": "Fuente que enumera los diez cánticos espirituales, incluyendo el de Adam y el de Salomón[cite: 32, 33]."
   },
   {
     "id": 25,
-    "texto_hebreo": "אֱמוּנָה",
-    "transliteracion": "‘Emunáh",
-    "equivalencia_espanol": "fidelidad; doctrina de Dios",
-    "observacion": "Se enfatiza fidelidad como contenido y práctica doctrinal."
+    "texto_hebreo": "אָדָם",
+    "transliteracion": "’Adam",
+    "equivalencia_espanol": "Adam; hombre",
+    "observacion": "Primer hombre a quien se le atribuye el primer cántico tras recibir el perdón[cite: 23, 33]."
   },
   {
     "id": 26,
-    "texto_hebreo": "מוּסָר",
-    "transliteracion": "Musar",
-    "equivalencia_espanol": "disciplina; buenas maneras de Dios",
-    "observacion": "Se aplica a sabiduría formativa y adorno de conducta."
+    "texto_hebreo": "יְהוֹשֻׁעַ",
+    "transliteracion": "Yehoshua'",
+    "equivalencia_espanol": "Josué; Jesús",
+    "observacion": "Nombre que portan tanto el sucesor de Moisés como el Mesías en su rol de sacrificio y grano de trigo[cite: 37, 48, 51]."
   },
   {
     "id": 27,
-    "texto_hebreo": "גַּן־עֵדֶן",
-    "transliteracion": "Gan ‘Éden",
-    "equivalencia_espanol": "huerto del Edén",
-    "observacion": "Las viñas/huerto se leen frecuentemente como alusión al Gan ‘Éden."
+    "texto_hebreo": "חַג",
+    "transliteracion": "Jag",
+    "equivalencia_espanol": "Fiesta; punto central",
+    "observacion": "Nombre aplicado al cordero, representando el centro del sacrificio en Pèsaj[cite: 47]."
   },
   {
     "id": 28,
-    "texto_hebreo": "נָגִילָה וְנִשְׂמְחָה",
-    "transliteracion": "Nagilah venismejah",
-    "equivalencia_espanol": "nos alegraremos y nos regocijaremos",
-    "observacion": "Expresión destacada como fórmula de gozo vinculada al día de Hashem."
+    "texto_hebreo": "דּוֹד",
+    "transliteracion": "Dod",
+    "equivalencia_espanol": "Amado",
+    "observacion": "Representa figuras como Moisés, Aarón o el Mesías; sus plurales aluden a la Torah y la profecía[cite: 73, 74, 125]."
   },
   {
     "id": 29,
-    "texto_hebreo": "מִשְׁפָּט",
-    "transliteracion": "Mishpat",
-    "equivalencia_espanol": "debido proceso; juicio",
-    "observacion": "Aparece como precisión semántica al comentar textos paralelos."
+    "texto_hebreo": "כֹּהֵן",
+    "transliteracion": "Kohen",
+    "equivalencia_espanol": "Sacerdote; hombre libre",
+    "observacion": "Figura que representa la profecía y la capacidad de discernir las intenciones del corazón[cite: 80, 108]."
   },
   {
     "id": 30,
-    "texto_hebreo": "צְרוֹר",
-    "transliteracion": "Tzror",
-    "equivalencia_espanol": "amarre; manojo",
-    "observacion": "Se explota la lectura de 'amarre' para la imagen de la mirra."
+    "texto_hebreo": "אֶפְרַיִם",
+    "transliteracion": "Efráyim",
+    "equivalencia_espanol": "Efraín",
+    "observacion": "Relacionado en el Talmud con la figura del Mesías sufriente que no resucita[cite: 98]."
   },
   {
     "id": 31,
-    "texto_hebreo": "שַׁדַּי",
-    "transliteracion": "Shadai / Shaddai",
-    "equivalencia_espanol": "el poderoso de la montaña",
-    "observacion": "Se presenta con matiz montañoso, no solo como título tradicional."
+    "texto_hebreo": "מַלְכִּי־צֶדֶק",
+    "transliteracion": "Malkitzédeq",
+    "equivalencia_espanol": "Melquisedec",
+    "observacion": "Sacerdocio anterior y superior al levítico, bajo el cual ejerce Mashiaj[cite: 107, 108]."
   },
   {
     "id": 32,
-    "texto_hebreo": "כֹּפֶר",
-    "transliteracion": "Kofer / Kófer",
-    "equivalencia_espanol": "rescate; alheña",
-    "observacion": "Se trabaja el juego entre planta (alheña) y valor de rescate."
+    "texto_hebreo": "אַבָּא",
+    "transliteracion": "’Abá",
+    "equivalencia_espanol": "Abba; Padre",
+    "observacion": "Referencia a la plenitud de la deidad y a lo que aún no ha sido revelado[cite: 112]."
   },
   {
     "id": 33,
-    "texto_hebreo": "נֵרְדְּ",
-    "transliteracion": "Nerd / Nard / Nérd",
-    "equivalencia_espanol": "nardo",
-    "observacion": "Se reconocen opciones botánicas; se mantiene el término como imagen aromática."
+    "texto_hebreo": "שֶׁמֶן",
+    "transliteracion": "Shemen",
+    "equivalencia_espanol": "Aceite",
+    "observacion": "Símbolo de la unción y el buen nombre que atrae a los creyentes[cite: 117, 116]."
   },
   {
     "id": 34,
-    "texto_hebreo": "חֲבַצֶּלֶת",
-    "transliteracion": "Javatzelet / Havatzelet",
-    "equivalencia_espanol": "flor (del Sharón)",
-    "observacion": "Se mantiene transliteración técnica del término botánico de Cnt 2:1."
+    "texto_hebreo": "שְׁמָנִים",
+    "transliteracion": "Shmanin",
+    "equivalencia_espanol": "Aceites",
+    "observacion": "Plural que denota la variedad de matices en las intervenciones divinas[cite: 118, 144]."
   },
   {
     "id": 35,
-    "texto_hebreo": "שָׁרוֹן",
-    "transliteracion": "Sharón / Sharon",
-    "equivalencia_espanol": "planicie costera mediterránea",
-    "observacion": "Se explica como geografía concreta, no solo nombre propio."
+    "texto_hebreo": "יִצְהָר",
+    "transliteracion": "Yitzhar",
+    "equivalencia_espanol": "Aceite fino; aceite fresco",
+    "observacion": "Aceite de la mejor calidad, vinculado a los 'hijos del aceite' en la profecía[cite: 121, 122]."
   },
   {
     "id": 36,
-    "texto_hebreo": "עֵמֶק",
-    "transliteracion": "‘Émeq / Emeq",
-    "equivalencia_espanol": "valle",
-    "observacion": "Se destaca el sentido de valle entre montañas."
+    "texto_hebreo": "עַלְמָה",
+    "transliteracion": "’Almáh",
+    "equivalencia_espanol": "Doncella; virgen",
+    "observacion": "Término que resalta la pureza ceremonial, usado indistintamente con Betuláh[cite: 131, 143]."
   },
   {
     "id": 37,
-    "texto_hebreo": "עֲמָקִים",
-    "transliteracion": "‘Amaqim / Amakim",
-    "equivalencia_espanol": "valles",
-    "observacion": "Plural de ‘emeq; se conserva en la explicación de Cnt 2:1."
+    "texto_hebreo": "בְּתוּלָה",
+    "transliteracion": "Betuláh",
+    "equivalencia_espanol": "Virgen",
+    "observacion": "Se aplica a ciudades capitales amuralladas (como Jerusalén o Babilonia) por su carácter cerrado y protegido[cite: 131, 133, 138]."
   },
   {
     "id": 38,
-    "texto_hebreo": "שׁוֹשַׁנָּה",
-    "transliteracion": "Shoshanah",
-    "equivalencia_espanol": "lirio",
-    "observacion": "Se usa para la imagen del lirio en el valle y en el huerto."
+    "texto_hebreo": "צִיּוֹן",
+    "transliteracion": "Tziyón",
+    "equivalencia_espanol": "Sión",
+    "observacion": "Referencia a la ciudad cuya muralla es Dios mismo, personificada como virgen[cite: 134, 143]."
   },
   {
     "id": 39,
-    "texto_hebreo": "שׁוֹשַׁנִּים",
-    "transliteracion": "Shoshanim",
-    "equivalencia_espanol": "lirios",
-    "observacion": "En el estudio se conecta con los recogidos/pastoreados por el amado."
+    "texto_hebreo": "מָשַׁך",
+    "transliteracion": "Mashaj",
+    "equivalencia_espanol": "arrastrar; acarrear",
+    "observacion": "Verbo utilizado en Cantares 1:4 y en la historia de Yosef cuando fue sacado del foso."
   },
   {
     "id": 40,
-    "texto_hebreo": "צֵל",
-    "transliteracion": "Tsel",
-    "equivalencia_espanol": "sombra",
-    "observacion": "Se enfatiza protección/cobertura, no mera ausencia de luz."
+    "texto_hebreo": "מֵישָׁרִים",
+    "transliteracion": "Meysharim",
+    "equivalencia_espanol": "rectitud; lo que es recto",
+    "observacion": "Concepto que describe una relación profunda con el amado, mencionada en Salmos 17:2 y Cantares 1:4."
   },
   {
     "id": 41,
-    "texto_hebreo": "חָמַד",
-    "transliteracion": "Jamad / Jamad",
-    "equivalencia_espanol": "codiciar; desear",
-    "observacion": "Se vincula explícitamente con el verbo de 'no codiciar'."
+    "texto_hebreo": "מִשְׁפָּט",
+    "transliteracion": "Mishpat",
+    "equivalencia_espanol": "debido proceso; juicio",
+    "observacion": "Se refiere a lo que sale de delante del amado para contemplar la rectitud."
   },
   {
     "id": 42,
-    "texto_hebreo": "חִמַּדְתִּי",
-    "transliteracion": "Jimmadti / Chimadti",
-    "equivalencia_espanol": "deseé; tuve deseo",
-    "observacion": "Se comenta dentro de Cnt 2:3 junto a la permanencia bajo su sombra."
+    "texto_hebreo": "שָׁחֹר",
+    "transliteracion": "Shajor",
+    "equivalencia_espanol": "negro; bloqueo de luz",
+    "observacion": "En Cantares 1:5, no se refiere a etnias o razas, sino a la opacidad o bloqueo de la iluminación espiritual."
   },
   {
     "id": 43,
-    "texto_hebreo": "צְבָאוֹת",
-    "transliteracion": "Tzva’ot / Tzevaot",
-    "equivalencia_espanol": "ejércitos",
-    "observacion": "En Cnt 2:7 se resalta la forma hebrea del juramento."
+    "texto_hebreo": "נָאוָה",
+    "transliteracion": "Navá",
+    "equivalencia_espanol": "decoro; hermosa; adornada",
+    "observacion": "Indica una promesa de ser embellecida o decorada en el mundo a pesar de estar momentáneamente opacada."
   },
   {
     "id": 44,
-    "texto_hebreo": "הַר",
-    "transliteracion": "Har",
-    "equivalencia_espanol": "montaña",
-    "observacion": "Se distingue de colina por mayor elevación."
+    "texto_hebreo": "קֵדָר",
+    "transliteracion": "Qedar",
+    "equivalencia_espanol": "Cedar (tiendas de)",
+    "observacion": "Referencia a la oscuridad o sencillez externa de la amada mientras está cautiva."
   },
   {
     "id": 45,
-    "texto_hebreo": "גִּבְעָה",
-    "transliteracion": "Givah / Giv‘ah",
-    "equivalencia_espanol": "colina",
-    "observacion": "Se contrasta con har en el comentario de la geografía simbólica."
+    "texto_hebreo": "שְׁלֹמֹה",
+    "transliteracion": "Shlomó",
+    "equivalencia_espanol": "Salomón; su paz",
+    "observacion": "Mencionado en relación con las cortinas del palacio que contrastan con la apariencia de la amada."
   },
   {
     "id": 46,
-    "texto_hebreo": "מֵצִיץ",
-    "transliteracion": "Metzit / Metzitz",
-    "equivalencia_espanol": "asomarse; germinar (matiz del estudio)",
-    "observacion": "Se explota la idea de brote/aparición en la lectura alegórica."
+    "texto_hebreo": "שִׁיר",
+    "transliteracion": "Shir",
+    "equivalencia_espanol": "canto; canción",
+    "observacion": "Término base para el libro más sagrado del siglo I según el profesor Eric de Jesus."
   },
   {
     "id": 47,
-    "texto_hebreo": "סְמָדַר",
-    "transliteracion": "Smadar",
-    "equivalencia_espanol": "flor de la vid",
-    "observacion": "También se retoma después como rama/flor de la vid en aplicaciones del fruto."
+    "texto_hebreo": "הַשִּׁירִים",
+    "transliteracion": "Hashirim",
+    "equivalencia_espanol": "los cantos; las canciones",
+    "observacion": "Plural determinado que enfatiza la excelencia de la composición sobre cualquier otra."
   },
   {
     "id": 48,
-    "texto_hebreo": "עָרֵב",
-    "transliteracion": "‘Arev / Arev",
-    "equivalencia_espanol": "agradable; reconfortante",
-    "observacion": "Se usa para calificar la voz como algo placentero/reconfortante."
+    "texto_hebreo": "נָגִילָה",
+    "transliteracion": "Nagilah",
+    "equivalencia_espanol": "nos gozaremos; regocijaremos",
+    "observacion": "Expresa un gozo basado en una experiencia nueva o novedosa que complementa lo anterior."
   },
   {
     "id": 49,
-    "texto_hebreo": "פּוּחַ",
-    "transliteracion": "Puaj / Puáj",
-    "equivalencia_espanol": "insuflar; soplar",
-    "observacion": "Leído con idea de introducir aliento/soplo en Cnt 2:17 y 4:6."
+    "texto_hebreo": "וְנִשְׂמְחָה",
+    "transliteracion": "Venismejah",
+    "equivalencia_espanol": "y nos alegraremos",
+    "observacion": "Se refiere a la alegría por aquello que ya ha ocurrido o se ha manifestado anteriormente."
   },
   {
     "id": 50,
-    "texto_hebreo": "תַּחַת",
-    "transliteracion": "Tajad / Tájat",
-    "equivalencia_espanol": "debajo; cubriendo por debajo",
-    "observacion": "En el estudio se usa para explicar 'izquierda תחת cabeza' como cubrir/tapar."
+    "texto_hebreo": "אַהֲבָה",
+    "transliteracion": "Ahaváh",
+    "equivalencia_espanol": "amor; voluntad incondicional",
+    "observacion": "Definido como la ejecución de la voluntad de Dios de manera desinteresada; Dios es su gran ejemplo."
   },
   {
     "id": 51,
-    "texto_hebreo": "אַהֲבָה",
-    "transliteracion": "‘Ahaváh",
-    "equivalencia_espanol": "amor",
-    "observacion": "Se usa en marcos alegóricos; a veces se contrasta con bienes/casa en Cnt 8."
+    "texto_hebreo": "תּוֹעֵבָה",
+    "transliteracion": "To'evah",
+    "equivalencia_espanol": "abominación; distorsión",
+    "observacion": "Se asocia con todo aquello que representa una distorsión de la voluntad divina."
   },
   {
     "id": 52,
-    "texto_hebreo": "מִשְׁכָּב",
-    "transliteracion": "Mishkav",
-    "equivalencia_espanol": "lecho; estado de inoperancia",
-    "observacion": "Se amplía a incapacidad/inactividad en la lectura de Cnt 3:1."
+    "texto_hebreo": "גַּן",
+    "transliteracion": "Gan",
+    "equivalencia_espanol": "huerto; jardín",
+    "observacion": "Espacio de custodia; alude al lugar donde el hombre fue puesto como guardián y siervo."
   },
   {
     "id": 53,
-    "texto_hebreo": "שָׁכַב",
-    "transliteracion": "Shajab / Shakav",
-    "equivalencia_espanol": "acostarse",
-    "observacion": "Raíz base de mishkav; se subraya su rango amplio de matices."
+    "texto_hebreo": "עֵדֶן",
+    "transliteracion": "Éden",
+    "equivalencia_espanol": "deleite; Edén",
+    "observacion": "Contexto del huerto primigenio; relacionado con las 'viñas' que la amada debe guardar."
   },
   {
     "id": 54,
-    "texto_hebreo": "שֹׁמֵר",
-    "transliteracion": "Shomer",
-    "equivalencia_espanol": "guardián; custodio",
-    "observacion": "Aplicado a los guardianes que rodean la ciudad (vigilar/custodiar)."
+    "texto_hebreo": "תּוֹרָה",
+    "transliteracion": "Torah",
+    "equivalencia_espanol": "instrucción; ley",
+    "observacion": "Identificada como 'la madre' y la fuente que contiene la forma de la ciencia y la verdad."
   },
   {
     "id": 55,
-    "texto_hebreo": "עִיר",
-    "transliteracion": "‘Ir",
-    "equivalencia_espanol": "ciudad",
-    "observacion": "Se comenta junto a mercados y plazas como espacios de circulación de ofertas."
-  },
-  {
-    "id": 56,
-    "texto_hebreo": "בֵּית אָב",
-    "transliteracion": "Beyt ‘av",
-    "equivalencia_espanol": "casa paterna",
-    "observacion": "Se interpreta como forma de pensar/cosmovisión."
-  },
-  {
-    "id": 57,
-    "texto_hebreo": "בֵּית אֵם",
-    "transliteracion": "Beyt em",
-    "equivalencia_espanol": "casa materna",
-    "observacion": "Se interpreta como forma de actuar/conducta adquirida."
-  },
-  {
-    "id": 58,
-    "texto_hebreo": "עַמּוּד עָשָׁן",
-    "transliteracion": "‘Amud ‘ashan",
-    "equivalencia_espanol": "columna de humo",
-    "observacion": "Se asocia con lenguaje de juicio y señales proféticas."
-  },
-  {
-    "id": 59,
-    "texto_hebreo": "מִטָּה",
-    "transliteracion": "Mittá",
-    "equivalencia_espanol": "cama",
-    "observacion": "Leída como lugar de comunión; también puede vincularse a enfermedad en otros textos."
-  },
-  {
-    "id": 60,
-    "texto_hebreo": "חֶרֶב",
-    "transliteracion": "Jerev / Jérev",
-    "equivalencia_espanol": "espada",
-    "observacion": "Interpretada como palabra de YHWH."
-  },
-  {
-    "id": 61,
-    "texto_hebreo": "יָרֵךְ",
-    "transliteracion": "Yaréj / Yarej",
-    "equivalencia_espanol": "muslo",
-    "observacion": "Se asocia a promesas/juramento (alusión a Abraham)."
-  },
-  {
-    "id": 62,
-    "texto_hebreo": "רְפִידָה",
-    "transliteracion": "Refid / Refidáh",
-    "equivalencia_espanol": "reclinatorio; tapizado/collar (según lectura)",
-    "observacion": "Se comenta con matiz material y simbólico en el carro/cama de Shlomó."
-  },
-  {
-    "id": 63,
-    "texto_hebreo": "צַמָּתֵךְ",
-    "transliteracion": "Tzamatej / Tsammatek",
-    "equivalencia_espanol": "(tu) velo/trenza (valor debatido)",
-    "observacion": "Se señala discusión antigua sobre el valor preciso de la palabra."
-  },
-  {
-    "id": 64,
-    "texto_hebreo": "שֵׂעָר",
-    "transliteracion": "Se‘ar / Se'ar",
-    "equivalencia_espanol": "cabello",
-    "observacion": "Se usan lecturas simbólicas de honra y condición visible."
-  },
-  {
-    "id": 65,
-    "texto_hebreo": "נָזִיר",
-    "transliteracion": "Nazir",
-    "equivalencia_espanol": "consagrado/nazir",
-    "observacion": "Se compara con reglas de cabello y casos excepcionales (Sansón, Samuel)."
-  },
-  {
-    "id": 66,
-    "texto_hebreo": "גִּלְעָד",
-    "transliteracion": "Gil‘ad / Gil’ad",
-    "equivalencia_espanol": "Galaad (testigo)",
-    "observacion": "Se explota etimológicamente como piedra/testigo en el comentario."
-  },
-  {
-    "id": 67,
-    "texto_hebreo": "קְצוּבוֹת",
-    "transliteracion": "Ketzuvot / Qetzuvot",
-    "equivalencia_espanol": "cortadas; trasquiladas",
-    "observacion": "Se observa como forma particular aplicada al rebaño (ovejas pequeñas/trasquiladas)."
-  },
-  {
-    "id": 68,
-    "texto_hebreo": "שְׁכוּלָּה",
-    "transliteracion": "Shekuláh",
-    "equivalencia_espanol": "privada de hijo; no estéril sino enlutada",
-    "observacion": "Se aclara el matiz de madre que perdió hijo (no aborto)."
-  },
-  {
-    "id": 69,
-    "texto_hebreo": "חוּט הַשָּׁנִי",
-    "transliteracion": "Jut Hashaní / Qjut shani",
-    "equivalencia_espanol": "hilo de grana",
-    "observacion": "Se conecta con la señal/cuerda escarlata (Rahab) y el habla/labios."
-  },
-  {
-    "id": 70,
-    "texto_hebreo": "נָוֶה",
-    "transliteracion": "Naveh",
-    "equivalencia_espanol": "bello/apropiado (forma comentada)",
-    "observacion": "Se usa junto a otras formas de belleza/decoro en la descripción."
-  },
-  {
-    "id": 71,
-    "texto_hebreo": "פֶּלַח",
-    "transliteracion": "Pelaj",
-    "equivalencia_espanol": "rebanada",
-    "observacion": "Aplicado a la imagen de la sien como media granada/rebanada."
-  },
-  {
-    "id": 72,
-    "texto_hebreo": "רַקָּה",
-    "transliteracion": "Racáh / Raqah",
-    "equivalencia_espanol": "sien",
-    "observacion": "Se interpreta en el marco de mente/transformación."
-  },
-  {
-    "id": 73,
-    "texto_hebreo": "צַוָּאר",
-    "transliteracion": "Tzav’ar / Tsavvar",
-    "equivalencia_espanol": "cuello",
-    "observacion": "Lugar de sujeción/autoridad en la alegoría del amado."
-  },
-  {
-    "id": 74,
-    "texto_hebreo": "גָּרוֹן",
-    "transliteracion": "Garon",
-    "equivalencia_espanol": "garganta",
-    "observacion": "Se distingue como parte interior del cuello."
-  },
-  {
-    "id": 75,
-    "texto_hebreo": "גַּרְגֶּרֶת",
-    "transliteracion": "Gargerah",
-    "equivalencia_espanol": "base del cuello; garganta",
-    "observacion": "Se menciona como término relacionado con la zona del cuello."
-  },
-  {
-    "id": 76,
-    "texto_hebreo": "גְּרוֹנִי",
-    "transliteracion": "Groni",
-    "equivalencia_espanol": "garganta (mi garganta); gutural",
-    "observacion": "Se usa para matiz fonético/gutural."
-  },
-  {
-    "id": 77,
-    "texto_hebreo": "נֶפֶשׁ",
-    "transliteracion": "Nefesh",
-    "equivalencia_espanol": "cuello (extensión semántica)",
-    "observacion": "Además de 'ser/persona', se destaca su uso extendido para cuello/cuerpo."
-  },
-  {
-    "id": 78,
-    "texto_hebreo": "תַּלְפִּיּוֹת",
-    "transliteracion": "Talpiyod / Talpiyot",
-    "equivalencia_espanol": "ordenado; bien hecho (lectura del estudio)",
-    "observacion": "Palabra rara; se explica desde idea de orden/arreglo/edificación en orden."
-  },
-  {
-    "id": 79,
-    "texto_hebreo": "שִׁלְטֵי",
-    "transliteracion": "Shiltei",
-    "equivalencia_espanol": "aljabas/escudos (según explicación)",
-    "observacion": "Se toma como contenedores ligados a flechas/mandamientos en la alegoría."
-  },
-  {
-    "id": 80,
-    "texto_hebreo": "גִּבּוֹרִים",
-    "transliteracion": "Giborim",
-    "equivalencia_espanol": "valientes; mandamientos (en la alegoría)",
-    "observacion": "En el pasaje se reinterpretan como recursos de los mandamientos."
-  },
-  {
-    "id": 81,
-    "texto_hebreo": "אֶלֶף",
-    "transliteracion": "Elef",
-    "equivalencia_espanol": "Torah; doctrina (en este marco)",
-    "observacion": "Se rechaza aquí la lectura meramente numérica 'mil' y se enfatiza enseñanza."
-  },
-  {
-    "id": 82,
-    "texto_hebreo": "כַּלָּה",
-    "transliteracion": "Calá / Kallah",
-    "equivalencia_espanol": "novia (con fecha/estado ceremonial)",
-    "observacion": "Se define con matiz de situación matrimonial concreta."
-  },
-  {
-    "id": 83,
-    "texto_hebreo": "אֲמָנָה",
-    "transliteracion": "Amanáh",
-    "equivalencia_espanol": "Amanáh (topónimo)",
-    "observacion": "Se conserva el valor geográfico y simbólico en la subida/llamado."
-  },
-  {
-    "id": 84,
-    "texto_hebreo": "לִבַּבְתִּנִי",
-    "transliteracion": "Libavtini / Libabtini",
-    "equivalencia_espanol": "me has cautivado el corazón",
-    "observacion": "Explicado desde la raíz corazón (lev/levav)."
-  },
-  {
-    "id": 85,
-    "texto_hebreo": "גַּן נָעוּל",
-    "transliteracion": "Gan na‘ul",
-    "equivalencia_espanol": "huerto cerrado",
-    "observacion": "Se aplica como imagen de separación/consagración y acceso restringido."
-  },
-  {
-    "id": 86,
-    "texto_hebreo": "מַעְיָן חָתוּם",
-    "transliteracion": "Ma‘yan jatum",
-    "equivalencia_espanol": "fuente sellada",
-    "observacion": "Se asocia a Torah sellada/documento que solo el autorizado abre."
-  },
-  {
-    "id": 87,
-    "texto_hebreo": "פַּרְדֵּס",
-    "transliteracion": "Pardes",
-    "equivalencia_espanol": "huerto/parque cerrado",
-    "observacion": "Se mantiene dentro del campo semántico de jardín cercado y abundancia."
-  },
-  {
-    "id": 88,
-    "texto_hebreo": "מוֹר",
-    "transliteracion": "Mor",
-    "equivalencia_espanol": "mirra",
-    "observacion": "Frecuentemente asociada al sacrificio consumado y al monte de la mirra."
-  },
-  {
-    "id": 89,
-    "texto_hebreo": "לְבוֹנָה",
-    "transliteracion": "Levonah",
-    "equivalencia_espanol": "incienso",
-    "observacion": "Se enlaza con olor fragante/testimonio y escenario sacrificial."
-  },
-  {
-    "id": 90,
-    "texto_hebreo": "טַל",
-    "transliteracion": "Tal",
-    "equivalencia_espanol": "rocío",
-    "observacion": "En Cnt 5 se destaca junto a la noche como carga del amado."
-  },
-  {
-    "id": 91,
-    "texto_hebreo": "רְסִיסֵי",
-    "transliteracion": "Resisim",
-    "equivalencia_espanol": "gotas finas; gotas de rocío",
-    "observacion": "Se toma como gotas/neblina de la noche en la imagen del cabello."
-  },
-  {
-    "id": 92,
-    "texto_hebreo": "לַיְלָה",
-    "transliteracion": "Layla",
-    "equivalencia_espanol": "noche",
-    "observacion": "Se relaciona con oscuridad, tragedia o ausencia de luz según el desarrollo."
-  },
-  {
-    "id": 93,
-    "texto_hebreo": "חוֹר",
-    "transliteracion": "Jor / Jor",
-    "equivalencia_espanol": "agujero; hueco",
-    "observacion": "Usado en Cnt 5 para la mano enviada 'desde el agujero'."
-  },
-  {
-    "id": 94,
-    "texto_hebreo": "יָד",
-    "transliteracion": "Yad",
-    "equivalencia_espanol": "mano; esfuerzo; ayuda",
-    "observacion": "También se comenta como medida/cantidad y símbolo de acción visible."
-  },
-  {
-    "id": 95,
-    "texto_hebreo": "אֶצְבַּע",
-    "transliteracion": "Etzbá’",
-    "equivalencia_espanol": "dedo",
-    "observacion": "Se asocia a lo fino, detallado y sutil de la obra."
-  },
-  {
-    "id": 96,
-    "texto_hebreo": "מַחֲמַדִּים",
-    "transliteracion": "Majamadim / Mahamadim",
-    "equivalencia_espanol": "atractivo; deseable",
-    "observacion": "Se resalta lo atractivo a los sentidos, incluso como clave de engaño."
-  },
-  {
-    "id": 97,
-    "texto_hebreo": "טַעַם",
-    "transliteracion": "Ta‘am",
-    "equivalencia_espanol": "sabor; discernimiento",
-    "observacion": "El paladar se explica como capacidad de discernir, no solo gusto físico."
-  },
-  {
-    "id": 98,
-    "texto_hebreo": "חֵךְ",
-    "transliteracion": "Jej / Jek",
-    "equivalencia_espanol": "paladar",
-    "observacion": "Se usa para degustación/discernimiento de la instrucción."
-  },
-  {
-    "id": 99,
-    "texto_hebreo": "צַח",
-    "transliteracion": "Tsáj / Tzaj",
-    "equivalencia_espanol": "nítido; sin sombras",
-    "observacion": "Atributo leído con matiz de inmutabilidad/luminosidad."
-  },
-  {
-    "id": 100,
-    "texto_hebreo": "אָדוֹם",
-    "transliteracion": "‘Adom",
-    "equivalencia_espanol": "rojo",
-    "observacion": "Se asocia al fuego y al juicio en el desarrollo simbólico."
-  },
-  {
-    "id": 101,
-    "texto_hebreo": "צַח וְאָדוֹם",
-    "transliteracion": "Tsáj ve’Adom",
-    "equivalencia_espanol": "nítido y rojo",
-    "observacion": "Se interpreta como fidelidad y juicio conviviendo en el amado."
-  },
-  {
-    "id": 102,
-    "texto_hebreo": "רְבָבָה",
-    "transliteracion": "Revavah / Revaváh",
-    "equivalencia_espanol": "diez mil; miríada",
-    "observacion": "Se comenta su uso numérico con proyección simbólica."
-  },
-  {
-    "id": 103,
-    "texto_hebreo": "נִדְגָּלוֹת",
-    "transliteracion": "Nidgalot",
-    "equivalencia_espanol": "abanderadas",
-    "observacion": "Se enlaza con estandartes/orden visible del campamento."
-  },
-  {
-    "id": 104,
-    "texto_hebreo": "דֶּגֶל",
-    "transliteracion": "Degel",
-    "equivalencia_espanol": "bandera; estandarte",
-    "observacion": "Raíz evocada al explicar nidgalot y el orden visible."
-  },
-  {
-    "id": 105,
-    "texto_hebreo": "לְחָיַיִם",
-    "transliteracion": "Lejayav / Leḥayayim",
-    "equivalencia_espanol": "mejillas",
-    "observacion": "Se toma dentro de la descripción facial del amado."
-  },
-  {
-    "id": 106,
-    "texto_hebreo": "תַּרְשִׁישׁ",
-    "transliteracion": "Tarshis / Tarshish",
-    "equivalencia_espanol": "tarshish (piedra)",
-    "observacion": "Se comenta como piedra asociada a lo lejano/geográfico."
-  },
-  {
-    "id": 107,
-    "texto_hebreo": "כֶּתֶם",
-    "transliteracion": "Ketem",
-    "equivalencia_espanol": "oro fino",
-    "observacion": "Se usa para subrayar incorruptibilidad/valor elevado."
-  },
-  {
-    "id": 108,
-    "texto_hebreo": "בָּחוּר",
-    "transliteracion": "Bajur / Bachur",
-    "equivalencia_espanol": "escogido; muchacho de mejor presentación",
-    "observacion": "Se amplía más allá de 'joven' hacia selección/vigor."
-  },
-  {
-    "id": 109,
-    "texto_hebreo": "תֹּהַר",
-    "transliteracion": "Tohar",
-    "equivalencia_espanol": "pureza; aptitud",
-    "observacion": "Se vincula con tahor como compatibilidad con Dios/santidad."
-  },
-  {
-    "id": 110,
-    "texto_hebreo": "טָהוֹר",
-    "transliteracion": "Tahor",
-    "equivalencia_espanol": "puro; apto",
-    "observacion": "Se usa como base semántica para explicar tohar."
-  },
-  {
-    "id": 111,
-    "texto_hebreo": "לְבָנָה",
-    "transliteracion": "Lebanah / Levanáh",
-    "equivalencia_espanol": "luna (blanca/llena)",
-    "observacion": "Se asocia a misericordia y plenitud luminosa."
-  },
-  {
-    "id": 112,
-    "texto_hebreo": "שַׁחַר",
-    "transliteracion": "Shàjar / Shajar",
-    "equivalencia_espanol": "amanecer; alba",
-    "observacion": "Se comenta como nombre teológico asociado a la luz que aparece."
-  },
-  {
-    "id": 113,
-    "texto_hebreo": "שׁוּלַמִּית",
-    "transliteracion": "Shulamit",
-    "equivalencia_espanol": "la llena del shalom",
-    "observacion": "Se interpreta desde shalom como plenitud recibida de Hashem."
-  },
-  {
-    "id": 114,
-    "texto_hebreo": "תִּרְצָה",
-    "transliteracion": "Tirsá / Tirsa",
-    "equivalencia_espanol": "Tirsa (ciudad)",
-    "observacion": "Se mantiene el topónimo con lectura de belleza/funcionamiento."
-  },
-  {
-    "id": 115,
-    "texto_hebreo": "כְּתִרְצָה",
-    "transliteracion": "Ketirsah",
-    "equivalencia_espanol": "como Tirsa",
-    "observacion": "Forma comparativa resaltada en Cnt 6:4."
-  },
-  {
-    "id": 116,
-    "texto_hebreo": "בַּעַל",
-    "transliteracion": "Ba‘al",
-    "equivalencia_espanol": "amo; dueño",
-    "observacion": "Se conserva el sentido de señorío/posesión."
-  },
-  {
-    "id": 117,
-    "texto_hebreo": "בַּעַל הָמוֹן",
-    "transliteracion": "Ba‘al Hamón / Ba‘al Hamóh",
-    "equivalencia_espanol": "Baal-hamón (nombre/expresión)",
-    "observacion": "Se comenta como expresión discutida, no necesariamente lugar físico."
-  },
-  {
-    "id": 118,
-    "texto_hebreo": "חֵמָה",
-    "transliteracion": "Jemáh / Jema",
-    "equivalencia_espanol": "calor; ardor",
-    "observacion": "Se asocia con movimiento/choque y con el celo/ira según contexto."
-  },
-  {
-    "id": 119,
-    "texto_hebreo": "שַׁלְהֶבֶתְיָה",
-    "transliteracion": "Shalhevetyah",
-    "equivalencia_espanol": "llama de YAH",
-    "observacion": "Se enlaza con fuego, celo y la espada del Edén en la explicación."
-  },
-  {
-    "id": 120,
-    "texto_hebreo": "אִישׁ",
-    "transliteracion": "‘Ish",
-    "equivalencia_espanol": "varón",
-    "observacion": "Se aclara que puede ser concreto, pero no siempre en sentido estrictamente biológico."
-  },
-  {
-    "id": 121,
-    "texto_hebreo": "אוּמָן",
-    "transliteracion": "‘Uman / Uman",
-    "equivalencia_espanol": "artesano",
-    "observacion": "Se destaca al artesano que trabaja joyas/metales como imagen técnica."
-  },
-  {
-    "id": 122,
-    "texto_hebreo": "לְבָנוֹן",
-    "transliteracion": "Levanón / Lebanon",
-    "equivalencia_espanol": "Líbano",
-    "observacion": "En el estudio se usa además con alusión al altar/sacrificio."
-  },
-  {
-    "id": 123,
-    "texto_hebreo": "תָּמָר",
-    "transliteracion": "Tamar",
-    "equivalencia_espanol": "palmera",
-    "observacion": "Se resalta que da fruto (en contraste con el cedro que da sombra)."
-  },
-  {
-    "id": 124,
-    "texto_hebreo": "אֶרֶז",
-    "transliteracion": "Érez",
-    "equivalencia_espanol": "cedro",
-    "observacion": "Se comenta su durabilidad y su papel de sombra/estructura."
-  },
-  {
-    "id": 125,
-    "texto_hebreo": "סַנְסַן",
-    "transliteracion": "Sansan",
-    "equivalencia_espanol": "racimo/ramaje (de palmera/vid según marco)",
-    "observacion": "Se trabaja en relación con fruto y agarre en Cnt 7."
-  },
-  {
-    "id": 126,
-    "texto_hebreo": "סַנְסַנִּים",
-    "transliteracion": "Sansanim",
-    "equivalencia_espanol": "racimos/ramajes",
-    "observacion": "Plural usado en la imagen del ascenso y fruto."
-  },
-  {
-    "id": 127,
-    "texto_hebreo": "אָמַרְתִּי",
-    "transliteracion": "Amarti",
-    "equivalencia_espanol": "yo dije",
-    "observacion": "Se destaca como clave gramatical para abrir la sección."
-  },
-  {
-    "id": 128,
-    "texto_hebreo": "הַוּוֹת",
-    "transliteracion": "Havot",
-    "equivalencia_espanol": "consecuencias; calamidades",
-    "observacion": "Se usa para hablar de efectos de no aplicar la Torah."
-  },
-  {
-    "id": 129,
-    "texto_hebreo": "שְׁכוֹל",
-    "transliteracion": "Shkol / Eshkol",
-    "equivalencia_espanol": "racimo",
-    "observacion": "Se comenta como fruto/racimo (vid o datilera según desarrollo)."
-  },
-  {
-    "id": 130,
-    "texto_hebreo": "צִיּוֹן",
-    "transliteracion": "Tziyon / Tzyión",
-    "equivalencia_espanol": "Sion",
-    "observacion": "Se explica como nombre espiritual de la ciudad celestial."
-  },
-  {
-    "id": 131,
-    "texto_hebreo": "בְּנוֹת צִיּוֹן",
-    "transliteracion": "Benot Tziyon",
-    "equivalencia_espanol": "hijas de Sion",
-    "observacion": "Se trabaja con valor alegórico según la sección."
-  },
-  {
-    "id": 132,
-    "texto_hebreo": "בְּנוֹת יְרוּשָׁלַיִם",
-    "transliteracion": "Benot Yerushalayim",
-    "equivalencia_espanol": "hijas de Jerusalén",
-    "observacion": "Aparecen con lecturas alegóricas variables (enemigos/pasiones/carnalidad según contexto)."
-  },
-  {
-    "id": 133,
     "texto_hebreo": "יְרוּשָׁלַיִם",
     "transliteracion": "Yerushalayim",
     "equivalencia_espanol": "Jerusalén",
-    "observacion": "Se conserva la forma hebrea en correcciones y alusiones."
+    "observacion": "Sus 'hijas' representan pasiones o elementos que asedian la ciudad y la comunión con el amado."
+  },
+  {
+    "id": 56,
+    "texto_hebreo": "צִיּוֹן",
+    "transliteracion": "Tzyión",
+    "equivalencia_espanol": "Sión",
+    "observacion": "Mencionada en Isaías en relación a sus hijas que actúan con soberbia y ojos desvergonzados."
+  },
+  {
+    "id": 57,
+    "texto_hebreo": "צֶדֶק",
+    "transliteracion": "Tzedek",
+    "equivalencia_espanol": "justicia; rectitud",
+    "observacion": "Parámetro bajo el cual el mundo es juzgado, según se cita en el Salmo 9:8."
+  },
+  {
+    "id": 58,
+    "texto_hebreo": "רָעָה",
+    "transliteracion": "Ra'ah",
+    "equivalencia_espanol": "pastorear; gobernar",
+    "observacion": "Actividad ligada a la provisión de estudio y práctica de la voluntad divina."
+  },
+  {
+    "id": 59,
+    "texto_hebreo": "צָהֳרַיִם",
+    "transliteracion": "Tsohorayim",
+    "equivalencia_espanol": "mediodía; momentos difíciles",
+    "observacion": "Simboliza tiempos de prueba o mortandad donde se requiere el descanso del Pastor."
+  },
+  {
+    "id": 60,
+    "texto_hebreo": "נָשִׁים",
+    "transliteracion": "Nashim",
+    "equivalencia_espanol": "mujeres; naciones; sistemas",
+    "observacion": "Representan a las naciones del mundo o sistemas de vida, no al género femenino."
+  },
+  {
+    "id": 61,
+    "texto_hebreo": "עִקְבֵי",
+    "transliteracion": "Iqvei",
+    "equivalencia_espanol": "huellas; rastros",
+    "observacion": "Alude a los testimonios y obras que Dios ha hecho a través de Su pueblo."
+  },
+  {
+    "id": 62,
+    "texto_hebreo": "גְּדִיּוֹת",
+    "transliteracion": "Guediyot",
+    "equivalencia_espanol": "cabritas; concupiscencias",
+    "observacion": "Alegoría de las pasiones humanas que se oponen al rebaño principal."
+  },
+  {
+    "id": 63,
+    "texto_hebreo": "אָהֳלָה",
+    "transliteracion": "Ahola",
+    "equivalencia_espanol": "Samaria",
+    "observacion": "Nombre que identifica a una de las 'hermanas' o ciudades llevadas cautivas."
+  },
+  {
+    "id": 64,
+    "texto_hebreo": "אָהֳלִיבָה",
+    "transliteracion": "Aholiba",
+    "equivalencia_espanol": "Jerusalén",
+    "observacion": "Referencia a la ciudad que, junto a Samaria, representa sistemas que se desviaron."
+  },
+  {
+    "id": 65,
+    "texto_hebreo": "עֵדֶר",
+    "transliteracion": "Eder",
+    "equivalencia_espanol": "rebaño",
+    "observacion": "Grupo de seguidores que perseveran en los caminos de Hashem bajo la guía de mensajeros."
+  },
+  {
+    "id": 66,
+    "texto_hebreo": "שִׁנְעָר",
+    "transliteracion": "Shinar",
+    "equivalencia_espanol": "Sinar; Babilonia",
+    "observacion": "Lugar de cautiverio donde se edifica casa a la desobediencia."
+  },
+  {
+    "id": 67,
+    "texto_hebreo": "מְנוּחָה",
+    "transliteracion": "Menujah",
+    "equivalencia_espanol": "descanso; reposo",
+    "observacion": "Estado alcanzado tras la instrucción (comida y bebida) de la voluntad de Dios."
+  },
+  {
+    "id": 69,
+    "texto_hebreo": "כֹּהֵן",
+    "transliteracion": "Kohen",
+    "equivalencia_espanol": "Sacerdote",
+    "observacion": "Identificado como aquel que tiene la función de pastorear al pueblo mediante la instrucción[cite: 212]."
+  },
+  {
+    "id": 70,
+    "texto_hebreo": "פֶּשֶׁר",
+    "transliteracion": "Pesher",
+    "equivalencia_espanol": "interpretación; analogía",
+    "observacion": "Método de interpretación utilizado en Zacarías para aplicar la figura del pastor a Moisés[cite: 213]."
+  },
+  {
+    "id": 71,
+    "texto_hebreo": "רוּחַ",
+    "transliteracion": "Ruaj",
+    "equivalencia_espanol": "viento; espíritu; fuerza",
+    "observacion": "Facultad divina a través de la cual se recibe el descanso espiritual."
+  },
+  {
+    "id": 72,
+    "texto_hebreo": "קֹדֶשׁ",
+    "transliteracion": "Qodesh",
+    "equivalencia_espanol": "santidad; apartado",
+    "observacion": "Calificativo del Ruaj que facilita la comprensión del descanso divino."
+  },
+  {
+    "id": 73,
+    "texto_hebreo": "אֱמוּנָה",
+    "transliteracion": "Emunah",
+    "equivalencia_espanol": "fidelidad; doctrina de Dios",
+    "observacion": "La huella que deja el rebaño y que debe ser imitada como resultado de una conducta recta[cite: 227, 230, 232]."
+  },
+  {
+    "id": 74,
+    "texto_hebreo": "מִצְוֹת",
+    "transliteracion": "Mitzvot",
+    "equivalencia_espanol": "mandamientos",
+    "observacion": "Asociados al acto de comer y beber espiritualmente dentro del pastoreo."
+  },
+  {
+    "id": 75,
+    "texto_hebreo": "נְבִיאִים",
+    "transliteracion": "Neviyim",
+    "equivalencia_espanol": "profetas",
+    "observacion": "Junto con la Torah, representan las manifestaciones de Dios para guiar en el camino[cite: 231, 232]."
+  },
+  {
+    "id": 76,
+    "texto_hebreo": "סוּסָה",
+    "transliteracion": "Susah",
+    "equivalencia_espanol": "yegua",
+    "observacion": "Metáfora de la amada cuando está mezclada o retenida en los sistemas del mundo[cite: 238, 240, 246]."
+  },
+  {
+    "id": 77,
+    "texto_hebreo": "פַּרְעֹה",
+    "transliteracion": "Par'oh",
+    "equivalencia_espanol": "Faraón",
+    "observacion": "Representa al poder que retiene a la amada o al sistema del mundo y el pecado[cite: 238, 239, 248, 249]."
+  },
+  {
+    "id": 78,
+    "texto_hebreo": "מוּסָר",
+    "transliteracion": "Musar",
+    "equivalencia_espanol": "instrucción; buenas maneras; amonestación",
+    "observacion": "La sabiduría que actúa como decoro y diadema de gracia en la cabeza[cite: 253, 256, 257]."
+  },
+  {
+    "id": 79,
+    "texto_hebreo": "זָהָב",
+    "transliteracion": "Zahav",
+    "equivalencia_espanol": "oro",
+    "observacion": "Representa lo incorruptible en las coronas de la amada[cite: 261, 262]."
+  },
+  {
+    "id": 80,
+    "texto_hebreo": "כֶּסֶף",
+    "transliteracion": "Kesef",
+    "equivalencia_espanol": "plata",
+    "observacion": "Simboliza el estado actual del ser y el pago de la redención o arras[cite: 262, 263, 266]."
+  },
+  {
+    "id": 81,
+    "texto_hebreo": "נֵרְדְּ",
+    "transliteracion": "Nerd",
+    "equivalencia_espanol": "nardo",
+    "observacion": "Fragancia que emana la amada mientras reconoce la cercanía del rey[cite: 270]."
+  },
+  {
+    "id": 82,
+    "texto_hebreo": "מָסוֹרה",
+    "transliteracion": "Masorah",
+    "equivalencia_espanol": "tradición; vocalización",
+    "observacion": "Sistema de signos para la lectura del texto bíblico que puede presentar variaciones respecto a los testigos antiguos[cite: 271, 273, 275]."
+  },
+  {
+    "id": 83,
+    "texto_hebreo": "מְסִבּוֹ",
+    "transliteracion": "Mesivo",
+    "equivalencia_espanol": "su reclinatorio; su mesa",
+    "observacion": "Lugar donde se encuentra el rey cuando el nardo de la amada exhala su olor[cite: 270]."
+  },
+  {
+    "id": 84,
+    "texto_hebreo": "לְחָיַיִם",
+    "transliteracion": "Lejayayim",
+    "equivalencia_espanol": "mejillas",
+    "observacion": "Metáfora de las palabras de la persona[cite: 252, 254]."
+  },
+  {
+    "id": 85,
+    "texto_hebreo": "צַוָּאר",
+    "transliteracion": "Tzavar",
+    "equivalencia_espanol": "cuello",
+    "observacion": "Metáfora que se refiere a las obras o hechos de la persona[cite: 254, 258]."
+  },
+  {
+    "id": 86,
+    "texto_hebreo": "εὐαγγέλιον",
+    "transliteracion": "Euangélion",
+    "equivalencia_espanol": "Evangelio",
+    "observacion": "Testigo textual y antorcha que ilumina en lugar oscuro; contiene la esencia de la Torah[cite: 236, 280]."
+  },
+  {
+    "id": 87,
+    "texto_hebreo": "עַד",
+    "transliteracion": "Ad",
+    "equivalencia_espanol": "hasta",
+    "observacion": "Se utiliza para marcar un límite temporal. En el análisis de Cnt 1:12, su vocalización es clave para auditar el texto masorético frente a los Targumin y determinar si el nardo da su olor 'mientras' o 'hasta' que el rey está en su fiesta."
+  },
+  {
+    "id": 88,
+    "texto_hebreo": "עוֹד",
+    "transliteracion": "Od",
+    "equivalencia_espanol": "aún; todavía",
+    "observacion": "Variante de lectura que surge al cuestionar la vocalización masorética. Funciona como un sondeo crítico para entender si la acción es continua o limitada a un evento específico."
+  },
+  {
+    "id": 89,
+    "texto_hebreo": "נֵרְדְּ",
+    "transliteracion": "Nerd",
+    "equivalencia_espanol": "nardo",
+    "observacion": "Fragancia que emite su olor de forma independiente a la situación externa. Se identifica con la lavanda o lavándula, representando un producto del extremo occidental de Yisra'el, en la llanura costera mediterránea."
+  },
+  {
+    "id": 90,
+    "texto_hebreo": "כֹּפֶר",
+    "transliteracion": "Kófer",
+    "equivalencia_espanol": "alheña; rescate; brea",
+    "observacion": "Representa el precio que se paga para que alguien no muera. Su raíz está ligada al acto de calafatear (cubrir) el arca, vinculando la protección física con la salvación jurídica o espiritual."
+  },
+  {
+    "id": 91,
+    "texto_hebreo": "אֶשְׁכּוֹל",
+    "transliteracion": "Eshkol",
+    "equivalencia_espanol": "gajo; pámpano; racimo",
+    "observacion": "Se refiere a la estructura del fruto, ya sea de la vid o de la palmera datilera. Más que el fruto en sí, lo relevante es el nombre, que apunta a la idea de un racimo que trae rescate."
+  },
+  {
+    "id": 92,
+    "texto_hebreo": "גֹּפֶר",
+    "transliteracion": "Gófer",
+    "equivalencia_espanol": "gofer",
+    "observacion": "Tipo de madera mencionado en Gn 6:14. Su mención es vital porque fonéticamente nos lleva a la primera vez que se introduce la raíz de 'Kófer' en el texto bíblico, estableciendo el precedente del rescate mediante la cobertura."
+  },
+  {
+    "id": 93,
+    "texto_hebreo": "תֵּבָה",
+    "transliteracion": "Tebah",
+    "equivalencia_espanol": "arca",
+    "observacion": "Contenedor o aposento de preservación. Es el escenario donde se aplica por primera vez el concepto de 'Kófer' (brea/rescate) para evitar la muerte bajo el juicio de las aguas."
+  },
+  {
+    "id": 94,
+    "texto_hebreo": "כִּפֵּר",
+    "transliteracion": "Kippér",
+    "equivalencia_espanol": "expiar; cubrir",
+    "observacion": "Verbo que guarda una similitud intrínseca con 'Kófer'. Alude al acto de cubrir una falta mediante un rescate, permitiendo que la vida sea preservada."
+  },
+  {
+    "id": 95,
+    "texto_hebreo": "פִּדְיוֹן",
+    "transliteracion": "Pidyon",
+    "equivalencia_espanol": "rescate; redención",
+    "observacion": "Se refiere específicamente al precio o suma de dinero que se entrega para salvar una vida que está condenada[cite: 89, 92]. Es la base legal de la redención en el contexto de un intercambio por la vida[cite: 105]."
+  },
+  {
+    "id": 96,
+    "texto_hebreo": "נֶפֶשׁ",
+    "transliteracion": "Nefesh",
+    "equivalencia_espanol": "alma; vida; persona",
+    "observacion": "En el contexto de rescate, representa aquello que está en riesgo de muerte y requiere una cobertura (Kófer) para ser preservada[cite: 89, 103]."
+  },
+  {
+    "id": 97,
+    "texto_hebreo": "צְרוֹר",
+    "transliteracion": "Tzeror",
+    "equivalencia_espanol": "manojo; amarre; bulto",
+    "observacion": "Sustantivo que indica algo que está atado o recogido[cite: 44, 45]. En la exégesis de Cnt 1:13, evoca al carnero amarrado en el monte Moriyah como sustituto[cite: 48, 53]."
+  },
+  {
+    "id": 98,
+    "texto_hebreo": "הַמֹּר",
+    "transliteracion": "Hamor",
+    "equivalencia_espanol": "la mirra",
+    "observacion": "Resina aromática vinculada fonéticamente con Moriyah (el monte de la mirra)[cite: 44, 47]. Simboliza la muerte y el sacrificio del amado que pasa la noche con su amada[cite: 53, 58]."
+  },
+  {
+    "id": 99,
+    "texto_hebreo": "יֵרָאֶה",
+    "transliteracion": "Yera'eh",
+    "equivalencia_espanol": "será visto; se proveerá",
+    "observacion": "Forma verbal utilizada por Abraham en Moriyah: 'Hashem será visto'[cite: 48, 49]. Indica que el Eterno mismo se manifestaría como el sacrificio y la provisión final[cite: 50, 51]."
+  },
+  {
+    "id": 100,
+    "texto_hebreo": "שַׁדַּי",
+    "transliteracion": "Shadai",
+    "equivalencia_espanol": "Todopoderoso; de la montaña",
+    "observacion": "Nombre divino que juega con la raíz de 'montaña' (Shad) y 'pecho'[cite: 55]. Representa al poderoso que se revela en la intimidad de la Torah y la profecía[cite: 58, 59]."
+  },
+  {
+    "id": 101,
+    "texto_hebreo": "עֵין",
+    "transliteracion": "Ein",
+    "equivalencia_espanol": "ojo; fuente; manantial",
+    "observacion": "Como órgano, representa el testimonio exterior y la conducta[cite: 116, 117]. Como lugar, indica el origen de vida en medio de un entorno árido[cite: 107]."
+  },
+  {
+    "id": 102,
+    "texto_hebreo": "גֶּדִי",
+    "transliteracion": "Gedi",
+    "equivalencia_espanol": "cabrito",
+    "observacion": "Parte del topónimo En-gadi. El Malbim señala que este lugar simboliza algo aislado y lejano de Jerusalén, un entorno fuera del común donde el amado florece[cite: 107, 108]."
+  },
+  {
+    "id": 103,
+    "texto_hebreo": "יָפֶה",
+    "transliteracion": "Yafeh",
+    "equivalencia_espanol": "hermoso; bien hecho",
+    "observacion": "Describe no solo la apariencia, sino la integridad y la fidelidad del carácter, equiparándose a la pureza del testimonio[cite: 113, 120]."
+  },
+  {
+    "id": 104,
+    "texto_hebreo": "נָעִים",
+    "transliteracion": "Na'im",
+    "equivalencia_espanol": "agradable; deleitoso",
+    "observacion": "Alude al trato especial y al amor incondicional entre el Creador y Su pueblo[cite: 122, 123]. Es la suavidad de la relación íntima que no se basa en méritos[cite: 124]."
+  },
+  {
+    "id": 105,
+    "texto_hebreo": "רַעֲנָנָה",
+    "transliteracion": "Ra'ananah",
+    "equivalencia_espanol": "verde; fresco; vital",
+    "observacion": "Se aplica a lo que está en su mayor vigor y juventud[cite: 125, 126]. Simboliza un lecho espiritual que no se corrompe ni se destruye con el tiempo[cite: 127, 129]."
+  },
+  {
+    "id": 106,
+    "texto_hebreo": "חֲבַצֶּלֶת",
+    "transliteracion": "Chavatzelet",
+    "equivalencia_espanol": "narciso; flor",
+    "observacion": "Planta que surge y florece en medio de la adversidad del desierto[cite: 153, 154]. Su guematria (1091) la vincula proféticamente con el nombre de Yeshua' Hamashiaj[cite: 159, 160]."
+  },
+  {
+    "id": 107,
+    "texto_hebreo": "שָׁרוֹן",
+    "transliteracion": "Sharon",
+    "equivalencia_espanol": "llanura; nivelado",
+    "observacion": "Región de la llanura costera mediterránea[cite: 137]. Representa el escenario de la primera venida del amado que florece en la planicie del mundo[cite: 162, 163]."
+  },
+  {
+    "id": 108,
+    "texto_hebreo": "שׁוֹשַׁנָּה",
+    "transliteracion": "Shoshannah",
+    "equivalencia_espanol": "lirio",
+    "observacion": "Planta de campo que emerge incluso entre espinos y cizaña[cite: 140, 146]. Simboliza la capacidad de vencer la muerte y resurgir en la segunda venida[cite: 165, 168]."
+  },
+  {
+    "id": 109,
+    "texto_hebreo": "עֵמֶק",
+    "transliteracion": "Emek",
+    "equivalencia_espanol": "valle; profundidad",
+    "observacion": "Terreno bajo situado entre montañas[cite: 138]. Es el lugar donde el lirio da su testimonio de vida a pesar de estar rodeado de adversidad[cite: 157, 164]."
+  },
+  {
+    "id": 110,
+    "texto_hebreo": "הַבָּנוֹת",
+    "transliteracion": "Habanot",
+    "equivalencia_espanol": "las hijas",
+    "observacion": "Representan a las naciones o ciudades circundantes[cite: 9, 166]. En contraste con la amada (el lirio), ellas son comparadas con espinos que no tienen la misma fidelidad[cite: 167, 171]."
+  },
+  {
+    "id": 111,
+    "texto_hebreo": "הַבָּנוֹת",
+    "transliteracion": "Habanot",
+    "equivalencia_espanol": "las hijas",
+    "observacion": "Representan las emociones, pasiones e impulsos humanos que intentan rodear y ahogar la obra de Dios. No siempre son negativas, pero pueden actuar como espinos frente a la vida eterna plantada en nosotros."
+  },
+  {
+    "id": 112,
+    "texto_hebreo": "תַּפּוּחַ",
+    "transliteracion": "Tapuach",
+    "equivalencia_espanol": "manzano",
+    "observacion": "Es el ícono de Mashiaj en su primera venida: alguien sencillo, modesto y pequeño frente a los grandes árboles, pero el único que porta fruto comestible y dulce en el bosque del mundo."
+  },
+  {
+    "id": 113,
+    "texto_hebreo": "יַעַר",
+    "transliteracion": "Yaar",
+    "equivalencia_espanol": "bosque; selva",
+    "observacion": "Representa las huestes de maldad o sistemas humanos que, aunque imponentes, no producen fruto espiritual. Es el entorno silvestre donde destaca la singularidad del manzano."
+  },
+  {
+    "id": 114,
+    "texto_hebreo": "צֵל",
+    "transliteracion": "Tsel",
+    "equivalencia_espanol": "sombra; amparo; refugio",
+    "observacion": "Más que la ausencia de luz, indica protección y amparo legal o espiritual. Es el lugar de resguardo bajo las 'alas' de la divinidad donde el alma descansa de los quebrantos."
+  },
+  {
+    "id": 115,
+    "texto_hebreo": "חָמַד",
+    "transliteracion": "Chamad",
+    "equivalencia_espanol": "codiciar; desear; ver atractivo",
+    "observacion": "Verbo que describe el deleite y la atracción profunda. En el contexto del amado, implica encontrar deleite en Su presencia antes de sentarse a recibir de Su fruto."
+  },
+  {
+    "id": 116,
+    "texto_hebreo": "יָשַׁב",
+    "transliteracion": "Yashab",
+    "equivalencia_espanol": "sentarse; asentarse; habitar",
+    "observacion": "Indica permanencia y cimentación. Es la acción necesaria para que el creyente se vuelva 'atractivo' ante Dios, quedándose bajo Su amparo de forma constante."
+  },
+  {
+    "id": 117,
+    "texto_hebreo": "מָתוֹק",
+    "transliteracion": "Matok",
+    "equivalencia_espanol": "dulce",
+    "observacion": "Adjetivo aplicado al fruto de Mashiaj y a la Escritura. Si el paladar lo percibe amargo, es un indicador de que la carnalidad está alterando la percepción de la verdad."
+  },
+  {
+    "id": 118,
+    "texto_hebreo": "רוּחַ",
+    "transliteracion": "Ruach",
+    "equivalencia_espanol": "espíritu; viento; hálito",
+    "observacion": "Es la fuente de donde emana el fruto (amor, gozo, paz). Se asocia a la simiente incorruptible de la Palabra que vive y permanece para siempre."
+  },
+  {
+    "id": 119,
+    "texto_hebreo": "הַבָּנִים",
+    "transliteracion": "Habanim",
+    "equivalencia_espanol": "los hijos; los jóvenes",
+    "observacion": "Icono de los conocimientos, ideas intelectuales y facultades humanas. Se contrastan con el Amado porque suelen ser conocimientos 'sin fruto'."
+  },
+  {
+    "id": 120,
+    "texto_hebreo": "פֶּרִי",
+    "transliteracion": "Peri",
+    "equivalencia_espanol": "fruto",
+    "observacion": "Es el resultado tangible de la vida espiritual. En Mashiaj, este fruto es lo que alimenta y da vida a quien se sienta bajo Su amparo."
+  },
+  {
+    "id": 121,
+    "texto_hebreo": "יַיִן",
+    "transliteracion": "Yayin",
+    "equivalencia_espanol": "vino",
+    "observacion": "En el contexto de la 'casa del vino', representa los placeres del mundo y las doctrinas erradas que intentan embriagar y desviar a la amada[cite: 247, 248]."
+  },
+  {
+    "id": 122,
+    "texto_hebreo": "בַּיִת",
+    "transliteracion": "Bayit",
+    "equivalencia_espanol": "casa; receptáculo",
+    "observacion": "Lugar de estancia o encierro. Se menciona para contrastar la 'casa del vino' de las hijas y el rey frente a la morada del amado[cite: 247, 250]."
+  },
+  {
+    "id": 123,
+    "texto_hebreo": "אַהֲבָה",
+    "transliteracion": "Ahavah",
+    "equivalencia_espanol": "amor; caridad",
+    "observacion": "Concepto de servicio a la voluntad divina de forma desinteresada e incondicional. Representa la esencia de Dios y de Yehoshua' Hamashiaj dando ejemplo[cite: 249, 256]."
+  },
+  {
+    "id": 124,
+    "texto_hebreo": "תַּחַת",
+    "transliteracion": "Tachat",
+    "equivalencia_espanol": "debajo; en lugar de; cobertor",
+    "observacion": "Aparece como 'Tajad', indicando un cobertor de pieles (como de jirafa) sobre la cabeza para evitar que llegue el daño[cite: 262, 264]."
+  },
+  {
+    "id": 125,
+    "texto_hebreo": "יָמִין",
+    "transliteracion": "Yamin",
+    "equivalencia_espanol": "diestra; derecha",
+    "observacion": "La diestra del Señor representa el poder que hace prodigios, la victoria y la vida eterna vinculada al cielo[cite: 262, 265]."
+  },
+  {
+    "id": 126,
+    "texto_hebreo": "שְׂמֹאל",
+    "transliteracion": "Semol",
+    "equivalencia_espanol": "izquierda",
+    "observacion": "En el análisis, se asocia con el brazo que está tapado o posicionado para proteger la cabeza del daño externo[cite: 262]."
+  },
+  {
+    "id": 127,
+    "texto_hebreo": "בִּצְבָאוֹת",
+    "transliteracion": "Bitzvayiot",
+    "equivalencia_espanol": "por las gacelas; por los ejércitos",
+    "observacion": "Plural derivado de 'Tzvaot'. Es el término utilizado en el juramento a las hijas de Jerusalén, conectando el mundo natural con las potencias del jardín del Edén[cite: 270, 271, 272]."
+  },
+  {
+    "id": 128,
+    "texto_hebreo": "יָפֵץ",
+    "transliteracion": "Yafetz",
+    "equivalencia_espanol": "complacencia; deleite",
+    "observacion": "Relacionado con el nombre 'Hefzi-bá'. Indica que el Eterno se ha complacido en Su pueblo y en su tierra[cite: 274, 275, 276]."
+  },
+  {
+    "id": 129,
+    "texto_hebreo": "קוֹל",
+    "transliteracion": "Qol",
+    "equivalencia_espanol": "voz; sonido; timbre",
+    "observacion": "Representa la calidad específica del sonido del amado (timbre) que permite a las ovejas distinguirlo de cualquier otro tono o ruido[cite: 280, 285, 286, 288]."
+  },
+  {
+    "id": 130,
+    "texto_hebreo": "הַר",
+    "transliteracion": "Har",
+    "equivalencia_espanol": "monte; montaña",
+    "observacion": "Simbólicamente representa las doctrinas más elevadas, a menudo antibíblicas, sobre las cuales el amado salta y corre sin impedimento[cite: 296, 297, 298]."
+  },
+  {
+    "id": 131,
+    "texto_hebreo": "גִּבְעָה",
+    "transliteracion": "Givah",
+    "equivalencia_espanol": "colina; collado",
+    "observacion": "Representa los conceptos humanos y la arrogancia que intentan elevarse, pero que son superados por la revelación del Evangelio[cite: 296, 297, 303]."
+  },
+  {
+    "id": 132,
+    "texto_hebreo": "כֹּתֶל",
+    "transliteracion": "Kotel",
+    "equivalencia_espanol": "muro",
+    "observacion": "Obstáculo donde la amada está encerrada por doctrinas y conceptos humanos. El amado se sitúa detrás de este muro para vigilar[cite: 305, 310, 316]."
+  },
+  {
+    "id": 133,
+    "texto_hebreo": "מַשְׁגִּיחַ",
+    "transliteracion": "Mashgiah",
+    "equivalencia_espanol": "supervisar; velar",
+    "observacion": "Indica tener una 'súper visión' o mayor visión desde lo alto, no simplemente vigilar, sino supervisar el proceso de redención[cite: 321, 325, 326]."
   },
   {
     "id": 134,
-    "texto_hebreo": "יוֹנָה",
-    "transliteracion": "Yonáh",
-    "equivalencia_espanol": "paloma",
-    "observacion": "Se asocia con fidelidad en varias descripciones."
+    "texto_hebreo": "מֵצִיץ",
+    "transliteracion": "Metzit",
+    "equivalencia_espanol": "mirar; asomarse; germinar",
+    "observacion": "Verbo que sugiere la idea de germinar a partir de la puerta estrecha, indicando el inicio de una visión extendida junto al amado[cite: 321, 322]."
   },
   {
     "id": 135,
-    "texto_hebreo": "עַיִן",
-    "transliteracion": "‘Ayin",
-    "equivalencia_espanol": "ojo",
-    "observacion": "Se explica como proyección hacia afuera/manifestación de conducta."
+    "texto_hebreo": "אֱמוּנָה",
+    "transliteracion": "Emunáh",
+    "equivalencia_espanol": "fe; educación; firmeza",
+    "observacion": "Más que una creencia abstracta, es la educación espiritual recibida que nos permite andar con certidumbre. Es la facultad que nos permite poner los ojos en el Amado y avanzar a pesar de las limitaciones personales o traumas pasados."
   },
   {
     "id": 136,
-    "texto_hebreo": "שָׂפָה",
-    "transliteracion": "Safáh",
-    "equivalencia_espanol": "labio",
-    "observacion": "Se liga a palabras/comunión y al hilo de grana."
+    "texto_hebreo": "עָנָה",
+    "transliteracion": "Anah",
+    "equivalencia_espanol": "responder; entonar; cantar",
+    "observacion": "En Cnt 2:10 no se refiere a responder una pregunta, sino al acto de entonar un cántico, similar al de Moisés. Es la voz del Amado que resuena con una melodía de resurrección para sacar a la amada de su encierro."
   },
   {
     "id": 137,
-    "texto_hebreo": "שֵׁן",
-    "transliteracion": "Shen",
-    "equivalencia_espanol": "diente",
-    "observacion": "Se usa como imagen de aprendizaje/alimentación y expresión."
+    "texto_hebreo": "אֵיתָנִים",
+    "transliteracion": "Etanim",
+    "equivalencia_espanol": "torrencial; caudales",
+    "observacion": "Nombre hebreo del primer mes del otoño. Alude a las lluvias intensas o al crecimiento de los ríos. Marca el inicio del ciclo antiguo donde las cosas viejas terminan para dar paso a lo nuevo en la primavera."
   },
   {
     "id": 138,
-    "texto_hebreo": "שָׁדַיִם",
-    "transliteracion": "Shadayim",
-    "equivalencia_espanol": "pechos",
-    "observacion": "Lectura alegórica recurrente: Torah y profecía / lactancia espiritual."
+    "texto_hebreo": "תִּשְׁרֵי",
+    "transliteracion": "Tishrey",
+    "equivalencia_espanol": "Tishrei",
+    "observacion": "Nombre de origen caldeo adoptado en Babilonia para el mes de Etanim. Define el periodo de transición otoñal y las citas solemnes como Yom Teru'áh y Sukot, marcando el fin de la cosecha física."
   },
   {
     "id": 139,
-    "texto_hebreo": "דֶּרֶךְ",
-    "transliteracion": "Derej",
-    "equivalencia_espanol": "camino",
-    "observacion": "Aparece en usos alegóricos de recorrido/búsqueda por ciudad y plazas."
+    "texto_hebreo": "תּוֹר",
+    "transliteracion": "Tor",
+    "equivalencia_espanol": "tórtola",
+    "observacion": "Mencionado en masculino, identifica directamente a Mashiaj. Su canto anuncia que el invierno de la carnalidad ha pasado y que la vida, que antes parecía muerta o migrada, ha regresado con poder."
   },
   {
     "id": 140,
-    "texto_hebreo": "גִּבּוֹר",
-    "transliteracion": "Gibor",
-    "equivalencia_espanol": "valiente; poderoso",
-    "observacion": "En plural se reaplica a los recursos/mandamientos en la alegoría."
+    "texto_hebreo": "סְמָדַר",
+    "transliteracion": "Smadar",
+    "equivalencia_espanol": "flor de la vid",
+    "observacion": "Representa el estado temprano del fruto. Su olor indica que la esclavitud ha desaparecido, dando paso a un proceso de santificación que tiene como fin la vida eterna."
   },
   {
     "id": 141,
-    "texto_hebreo": "נֵר",
-    "transliteracion": "Ner",
-    "equivalencia_espanol": "lámpara",
-    "observacion": "Se menciona en paralelos para luz/guía dentro del campo simbólico del cántico."
+    "texto_hebreo": "אֱדוֹם",
+    "transliteracion": "Edom",
+    "equivalencia_espanol": "Edom",
+    "observacion": "Relacionado con la descendencia de Esaú. Simboliza la arrogancia humana y la soberbia del corazón que intenta habitar en las 'cavernas de las peñas', creyéndose inalcanzable."
   },
   {
     "id": 142,
-    "texto_hebreo": "אוֹר",
-    "transliteracion": "Or",
-    "equivalencia_espanol": "luz",
-    "observacion": "Campo semántico reiterado frente a noche/oscuridad en el estudio."
+    "texto_hebreo": "עֵשָׁו",
+    "transliteracion": "Esav",
+    "equivalencia_espanol": "Esaú",
+    "observacion": "Representa la naturaleza carnal y el orgullo que debe ser abandonado. Es la antítesis de la humildad necesaria para hacerse 'pequeño' y poder cruzar la puerta estrecha hacia la comunión divina."
   },
   {
     "id": 143,
-    "texto_hebreo": "חֹשֶׁךְ",
-    "transliteracion": "Joshej / Choshej",
-    "equivalencia_espanol": "oscuridad",
-    "observacion": "Aparece en contraste con día/luz y en huida de sombras."
+    "texto_hebreo": "חַגְוֵי",
+    "transliteracion": "Chagvei",
+    "equivalencia_espanol": "hendiduras; agujeros",
+    "observacion": "Se refiere a los huecos en lo alto de las montañas utilizados como refugio. En el análisis profético, este término se asocia a la altísima morada de Edom y no a un lugar de vivienda típico para Yisra'el."
   },
   {
     "id": 144,
-    "texto_hebreo": "רֵיחַ",
-    "transliteracion": "Reaj",
-    "equivalencia_espanol": "olor; aroma",
-    "observacion": "Se usa como testimonio/percepción; 'dar olor' se vuelve imagen de conocimiento."
+    "texto_hebreo": "סֶלַע",
+    "transliteracion": "Sela",
+    "equivalencia_espanol": "peña; roca",
+    "observacion": "Representa una estructura sólida y elevada. La corrección exegética de Cnt 2:14 sitúa a la amada 'contra' las cavidades de la roca, estableciendo una postura frente a lo que representa Esaú."
   },
   {
     "id": 145,
-    "texto_hebreo": "בֹּשֶׂם",
-    "transliteracion": "Bósem / Besem",
-    "equivalencia_espanol": "aroma; perfume",
-    "observacion": "Se emplea en compuestos y frases sobre entramado aromático."
+    "texto_hebreo": "מַרְאֶה",
+    "transliteracion": "Mar'eh",
+    "equivalencia_espanol": "vista; visión; aspecto",
+    "observacion": "Describe la facultad de ver o el aspecto físico general en conjunto. A diferencia de un rasgo específico, se refiere a la visión panorámica o la apariencia total de una persona o cosa."
   },
   {
     "id": 146,
-    "texto_hebreo": "אַפִּרְיוֹן",
-    "transliteracion": "Apiryon",
-    "equivalencia_espanol": "carroza real; litera/silla transportable",
-    "observacion": "Se explica como asiento real transportable y se relaciona con la mittá en sentido de estructura de comunión."
+    "texto_hebreo": "מַרְאַיִךְ",
+    "transliteracion": "Mar'ayij",
+    "equivalencia_espanol": "tus apariencias; tus aspectos",
+    "observacion": "Forma plural de Mar'eh. Se utiliza para invitar a la amada a mostrar quién es en su conjunto, revelando sus características y facultades ante el amado."
   },
   {
     "id": 147,
-    "texto_hebreo": "צַמָּה",
-    "transliteracion": "Tzamaj / Tzamah",
-    "equivalencia_espanol": "velo; redecilla",
-    "observacion": "Se usa para la pieza de vestimenta que cubre/adorna; se menciona el debate sobre su valor y su uso moderno como trenza."
+    "texto_hebreo": "βουστροφηדόν",
+    "transliteracion": "Boustrophēdón",
+    "equivalencia_espanol": "bustrófedon",
+    "observacion": "Término griego que designa un modo de escritura en zigzag, como el giro de un buey al arar. En la Biblia, describe el fenómeno de correspondencia donde lo último dicho es lo primero en explicarse."
   },
   {
     "id": 148,
-    "texto_hebreo": "מַרְאַיִךְ",
-    "transliteracion": "Mar’ayij / Mar'ayikh",
-    "equivalencia_espanol": "tu apariencia; tu aspecto visible",
-    "observacion": "Se entiende en sentido panorámico/general de lo visible, no solo el rostro en particular."
+    "texto_hebreo": "עָרֵב",
+    "transliteracion": "Arev",
+    "equivalencia_espanol": "agradable; reconfortante",
+    "observacion": "Adjetivo que califica la voz o el timbre del amado. Describe un sonido que no solo es armónico, sino que produce un efecto de consuelo y reconocimiento inconfundible."
   },
   {
     "id": 149,
-    "texto_hebreo": "בָּתֶר",
-    "transliteracion": "Bater / Bether",
-    "equivalencia_espanol": "Béter; división/corte",
-    "observacion": "Se trabaja en la expresión «montes de Béter» y se conecta con lectura sacrificial y geografía simbólica."
+    "texto_hebreo": "שׁוּעָלִים",
+    "transliteracion": "Shualim",
+    "equivalencia_espanol": "zorras; zorros",
+    "observacion": "Simbólicamente representan a los falsos maestros y las falsas doctrinas que intentan destruir el fruto espiritual (la viña) cuando este apenas comienza a brotar."
   },
   {
     "id": 150,
-    "texto_hebreo": "מְעַט",
-    "transliteracion": "Me’at",
-    "equivalencia_espanol": "por poco; un poco",
-    "observacion": "Se destaca como término profético para hablar de lo temporal/movible que es removido."
+    "texto_hebreo": "פָּנִים",
+    "transliteracion": "Panim",
+    "equivalencia_espanol": "rostro; caras",
+    "observacion": "Se refiere a la particularidad del rostro o las caras de algo. En el análisis, se distingue de Mar'eh por ser una descripción más específica frente al aspecto general del cuerpo."
   },
   {
     "id": 151,
-    "texto_hebreo": "רוֹכֵל",
-    "transliteracion": "Rojel / Rokhel",
-    "equivalencia_espanol": "comerciante",
-    "observacion": "Se precisa en contexto de comercio de especias/aromáticos."
+    "texto_hebreo": "פּוּחַ",
+    "transliteracion": "Puach",
+    "equivalencia_espanol": "insuflar; soplar; introducir",
+    "observacion": "Acción que marca el inicio del día de la resurrección. Representa la luz de la victoria divina que penetra en la creación para hacer huir definitivamente las tinieblas."
   },
   {
     "id": 152,
-    "texto_hebreo": "רָצוּף",
-    "transliteracion": "Ratzuf",
-    "equivalencia_espanol": "movido/arrastrado (por impulso de viento)",
-    "observacion": "Se aplica a la lectura de la estructura interior movida por amor, no solo a una idea material de tapizado."
+    "texto_hebreo": "הַיּוֹם",
+    "transliteracion": "Hayom",
+    "equivalencia_espanol": "el día",
+    "observacion": "Se refiere al día grande de Hashem o Shabat eterno. En este estado profético no existe tarde ni mañana, pues la oscuridad ha sido erradicada por la presencia divina."
   },
   {
     "id": 153,
-    "texto_hebreo": "אִתִּי",
-    "transliteracion": "‘Iti",
-    "equivalencia_espanol": "conmigo",
-    "observacion": "Se destaca como lectura del texto hebreo en Cnt 4:8 antes de proponer la lectura alternativa."
+    "texto_hebreo": "כָּבוֹד",
+    "transliteracion": "Kavod",
+    "equivalencia_espanol": "gloria; honra; peso",
+    "observacion": "Es la manifestación que el amado revela a la amada. Se conecta con la petición de Moisés de ver la gloria de Hashem, recibiendo la visión de lo que queda detrás del Eterno."
   },
   {
     "id": 154,
-    "texto_hebreo": "אֶתִּי",
-    "transliteracion": "‘Eti",
-    "equivalencia_espanol": "ven",
-    "observacion": "Se menciona como lectura antigua/propuesta interpretativa a partir de las mismas consonantes de אִתִּי."
+    "texto_hebreo": "בָּתֶר",
+    "transliteracion": "Bater",
+    "equivalencia_espanol": "división; separación; parte",
+    "observacion": "Nombre asociado a las colinas del sacrificio. Evoca el monte Moriyah, lugar donde se manifestó el carnero sustituto y donde el Amado prometió rescatar a los suyos."
   },
   {
     "id": 155,
-    "texto_hebreo": "חָמַק",
-    "transliteracion": "Jamaq / Ḥamaq",
-    "equivalencia_espanol": "escabullirse; esconderse para desaparecer",
-    "observacion": "Se explica con matiz de retiro/desaparición intencional en Cnt 5:6."
+    "texto_hebreo": "שׁוֹשַׁנִּים",
+    "transliteracion": "Shoshanim",
+    "equivalencia_espanol": "lirios",
+    "observacion": "Plural que nos identifica como el pueblo donde el Amado ejerce su pastoreo. Indica que bajo su guía no estaremos faltantes ni disminuidos, incluso en la escasez."
   },
   {
     "id": 156,
-    "texto_hebreo": "רָדִיד",
-    "transliteracion": "Redid",
-    "equivalencia_espanol": "chal; manto; velo",
-    "observacion": "Se interpreta como prenda asociada a orgullo/soberbia en el paralelo de Isaías."
+    "texto_hebreo": "מִשְׁכָּב",
+    "transliteracion": "Mishkav",
+    "equivalencia_espanol": "lecho; cama; sepulcro",
+    "observacion": "Representa un estado de inoperancia, inactividad o incapacidad física y espiritual. Es el lugar donde el alma busca al Amado reconociendo que la carne no puede sujetarse por sí misma a Dios."
   },
   {
     "id": 157,
-    "texto_hebreo": "רָסִיס",
-    "transliteracion": "Rasís / Rasis",
-    "equivalencia_espanol": "gota fina; salpicadura",
-    "observacion": "Se trata como forma singular rara y se contrasta con רְסִיסֵי en la explicación."
+    "texto_hebreo": "הָפַךְ",
+    "transliteracion": "Jafaj",
+    "equivalencia_espanol": "transformar; cambiar; volverse",
+    "observacion": "Acción de tornar algo en su opuesto. Describe cómo Hashem cambia nuestra debilidad e inoperancia en un estado de fortaleza y sustento."
   },
   {
     "id": 158,
-    "texto_hebreo": "קוֹל",
-    "transliteracion": "Qol / Kol",
-    "equivalencia_espanol": "voz",
-    "observacion": "Se remarca por la pérdida de la preposición en el estilo del pasaje (veqol → qol)."
+    "texto_hebreo": "שָׁכַב",
+    "transliteracion": "Shajab",
+    "equivalencia_espanol": "acostarse; yacer",
+    "observacion": "Raíz de Mishkav. Abarca desde el descanso hasta el reposo en el sepulcro, simbolizando el cese total de los esfuerzos humanos frente a la obra de Dios."
   },
   {
     "id": 159,
-    "texto_hebreo": "דָּגוּל מֵרְבָבָה",
-    "transliteracion": "Dagul merevavah",
-    "equivalencia_espanol": "señalado/abanderado entre miríadas",
-    "observacion": "Expresión destacada en Cnt 5:10; se conecta con estandartes y multitudes celestiales."
+    "texto_hebreo": "מוֹרִיָּה",
+    "transliteracion": "Moriyah",
+    "equivalencia_espanol": "Moriah; visión de Yah",
+    "observacion": "La montaña de la mirra y el olíbano. Es el escenario geográfico donde se sustituyó la muerte por la vida y donde Hashem es visto como el sacrificio perfecto."
   },
   {
     "id": 160,
-    "texto_hebreo": "פָּז",
-    "transliteracion": "Paz",
-    "equivalencia_espanol": "oro finísimo; oro de altísima calidad",
-    "observacion": "Se distingue de כֶּתֶם en la explicación de Cnt 5:11."
+    "texto_hebreo": "בֵּית",
+    "transliteracion": "Beyt",
+    "equivalencia_espanol": "casa; receptáculo; entorno",
+    "observacion": "Representa el ámbito de habitación o la estructura donde reside el ser. Se utiliza para diferenciar el origen del pensamiento (casa del padre) de la integración de la conducta (casa de la madre)."
   },
   {
     "id": 161,
-    "texto_hebreo": "חָלָב",
-    "transliteracion": "Jalav / Ḥalav",
-    "equivalencia_espanol": "leche",
-    "observacion": "Se comenta junto a חֵלֶב como campo semántico relacionado con plenitud/mejor porción."
+    "texto_hebreo": "אָב",
+    "transliteracion": "Av",
+    "equivalencia_espanol": "padre",
+    "observacion": "Vinculado a la cosmovisión y la forma de pensar heredada. Representa la estructura mental o el sistema de creencias que debe ser transformado para seguir al Amado."
   },
   {
     "id": 162,
-    "texto_hebreo": "חֵלֶב",
-    "transliteracion": "Jelev / Ḥelev",
-    "equivalencia_espanol": "grosura; lo mejor",
-    "observacion": "Se usa en paralelo semántico con חָלָב en la explicación."
+    "texto_hebreo": "אֵם",
+    "transliteracion": "Em",
+    "equivalencia_espanol": "madre",
+    "observacion": "Simboliza la forma de actuar, las costumbres y la conducta integrada. Es el 'receptáculo' donde Mashiaj es finalmente formado e incorporado en el caminar diario."
   },
   {
     "id": 163,
-    "texto_hebreo": "לְחִי",
-    "transliteracion": "Leji / Leḥi",
-    "equivalencia_espanol": "mejilla",
-    "observacion": "Se añade como forma singular frente a לְחָיַיִם (plural)."
+    "texto_hebreo": "שֹׁמְרִים",
+    "transliteracion": "Shomrim",
+    "equivalencia_espanol": "guardianes; vigilantes",
+    "observacion": "Identificados como Moisés y Aarón o la Torah y la Profecía. Son los encargados de vigilar el camino para que el alma no se pierda en las distracciones de la ciudad."
   },
   {
     "id": 164,
-    "texto_hebreo": "חַמָּה",
-    "transliteracion": "Jammáh / Ḥammah",
-    "equivalencia_espanol": "sol (en función de calor/luz)",
-    "observacion": "Se diferencia del uso de חֵמָה; aquí se explica como el sol y su función de calor/justicia."
+    "texto_hebreo": "שׁוֹמֵר",
+    "transliteracion": "Shomer",
+    "equivalencia_espanol": "guardián; custodio",
+    "observacion": "Se refiere al acto de vigilar o custodiar algo valioso. Indica la supervisión divina necesaria para encontrar al Amado en medio de las ofertas del mundo."
   },
   {
     "id": 165,
-    "texto_hebreo": "אֱגוֹז",
-    "transliteracion": "Egóz / Egoz",
-    "equivalencia_espanol": "nuez; nogal",
-    "observacion": "Término trabajado en Cnt 6:11 dentro del simbolismo del huerto y el fruto encapsulado."
+    "texto_hebreo": "עִיר",
+    "transliteracion": "Ir",
+    "equivalencia_espanol": "ciudad",
+    "observacion": "Metáfora de la vida humana y sus complejidades. Está compuesta por espacios de búsqueda (mercados y plazas) donde el alma intenta gestionar su salvación por medios propios."
   },
   {
     "id": 166,
-    "texto_hebreo": "גִּנַּת אֱגוֹז",
-    "transliteracion": "Ginat egóz",
-    "equivalencia_espanol": "huerto/patio de nogales",
-    "observacion": "Expresión destacada y tratada como imagen del jardín/huerto con simbolismo del Gan ‘Éden."
+    "texto_hebreo": "שְׁוָקִים",
+    "transliteracion": "Shevaqim",
+    "equivalencia_espanol": "mercados",
+    "observacion": "Lugares estrechos con abundancia de ofertas doctrinales y enseñanzas carnales. Representan los intentos del ser humano por encontrar a Dios bajo el auspicio de la carne."
   },
   {
     "id": 167,
-    "texto_hebreo": "נָדִיב",
-    "transliteracion": "Nadiv",
-    "equivalencia_espanol": "noble; generoso; el que da voluntariamente",
-    "observacion": "Se relaciona con la ofrenda voluntaria (terumá) y la disposición alegre."
+    "texto_hebreo": "רְחֹבוֹת",
+    "transliteracion": "Rehovot",
+    "equivalencia_espanol": "plazas; lugares espaciosos",
+    "observacion": "Representan la distancia o el vacío donde no hay ofertas claras. Son los extremos de la búsqueda humana donde, sin la luz de los guardianes, el Amado no puede ser hallado."
   },
   {
     "id": 168,
-    "texto_hebreo": "דּוּדָאִים",
-    "transliteracion": "Duda’im / Dudaim",
-    "equivalencia_espanol": "dudaim (mandrágoras, según traducción tradicional)",
-    "observacion": "Se discute la identificación botánica y se propone considerar higos de verano según el contexto agrícola."
+    "texto_hebreo": "מְעַט",
+    "transliteracion": "Me'at",
+    "equivalencia_espanol": "poco; breve; escaso",
+    "observacion": "Referencia a quitar lo movible, temporal y carnal. Es el proceso de despojo necesario para que solo permanezca lo inconmovible ante la presencia del Amado."
   },
   {
     "id": 169,
-    "texto_hebreo": "תַּפּוּחַ",
-    "transliteracion": "Tapúakj / Tapúaj / Tapuach",
-    "equivalencia_espanol": "manzana; fruto jugoso/pomáceo",
-    "observacion": "Se aclara que en el uso explicado no se limita a la manzana moderna, sino a un campo más amplio de fruto jugoso."
+    "texto_hebreo": "חֶדֶר",
+    "transliteracion": "Cheder",
+    "equivalencia_espanol": "cámara; aposento interior",
+    "observacion": "La interioridad más profunda del ser. Es el lugar de comunión íntima donde se trae al Amado para que Su naturaleza sea formada definitivamente en nosotros."
   },
   {
     "id": 170,
-    "texto_hebreo": "חָפֵץ",
-    "transliteracion": "Yafetz / Ḥafetz",
-    "equivalencia_espanol": "complacencia; querer; deleitarse",
-    "observacion": "Se usa para explicar la complacencia y el agrado en el juramento/advertencia de Cnt 2:7."
+    "texto_hebreo": "רֹכֵל",
+    "transliteracion": "Rojel",
+    "equivalencia_espanol": "comerciante",
+    "observacion": "Se refiere específicamente al mercader de especias aromáticas[cite: 587, 588]. Estas fragancias, provenientes del sur de Arabia, nutrían los templos de Kush, Egipto y Canaán[cite: 589]."
   },
   {
     "id": 171,
-    "texto_hebreo": "תַּרְחִיבֵנִי",
-    "transliteracion": "Tarhiveni",
-    "equivalencia_espanol": "me levantaste / me fortaleciste (según la lectura del estudio)",
-    "observacion": "Se usa en Cnt 6:5 con matiz de levantar/fortalecer y se conecta con la raíz רָחַב."
+    "texto_hebreo": "עֹלָה",
+    "transliteracion": "Olah",
+    "equivalencia_espanol": "subiente; ascensión",
+    "observacion": "Término utilizado para describir el acto de subir a Jerusalén o Yisra'el[cite: 591]. Representa el movimiento de la amada desde el desierto hacia la presencia divina."
   },
   {
     "id": 172,
-    "texto_hebreo": "רָחַב",
-    "transliteracion": "Rajàb / Rajab / Rachav",
-    "equivalencia_espanol": "ensanchar; fortalecer; levantar",
-    "observacion": "Se vincula a la idea de vigor/fortalecimiento en el paralelo citado."
+    "texto_hebreo": "תִּימְרוֹת",
+    "transliteracion": "Timrot",
+    "equivalencia_espanol": "columnas",
+    "observacion": "Se asocia a estructuras elevadas y densas, frecuentemente vinculadas a señales de juicio[cite: 592, 593]. En la profecía, señala los prodigios que preceden al día de Hashem[cite: 606]."
   },
   {
     "id": 173,
-    "texto_hebreo": "מִסְפָּר",
-    "transliteracion": "Mispar",
-    "equivalencia_espanol": "número; cifra; signo numérico",
-    "observacion": "Se resalta en relación con conteo y valor numérico de letras."
+    "texto_hebreo": "עָשָׁן",
+    "transliteracion": "Ashan",
+    "equivalencia_espanol": "humo",
+    "observacion": "Símbolo de juicio y presencia. Evoca la destrucción de Sodoma y Gomorra, pero también el incienso de la amada que se manifiesta en medio del caos del mundo[cite: 592, 629]."
   },
   {
     "id": 174,
-    "texto_hebreo": "מַסֵּכָה",
-    "transliteracion": "Masejàh / Masejah",
-    "equivalencia_espanol": "velo; cobertor; cobertura de fundición",
-    "observacion": "Se amplía hacia el sentido de cobertura idolátrica/mezcla (fundición) que envuelve a las naciones."
+    "texto_hebreo": "גָּדוֹל",
+    "transliteracion": "Gadol",
+    "equivalencia_espanol": "grande",
+    "observacion": "Atributo del día de Hashem. Indica algo que ha crecido de menos a más, representando la magnitud del juicio para los incrédulos y la gloria para los redimidos[cite: 613, 614]."
   },
   {
     "id": 175,
-    "texto_hebreo": "בָּרָה",
-    "transliteracion": "Barah",
-    "equivalencia_espanol": "pura; limpia; impoluta",
-    "observacion": "Se usa para describir pureza/limpieza de la amada en Cnt 6:9."
+    "texto_hebreo": "מִטָּה",
+    "transliteracion": "Mitta",
+    "equivalencia_espanol": "cama; lecho",
+    "observacion": "Representa un recinto mental o espiritual de comunión absoluta[cite: 633, 634]. A diferencia del lecho de dolor, este debe ser sin mancilla y sin contaminación doctrinal[cite: 634, 642]."
   },
   {
     "id": 176,
-    "texto_hebreo": "בָּגַד",
-    "transliteracion": "Bagad / Begued",
-    "equivalencia_espanol": "ser desleal; ser infiel; violar un pacto",
-    "observacion": "Se enfatiza como conducta de decir una cosa y hacer otra."
+    "texto_hebreo": "שְׁלֹמֹה",
+    "transliteracion": "Shlomo",
+    "equivalencia_espanol": "Salomón",
+    "observacion": "Significa 'Shalom de Yah'. Representa al Rey de Paz y el lugar de encuentro donde la presencia divina reposa con Su pueblo[cite: 635, 637]."
   },
   {
     "id": 177,
-    "texto_hebreo": "בֹּגְדִים בָּגָדוּ",
-    "transliteracion": "Bogdim bagdu",
-    "equivalencia_espanol": "los traidores han traicionado; desleales fueron desleales",
-    "observacion": "Frase usada para enfatizar la deslealtad persistente y encubierta."
+    "texto_hebreo": "שָׁלוֹם",
+    "transliteracion": "Shalom",
+    "equivalencia_espanol": "paz; integridad",
+    "observacion": "Se define como la ausencia total de deudas[cite: 636]. Es el estado resultante de la reconciliación perfecta en el Kapóret (tapa del arca)[cite: 637]."
   },
   {
     "id": 178,
-    "texto_hebreo": "לְשׁוֹן הַמִּקְרָא",
-    "transliteracion": "Leshon Hamiqrá",
-    "equivalencia_espanol": "La lengua de la Biblia",
-    "observacion": "Se refiere a la lengua que se genera en particular en el pueblo de Yisra'el, guardando distancia de la lengua hebrea que circulaba en otras latitudes[cite: 20]."
+    "texto_hebreo": "כַּפֹּרֶת",
+    "transliteracion": "Kaporet",
+    "equivalencia_espanol": "tapa del arca; propiciatorio",
+    "observacion": "Lugar donde reposaba la presencia divina y se realizaba la reconciliación de Dios con Su pueblo[cite: 637]. Es el corazón de la comunión en el lecho de Salomón."
   },
   {
     "id": 179,
-    "texto_hebreo": "תְּהִלִּים",
-    "transliteracion": "Tehilim / Sefer Tehilim",
-    "equivalencia_espanol": "Salmos",
-    "observacion": "Es descrito como una colección de expresiones idiomáticas, género, figuras y formas[cite: 24]."
+    "texto_hebreo": "חֶרֶב",
+    "transliteracion": "Cherev",
+    "equivalencia_espanol": "espada",
+    "observacion": "Metáfora de la palabra de YHWH[cite: 646]. Los valientes la sostienen para combatir los temores de la noche, representando la defensa de la verdad doctrinal[cite: 641, 644]."
   },
   {
     "id": 180,
-    "texto_hebreo": "אַבָּא",
-    "transliteracion": "'Abá",
-    "equivalencia_espanol": "Padre",
-    "observacion": "Se define teológicamente como 'de lo que viene: la plenitud de la deidad, lo aún no revelado'[cite: 112]."
+    "texto_hebreo": "יָרֵךְ",
+    "transliteracion": "Yarej",
+    "equivalencia_espanol": "muslo",
+    "observacion": "Lugar que representa las promesas de Dios y el fundamento del juramento[cite: 647]. Es el apoyo sobre el cual se ciñe la espada de la Palabra[cite: 644, 647]."
   },
   {
     "id": 181,
-    "texto_hebreo": "עַלְמָה",
-    "transliteracion": "'Almáh",
-    "equivalencia_espanol": "Virgen",
-    "observacion": "Término intercambiable con Betuláh; se distingue en que representa a quien es virgen anatómicamente[cite: 131, 132]."
+    "texto_hebreo": "אַפִּרְיוֹן",
+    "transliteracion": "Appiryon",
+    "equivalencia_espanol": "carroza; palanquín; asiento real",
+    "observacion": "Deriva de la raíz 'Pará' (dar fruto). Es una silla transportable que funciona como una comparación del Arca del Testimonio, donde el Rey se manifiesta y es portado."
   },
   {
     "id": 182,
-    "texto_hebreo": "בְּתוּלָה",
-    "transliteracion": "Betuláh",
-    "equivalencia_espanol": "Virgen / Ciudad capital",
-    "observacion": "Se refiere a la virginidad ceremonialmente; en lenguaje profético se aplica a capitales de países y naciones porque eran ciudades cerradas y amuralladas[cite: 132, 133, 138]."
+    "texto_hebreo": "רְפִיד",
+    "transliteracion": "Refid",
+    "equivalencia_espanol": "decoración; respaldo; collar",
+    "observacion": "Alude a los ornamentos de oro del Tabernáculo. Técnicamente se vincula con los collares de distinción egipcios, señalando la riqueza del recinto de comunión."
   },
   {
     "id": 183,
-    "texto_hebreo": "נָגִילָה",
-    "transliteracion": "Nagilah",
-    "equivalencia_espanol": "Nos gozaremos",
-    "observacion": "Deconstrucción del modismo; esta palabra en específico habla de aquello que es novedoso[cite: 184]."
+    "texto_hebreo": "מֶרְכָּב",
+    "transliteracion": "Merkav",
+    "equivalencia_espanol": "estructura; carro; asiento",
+    "observacion": "Representa el soporte o base de la carroza. En Cnt 3:10 es de púrpura, simbolizando la realeza y el fundamento sobre el cual reposa el Shalom divino."
   },
   {
     "id": 184,
-    "texto_hebreo": "וְנִשְׂמְחָה",
-    "transliteracion": "Venismejah",
-    "equivalencia_espanol": "Y nos alegraremos",
-    "observacion": "Deconstrucción del modismo; este término en particular se refiere a lo que ya ha ocurrido[cite: 184]."
+    "texto_hebreo": "רָצוּף",
+    "transliteracion": "Ratzuf",
+    "equivalencia_espanol": "movido; impulsado; pavimentado",
+    "observacion": "Describe algo que es arrastrado o movido por una fuerza externa, como el viento. Indica que el interior de la comunión es movido exclusivamente por el atributo del amor."
   },
   {
     "id": 185,
-    "texto_hebreo": "מֹשֶׁה",
-    "transliteracion": "Moshéh",
-    "equivalencia_espanol": "Moisés / Torah / Rey",
-    "observacion": "En la alegoría del estudio, Moshéh representaba al Rey de Yisra'el, ejercía como el gran pastor, y es la personificación de la Torah[cite: 75, 77, 86]."
+    "texto_hebreo": "צִיּוֹן",
+    "transliteracion": "Tziyón",
+    "equivalencia_espanol": "Sión",
+    "observacion": "Nombre espiritual de la ciudad celestial. Representa al 'nuevo hombre' y la estructura restaurada del creyente que espera la redención final del cuerpo."
   },
   {
     "id": 186,
-    "texto_hebreo": "אַהֲרֹן",
-    "transliteracion": "Aarón",
-    "equivalencia_espanol": "Aarón / Sacerdote / Profecía",
-    "observacion": "Alegóricamente representa al Sacerdote y es la personificación de la profecía[cite: 75, 80, 86]."
+    "texto_hebreo": "צַמָּה",
+    "transliteracion": "Tzamah",
+    "equivalencia_espanol": "velo; trenza; redecilla",
+    "observacion": "Adorno o velo que permite percibir el brillo de los ojos. Simboliza la fidelidad que la amada logra expresar incluso a través de sus prisiones o limitaciones."
   },
   {
     "id": 187,
-    "texto_hebreo": "מַלְכִּי־צֶדֶק",
-    "transliteracion": "Malkitzédeq",
-    "equivalencia_espanol": "Sacerdocio superior",
-    "observacion": "Representa un modelo de sacerdocio que es anterior y superior al de la tribu de Leví[cite: 106, 107]."
+    "texto_hebreo": "נָזִיר",
+    "transliteracion": "Nazir",
+    "equivalencia_espanol": "nazareo; apartado; consagrado",
+    "observacion": "Persona bajo un voto temporal de humillación y restricciones (vid y cabello). No debe confundirse con el origen de Mashiaj, pues el Nazir requiere sacrificio por el pecado al terminar su voto."
   },
   {
     "id": 188,
-    "texto_hebreo": "תּוֹעֵבָה",
-    "transliteracion": "To'evah",
-    "equivalencia_espanol": "Distorsión de la voluntad divina",
-    "observacion": "Se define como todo aquello que es distorsión de la voluntad de Dios, en contraste con la verdad de la Torah."
+    "texto_hebreo": "נֵצֶר",
+    "transliteracion": "Netzer",
+    "equivalencia_espanol": "retoño; vástago",
+    "observacion": "Raíz de 'Natzra' (Nazareno). Identifica a Yehoshua' como el renuevo profético y habitante de Nazaret, diferenciándolo totalmente de alguien bajo el voto de Nazir."
   },
   {
     "id": 189,
-    "texto_hebreo": "מִנְחָה",
-    "transliteracion": "Minjáh",
-    "equivalencia_espanol": "Ofrenda",
-    "observacion": "Utilizada en el contexto de la ofrenda enviada por Jacob a Esaú, guiada por mensajeros."
+    "texto_hebreo": "גִּלְעָד",
+    "transliteracion": "Gil'ad",
+    "equivalencia_espanol": "Galaad",
+    "observacion": "Región montañosa conocida por su verdor. Se usa para describir la vitalidad del cabello de la amada, comparándolo con el movimiento vigoroso de los rebaños en las laderas."
   },
   {
     "id": 190,
-    "texto_hebreo": "יָפָה",
-    "transliteracion": "Yafah",
-    "equivalencia_espanol": "Lo bien hecho",
-    "observacion": "Se aleja del concepto de belleza estética subjetiva para definirlo como aquello que está 'bien hecho'."
+    "texto_hebreo": "נֶדֶר",
+    "transliteracion": "Neder",
+    "equivalencia_espanol": "voto; promesa",
+    "observacion": "Compromiso voluntario de consagración. A diferencia de las imposiciones divinas (como en Sansón), el Neder es un ejercicio humano de disciplina y restricción temporal."
   },
   {
     "id": 191,
-    "texto_hebreo": "נָשִׁים",
-    "transliteracion": "Mujeres",
-    "equivalencia_espanol": "Naciones del mundo / Sistemas de vida",
-    "observacion": "Alegóricamente no se refiere al género femenino, sino a las tierras o sistemas donde el hombre ha llegado a ejercer gobierno."
+    "texto_hebreo": "אַפִּרְיוֹן",
+    "transliteracion": "Appiryon",
+    "equivalencia_espanol": "carroza; palanquín; asiento real",
+    "observacion": "Deriva de la raíz 'Pará' (dar fruto). Es una silla transportable que funciona como una comparación del Arca del Testimonio, donde el Rey se manifiesta y es portado."
   },
   {
     "id": 192,
-    "texto_hebreo": "רָאָה",
-    "transliteracion": "Ver (verbo)",
-    "equivalencia_espanol": "Cantar victoria / Vislumbrar",
-    "observacion": "En contextos de opositores se asocia con cantar victoria; en otros, con dimensionar proporciones para saber si se puede vencer."
+    "texto_hebreo": "רְפִיד",
+    "transliteracion": "Refid",
+    "equivalencia_espanol": "decoración; respaldo; collar",
+    "observacion": "Alude a los ornamentos de oro del Tabernáculo. Técnicamente se vincula con los collares de distinción egipcios, señalando la riqueza del recinto de comunión."
   },
   {
     "id": 193,
-    "texto_hebreo": "שֶׁמֶשׁ",
-    "transliteracion": "Sol",
-    "equivalencia_espanol": "Cosas propias de este mundo",
-    "observacion": "Simbólicamente, que 'el sol te mire' significa que te han acontecido o atropellado las cosas naturales y aflicciones de este mundo."
+    "texto_hebreo": "מֶרְכָּב",
+    "transliteracion": "Merkav",
+    "equivalencia_espanol": "estructura; carro; asiento",
+    "observacion": "Representa el soporte o base de la carroza. En Cnt 3:10 es de púrpura, simbolizando la realeza y el fundamento sobre el cual reposa el Shalom divino."
   },
   {
     "id": 194,
-    "texto_hebreo": "כֶּרֶם",
-    "transliteracion": "Viña",
-    "equivalencia_espanol": "La vida",
-    "observacion": "En la expresión 'mi viña', se interpreta como la propia vida que debe ser preservada, guardando el testimonio y aplicando la voluntad de Dios."
+    "texto_hebreo": "רָצוּף",
+    "transliteracion": "Ratzuf",
+    "equivalencia_espanol": "movido; impulsado; pavimentado",
+    "observacion": "Describe algo que es arrastrado o movido por una fuerza externa, como el viento. Indica que el interior de la comunión es movido exclusivamente por el atributo del amor."
   },
   {
     "id": 195,
-    "texto_hebreo": "לַפִּיד",
-    "transliteracion": "Antorcha",
-    "equivalencia_espanol": "El Evangelio",
-    "observacion": "Se describe como la llama más grande que ilumina el lugar oscuro, siendo la gran luz revelada después de la Torah."
+    "texto_hebreo": "צִיּוֹן",
+    "transliteracion": "Tziyón",
+    "equivalencia_espanol": "Sión",
+    "observacion": "Nombre espiritual de la ciudad celestial. Representa al 'nuevo hombre' y la estructura restaurada del creyente que espera la redención final del cuerpo."
   },
   {
     "id": 196,
-    "texto_hebreo": "צָהֳרַיִם",
-    "transliteracion": "Mediodía",
-    "equivalencia_espanol": "Momentos difíciles",
-    "observacion": "Representa los momentos de prueba y dificultad donde el gran pastor brinda descanso."
+    "texto_hebreo": "צַמָּה",
+    "transliteracion": "Tzamah",
+    "equivalencia_espanol": "velo; trenza; redecilla",
+    "observacion": "Adorno o velo que permite percibir el brillo de los ojos. Simboliza la fidelidad que la amada logra expresar incluso a través de sus prisiones o limitaciones."
   },
   {
     "id": 197,
-    "texto_hebreo": "גְּדִי",
-    "transliteracion": "Cabritos",
-    "equivalencia_espanol": "Concupiscencias humanas",
-    "observacion": "Alegoría que representa las pasiones que se oponen a Dios y que forman parte de rebaños distintos al del amado."
+    "texto_hebreo": "נָזִיר",
+    "transliteracion": "Nazir",
+    "equivalencia_espanol": "nazareo; apartado; consagrado",
+    "observacion": "Persona bajo un voto temporal de humillación y restricciones (vid y cabello). No debe confundirse con el origen de Mashiaj, pues el Nazir requiere sacrificio por el pecado al terminar su voto."
   },
   {
     "id": 198,
-    "texto_hebreo": "רוֹעִים",
-    "transliteracion": "Ro'im",
-    "equivalencia_espanol": "Pastores / Manifestaciones de Dios",
-    "observacion": "Se asocian con la abundancia terrenal; representan todas las manifestaciones de Dios a través de los escritos (la Torah y los Profetas) y a quienes guían hacia la 'Emunah[cite: 362, 377, 378]."
+    "texto_hebreo": "נֵצֶר",
+    "transliteracion": "Netzer",
+    "equivalencia_espanol": "retoño; vástago",
+    "observacion": "Raíz de 'Natzra' (Nazareno). Identifica a Yehoshua' como el renuevo profético y habitante de Nazaret, diferenciándolo totalmente de alguien bajo el voto de Nazir."
   },
   {
     "id": 199,
-    "texto_hebreo": "עִקְּבֵי הַצֹּאן",
-    "transliteracion": "Iqvei Hatzon",
-    "equivalencia_espanol": "Huellas del rebaño",
-    "observacion": "Simbólicamente significa imitar la 'Emunáh (fidelidad) de los líderes auténticos y reconocer las obras/testimonios que Dios ha dejado[cite: 376, 380]."
+    "texto_hebreo": "גִּלְעָד",
+    "transliteracion": "Gil'ad",
+    "equivalencia_espanol": "Galaad",
+    "observacion": "Región montañosa conocida por su verdor. Se usa para describir la vitalidad del cabello de la amada, comparándolo con el movimiento vigoroso de los rebaños en las laderas."
   },
   {
     "id": 200,
-    "texto_hebreo": "סוּסָה",
-    "transliteracion": "Susáh",
-    "equivalencia_espanol": "Yegua",
-    "observacion": "Alegoría de la persona o creyente que está mezclado en el mundo, al que han tratado de someter a las tareas difíciles (Egipto) como si no tuviera a Dios que le defienda[cite: 386]."
+    "texto_hebreo": "נֶדֶר",
+    "transliteracion": "Neder",
+    "equivalencia_espanol": "voto; promesa",
+    "observacion": "Compromiso voluntario de consagración. A diferencia de las imposiciones divinas (como en Sansón), el Neder es un ejercicio humano de disciplina y restricción temporal."
   },
   {
     "id": 201,
-    "texto_hebreo": "רִכְבֵי פַרְעֹה",
-    "transliteracion": "Rikvei Far'oh",
-    "equivalencia_espanol": "Carrozas de Faraón",
-    "observacion": "Representan el mundo, el pecado y la idolatría. Es el sistema opresor (Faraón) que mantiene retenida a la amada[cite: 385, 394]."
+    "texto_hebreo": "עֵד",
+    "transliteracion": "Ed",
+    "equivalencia_espanol": "testigo",
+    "observacion": "Componente del nombre Gal'ed. Representa la función de la piedra como testimonio legal de los límites establecidos para que los principios ajenos no crucen al campamento de la promesa[cite: 734, 735]."
   },
   {
     "id": 202,
-    "texto_hebreo": "זָהָב",
-    "transliteracion": "Zahav",
-    "equivalencia_espanol": "Oro",
-    "observacion": "Metáfora de lo que es incorruptible en nosotros, obrado por Dios[cite: 408]."
+    "texto_hebreo": "גַּל",
+    "transliteracion": "Gal",
+    "equivalencia_espanol": "piedra rodante; montón",
+    "observacion": "Indica un límite físico y espiritual que custodia la honra y las ideas que emanan de la cabeza, impidiendo que el creyente busque los principios de enemigos como Labán[cite: 734, 737]."
   },
   {
     "id": 203,
-    "texto_hebreo": "כֶּסֶף",
-    "transliteracion": "Kesef",
-    "equivalencia_espanol": "Plata / Puntos de plata",
-    "observacion": "Representa lo que somos ahora mismo; en la alegoría de las coronas, los puntos de plata simbolizan las monedas que representan el pago de la redención hecho por Mashiaj[cite: 408, 412]."
+    "texto_hebreo": "קְצוּבוֹת",
+    "transliteracion": "Ketzuvot",
+    "equivalencia_espanol": "trasquiladas; igualadas",
+    "observacion": "Describe una dentadura apropiada y uniforme. Simboliza una alimentación espiritual limpia y la capacidad de procesar emociones fuertes sin pérdida de contenido[cite: 747, 749, 754]."
   },
   {
     "id": 204,
-    "texto_hebreo": "נִיחוֹחַ",
-    "transliteracion": "Nijoaj",
-    "equivalencia_espanol": "Olor fragante",
-    "observacion": "Espiritualmente no es carne quemada, sino el sacrificio hecho con la intención correcta, específicamente cuando el corazón está contrito y humillado[cite: 458, 462]."
+    "texto_hebreo": "שַׁכֵּלָה",
+    "transliteracion": "Shekulah",
+    "equivalencia_espanol": "privada; que ha perdido un hijo",
+    "observacion": "Se utiliza para enfatizar que en la amada no hay esterilidad ni pérdida; todo lo que procesa de parte de Hashem es completo, beneficioso y perfecto[cite: 753, 755, 757]."
   },
   {
     "id": 205,
-    "texto_hebreo": "עֵין גֶּדִי",
-    "transliteracion": "En-gadi / 'Ein Gedi",
-    "equivalencia_espanol": "Oasis lejano",
-    "observacion": "Representa que Mashiaj está aparentemente fuera del entorno (muy lejos de Jerusalén), pero es capaz de traspasar los desiertos para llevar su aroma y los frutos de redención[cite: 534, 535, 536]."
+    "texto_hebreo": "נָאוֶה",
+    "transliteracion": "Naveh",
+    "equivalencia_espanol": "hermoso; cántico de victoria",
+    "observacion": "Describe el habla de la amada. Evoca el cántico de Moisés al salir de Egipto, representando una alabanza que surge tras la redención y el triunfo sobre la esclavitud[cite: 761, 768, 770]."
   },
   {
     "id": 206,
-    "texto_hebreo": "נָעִים",
-    "transliteracion": "Na'im",
-    "equivalencia_espanol": "Agradable",
-    "observacion": "Se vincula con el amor incondicional y el trato especial e íntimo de Dios para con su pueblo[cite: 549, 550]."
+    "texto_hebreo": "חוּט",
+    "transliteracion": "Jut",
+    "equivalencia_espanol": "hilo",
+    "observacion": "En Cnt 4:3 se asocia a la comunión y la esperanza. Conecta simbólicamente con el cordón de Rahab y la sangre del cordero pascual en Egipto[cite: 760, 762, 765, 766]."
   },
   {
     "id": 207,
-    "texto_hebreo": "רַעֲנָנָה",
-    "transliteracion": "Ra'ananah",
-    "equivalencia_espanol": "Fresco / Verde / Vitalidad",
-    "observacion": "Se utiliza para describir un árbol joven y maduro en su mayor vitalidad; indica que el lecho íntimo de comunión con Dios no se corrompe ni se destruye[cite: 552, 553, 556]."
+    "texto_hebreo": "שָׁנִי",
+    "transliteracion": "Shani",
+    "equivalencia_espanol": "grana; carmesí; rojo",
+    "observacion": "Color que representa la comunión a través del sacrificio. Es el testimonio visible de la esperanza de Yisra'el fundamentada en la sangre de Mashiaj[cite: 762, 766, 767]."
   },
   {
     "id": 208,
-    "texto_hebreo": "מַשְׁגִּיחַ",
-    "transliteracion": "Mashgiah",
-    "equivalencia_espanol": "supervisión; mayor visión",
-    "observacion": "Relacionado con una visión de lo alto; no es solo vigilar, sino alcanzar una perspectiva superior o 'súper visión'."
+    "texto_hebreo": "פֶּלַח",
+    "transliteracion": "Pelaj",
+    "equivalencia_espanol": "rebanada; trozo; fragmento",
+    "observacion": "Describe la sien de la amada como una sección de granada. Sugiere que a pesar de la rejilla carnal, el Amado percibe la belleza del conjunto interior[cite: 761, 771, 775]."
   },
   {
     "id": 209,
-    "texto_hebreo": "עָנָה",
-    "transliteracion": "‘Anah",
-    "equivalencia_espanol": "entonar; cantar",
-    "observacion": "En el contexto de Cnt 2:10, no es responder una pregunta, sino entonar un cántico como lo hizo Moisés."
+    "texto_hebreo": "רַקָּה",
+    "transliteracion": "Racah",
+    "equivalencia_espanol": "sien",
+    "observacion": "Representa la estructura carnal que debe ser perforada para que la naturaleza espiritual se manifieste. Alude al acto de Jael contra Sísara, aplastando la soberbia del adversario[cite: 772, 773, 776]."
   },
   {
-    "id": 210,
-    "texto_hebreo": "אֵיתָנִים",
-    "transliteracion": "‘Etanim",
-    "equivalencia_espanol": "torrencial; caudales",
-    "observacion": "Nombre hebreo del primer mes del otoño; se refiere a las lluvias o crecientes de los ríos."
+    "id": 300,
+    "texto_hebreo": "צַוָּאר",
+    "transliteracion": "Tzav'ar",
+    "equivalencia_espanol": "cuello",
+    "observacion": "Indica la conexión funcional entre la cabeza y el cuerpo. En singular, simboliza la recepción o imposición de una autoridad específica sobre la persona[cite: 786, 787, 794]."
   },
   {
-    "id": 211,
-    "texto_hebreo": "תִּשְׁרֵי",
-    "transliteracion": "Tishrey",
-    "equivalencia_espanol": "Tishrey (nombre caldeo)",
-    "observacion": "Nombre adoptado en Babilonia para el mes de Etanim."
+    "id": 301,
+    "texto_hebreo": "גָּרוֹן",
+    "transliteracion": "Garon",
+    "equivalencia_espanol": "garganta",
+    "observacion": "Se refiere a la parte interior del cuello. Es la raíz de términos que describen sonidos guturales, centrada en la anatomía interna de la expresión[cite: 784]."
   },
   {
-    "id": 212,
-    "texto_hebreo": "תּוֹר",
-    "transliteracion": "Tor",
-    "equivalencia_espanol": "tórtola; Mashiaj",
-    "observacion": "Término masculino que el profesor identifica directamente con la figura de Mashiaj y el anuncio de una nueva vida."
+    "id": 302,
+    "texto_hebreo": "גַּרְגֶּרֶת",
+    "transliteracion": "Gargeret",
+    "equivalencia_espanol": "base del cuello",
+    "observacion": "Define la región inferior del cuello, utilizada para especificar áreas de adorno o sujeción en la vestimenta y anatomía bíblica[cite: 785]."
   },
   {
-    "id": 213,
-    "texto_hebreo": "חַגְוֵי סֶלַע",
-    "transliteracion": "Jagvei sela’",
-    "equivalencia_espanol": "hendiduras de las peñas",
-    "observacion": "Utilizado como refugio en lo alto; se vincula proféticamente con la soberbia de Edom (Esaú)."
+    "id": 303,
+    "texto_hebreo": "צוָארֵךְ",
+    "transliteracion": "Tzavarej",
+    "equivalencia_espanol": "tu cuello",
+    "observacion": "Aparece en singular para indicar el lugar donde se recibe la autoridad y se manifiesta la sujeción. Representa la fortaleza de Tzyión que fue sometida al amado, simbolizando una voluntad que ya no es soberbia sino subordinada."
   },
   {
-    "id": 214,
-    "texto_hebreo": "מַרְאֶה",
-    "transliteracion": "Mar’eh",
-    "equivalencia_espanol": "facultad de la vista; aspecto físico conjunto",
-    "observacion": "Se diferencia de 'Panim'; se refiere a lo visible en su conjunto o una visión panorámica del aspecto general."
+    "id": 304,
+    "texto_hebreo": "תַּלְפִּיּוֹת",
+    "transliteracion": "Talpiyod",
+    "equivalencia_espanol": "en orden; bien hecho",
+    "observacion": "Deriva de la raíz 'Lapat' (poner en orden). Se refiere a una edificación diseñada para la enseñanza de la Torah, indicando que la estructura espiritual de la amada está organizada para la instrucción divina."
   },
   {
-    "id": 215,
-    "texto_hebreo": "βουסטרוφηדּוֹן",
-    "transliteracion": "Bustrófedon",
-    "equivalencia_espanol": "escritura en zigzag; serpiente",
-    "observacion": "Técnica literaria mencionada por el profesor para explicar la correspondencia inversa en los versículos (redactar alternativamente un renglón de izquierda a derecha y el siguiente al revés)."
+    "id": 305,
+    "texto_hebreo": "שִׁלְטֵי",
+    "transliteracion": "Shiltei",
+    "equivalencia_espanol": "aljabas; fundas",
+    "observacion": "Lugar donde se guardan las flechas. En el contexto de la Torre de David, representa los depósitos donde se preservan los recursos de los mandamientos para su aplicación constante en la vida."
   },
   {
-    "id": 216,
-    "texto_hebreo": "קַל וָחֹמֶר",
-    "transliteracion": "Kal vajomer",
-    "equivalencia_espanol": "de lo menor a lo mayor",
-    "observacion": "Regla de interpretación lógica aplicada para explicar la reacción de la amada contra sus enemigos comparándola con Sansón."
+    "id": 306,
+    "texto_hebreo": "גִּבּוֹרִים",
+    "transliteracion": "Giborin",
+    "equivalencia_espanol": "valientes; mandamientos",
+    "observacion": "Representan los recursos de la doctrina de Hashem. Son los 'guerreros' o mandamientos que están colgados en el cuello de la amada para ser usados contra los temores de la noche."
   },
   {
-    "id": 217,
-    "texto_hebreo": "הָפַךְ",
-    "transliteracion": "Jafaj",
-    "equivalencia_espanol": "volverse lo contrario",
-    "observacion": "Acción de Hashem que transforma el estado de inoperancia, inactividad o debilidad en una fortaleza asistida."
+    "id": 307,
+    "texto_hebreo": "אֶלֶף",
+    "transliteracion": "Elef",
+    "equivalencia_espanol": "doctrina; enseñanza",
+    "observacion": "Aunque comúnmente se traduce como 'mil', en este contexto exegético se refiere a la instrucción de la Torah. Representa el adorno de gracia que corona la cabeza y el cuello del creyente."
   },
   {
-    "id": 218,
-    "texto_hebreo": "חֻפָּה",
-    "transliteracion": "Jupá’",
-    "equivalencia_espanol": "jupá'; cámara nupcial",
-    "observacion": "Mencionada como la cámara de la que sale el novio en el contexto de la reunión del pueblo."
+    "id": 308,
+    "texto_hebreo": "צְבִיָּה",
+    "transliteracion": "Tzviyah",
+    "equivalencia_espanol": "gacela; fuente",
+    "observacion": "Nombre femenino que identifica a Dios como la fuente única de donde provienen la Torah y la profecía (los dos pechos gemelos). Es la raíz de la belleza que corona la tierra de Yisra'el."
   },
   {
-    "id": 219,
-    "texto_hebreo": "גָּדוֹל",
-    "transliteracion": "Gadol",
-    "equivalencia_espanol": "crecido de menos a más",
-    "observacion": "Definición específica del profesor para referirse al crecimiento progresivo, aplicada al 'Día de Hashem'."
+    "id": 309,
+    "texto_hebreo": "אֶרֶץ",
+    "transliteracion": "Eretz",
+    "equivalencia_espanol": "tierra",
+    "observacion": "Se utiliza para designar el territorio de la promesa. Junto a 'Tzvi', conforma la expresión de la tierra de Dios, un lugar que, aunque sea acechado, permanece bajo Su soberanía."
   },
   {
-    "id": 220,
-    "texto_hebreo": "כַּפֹּרֶת",
-    "transliteracion": "Kapóret",
-    "equivalencia_espanol": "tapa del arca; lugar de reconciliación",
-    "observacion": "Lugar donde reposaba la presencia divina y se efectuaba la más perfecta comunión y reconciliación de Dios con Su pueblo."
-  },
-  {
-    "id": 221,
-    "texto_hebreo": "צְדָקָה",
-    "transliteracion": "Tzedaqáh",
-    "equivalencia_espanol": "justicia que salva; benevolencia",
-    "observacion": "Justicia de Dios entendida no como castigo, sino como la benevolencia divina que rescata a la humanidad[cite: 1037, 1038]."
-  },
-  {
-    "id": 222,
-    "texto_hebreo": "נָבָא",
-    "transliteracion": "Nava / Profetizar",
-    "equivalencia_espanol": "pronunciar la palabra de Dios",
-    "observacion": "Tener en la boca la palabra de Dios para que sea pronunciada o manifestada sobre algo[cite: 1031]."
-  },
-  {
-    "id": 223,
-    "texto_hebreo": "קָרָא",
-    "transliteracion": "Qara / Llamar",
-    "equivalencia_espanol": "confesar conscientemente",
-    "observacion": "Hacer una confesión consciente de Dios, reconociendo Su identidad y Su nombre[cite: 1045, 1046]."
-  },
-  {
-    "id": 224,
-    "texto_hebreo": "מִצְוָה",
-    "transliteracion": "Mitzvah",
-    "equivalencia_espanol": "mandamiento",
-    "observacion": "Se describe como espada y promesa que preserva la paz y la comunión con Dios[cite: 1067, 1068]."
-  },
-  {
-    "id": 225,
-    "texto_hebreo": "דָּם",
-    "transliteracion": "Dam / Sangre",
-    "equivalencia_espanol": "sacrificio de Mashiaj",
-    "observacion": "Simbólicamente representa la primera demostración o señal del Mesías tanto en los cielos como en la tierra[cite: 1021, 1036]."
-  },
-  {
-    "id": 226,
-    "texto_hebreo": "אֵשׁ",
-    "transliteracion": "‘Esh / Fuego",
-    "equivalencia_espanol": "derramamiento del Espíritu",
-    "observacion": "Representa el derramamiento de Rúaj Haqódesh como un prodigio divino[cite: 1022]."
-  },
-  {
-    "id": 227,
-    "texto_hebreo": "פָּרָה",
-    "transliteracion": "Pará",
-    "equivalencia_espanol": "dar fruto",
-    "observacion": "Raíz de Apiryon; se vincula con la productividad espiritual y el resultado del sacrificio[cite: 1099, 1102]."
-  },
-  {
-    "id": 228,
-    "texto_hebreo": "נָצְרָא",
-    "transliteracion": "Natzra’",
-    "equivalencia_espanol": "retoño",
-    "observacion": "Diferenciado de Nazir; término arameo para referirse a la procedencia de Yehoshua' como el retoño prometido[cite: 1148]."
-  },
-  {
-    "id": 229,
-    "texto_hebreo": "עַתִּיק יוֹמִין",
-    "transliteracion": "Atiq yomin",
-    "equivalencia_espanol": "Anciano de días",
-    "observacion": "Mencionado en la visión de Daniel; sus cabellos blancos representan honra, sabiduría y testimonio[cite: 1156, 1171]."
-  },
-  {
-    "id": 230,
-    "texto_hebreo": "לָפַת",
-    "transliteracion": "Lapat",
-    "equivalencia_espanol": "poner en orden",
-    "observacion": "Etimología de la raíz de Talpiyot; implica edificar con un arreglo o propósito definido por Dios[cite: 1258, 1260]."
-  },
-  {
-    "id": 231,
-    "texto_hebreo": "צְבִיָּה",
-    "transliteracion": "Tzviah / Tzvia",
-    "equivalencia_espanol": "Tzviyah; Dios (como fuente)",
-    "observacion": "En el lenguaje simbólico del estudio, este nombre corona la tierra de Yisra'el y representa a Dios como la fuente única de donde provienen la Torah y la profecía."
-  },
-  {
-    "id": 232,
-    "texto_hebreo": "אֶרֶץ הַצְּבִי",
-    "transliteracion": "‘Eretz hatzevi",
-    "equivalencia_espanol": "tierra de Dios; tierra del ciervo",
-    "observacion": "Título simbólico para la tierra de Yisra'el, destacando que es la posesión específica de Hashem[cite: 1277, 1284, 1286]."
-  },
-  {
-    "id": 233,
+    "id": 310,
     "texto_hebreo": "מוּם",
     "transliteracion": "Mum",
     "equivalencia_espanol": "defecto; mancha",
-    "observacion": "Se aplica a la amada para indicar que, por la obra de Hashem, no hay en ella tacha, cicatriz ni contaminación[cite: 1299, 1304]."
+    "observacion": "Se refiere a cualquier imperfección o tacha. El amado declara que la amada está 'bien hecha' y carece de este defecto, reconociendo su integridad tras el proceso de redención."
   },
   {
-    "id": 234,
-    "texto_hebreo": "עִמָּנוּאֵל",
-    "transliteracion": "Imanu'el",
-    "equivalencia_espanol": "remanente que discierne",
-    "observacion": "Representa al remanente que, a través de la Torah, aprende a discernir lo bueno y desechar lo malo[cite: 1387]."
+    "id": 311,
+    "texto_hebreo": "אֵתִי",
+    "transliteracion": "Eti",
+    "equivalencia_espanol": "ven",
+    "observacion": "Lectura alternativa de las consonantes Alef-Tav-Yud. Es el llamado imperativo del Amado a la amada para que parta desde el lugar del sacrificio hacia una nueva posición espiritual."
   },
   {
-    "id": 235,
+    "id": 312,
+    "texto_hebreo": "כַּלָּה",
+    "transliteracion": "Kallah",
+    "equivalencia_espanol": "novia; esposa",
+    "observacion": "Designa a la mujer que tiene una fecha establecida para su matrimonio o término ceremonial. Indica que la amada ha pasado por un proceso de preparación para la unión plena."
+  },
+  {
+    "id": 313,
+    "texto_hebreo": "אֲמָנָה",
+    "transliteracion": "Amanah",
+    "equivalencia_espanol": "Amaná; verdad; corriente",
+    "observacion": "Nombre de un río y su cumbre. Representa doctrinas que pueden parecer atractivas a los ojos humanos, pero que carecen de la vida designada por Dios, a diferencia del Jordán."
+  },
+  {
+    "id": 314,
+    "texto_hebreo": "שְׂנִיר",
+    "transliteracion": "Senir",
+    "equivalencia_espanol": "Senir",
+    "observacion": "Nombre amorreo para el monte Hermón. Junto a las otras cumbres, representa los 'pisos' o niveles doctrinales que deben ser observados desde una posición de victoria."
+  },
+  {
+    "id": 315,
+    "texto_hebreo": "חֶרְמוֹן",
+    "transliteracion": "Hermon",
+    "equivalencia_espanol": "Hermón; el consagrado",
+    "observacion": "El monte más alto de Yisra'el, situado en la 'cabeza' del país. Históricamente asociado a potestades como Og y Sihón, sobrevivientes de los refaím."
+  },
+  {
+    "id": 316,
+    "texto_hebreo": "אֲרָיוֹת",
+    "transliteracion": "Arayot",
+    "equivalencia_espanol": "leones",
+    "observacion": "Plural que alude a las potestades demoníacas que habitaban las alturas. Simboliza las fuerzas que intentan someter a las naciones pero que están bajo el llamamiento santo del Amado."
+  },
+  {
+    "id": 317,
+    "texto_hebreo": "נְמֵרִים",
+    "transliteracion": "Nemerim",
+    "equivalencia_espanol": "leopardos; tigres",
+    "observacion": "Representan las amenazas terrenales y espirituales que acechan en las montañas de la doctrina. El Amado invita a mirar por encima de estas guaridas desde una posición de seguridad."
+  },
+  {
+    "id": 318,
+    "texto_hebreo": "לִבַּבְתִּנִי",
+    "transliteracion": "Libavtini",
+    "equivalencia_espanol": "prendiste mi corazón; me corazoneaste",
+    "observacion": "Verbo único derivado de Levab. Expresa una acción recíproca donde la conducta y los mandamientos de la amada hacen que el Amado la identifique como Su propio corazón."
+  },
+  {
+    "id": 319,
+    "texto_hebreo": "לֵבָב",
+    "transliteracion": "Levab",
+    "equivalencia_espanol": "corazón",
+    "observacion": "Raíz del verbo Libavtini. Representa el centro de la voluntad y la esencia del ser donde habita el Amado, manifestándose a través de la conducta visible."
+  },
+  {
+    "id": 320,
+    "texto_hebreo": "רֹאשׁ",
+    "transliteracion": "Rosh",
+    "equivalencia_espanol": "cabeza; cumbre; principio",
+    "observacion": "Utilizado para las cimas de las montañas doctrinales. Señala que el llamamiento de Mashiaj está por encima de cualquier corriente o potestad terrenal."
+  },
+  {
+    "id": 321,
+    "texto_hebreo": "דּוֹדַיִךְ",
+    "transliteracion": "Dodayij",
+    "equivalencia_espanol": "tus amores",
+    "observacion": "Describe las manifestaciones de afecto de la amada, las cuales son calificadas por el Amado como superiores al vino y a cualquier especia aromática."
+  },
+  {
+    "id": 322,
+    "texto_hebreo": "שֶׁמֶן",
+    "transliteracion": "Shemen",
+    "equivalencia_espanol": "aceite",
+    "observacion": "Representa la subordinación total[cite: 947]. Solo cuando hay esta sujeción, los 'amados' (Torah y profecía) son vistos con un aroma más agradable que cualquier perfume mundano[cite: 948]."
+  },
+  {
+    "id": 323,
+    "texto_hebreo": "דְּבַשׁ",
+    "transliteracion": "Devash",
+    "equivalencia_espanol": "miel",
+    "observacion": "Símbolo de la Torah y los profetas[cite: 957]. Junto con la leche, debe fluir de los labios como palabras agradables que traen vida y salud a los huesos[cite: 959, 962]."
+  },
+  {
+    "id": 324,
+    "texto_hebreo": "חָלָב",
+    "transliteracion": "Jalav",
+    "equivalencia_espanol": "leche",
+    "observacion": "Alimento espiritual que permite al remanente discernir entre lo bueno y lo malo[cite: 957, 960]. Es lo que fluye de la lengua cuando la sabiduría de Dios está presente[cite: 958, 959]."
+  },
+  {
+    "id": 325,
+    "texto_hebreo": "גַּן",
+    "transliteracion": "Gan",
+    "equivalencia_espanol": "huerto; patio cerrado",
+    "observacion": "Representa la exclusividad de la doctrina de Hashem[cite: 981, 986]. Como el Edén, es un espacio donde no se puede comer de fuentes extrañas o árboles plantados fuera del diseño divino[cite: 984, 987]."
+  },
+  {
+    "id": 326,
+    "texto_hebreo": "מַעְיָן",
+    "transliteracion": "Mayán",
+    "equivalencia_espanol": "manantial; fuente",
+    "observacion": "Identifica a la amada como un receptáculo de aguas vivas[cite: 990]. Se describe como 'sellada' porque solo el Señor tiene la potestad de revelar lo que es compatible con Su verdad[cite: 990]."
+  },
+  {
+    "id": 327,
+    "texto_hebreo": "חָתוּם",
+    "transliteracion": "Jatum",
+    "equivalencia_espanol": "sellado",
+    "observacion": "Condición de la fuente y los rollos de la Torah[cite: 981, 988]. Indica que el contenido solo puede ser manifestado por su autor, Hashem, a través de la revelación del Evangelio[cite: 989, 991]."
+  },
+  {
+    "id": 328,
+    "texto_hebreo": "רִמּוֹן",
+    "transliteracion": "Rimmon",
+    "equivalencia_espanol": "granada",
+    "observacion": "Icono de la mente y el cerebro[cite: 997]. Un patio de granadas simboliza que todo pensamiento procedente de la cabeza debe ser un fruto suave y aromático, propio de una siembra espiritual[cite: 995, 997]."
+  },
+  {
+    "id": 329,
+    "texto_hebreo": "בְּשָׂמִים",
+    "transliteracion": "Besamim",
+    "equivalencia_espanol": "especias aromáticas",
+    "observacion": "Representan la conducta y el testimonio del creyente[cite: 995, 1006]. Son los frutos perfumados que deben exhalar nuestras vestiduras de amparo espiritual[cite: 1005, 1006]."
+  },
+  {
+    "id": 330,
+    "texto_hebreo": "לְבוֹנָה",
+    "transliteracion": "Levonah",
+    "equivalencia_espanol": "olíbano; incienso",
+    "observacion": "Árbol de aroma principal relacionado con el sacrificio y el olor fragante[cite: 999, 1001]. Simboliza los pensamientos elevados que deben guardar nuestro corazón en Cristo[cite: 1002, 1003]."
+  },
+  {
+    "id": 331,
+    "texto_hebreo": "אֲהָלוֹת",
+    "transliteracion": "Ahalot",
+    "equivalencia_espanol": "áloes; acacia",
+    "observacion": "Especia principal que, junto a la mirra, aromatiza el testimonio y la presencia del amado en la vida de la amada[cite: 999, 1001, 1004]."
+  },
+  {
+    "id": 332,
+    "texto_hebreo": "מַיִם",
+    "transliteracion": "Mayim",
+    "equivalencia_espanol": "aguas",
+    "observacion": "Elemento que fluye del Líbano y del altar[cite: 1007]. Representan la vitalidad espiritual que corre cuando Mashiaj ocupa el centro del corazón[cite: 974, 975]."
+  },
+  {
+    "id": 333,
+    "texto_hebreo": "בֵּן",
+    "transliteracion": "Ben",
+    "equivalencia_espanol": "portador; heredero; sucesor; discípulo",
+    "observacion": "En el marco de la herencia y la sucesión, define a quien porta la esencia de su padre o maestro."
+  },
+  {
+    "id": 334,
+    "texto_hebreo": "קוֹץ",
+    "transliteracion": "Qotz",
+    "equivalencia_espanol": "espina; tilde; puntita",
+    "observacion": "Se refiere tanto a las espinas físicas como al rasgo gráfico mínimo que diferencia una letra de otra en la Torah."
+  },
+  {
+    "id": 335,
+    "texto_hebreo": "קְוּצּוֹת",
+    "transliteracion": "Qevutzot",
+    "equivalencia_espanol": "guedejas; mechones; conjunto",
+    "observacion": "Tradicionalmente entendido como cabellos, pero analizado aquí por su raíz ligada a las perforaciones o espinas."
+  },
+  {
+    "id": 336,
+    "texto_hebreo": "טַל",
+    "transliteracion": "Tal",
+    "equivalencia_espanol": "rocío; mandato; enseñanza",
+    "observacion": "Metáfora de la palabra de Hashem que destila sobre la grama y alimenta la existencia."
+  },
+  {
+    "id": 337,
+    "texto_hebreo": "מָן",
+    "transliteracion": "Man",
+    "equivalencia_espanol": "maná; pan del cielo",
+    "observacion": "Alimento que descendía con el rocío, el cual requiere ser acompañado por la Emunah para dar vida eterna."
+  },
+  {
+    "id": 338,
+    "texto_hebreo": "רְסִיסִים",
+    "transliteracion": "Resisim",
+    "equivalencia_espanol": "gotas; hendiduras; aberturas",
+    "observacion": "Se refiere a las rajaduras o perforaciones producidas por la muerte o la 'noche'."
+  },
+  {
+    "id": 339,
+    "texto_hebreo": "כֻּתֹּנֶת",
+    "transliteracion": "Kutonet",
+    "equivalencia_espanol": "túnica; vestimenta; cuerpo",
+    "observacion": "Simboliza la gloria o el cuerpo físico que se despoja una sola vez para el sacrificio."
+  },
+  {
+    "id": 340,
+    "texto_hebreo": "רַגְלַיִם",
+    "transliteracion": "Raglayim",
+    "equivalencia_espanol": "pies",
+    "observacion": "Su lavado simboliza dejar a un lado la voluntad propia y los anhelos para cumplir el propósito divino."
+  },
+  {
+    "id": 341,
+    "texto_hebreo": "לַיְלָה",
+    "transliteracion": "Laylah",
+    "equivalencia_espanol": "noche; muerte; tinieblas",
+    "observacion": "Contexto temporal que representa la potestad de las tinieblas y la transición hacia la luz."
+  },
+  {
+    "id": 342,
+    "texto_hebreo": "גִּימֵל",
+    "transliteracion": "Gimel",
+    "equivalencia_espanol": "tercera letra del alfabeto hebreo",
+    "observacion": "Mencionada para distinguir rasgos caligráficos que un 'Qotz' diferencia de otras letras."
+  },
+  {
+    "id": 343,
+    "texto_hebreo": "יָד",
+    "transliteracion": "Yad",
+    "equivalencia_espanol": "mano; poder; herencia; lugar",
+    "observacion": "Representa al autor material y la ejecución de la voluntad. Metafóricamente es una proyección espacial o una parcela de tierra."
+  },
+  {
+    "id": 344,
+    "texto_hebreo": "חֹר",
+    "transliteracion": "Jor",
+    "equivalencia_espanol": "agujero; hueco; caverna",
+    "observacion": "Espacio habitable o refugio excavado; en Cantares representa el Templo o la morada celestial desde donde se revela la profecía."
+  },
+  {
+    "id": 345,
+    "texto_hebreo": "אֶצְבַּע",
+    "transliteracion": "Etzba'",
+    "equivalencia_espanol": "dedo; sutileza; autoría intelectual",
+    "observacion": "Simboliza lo fino, lo invisible y las ideas o pensamientos que mueven la ejecución material de las manos."
+  },
+  {
+    "id": 346,
+    "texto_hebreo": "עֹבֵר",
+    "transliteracion": "Over",
+    "equivalencia_espanol": "calidad; fino; que corre",
+    "observacion": "Calificativo de la mirra que fluye, indicando excelencia y pureza en relación al sacrificio consumado."
+  },
+  {
+    "id": 347,
+    "texto_hebreo": "כַּף",
+    "transliteracion": "Kaf",
+    "equivalencia_espanol": "palma; manecilla; cuenco",
+    "observacion": "Parte de la mano asociada a la apertura del cerrojo y al contacto directo con la revelación derramada."
+  },
+  {
+    "id": 348,
+    "texto_hebreo": "מֵעִים",
+    "transliteracion": "Me'im",
+    "equivalencia_espanol": "entrañas; lo más interno",
+    "observacion": "Centro de la conmoción interna ante la revelación de la profecía o la presencia del amado."
+  },
+  {
+    "id": 349,
+    "texto_hebreo": "אִישׁוֹן",
+    "transliteracion": "Ishon",
+    "equivalencia_espanol": "niña del ojo; pupila",
+    "observacion": "Metáfora de lo más valioso y delicado; describe cómo debe protegerse la instrucción o ley divina."
+  },
+  {
+    "id": 350,
+    "texto_hebreo": "רֶדִיד",
+    "transliteracion": "Redid",
+    "equivalencia_espanol": "chal; manto",
+    "observacion": "Prenda levantada por los guardianes de las murallas; representa la cobertura que es removida durante la corrección."
+  },
+  {
+    "id": 351,
+    "texto_hebreo": "חָמַק",
+    "transliteracion": "Jamaq",
+    "equivalencia_espanol": "esconderse; desaparecer",
+    "observacion": "Acción de apartarse del plano carnal o de las expectativas humanas para manifestarse en una dimensión espiritual."
+  },
+  {
+    "id": 352,
+    "texto_hebreo": "שׁוֹמְרִים",
+    "transliteracion": "Shomrim",
+    "equivalencia_espanol": "guardianes; vigilantes",
+    "observacion": "Representan a la Torah y la profecía que patrullan la ciudad y confrontan al ser."
+  },
+  {
+    "id": 353,
+    "texto_hebreo": "חוֹמוֹת",
+    "transliteracion": "Jomot",
+    "equivalencia_espanol": "murallas",
+    "observacion": "Lugar de vigilancia donde los guardianes ejercen su función de protección y disciplina."
+  },
+  {
+    "id": 354,
+    "texto_hebreo": "מַקָּבָה",
+    "transliteracion": "Maqavah",
+    "equivalencia_espanol": "martillo",
+    "observacion": "Metáfora de la palabra de YHWH que tiene el poder de quebrantar la dureza de la piedra."
+  },
+  {
+    "id": 355,
+    "texto_hebreo": "פֶּצַע",
+    "transliteracion": "Petza",
+    "equivalencia_espanol": "herida; herir",
+    "observacion": "Efecto producido por la palabra de Dios al confrontar al individuo que busca desde sus propias pretensiones."
+  },
+  {
+    "id": 356,
+    "texto_hebreo": "נָכָה",
+    "transliteracion": "Najaj",
+    "equivalencia_espanol": "golpear",
+    "observacion": "Acción ligada a la corrección disciplinaria de los guardianes sobre la amada."
+  },
+  {
+    "id": 357,
+    "texto_hebreo": "מַנְעוּל",
+    "transliteracion": "Man'ul",
+    "equivalencia_espanol": "cerrojo",
+    "observacion": "Representa la barrera entre la mente carnal y la espiritual; su apertura permite que los dedos destilen mirra."
+  },
+  {
+    "id": 358,
+    "texto_hebreo": "רְדִיד",
+    "transliteracion": "Redid",
+    "equivalencia_espanol": "chal; tocado; prenda de soberbia",
+    "observacion": "Prenda que representaba la arrogancia de las hijas de Tziyón; los guardianes la levantan para quitar la autosuficiencia del ser."
+  },
+  {
+    "id": 359,
+    "texto_hebreo": "צֶמַח",
+    "transliteracion": "Tzémaj",
+    "equivalencia_espanol": "renuevo; brote; fruto",
+    "observacion": "Referido al fruto de la tierra que será para decoro, gloria y honra de los sobrevivientes."
+  },
+  {
+    "id": 360,
+    "texto_hebreo": "בָּעַר",
+    "transliteracion": "Baer",
+    "equivalencia_espanol": "erradicar; consumir; quemar",
+    "observacion": "Acción de espíritu de juicio para eliminar el mal y la inmundicia de en medio del pueblo."
+  },
+  {
+    "id": 361,
+    "texto_hebreo": "סֻכָּה",
+    "transliteracion": "Sukah",
+    "equivalencia_espanol": "tabernáculo; refugio; abrigo",
+    "observacion": "Abrigo divino que no es de este mundo, destinado a proteger contra el calor y el aguacero espiritual."
+  },
+  {
+    "id": 362,
+    "texto_hebreo": "קֶדֶם",
+    "transliteracion": "Qédem",
+    "equivalencia_espanol": "eternidad; antigüedad; oriente",
+    "observacion": "Dimensión temporal que alude a lo que es eterno, como la edificación de la Sukah de David."
+  },
+  {
+    "id": 363,
+    "texto_hebreo": "צַח",
+    "transliteracion": "Tzaj",
+    "equivalencia_espanol": "blanco; radiante; deslumbrante",
+    "observacion": "Primera característica del amado que denota pureza y claridad tras la remoción del velo de soberbia."
+  },
+  {
+    "id": 364,
+    "texto_hebreo": "אָדֹם",
+    "transliteracion": "Adom",
+    "equivalencia_espanol": "rubio; rojizo; encendido",
+    "observacion": "Atributo del amado que complementa su blancura, señalando su distinción."
+  },
+  {
+    "id": 365,
+    "texto_hebreo": "דָּגוּל",
+    "transliteracion": "Dagul",
+    "equivalencia_espanol": "señalado; distinguido; estandarte",
+    "observacion": "Aquel que destaca o es puesto como señal entre diez mil."
+  },
+  {
+    "id": 366,
+    "texto_hebreo": "חֶסֶד",
+    "transliteracion": "Jesed",
+    "equivalencia_espanol": "misericordia; bondad",
+    "observacion": "Atributo de Hashem que, aunque no anula el juicio, permite la respuesta divina antes de que el hombre clame."
+  },
+  {
+    "id": 367,
+    "texto_hebreo": "צַח",
+    "transliteracion": "Tsáj",
+    "equivalencia_espanol": "nítido; transparente; limpio; sin sombras",
+    "observacion": "Atributo de Hashem que indica inmutabilidad, fidelidad y piedad (Jesed) sin sombra de variación[cite: 624, 630, 641, 645]."
+  },
+  {
+    "id": 368,
+    "texto_hebreo": "אָדוֹם",
+    "transliteracion": "'Adom",
+    "equivalencia_espanol": "rojo; fuego; juicio espiritual",
+    "observacion": "Simboliza la evaluación desde una óptica espiritual e incorruptible, contrapuesta al juicio terrenal por agua[cite: 632, 634, 635]."
+  },
+  {
+    "id": 369,
+    "texto_hebreo": "חֹם",
+    "transliteracion": "Kjom",
+    "equivalencia_espanol": "calor; luz nítida",
+    "observacion": "Claridad absoluta que despeja cualquier sombra, asociada a la luz de la cosecha y la observación divina[cite: 628, 629]."
+  },
+  {
+    "id": 370,
+    "texto_hebreo": "רְבָבָה",
+    "transliteracion": "Revavah",
+    "equivalencia_espanol": "diez mil; miríada; muchedumbre",
+    "observacion": "Se refiere a cantidades enormes de huestes o ángeles; el amado es señalado entre estas multitudes[cite: 659, 660, 662]."
+  },
+  {
+    "id": 371,
+    "texto_hebreo": "כֶּתֶם",
+    "transliteracion": "Ketem",
+    "equivalencia_espanol": "oro; corona; mandamientos",
+    "observacion": "Representa la sabiduría de lo alto y la corona de los preceptos que son deseables y finos[cite: 666, 668, 680]."
+  },
+  {
+    "id": 372,
+    "texto_hebreo": "פָּז",
+    "transliteracion": "Paz",
+    "equivalencia_espanol": "oro fino; alta calidad; incorruptible",
+    "observacion": "Metáfora de la Torah y la pureza de los mandamientos que no admiten putrefacción interna[cite: 669, 670, 678, 685]."
+  },
+  {
+    "id": 373,
+    "texto_hebreo": "תַּלְתַּלִים",
+    "transliteracion": "Taltalim",
+    "equivalencia_espanol": "rizos; espinas; ataques",
+    "observacion": "En la descripción del amado, representan las espinas y los ataques sufridos durante la noche o las tinieblas."
+  },
+  {
+    "id": 374,
+    "texto_hebreo": "עֹרֵב",
+    "transliteracion": "Orev",
+    "equivalencia_espanol": "cuervo; tinieblas; muerte",
+    "observacion": "Asociado a la oscuridad de los ataques que intentan rodear la cabeza del amado."
+  },
+  {
+    "id": 375,
+    "texto_hebreo": "יוֹנָה",
+    "transliteracion": "Yonah",
+    "equivalencia_espanol": "paloma; fidelidad",
+    "observacion": "Símbolo de la lealtad constante, utilizada para describir la mirada del amado y sus seguidores[cite: 690, 695]."
+  },
+  {
+    "id": 376,
+    "texto_hebreo": "עַיִן",
+    "transliteracion": "Ayin",
+    "equivalencia_espanol": "ojo; proyección exterior; creyente",
+    "observacion": "Representa lo visible de Mashiaj en el mundo, personificado en la comunidad de creyentes[cite: 692, 693, 694]."
+  },
+  {
+    "id": 377,
+    "texto_hebreo": "אֲפִיקֵי",
+    "transliteracion": "Afiquei",
+    "equivalencia_espanol": "canales; arroyos",
+    "observacion": "Representan la palabra de Dios; los canales de agua simbolizan a los creyentes bebiendo de la escritura."
+  },
+  {
+    "id": 378,
+    "texto_hebreo": "חָלָב",
+    "transliteracion": "Jalav",
+    "equivalencia_espanol": "leche",
+    "observacion": "Sinónimo de la Jerusalén celestial; se utiliza para describir el sustento espiritual puro."
+  },
+  {
+    "id": 379,
+    "texto_hebreo": "חֵלֶב",
+    "transliteracion": "Jelev",
+    "equivalencia_espanol": "lo mejor; grosura",
+    "observacion": "Término intercambiable con leche en ciertos contextos; representa la excelencia del sustento divino."
+  },
+  {
+    "id": 380,
+    "texto_hebreo": "לְחִי",
+    "transliteracion": "Leji",
+    "equivalencia_espanol": "mejilla",
+    "observacion": "Se refiere tanto a la parte interna como externa; simboliza los atributos espirituales que Hashem degusta."
+  },
+  {
+    "id": 381,
+    "texto_hebreo": "בְּשָׂמִים",
+    "transliteracion": "Besamim",
+    "equivalencia_espanol": "especias aromáticas; perfumes",
+    "observacion": "Codificación para los nombres de Jerusalén y las cualidades por las cuales Hashem se identifica."
+  },
+  {
+    "id": 382,
+    "texto_hebreo": "שׁוֹשַׁנִּים",
+    "transliteracion": "Shoshanim",
+    "equivalencia_espanol": "lirios",
+    "observacion": "Metáfora de los labios que destilan mirra y de los creyentes que llevan el testimonio del sacrificio."
+  },
+  {
+    "id": 383,
+    "texto_hebreo": "עַוְלָה",
+    "transliteracion": "Avlah",
+    "equivalencia_espanol": "torcedura; iniquidad",
+    "observacion": "Representa la injusticia que no fue hallada en los labios del Sacerdote perfecto."
+  },
+  {
+    "id": 384,
+    "texto_hebreo": "פֶּה",
+    "transliteracion": "Peh",
+    "equivalencia_espanol": "boca",
+    "observacion": "Órgano de la pronunciación de donde el pueblo busca la instrucción y la ley."
+  },
+  {
+    "id": 385,
+    "texto_hebreo": "שְׂפָתַיִם",
+    "transliteracion": "Sefatayim",
+    "equivalencia_espanol": "labios",
+    "observacion": "Asociados con las intenciones del corazón; deben guardar el conocimiento y la sabiduría."
+  },
+  {
+    "id": 386,
+    "texto_hebreo": "στίγμα",
+    "transliteracion": "Stigma",
+    "equivalencia_espanol": "marcas",
+    "observacion": "Referencia a las marcas del Señor Jesús llevadas en el cuerpo como testimonio de pertenencia."
+  },
+  {
+    "id": 387,
+    "texto_hebreo": "גְּלִילֵי",
+    "transliteracion": "Gelilei",
+    "equivalencia_espanol": "aros; círculos",
+    "observacion": "Manifestación visible de lo que Hashem ha hecho y de la Jerusalén celestial."
+  },
+  {
+    "id": 388,
+    "texto_hebreo": "תַּרְשִׁישׁ",
+    "transliteracion": "Tarshish",
+    "equivalencia_espanol": "Tarsis; piedra preciosa",
+    "observacion": "Asociada a los lugares más remotos de la tierra y a la proyección universal de la obra divina."
+  },
+  {
+    "id": 389,
+    "texto_hebreo": "שֵׁן",
+    "transliteracion": "Shen",
+    "equivalencia_espanol": "marfil; diente",
+    "observacion": "Material que simboliza la pulcritud y la firmeza en la estructura interna de la revelación."
+  },
+  {
+    "id": 390,
+    "texto_hebreo": "סַפִּירִים",
+    "transliteracion": "Sappirim",
+    "equivalencia_espanol": "zafiros",
+    "observacion": "Incrustaciones que representan los pensamientos más profundos de Dios grabados en el ser."
+  },
+  {
+    "id": 391,
+    "texto_hebreo": "תַּרְשִׁישׁ",
+    "transliteracion": "Tarshish",
+    "equivalencia_espanol": "Tarsis; lugares remotos",
+    "observacion": "Simboliza los extremos del mundo y las grandes creaciones humanas que Dios rompe cuando pretenden autosuficiencia."
+  },
+  {
+    "id": 392,
+    "texto_hebreo": "מֵעִים",
+    "transliteracion": "Me'im",
+    "equivalencia_espanol": "entrañas; órganos internos",
+    "observacion": "Referido a la Torah y la palabra de Dios que opera de forma incorruptible dentro del ser."
+  },
+  {
+    "id": 393,
+    "texto_hebreo": "שֵׁן",
+    "transliteracion": "Shen",
+    "equivalencia_espanol": "marfil; diente",
+    "observacion": "Símbolo de dureza y firmeza; representa aquello que no se rompe y mantiene su esencia al ser tallado."
+  },
+  {
+    "id": 394,
+    "texto_hebreo": "סַפִּיר",
+    "transliteracion": "Sappir",
+    "equivalencia_espanol": "zafiro",
+    "observacion": "Piedra preciosa que representa la pulcritud celestial y el pavimento bajo los pies de Dios."
+  },
+  {
+    "id": 395,
+    "texto_hebreo": "טֹהַר",
+    "transliteracion": "Tohar",
+    "equivalencia_espanol": "pulcritud; aptitud; santidad",
+    "observacion": "Proviene de 'Tahor'; define lo que es compatible con la naturaleza de Dios."
+  },
+  {
+    "id": 396,
+    "texto_hebreo": "שׁוֹק",
+    "transliteracion": "Shoq",
+    "equivalencia_espanol": "pierna; dominio; conquista",
+    "observacion": "Metáfora de la consolidación de la conquista de Mashiaj en el creyente."
+  },
+  {
+    "id": 397,
+    "texto_hebreo": "שֵׁשׁ",
+    "transliteracion": "Shesh",
+    "equivalencia_espanol": "lino; sacerdocio",
+    "observacion": "Representa a los creyentes como columnas fundadas en lo incorruptible, constituidos como sacerdotes."
+  },
+  {
+    "id": 398,
+    "texto_hebreo": "לְבָנוֹן",
+    "transliteracion": "Levanon",
+    "equivalencia_espanol": "Líbano; altar sacrificial",
+    "observacion": "En este contexto, se identifica con el lugar del sacrificio y la pureza del altar."
+  },
+  {
+    "id": 399,
+    "texto_hebreo": "אֶרֶז",
+    "transliteracion": "Erez",
+    "equivalencia_espanol": "cedro; excelencia",
+    "observacion": "Símbolo de los escogidos por su firmeza y calidad espiritual."
+  },
+  {
+    "id": 400,
+    "texto_hebreo": "בָּחוּר",
+    "transliteracion": "Bajur",
+    "equivalencia_espanol": "escogido; joven vigoroso",
+    "observacion": "Describe a alguien con mejor presentación, vigor y fuerza para el servicio divino."
+  },
+  {
+    "id": 401,
+    "texto_hebreo": "חֵךְ",
+    "transliteracion": "Jekj",
+    "equivalencia_espanol": "paladar; instrucción",
+    "observacion": "Relacionado con la degustación de la Torah y la capacidad de discernir la enseñanza dulce."
+  },
+  {
+    "id": 402,
+    "texto_hebreo": "טַעַם",
+    "transliteracion": "Ta'am",
+    "equivalencia_espanol": "sabor; discernimiento",
+    "observacion": "Facultad espiritual para distinguir y saborear la voluntad de Dios."
+  },
+  {
+    "id": 403,
+    "texto_hebreo": "מַחֲמַדִּים",
+    "transliteracion": "Majamadim",
+    "equivalencia_espanol": "atractivo; codiciable; deseable",
+    "observacion": "Cualidad de lo que es gratificante a los sentidos espirituales y atrae hacia el amado."
+  },
+  {
+    "id": 404,
     "texto_hebreo": "גַּן",
     "transliteracion": "Gan",
-    "equivalencia_espanol": "patio cerrado",
-    "observacion": "Se define como un espacio exclusivo donde no se permite el alimento de fuentes o doctrinas ajenas a las establecidas por Hashem[cite: 1408, 1411, 1412]."
+    "equivalencia_espanol": "huerto; Edén",
+    "observacion": "Lugar de la promesa y la Jerusalén celestial donde el amado pastorea y recoge a los suyos."
   },
   {
-    "id": 236,
+    "id": 405,
+    "texto_hebreo": "תִּרְצָה",
+    "transliteracion": "Tirtsah",
+    "equivalencia_espanol": "Tirsa; bien hecha",
+    "observacion": "Nombre de una capital que significa 'funcionamiento correcto' o 'bien hecha'."
+  },
+  {
+    "id": 406,
+    "texto_hebreo": "חוֹתָם",
+    "transliteracion": "Jotam",
+    "equivalencia_espanol": "sello; marca",
+    "observacion": "Símbolo de pertenencia y permanencia sobre el corazón y el brazo."
+  },
+  {
+    "id": 407,
+    "texto_hebreo": "שְׁאוֹל",
+    "transliteracion": "She'ol",
+    "equivalencia_espanol": "Seol; sepulcro",
+    "observacion": "Lugar que describe la dureza y severidad de los celos en comparación con la muerte."
+  },
+  {
+    "id": 408,
+    "texto_hebreo": "תִּרְצָה",
+    "transliteracion": "Tirtsah",
+    "equivalencia_espanol": "bien hecha; funcionamiento correcto; reconciliación",
+    "observacion": "Deriva de la raíz ratzáh; describe al ser constituido como partícipe del propósito de la reconciliación."
+  },
+  {
+    "id": 409,
+    "texto_hebreo": "רָצוֹן",
+    "transliteracion": "Ratzón",
+    "equivalencia_espanol": "voluntad; reconciliación; agrado",
+    "observacion": "Concepto ligado a la capacidad de estar con Dios y volver al camino tras el apartamiento."
+  },
+  {
+    "id": 410,
+    "texto_hebreo": "נִדְגָּלוֹת",
+    "transliteracion": "Nidgalot",
+    "equivalencia_espanol": "abanderadas; báculos; ministros competentes",
+    "observacion": "Alude a las doce tribus (estandartes) y a la competencia dada por Dios para colaborar en Su obra."
+  },
+  {
+    "id": 411,
+    "texto_hebreo": "רָחַב",
+    "transliteracion": "Rajab",
+    "equivalencia_espanol": "fortalecer; levantar; ensanchar",
+    "observacion": "Raíz de Tarhiveni; asociada al vigor del ser y al poder de Dios que levanta de los muertos."
+  },
+  {
+    "id": 412,
+    "texto_hebreo": "מִסְפָּר",
+    "transliteracion": "Mispár",
+    "equivalencia_espanol": "cifra; número; signo numérico",
+    "observacion": "Referido al valor de las letras y las cantidades que codifican funciones del ser."
+  },
+  {
+    "id": 413,
+    "texto_hebreo": "בָּרָה",
+    "transliteracion": "Barah",
+    "equivalencia_espanol": "pura; escogida; brillante",
+    "observacion": "Calificativo de la paloma (la perfecta) en relación con su origen y naturaleza."
+  },
+  {
+    "id": 414,
+    "texto_hebreo": "רַקָּה",
+    "transliteracion": "Raqqáh",
+    "equivalencia_espanol": "sien; parte delgada",
+    "observacion": "Traducido frecuentemente como mejilla, pero identificado aquí como la sien bajo el velo."
+  },
+  {
+    "id": 415,
+    "texto_hebreo": "צַמָּה",
+    "transliteracion": "Tzammáh",
+    "equivalencia_espanol": "rejilla; velo; trenza",
+    "observacion": "Describe la cobertura que permite ver a través, similar a una rejilla o enrejado."
+  },
+  {
+    "id": 416,
+    "texto_hebreo": "מַסֵּכָה",
+    "transliteracion": "Masejah",
+    "equivalencia_espanol": "velo; cobertor; fundición",
+    "observacion": "Simboliza la idolatría que envuelve a las naciones, producto de mezclar la Torah con elementos del mundo."
+  },
+  {
+    "id": 417,
+    "texto_hebreo": "בָּרָה",
+    "transliteracion": "Barah",
+    "equivalencia_espanol": "pura; limpia; impoluta",
+    "observacion": "Referido a la Jerusalén de arriba y a la amada, comparada con la nitidez de la luz del sol."
+  },
+  {
+    "id": 418,
+    "texto_hebreo": "נוֹד",
+    "transliteracion": "Nod",
+    "equivalencia_espanol": "Nod; errante",
+    "observacion": "Tierra opuesta al Edén donde habitó Caín; su valor gemátrico (60) conecta con las 'sesenta reinas' de la idolatría."
+  },
+  {
+    "id": 419,
+    "texto_hebreo": "קִדְמַת",
+    "transliteracion": "Kitmat",
+    "equivalencia_espanol": "opuesto a; contrario a",
+    "observacion": "Término que corrige la traducción 'al oriente', indicando una dirección opuesta a la presencia de Dios."
+  },
+  {
+    "id": 420,
+    "texto_hebreo": "נָד",
+    "transliteracion": "Nad",
+    "equivalencia_espanol": "nómada; movida",
+    "observacion": "Estado de aquel que vaga por la tierra sin la capacidad de producir fruto espiritual."
+  },
+  {
+    "id": 421,
+    "texto_hebreo": "אֲדָמָה",
+    "transliteracion": "Adamáh",
+    "equivalencia_espanol": "tierra; suelo",
+    "observacion": "Referida a la superficie que deja de dar su fuerza o fruto como consecuencia de la rebelión."
+  },
+  {
+    "id": 422,
+    "texto_hebreo": "קַיִן",
+    "transliteracion": "Qayin",
+    "equivalencia_espanol": "Caín",
+    "observacion": "Ícono de la rebelión y de no escuchar; representa el inicio del proceso de apartamiento de Hashem."
+  },
+  {
+    "id": 423,
+    "texto_hebreo": "בִּלְעָם",
+    "transliteracion": "Bil'am",
+    "equivalencia_espanol": "Balaam",
+    "observacion": "Representa el error por lucro y la autoría intelectual de la prevaricación mediante estratagemas."
+  },
+  {
+    "id": 424,
+    "texto_hebreo": "בּוֹגְדִים",
+    "transliteracion": "Bogedim",
+    "equivalencia_espanol": "prevaricadores; desleales",
+    "observacion": "Relacionado con el número 80 (concubinas) en el contexto de quienes actúan con deslealtad."
+  },
+  {
+    "id": 425,
+    "texto_hebreo": "בָּגַד",
+    "transliteracion": "Bagad",
+    "equivalencia_espanol": "ser desleal; ser infiel; violar pactos",
+    "observacion": "Describe la conducta de decir una cosa y hacer otra, camuflándose en la palabra para buscar lucro personal[cite: 969, 970, 973]."
+  },
+  {
+    "id": 426,
+    "texto_hebreo": "בּוֹגְדִים",
+    "transliteracion": "Bogdim",
+    "equivalencia_espanol": "mentirosos; desleales",
+    "observacion": "Identifica a quienes profieren palabra pero buscan su propio beneficio o gloria[cite: 974, 975, 976]."
+  },
+  {
+    "id": 427,
+    "texto_hebreo": "קֹרַח",
+    "transliteracion": "Qoraj",
+    "equivalencia_espanol": "Coré",
+    "observacion": "Representa el tipo de rebeldía que intenta destruir la autoridad instituida y atacar el cerco de protección divina[cite: 977, 989, 991]."
+  },
+  {
+    "id": 428,
+    "texto_hebreo": "κράτος",
+    "transliteracion": "Krátos",
+    "equivalencia_espanol": "poder; autoridad",
+    "observacion": "En el contexto de Coré, alude a una imagen distorsionada de la autoridad como jerarquía piramidal, opuesta al sentido de resistencia al mal[cite: 979, 980]."
+  },
+  {
+    "id": 429,
+    "texto_hebreo": "שַׁחַר",
+    "transliteracion": "Shajar",
+    "equivalencia_espanol": "alba; despuntar; aparición",
+    "observacion": "Nombre teológico que se refiere a la revelación de Dios y la luz que aparece antes del sol[cite: 1001, 1003]."
+  },
+  {
+    "id": 430,
+    "texto_hebreo": "לְבָנָה",
+    "transliteracion": "Lebanah",
+    "equivalencia_espanol": "luna; misericordia",
+    "observacion": "Simboliza la misericordia divina (blanca y llena) que se disminuyó para salvar al hombre[cite: 1004, 1005, 1009]."
+  },
+  {
+    "id": 431,
+    "texto_hebreo": "חַמָּה",
+    "transliteracion": "Kjamma",
+    "equivalencia_espanol": "sol; justicia; calor",
+    "observacion": "Representa la luz pura y la justicia divina en su función de observación y calor[cite: 1007, 1008]."
+  },
+  {
+    "id": 432,
+    "texto_hebreo": "גִּנַּת",
+    "transliteracion": "Ginat",
+    "equivalencia_espanol": "patio; jardín",
+    "observacion": "Lugar primaveral asociado al arroyo y a la observación de los frutos en el huerto[cite: 1013, 1015]."
+  },
+  {
+    "id": 433,
+    "texto_hebreo": "אֱגוֹז",
+    "transliteracion": "Egoz",
+    "equivalencia_espanol": "nogal; nuez",
+    "observacion": "Simboliza el corazón de carne (núcleo) protegido por una carcasa dura que debe ser quebrantada[cite: 1015, 1024, 1026]."
+  },
+  {
+    "id": 434,
+    "texto_hebreo": "נָדִיב",
+    "transliteracion": "Nadiv",
+    "equivalencia_espanol": "voluntario; generoso",
+    "observacion": "Aquel que da alegremente, relacionado con la ofrenda voluntaria o Trumáh[cite: 1031, 1032]."
+  },
+  {
+    "id": 435,
+    "texto_hebreo": "שׁוּלַמִּית",
+    "transliteracion": "Shulamit",
+    "equivalencia_espanol": "Shulamita; la que ha recibido la paz",
+    "observacion": "Identifica a la amada como aquella dentro de la cual se conduce el Shalom que vive por los siglos."
+  },
+  {
+    "id": 436,
+    "texto_hebreo": "שָׁלוֹם",
+    "transliteracion": "Shalom",
+    "equivalencia_espanol": "paz; ausencia de deudas",
+    "observacion": "Estado de plenitud y libertad frente a obligaciones, que define la morada del pueblo de Dios."
+  },
+  {
+    "id": 437,
+    "texto_hebreo": "אֹהֶל",
+    "transliteracion": "Ohel",
+    "equivalencia_espanol": "tienda; estructura móvil",
+    "observacion": "Refiere a la presencia divina que se mueve sin estar limitada a estructuras materiales construidas por hombres."
+  },
+  {
+    "id": 438,
+    "texto_hebreo": "מִשְׁכָּן",
+    "transliteracion": "Mishkan",
+    "equivalencia_espanol": "Tabernáculo; habitación",
+    "observacion": "La promesa de Hashem de habitar en medio o dentro de Su pueblo."
+  },
+  {
+    "id": 439,
+    "texto_hebreo": "כְּנֶגְדּוֹ",
+    "transliteracion": "Kenegdó",
+    "equivalencia_espanol": "contraparte; frente a él",
+    "observacion": "Describe la relación de ayuda y correspondencia entre la Shulamit y su amado."
+  },
+  {
+    "id": 440,
+    "texto_hebreo": "מַחֲנַיִם",
+    "transliteracion": "Majanáyim",
+    "equivalencia_espanol": "dos campamentos",
+    "observacion": "Señal de la intervención de Dios y Su protección mediante mensajeros celestiales que acampan alrededor de los que le temen."
+  },
+  {
+    "id": 441,
+    "texto_hebreo": "פַּעַם",
+    "transliteracion": "Pa'am",
+    "equivalencia_espanol": "pasos; vaivenes; ritmos",
+    "observacion": "Describe la cadencia de la conducta observada dentro del proceso de transformación del ser."
+  },
+  {
+    "id": 442,
+    "texto_hebreo": "סַנְדַּל",
+    "transliteracion": "Sandal",
+    "equivalencia_espanol": "sandalia; encierro; celda",
+    "observacion": "Término asociado simbólicamente con el lugar donde los pasos del ser son vigilados o limitados."
+  },
+  {
+    "id": 443,
+    "texto_hebreo": "הַבָּנוֹת",
+    "transliteracion": "Habanot",
+    "equivalencia_espanol": "las hijas; emanaciones",
+    "observacion": "Fuerzas opuestas a la espiritualidad (carne o adversario) que instan al ser a volver a su antigua cautividad."
+  },
+  {
+    "id": 444,
+    "texto_hebreo": "יַרְכַיִם",
+    "transliteracion": "Yarkayim",
+    "equivalencia_espanol": "muslos; joyas",
+    "observacion": "En la simbología exegética, representan las promesas divinas que sostienen y dan soporte al ser."
+  },
+  {
+    "id": 445,
+    "texto_hebreo": "אֻמָּן",
+    "transliteracion": "'Uman",
+    "equivalencia_espanol": "artesano",
+    "observacion": "Aquel que manipula joyas y metales; título poético utilizado para el príncipe de este mundo en contextos de élite."
+  },
+  {
+    "id": 446,
+    "texto_hebreo": "שֹׁרֶר",
+    "transliteracion": "Shorer",
+    "equivalencia_espanol": "ombligo",
+    "observacion": "Metáfora de la tierra de Yisra'el, la tierra prometida, donde reside la provisión y las promesas[cite: 1100, 1104, 1105]."
+  },
+  {
+    "id": 447,
+    "texto_hebreo": "חֶשְׁבּוֹן",
+    "transliteracion": "Heshbón",
+    "equivalencia_espanol": "Hesbón",
+    "observacion": "Sitio de estanques o piscinas que traen saciedad y vida, contrastado irónicamente con la supuesta brevedad de la abundancia divina[cite: 1117, 1120, 1123]."
+  },
+  {
+    "id": 448,
+    "texto_hebreo": "בַּת",
+    "transliteracion": "Bat",
+    "equivalencia_espanol": "hija",
+    "observacion": "Componente del nombre Bat-rabim; representa la ciudad o capital asociada a la abundancia de agua[cite: 1117, 1120]."
+  },
+  {
+    "id": 449,
+    "texto_hebreo": "רַבִּים",
+    "transliteracion": "Rabim",
+    "equivalencia_espanol": "muchos; grandes",
+    "observacion": "Parte del nombre Bat-rabim, relacionado con la capital Rabat y la idea de multitud o grandeza[cite: 1117, 1120]."
+  },
+  {
+    "id": 450,
+    "texto_hebreo": "דַּמֶּשֶׂק",
+    "transliteracion": "Dameseq",
+    "equivalencia_espanol": "Damasco",
+    "observacion": "Ciudad utilizada para ilustrar lo que es invisible desde la perspectiva del Líbano (el altar)[cite: 1117, 1121, 1129]."
+  },
+  {
+    "id": 451,
+    "texto_hebreo": "כַּרְמֶל",
+    "transliteracion": "Karmel",
+    "equivalencia_espanol": "Carmelo",
+    "observacion": "Montaña próspera que simboliza la fertilidad y los frutos en la cabeza; el profesor la vincula a la raíz Qeren (viña)[cite: 1135, 1137, 1139]."
+  },
+  {
+    "id": 452,
+    "texto_hebreo": "אַרְגָּמָן",
+    "transliteracion": "Argamán",
+    "equivalencia_espanol": "púrpura",
+    "observacion": "Utilizado por las voces opositoras para simbolizar la supuesta falta de productividad o fertilidad espiritual[cite: 1135, 1138, 1142]."
+  },
+  {
+    "id": 453,
+    "texto_hebreo": "תַּעֲנוּגִים",
+    "transliteracion": "Ta'anugim",
+    "equivalencia_espanol": "deleites; mimos",
+    "observacion": "Referido al amor consentido o emocional (éxtasis/euforia) que se contrapone al amor maduro y racional de Dios[cite: 1147, 1149, 1150, 1154]."
+  },
+  {
+    "id": 454,
+    "texto_hebreo": "ἀρχιτέκτων",
+    "transliteracion": "Architéktōn",
+    "equivalencia_espanol": "arquitecto",
+    "observacion": "Título griego para el 'gran artesano', identificado en el escrito con el príncipe de este mundo[cite: 1098, 1099]."
+  },
+  {
+    "id": 455,
+    "texto_hebreo": "תָּמָר",
+    "transliteracion": "Tamar",
+    "equivalencia_espanol": "palmera datilera",
+    "observacion": "Representa la estatura espiritual y la palabra que se levanta[cite: 1161, 1177]. Su valor gemátrico (640) la vincula con la promesa que permanece para siempre[cite: 1172, 1174]."
+  },
+  {
+    "id": 456,
+    "texto_hebreo": "אֶשְׁכּוֹלוֹת",
+    "transliteracion": "Eshkolot",
+    "equivalencia_espanol": "racimos",
+    "observacion": "Simbolizan los frutos consolidados del proceso de humillación y exaltación en Mashiaj[cite: 1161, 1182]."
+  },
+  {
+    "id": 457,
+    "texto_hebreo": "סַנְסַן",
+    "transliteracion": "Sansan",
+    "equivalencia_espanol": "rama de la palmera",
+    "observacion": "Lugar donde se gestan los frutos; su asimiento por cuenta propia representa el intento carnal de producir méritos por obras[cite: 1199, 1202, 1203]."
+  },
+  {
+    "id": 458,
+    "texto_hebreo": "סְמָדַר",
+    "transliteracion": "Smadar",
+    "equivalencia_espanol": "rama de la vid",
+    "observacion": "Estructura que sostiene el fruto de la vid antes de convertirse en un racimo maduro[cite: 1198, 1201]."
+  },
+  {
+    "id": 459,
+    "texto_hebreo": "תַּפּוּחַ",
+    "transliteracion": "Tapuaj",
+    "equivalencia_espanol": "manzana; fruto jugoso",
+    "observacion": "Describe la pomposidad y jugosidad del testimonio; el olor del conocimiento de Mashiaj que no se puede ocultar[cite: 1205, 1211, 1212]."
+  },
+  {
+    "id": 460,
+    "texto_hebreo": "חֵךְ",
+    "transliteracion": "Jekj",
+    "equivalencia_espanol": "paladar",
+    "observacion": "Relacionado con la capacidad de discernir espiritualmente la verdad y las cosas inicuas[cite: 1217, 1224]."
+  },
+  {
+    "id": 461,
+    "texto_hebreo": "לָשׁוֹן",
+    "transliteracion": "Lashon",
+    "equivalencia_espanol": "lengua",
+    "observacion": "Órgano que representa lo externo o lo proferido, en contraste con el paladar que evalúa lo interno."
+  },
+  {
+    "id": 462,
+    "texto_hebreo": "לְעוֹלָם",
+    "transliteracion": "Le'olam",
+    "equivalencia_espanol": "por siempre; eternidad",
+    "observacion": "Indica la permanencia de la palabra y la promesa de levantarse de entre los muertos[cite: 1174, 1175]."
+  },
+  {
+    "id": 463,
+    "texto_hebreo": "הַוּוֹת",
+    "transliteracion": "Havot",
+    "equivalencia_espanol": "calamidades; consecuencias",
+    "observacion": "Se refiere a todas las consecuencias negativas que resultan de dejar de aplicar la instrucción o Torah."
+  },
+  {
+    "id": 464,
+    "texto_hebreo": "אָלָה",
+    "transliteracion": "Alah",
+    "equivalencia_espanol": "pliego de consecuencias; juramento",
+    "observacion": "Describe el conjunto de efectos por salir del cerco de las promesas divinas."
+  },
+  {
+    "id": 465,
+    "texto_hebreo": "תְּשׁוּקָה",
+    "transliteracion": "Tshuqah",
+    "equivalencia_espanol": "deseo; anhelo; impulso",
+    "observacion": "Referido a los anhelos de Mashiaj puestos sobre Su creación o a los impulsos que deben sujetarse a Su voluntad."
+  },
+  {
+    "id": 466,
+    "texto_hebreo": "עָלַי",
+    "transliteracion": "Alay",
+    "equivalencia_espanol": "sobre mí; contra mí",
+    "observacion": "Preposición que indica la dirección del deseo del Espíritu en oposición a la carne."
+  },
+  {
+    "id": 467,
+    "texto_hebreo": "לְמֵישָׁרִים",
+    "transliteracion": "Lemeisharim",
+    "equivalencia_espanol": "con rectitud; hacia lo recto",
+    "observacion": "Describe el avance de la instrucción (el vino bueno) hacia aquello que no se tuerce."
+  },
+  {
+    "id": 468,
+    "texto_hebreo": "תַּחַת",
+    "transliteracion": "Tajad",
+    "equivalencia_espanol": "debajo; protección",
+    "observacion": "Indica una posición de cobertura para evitar que llegue daño al ser."
+  },
+  {
+    "id": 469,
+    "texto_hebreo": "כְּפָרִים",
+    "transliteracion": "Kefarim",
+    "equivalencia_espanol": "aldeas",
+    "observacion": "Simbolizan los momentos más oscuros o de menor estima donde el ser se expone ante el amado sin vigilancia."
+  },
+  {
+    "id": 470,
+    "texto_hebreo": "כֶּרֶם",
+    "transliteracion": "Keren",
+    "equivalencia_espanol": "viña; buenas obras",
+    "observacion": "Representa lo encomendado desde el principio: vigilar, cultivar y servir al huerto de la voluntad divina."
+  },
+  {
+    "id": 471,
     "texto_hebreo": "רִמּוֹנִים",
     "transliteracion": "Rimonim",
-    "equivalencia_espanol": "granadas; mente",
-    "observacion": "Simbólicamente se asocian al cerebro y la mente, representando un patio lleno de pensamientos variados y frutos de cosechas frescas[cite: 1422, 1424]."
+    "equivalencia_espanol": "granadas; pequeños; tesoros",
+    "observacion": "Simbolizan a los que son espiritualmente niños y los tesoros escondidos de sabiduría en Mashiaj."
   },
   {
-    "id": 237,
-    "texto_hebreo": "אִתִּי / אֶתִּי",
-    "transliteracion": "‘Iti / ‘Eti",
-    "equivalencia_espanol": "conmigo / ven",
-    "observacion": "El profesor destaca que, aunque se lee comúnmente 'conmigo' (Iti), las consonantes permiten la lectura 'ven' (Eti) en el llamado a partir desde el altar[cite: 1318, 1320, 1321]."
+    "id": 472,
+    "texto_hebreo": "דּוּדָאִים",
+    "transliteracion": "Duda'im",
+    "equivalencia_espanol": "higos; frutos de verano",
+    "observacion": "Corregido de 'mandrágoras'; representan frutos aromáticos de temporada que dan su olor en el conocimiento."
+  },
+  {
+    "id": 473,
+    "texto_hebreo": "שְׁמַע",
+    "transliteracion": "Shemá",
+    "equivalencia_espanol": "oye; escucha; confesión",
+    "observacion": "Resumen de la promesa y la obra de Dios en el ser para materializar la relación con el prójimo."
+  },
+  {
+    "id": 474,
+    "texto_hebreo": "סְמָדַר",
+    "transliteracion": "Smadar",
+    "equivalencia_espanol": "ramificaciones; detalles",
+    "observacion": "Representa los mandamientos detallados y los pormenores de la voluntad de Hashem que requieren estudio."
+  },
+  {
+    "id": 475,
+    "texto_hebreo": "מִי יִתֶּנְךָ",
+    "transliteracion": "Mi Yitenja",
+    "equivalencia_espanol": "nadie te daría; quién dijera",
+    "observacion": "Expresión idiomática que indica imposibilidad humana. Sugiere que nadie, excepto Dios, puede conceder un cambio de estado o condición."
+  },
+  {
+    "id": 476,
+    "texto_hebreo": "אָח",
+    "transliteracion": "Aj",
+    "equivalencia_espanol": "hermano",
+    "observacion": "Simboliza estar en un mismo plano o nivel. En la redención, describe la asombrosa posibilidad de comunión entre el ser humano y lo divino."
+  },
+  {
+    "id": 477,
+    "texto_hebreo": "לָמַד",
+    "transliteracion": "Lamad",
+    "equivalencia_espanol": "habituar; adiestrar; enseñar",
+    "observacion": "Referido al proceso de cambiar patrones de conducta y formas culturales para ajustarlas a la imagen de Mashiaj."
+  },
+  {
+    "id": 478,
+    "texto_hebreo": "תַּחַת",
+    "transliteracion": "Tajat",
+    "equivalencia_espanol": "cubierto; debajo",
+    "observacion": "En Cnt 8:3, indica que el juicio (mano izquierda) está cubierto o anulado para el que está en Mashiaj; no hay condenación."
+  },
+  {
+    "id": 479,
+    "texto_hebreo": "יָמִין",
+    "transliteracion": "Yamin",
+    "equivalencia_espanol": "derecha; diestra",
+    "observacion": "Representa las promesas divinas que rodean y abrazan al creyente."
+  },
+  {
+    "id": 480,
+    "texto_hebreo": "שְׂמֹאל",
+    "transliteracion": "Smol",
+    "equivalencia_espanol": "izquierda",
+    "observacion": "Asociada al juicio, el cual queda bajo cobertura o protección divina en la vida del redimido."
+  },
+  {
+    "id": 481,
+    "texto_hebreo": "אֵם",
+    "transliteracion": "Em",
+    "equivalencia_espanol": "madre",
+    "observacion": "Alegoría de la Torah y la Profecía, así como de las conductas y patrones culturales del individuo."
+  },
+  {
+    "id": 482,
+    "texto_hebreo": "שַׁלְהֶבֶת",
+    "transliteracion": "Shalhevet",
+    "equivalencia_espanol": "llama; destello",
+    "observacion": "Representa el celo y amor de Hashem que se compara con el fuego de la espada que guardaba el camino al árbol de la vida[cite: 1433, 1435]. Es el único poder capaz de liberar al hombre."
+  },
+  {
+    "id": 483,
+    "texto_hebreo": "מַיִם",
+    "transliteracion": "Mayim",
+    "equivalencia_espanol": "aguas; naciones; caos",
+    "observacion": "Simbolizan las tinieblas y las muchas doctrinas que intentan apagar el amor de la redención[cite: 1440, 1441]."
+  },
+  {
+    "id": 484,
+    "texto_hebreo": "נְהָרוֹת",
+    "transliteracion": "Neharot",
+    "equivalencia_espanol": "ríos; religiones",
+    "observacion": "Metáfora de los sistemas religiosos que no pueden inundar ni ahogar el propósito divino[cite: 1442, 1443]."
+  },
+  {
+    "id": 485,
+    "texto_hebreo": "אִישׁ",
+    "transliteracion": "Ish",
+    "equivalencia_espanol": "varón; hombre",
+    "observacion": "En el contexto de Cantares 8:7, puede aludir simbólicamente al adversario interesado en impedir la redención de la amada[cite: 1448, 1449]."
+  },
+  {
+    "id": 486,
+    "texto_hebreo": "אָחוֹת",
+    "transliteracion": "Ajot",
+    "equivalencia_espanol": "hermana",
+    "observacion": "Identifica al pueblo o al remanente en su estado pequeño, carente aún de la madurez de la Torah y la profecía[cite: 1457, 1463, 1480]."
+  },
+  {
+    "id": 487,
+    "texto_hebreo": "שׁוּר",
+    "transliteracion": "Shur",
+    "equivalencia_espanol": "muralla; muro",
+    "observacion": "Símbolo de la identidad consolidada por el Shalom de Mashiaj; las tinieblas planean aplastarla o pasar sobre ella[cite: 1473, 1476, 1494]."
+  },
+  {
+    "id": 488,
+    "texto_hebreo": "פֶּתַח",
+    "transliteracion": "Petaj",
+    "equivalencia_espanol": "puerta",
+    "observacion": "Representa un asentamiento vulnerable que las tinieblas buscan sitiar y rodear para impedir la redención[cite: 1471, 1473, 1476]."
+  },
+  {
+    "id": 489,
+    "texto_hebreo": "בְּרִית",
+    "transliteracion": "Brit",
+    "equivalencia_espanol": "pacto",
+    "observacion": "La esencia de la relación con Hashem donde Su instrucción es escrita directamente en la mente y el corazón[cite: 1492, 1493]."
+  },
+  {
+    "id": 490,
+    "texto_hebreo": "חֲדָשָׁה",
+    "transliteracion": "Jadashah",
+    "equivalencia_espanol": "nueva; innovación",
+    "observacion": "Calificativo de la promesa renovada que trae el auténtico sentido de la vida espiritual[cite: 1492]."
+  },
+  {
+    "id": 491,
+    "texto_hebreo": "מִגְדָּלוֹת",
+    "transliteracion": "Migdalot",
+    "equivalencia_espanol": "torres",
+    "observacion": "Metáfora de la instrucción (Torah y profecía) cuando el Shalom de Mashiaj permite que sobrepase todo entendimiento[cite: 1494, 1495]."
+  },
+  {
+    "id": 492,
+    "texto_hebreo": "יְשׁוּעָה",
+    "transliteracion": "Yeshu'ah",
+    "equivalencia_espanol": "salvación",
+    "observacion": "Nombre que recibirán los muros de la amada, indicando protección contra la violación de límites o la violencia."
+  },
+  {
+    "id": 493,
+    "texto_hebreo": "תְּהִלָּה",
+    "transliteracion": "Tehilah",
+    "equivalencia_espanol": "alabanza",
+    "observacion": "Nombre designado para las puertas de la ciudad, representando la entrada al territorio bajo el gobierno de Hashem."
+  },
+  {
+    "id": 494,
+    "texto_hebreo": "בַּעַל",
+    "transliteracion": "Ba'al",
+    "equivalencia_espanol": "dueño; señor; arrendador",
+    "observacion": "En el contexto de la viña, se refiere a aquel que tiene algo en arriendo o recibe beneficio por ello."
+  },
+  {
+    "id": 495,
+    "texto_hebreo": "הָמוֹן",
+    "transliteracion": "Hamón",
+    "equivalencia_espanol": "multitud; estruendo; ardiendo",
+    "observacion": "Identifica a Yisra'el como el lugar de multitud o de aquello que produce beneficio bajo la gestión de guardianes."
+  },
+  {
+    "id": 496,
+    "texto_hebreo": "אֶלֶף",
+    "transliteracion": "Elef",
+    "equivalencia_espanol": "mil",
+    "observacion": "Cifra simbólica de compra redentora; también alude a los intentos humanos de compensar la desobediencia mediante sacrificios."
+  },
+  {
+    "id": 497,
+    "texto_hebreo": "מָאתַיִם",
+    "transliteracion": "Matayim",
+    "equivalencia_espanol": "doscientas",
+    "observacion": "Cifra asociada a los que guardan el fruto por intereses propios o gloria personal, como los escudos de Salomón."
+  },
+  {
+    "id": 498,
+    "texto_hebreo": "צְבִי",
+    "transliteracion": "Tsevi",
+    "equivalencia_espanol": "corzo; gacela",
+    "observacion": "Símbolo de la rapidez y agilidad con la que el amado viene a redimir a Su pueblo."
+  },
+  {
+    "id": 499,
+    "texto_hebreo": "עֹפֶר",
+    "transliteracion": "Ofer",
+    "equivalencia_espanol": "cervatillo; crío",
+    "observacion": "Representa la prontitud de la redención final sobre las montañas de los aromas."
+  },
+  {
+    "id": 500,
+    "texto_hebreo": "בְּשָׂמִים",
+    "transliteracion": "Besamim",
+    "equivalencia_espanol": "perfumes; aromas",
+    "observacion": "Montañas de los aromas; alusión al lugar del sacrificio y rescate provisto (Moriah/Isaac)."
   }
 ]

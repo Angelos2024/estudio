@@ -11,7 +11,7 @@
     "texto_hebreo": "קָהָל",
     "transliteracion": "Kahal",
     "equivalencia_espanol": "asamblea (de hombres libres / ciudadanos)",
-    "observacion": "Eric enfatiza sentido de asamblea, no culto religioso."
+    "observacion": " enfatiza sentido de asamblea, no culto religioso."
   },
   {
     "id": 3,
@@ -39,7 +39,7 @@
     "texto_hebreo": "דּוֹר",
     "transliteracion": "Dor",
     "equivalencia_espanol": "residente; los que viven en este mundo",
-    "observacion": "Eric lo deriva de דָּר (vivir/residir)."
+    "observacion": " lo deriva de דָּר (vivir/residir)."
   },
   {
     "id": 7,
@@ -165,7 +165,7 @@
     "texto_hebreo": "מַעֲנֶה",
     "transliteracion": "Ma’anéh",
     "equivalencia_espanol": "respuesta / responder (mostrar algo)",
-    "observacion": "Eric enlaza con varias acepciones de ענה."
+    "observacion": " enlaza con varias acepciones de ענה."
   },
   {
     "id": 25,
@@ -207,7 +207,7 @@
     "texto_hebreo": "מַעֲשֶׂה",
     "transliteracion": "Ma’aseh",
     "equivalencia_espanol": "obra que Dios se propuso llevar hasta el final",
-    "observacion": "Eric la focaliza en la obra de Dios."
+    "observacion": " la focaliza en la obra de Dios."
   },
   {
     "id": 31,
@@ -228,7 +228,7 @@
     "texto_hebreo": "מִי כֶּחָכָם",
     "transliteracion": "Mi kejajam / Mi kejacam",
     "equivalencia_espanol": "¿quién como el sabio?",
-    "observacion": "Eric corrige la lectura vocalizada transmitida en el PDF."
+    "observacion": " corrige la lectura vocalizada transmitida en el PDF."
   },
   {
     "id": 34,
@@ -255,7 +255,7 @@
     "id": 37,
     "texto_hebreo": "פִּתְגָם",
     "transliteracion": "Pitgam",
-    "equivalencia_espanol": "ordenanza divina (equivalente de mitzvá, según Eric)",
+    "equivalencia_espanol": "ordenanza divina (equivalente de mitzvá, según )",
     "observacion": "Vocabulario arameo; palabra única en Biblia según su explicación."
   },
   {
@@ -270,7 +270,7 @@
     "texto_hebreo": "נָגַע",
     "transliteracion": "Nagá’ / Nagá'",
     "equivalencia_espanol": "tocar",
-    "observacion": "Eric precisa que puede implicar afectación/daño o provecho según contexto."
+    "observacion": " precisa que puede implicar afectación/daño o provecho según contexto."
   },
   {
     "id": 40,
@@ -298,7 +298,7 @@
     "texto_hebreo": "חַיִּים",
     "transliteracion": "Jayim / Jaim",
     "equivalencia_espanol": "la vida; también puede leerse con valor de “los vivientes”",
-    "observacion": "Eric enfatiza ambigüedad/polivalencia teológica."
+    "observacion": " enfatiza ambigüedad/polivalencia teológica."
   },
   {
     "id": 44,
@@ -326,7 +326,7 @@
     "texto_hebreo": "מֵת",
     "transliteracion": "Met",
     "equivalencia_espanol": "muerto (verbo estativo, según la explicación gramatical)",
-    "observacion": "Eric remarca sensación 'presente' de estado."
+    "observacion": " remarca sensación 'presente' de estado."
   },
   {
     "id": 48,
@@ -347,7 +347,7 @@
     "texto_hebreo": "רְאֵה",
     "transliteracion": "Re’eh",
     "equivalencia_espanol": "mira; dimensiona; analiza",
-    "observacion": "Glosa aplicada por Eric."
+    "observacion": "Glosa aplicada por ."
   },
   {
     "id": 51,
@@ -403,7 +403,7 @@
     "texto_hebreo": "מִסְכֵּן",
     "transliteracion": "Misken",
     "equivalencia_espanol": "humilde / ausente de necesidades (no necesariamente pobre por carencia)",
-    "observacion": "Eric lo distingue de otros términos de pobreza."
+    "observacion": " lo distingue de otros términos de pobreza."
   },
   {
     "id": 59,
@@ -445,7 +445,7 @@
     "texto_hebreo": "שחל",
     "transliteracion": "(raíz consonantal comparada)",
     "equivalencia_espanol": "base de lectura alternativa asociada a discernir según la explicación",
-    "observacion": "Eric la usa para explicar variación ortográfica."
+    "observacion": " la usa para explicar variación ortográfica."
   },
   {
     "id": 65,
@@ -466,7 +466,7 @@
     "texto_hebreo": "זְבוּבֵי מָוֶת",
     "transliteracion": "Zevuvei maveit / mavet",
     "equivalencia_espanol": "moscas de la muerte (literal)",
-    "observacion": "Eric aclara que literalmente no dice solo “moscas”."
+    "observacion": " aclara que literalmente no dice solo “moscas”."
   },
   {
     "id": 68,
@@ -480,7 +480,7 @@
     "texto_hebreo": "כְּסִיל",
     "transliteracion": "Kesil / Ksil",
     "equivalencia_espanol": "confundido (en esta línea de lectura)",
-    "observacion": "Relacionada por Eric con כסל y el juego de radicales."
+    "observacion": "Relacionada por  con כסל y el juego de radicales."
   },
   {
     "id": 70,
@@ -508,7 +508,7 @@
     "texto_hebreo": "לֵב",
     "transliteracion": "Lev",
     "equivalencia_espanol": "corazón; tesoro; núcleo (lo profundo)",
-    "observacion": "Eric lo asocia a 'tesoro' y núcleo interior."
+    "observacion": " lo asocia a 'tesoro' y núcleo interior."
   },
   {
     "id": 74,
@@ -522,7 +522,7 @@
     "texto_hebreo": "לִבּוֹ חָסֵר",
     "transliteracion": "Libo jaser / Jasar lev",
     "equivalencia_espanol": "le falta corazón; carente de corazón",
-    "observacion": "Eric lo desarrolla como falta de tesoro, escrúpulos y sensibilidad."
+    "observacion": " lo desarrolla como falta de tesoro, escrúpulos y sensibilidad."
   },
   {
     "id": 76,
@@ -557,7 +557,7 @@
     "texto_hebreo": "חֵן",
     "transliteracion": "Jen / Ḥen",
     "equivalencia_espanol": "encanto; aquello que genera conexión",
-    "observacion": "Eric lo usa como precisión de 'gracia'."
+    "observacion": " lo usa como precisión de 'gracia'."
   },
   {
     "id": 81,
@@ -571,7 +571,7 @@
     "texto_hebreo": "עִיר",
     "transliteracion": "‘Ir",
     "equivalencia_espanol": "ciudad",
-    "observacion": "En lectura alegórica del pasaje, Eric explora sustitución semántica."
+    "observacion": "En lectura alegórica del pasaje,  explora sustitución semántica."
   },
   {
     "id": 83,
@@ -585,14 +585,14 @@
     "texto_hebreo": "בַּבֹּקֶר",
     "transliteracion": "Baboqer",
     "equivalencia_espanol": "en la mañana; literariamente: urgencia / lo primero que se hace o piensa",
-    "observacion": "Eric corrige lectura meramente cronológica."
+    "observacion": " corrige lectura meramente cronológica."
   },
   {
     "id": 85,
     "texto_hebreo": "בֹּשֶׁת",
     "transliteracion": "Boshet",
     "equivalencia_espanol": "vergüenza",
-    "observacion": "Eric propone esta lectura frente a 'bashty' del texto recibido en su discusión."
+    "observacion": " propone esta lectura frente a 'bashty' del texto recibido en su discusión."
   },
   {
     "id": 86,
@@ -619,7 +619,7 @@
     "id": 89,
     "texto_hebreo": "הַמְקָרֶה",
     "transliteracion": "Hameqareh / Hamqareh",
-    "equivalencia_espanol": "(Eric corrige) hace ocurrir",
+    "equivalencia_espanol": "( corrige) hace ocurrir",
     "observacion": "En comparación con Sal 104:3; usado para apoyar lectura en Qohélet."
   },
   {
@@ -634,7 +634,7 @@
     "texto_hebreo": "שַׁלַּח",
     "transliteracion": "Shalaj (piel, imperativo)",
     "equivalencia_espanol": "despachar; expulsar; dejar ir; hacer ir (matiz intensificado)",
-    "observacion": "Clave en Ec 11:1 según Eric."
+    "observacion": "Clave en Ec 11:1 según ."
   },
   {
     "id": 92,
@@ -655,7 +655,7 @@
     "texto_hebreo": "עַל־פְּנֵי הַמַּיִם",
     "transliteracion": "‘Al penei hamáyim",
     "equivalencia_espanol": "sobre la faz de las aguas",
-    "observacion": "Eric resalta esta fórmula en Ec 11:1 y Génesis."
+    "observacion": " resalta esta fórmula en Ec 11:1 y Génesis."
   },
   {
     "id": 95,
@@ -669,7 +669,7 @@
     "texto_hebreo": "חֵלֶק",
     "transliteracion": "Jeleq / Helek",
     "equivalencia_espanol": "porción; también el todo que corresponde a alguien (lo recibido de Dios)",
-    "observacion": "Eric amplía el valor de 'porción'."
+    "observacion": " amplía el valor de 'porción'."
   },
   {
     "id": 97,
@@ -746,7 +746,7 @@
     "texto_hebreo": "בְּחוּרוֹתֶיךָ",
     "transliteracion": "Bejurah / bejuroteja (contexto de Ec 12:1)",
     "equivalencia_espanol": "días en que te sientes más libre, autónomo, dueño de tu vida",
-    "observacion": "Eric niega reducirlo a simple adolescencia."
+    "observacion": " niega reducirlo a simple adolescencia."
   },
   {
     "id": 108,
@@ -760,7 +760,7 @@
     "texto_hebreo": "מְשָׁלִים",
     "transliteracion": "Meshalim",
     "equivalencia_espanol": "ejemplos",
-    "observacion": "Conocimiento = comunión en la línea argumental de Eric."
+    "observacion": "Conocimiento = comunión en la línea argumental de ."
   },
   {
     "id": 110,
@@ -774,14 +774,14 @@
     "texto_hebreo": "בּוֹרְאֶיךָ",
     "transliteracion": "Bor’éyja (lectura plural)",
     "equivalencia_espanol": "tus creadores (lectura discutida)",
-    "observacion": "Eric cuestiona esta lectura para Ec 12:1."
+    "observacion": " cuestiona esta lectura para Ec 12:1."
   },
   {
     "id": 112,
     "texto_hebreo": "בּוֹרְאֶךָ",
     "transliteracion": "Bor’éja (lectura singular)",
     "equivalencia_espanol": "tu creador / organizador",
-    "observacion": "Una de las lecturas que Eric considera viables."
+    "observacion": "Una de las lecturas que  considera viables."
   },
   {
     "id": 113,
@@ -1012,7 +1012,7 @@
     "transliteracion": "Séjel",
     "texto_hebreo": "שֵׂכֶל",
     "equivalencia_espanol": "inteligencia; buen sentido; prudencia",
-    "observacion": "Es la capacidad práctica de aplicar la sabiduría. El hno. Eric señala que el 'Séjel' permite al hombre no ser destruido por su propia insensatez bajo el sol[cite: 5]."
+    "observacion": "Es la capacidad práctica de aplicar la sabiduría. El hno.  señala que el 'Séjel' permite al hombre no ser destruido por su propia insensatez bajo el sol[cite: 5]."
   },
   {
     "id": 146,
@@ -1047,7 +1047,7 @@
     "transliteracion": "Rashá",
     "texto_hebreo": "רָשָׁע",
     "equivalencia_espanol": "impío; culpable; desorientado del diseño",
-    "observacion": "Se define como aquel que vive 'fuera del cerco'. El hno. Eric aclara que la impiedad es una disfuncionalidad que atrae el juicio de forma natural[cite: 14]."
+    "observacion": "Se define como aquel que vive 'fuera del cerco'. El hno.  aclara que la impiedad es una disfuncionalidad que atrae el juicio de forma natural[cite: 14]."
   },
   {
     "id": 151,
@@ -1061,7 +1061,7 @@
     "transliteracion": "Mitzváh",
     "texto_hebreo": "מִצְוָה",
     "equivalencia_espanol": "mandamiento; instrucción; competencia de vida",
-    "observacion": "El hno. Eric corrige la idea de 'carga' por la de 'competencia'. Cada Mitzváh es una herramienta para operar correctamente en la creación[cite: 15]."
+    "observacion": "El hno.  corrige la idea de 'carga' por la de 'competencia'. Cada Mitzváh es una herramienta para operar correctamente en la creación[cite: 15]."
   },
   {
     "id": 153,
@@ -1110,7 +1110,7 @@
     "transliteracion": "Sovev",
     "texto_hebreo": "סוֹבֵב",
     "equivalencia_espanol": "girar; rodear; andar rodeando",
-    "observacion": "Describe el movimiento de los vientos que regresan a sus circuitos. El hno. Eric señala que esto representa esfuerzos que no llevan a una meta nueva, sino al mismo punto."
+    "observacion": "Describe el movimiento de los vientos que regresan a sus circuitos. El hno.  señala que esto representa esfuerzos que no llevan a una meta nueva, sino al mismo punto."
   },
   {
     "id": 160,
@@ -1131,7 +1131,7 @@
     "transliteracion": "Me’uvat",
     "texto_hebreo": "מְעֻוָּת",
     "equivalencia_espanol": "torcido; distorsionado; disfuncional",
-    "observacion": "Se refiere a lo que se ha desviado de su diseño original. El hno. Eric aclara que el hombre, por sus propias fuerzas, no puede enderezar lo que el pecado torció."
+    "observacion": "Se refiere a lo que se ha desviado de su diseño original. El hno.  aclara que el hombre, por sus propias fuerzas, no puede enderezar lo que el pecado torció."
   },
   {
     "id": 163,
@@ -1173,7 +1173,7 @@
     "transliteracion": "Mikréh",
     "texto_hebreo": "מִקְרֶה",
     "equivalencia_espanol": "suceso; evento; acontecimiento; destino común",
-    "observacion": "A menudo traducido como 'azar', el hno. Eric precisa que se refiere al evento inevitable de la muerte que alcanza por igual al sabio y al necio, nivelando toda ventaja terrenal."
+    "observacion": "A menudo traducido como 'azar', el hno.  precisa que se refiere al evento inevitable de la muerte que alcanza por igual al sabio y al necio, nivelando toda ventaja terrenal."
   },
   {
     "id": 169,
@@ -1215,7 +1215,7 @@
     "transliteracion": "Lehashlik",
     "texto_hebreo": "לְהַשְׁלִיךְ",
     "equivalencia_espanol": "desechar; arrojar; soltar",
-    "observacion": "El tiempo de desprendimiento. El hno. Eric enseña que la madurez consiste en saber cuándo una posesión o situación ha dejado de cumplir su función y debe ser soltada."
+    "observacion": "El tiempo de desprendimiento. El hno.  enseña que la madurez consiste en saber cuándo una posesión o situación ha dejado de cumplir su función y debe ser soltada."
   },
   {
     "id": 175,
@@ -1250,7 +1250,7 @@
     "transliteracion": "Beyt Evel",
     "texto_hebreo": "בֵּית אֵבֶל",
     "equivalencia_espanol": "casa del luto; casa del duelo",
-    "observacion": "Lugar preferido por el sabio. El hno. Eric explica que en el duelo se procesa la realidad de la finitud humana, lo cual genera una reflexión que no se halla en la diversión."
+    "observacion": "Lugar preferido por el sabio. El hno.  explica que en el duelo se procesa la realidad de la finitud humana, lo cual genera una reflexión que no se halla en la diversión."
   },
   {
     "id": 180,
@@ -1271,7 +1271,7 @@
     "transliteracion": "Erek rúaj",
     "texto_hebreo": "אֶרֶךְ רוּחַ",
     "equivalencia_espanol": "paciente de espíritu; sufrido",
-    "observacion": "Cualidad del sabio que sabe esperar el tiempo señalado por Dios. El hno. Eric lo define como la resistencia espiritual frente a la inmediatez del mundo."
+    "observacion": "Cualidad del sabio que sabe esperar el tiempo señalado por Dios. El hno.  lo define como la resistencia espiritual frente a la inmediatez del mundo."
   },
   {
     "id": 183,
@@ -1306,7 +1306,7 @@
     "transliteracion": "Titjakám",
     "texto_hebreo": "תִּתְחַכַּם",
     "equivalencia_espanol": "hacerse sabio en demasía; pretender sabiduría",
-    "observacion": "Qohelet advierte contra la trampa de la autosuficiencia intelectual o moral. El hno. Eric señala que pretender ser 'más sabio que el diseño' lleva a la autodestrucción."
+    "observacion": "Qohelet advierte contra la trampa de la autosuficiencia intelectual o moral. El hno.  señala que pretender ser 'más sabio que el diseño' lleva a la autodestrucción."
   },
   {
     "id": 188,
@@ -1341,7 +1341,7 @@
     "transliteracion": "Yishanέ",
     "texto_hebreo": "יְשֻׁנֶּא",
     "equivalencia_espanol": "mudado; cambiado; transformado",
-    "observacion": "Describe la metamorfosis del sabio. El hno. Eric explica que al recibir el consejo divino, incluso la apariencia física de 'dureza' es mudada por la gracia."
+    "observacion": "Describe la metamorfosis del sabio. El hno.  explica que al recibir el consejo divino, incluso la apariencia física de 'dureza' es mudada por la gracia."
   },
   {
     "id": 193,
@@ -1376,7 +1376,7 @@
     "transliteracion": "Lavén",
     "texto_hebreo": "לָבָן",
     "equivalencia_espanol": "blanco; ausencia de pecado; justificación",
-    "observacion": "Qohelet insta a que los vestidos sean siempre 'blancos'. El hno. Eric explica que esto representa una vida libre de transgresiones conscientes y mantenida en justicia."
+    "observacion": "Qohelet insta a que los vestidos sean siempre 'blancos'. El hno.  explica que esto representa una vida libre de transgresiones conscientes y mantenida en justicia."
   },
   {
     "id": 198,
@@ -1404,7 +1404,7 @@
     "transliteracion": "Dorbanót",
     "texto_hebreo": "דָּרְבֹנוֹת",
     "equivalencia_espanol": "aguijones; estímulos; palabras que pican",
-    "observacion": "Las palabras de los sabios son como aguijones. El hno. Eric explica que tienen la función de 'empujar' o guiar al hombre por la senda correcta mediante la exhortación."
+    "observacion": "Las palabras de los sabios son como aguijones. El hno.  explica que tienen la función de 'empujar' o guiar al hombre por la senda correcta mediante la exhortación."
   },
   {
     "id": 202,
@@ -1425,7 +1425,7 @@
     "transliteracion": "Ro‘éh ’Ejád",
     "texto_hebreo": "רוֹעֶה אֶחָד",
     "equivalencia_espanol": "un solo Pastor; el Guía único",
-    "observacion": "Qohelet identifica que toda sabiduría verdadera (aguijones y clavos) proviene de un solo Pastor, que el hno. Eric asocia directamente con el Mesías."
+    "observacion": "Qohelet identifica que toda sabiduría verdadera (aguijones y clavos) proviene de un solo Pastor, que el hno.  asocia directamente con el Mesías."
   },
   {
     "id": 205,
