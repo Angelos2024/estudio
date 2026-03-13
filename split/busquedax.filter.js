@@ -42,8 +42,8 @@
   function buildPhraseRegex(tokens, lang) {
       const parts = (tokens || []).map((token) => String(token || '').trim()).filter(Boolean);
       if (!parts.length) return null;
-      const joiner = lang === 'he' ? '(?:\\s+|\\u05BE|\\-)+': '(?:\\s+)+';
-
+      const joiner = lang === 'he' ? '(?:\\s+|\\u05BE|-)+': '(?:\\s+)+';
+      
       const tokenPatterns = parts.map((token) => {
         const escaped = token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         const letters = [];

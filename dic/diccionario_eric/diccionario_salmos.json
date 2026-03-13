@@ -304,5 +304,47 @@ Aquí tienes las entradas correspondientes a la sección del Salmo 1:
     "transliteracion": "Riq",
     "equivalencia_espanol": "vacío / sin fruto",
     "observacion": "Aquello que no tiene desarrollo ni capacidad de prolongar la vida. Es en lo que las naciones depositan su confianza."
+  },
+  {
+    "id": 44,
+    "texto_hebreo": "אֶרֶץ",
+    "transliteracion": "Eretz",
+    "equivalencia_espanol": "tierra / región",
+    "observacion": "Concepto que denomina las regiones más allá de la 'adamáh. En sentido espiritual, se refiere a los dominios habitados por demonios fuera del territorio preparado por Dios."
+  },
+  {
+    "id": 45,
+    "texto_hebreo": "מָשִׁיחַ",
+    "transliteracion": "Mashiaj",
+    "equivalencia_espanol": "ungido / autoridad divina",
+    "observacion": "Representa toda autoridad corpórea de Dios. Se aplicó al Arca, al Sumo Sacerdote, a los reyes (Saúl, David, Salomón), a los profetas y al pueblo."
+  },
+  {
+    "id": 46,
+    "texto_hebreo": "רוֹזְנִים",
+    "transliteracion": "Rozim",
+    "equivalencia_espanol": "señores / dominadores",
+    "observacion": "Se refiere a quienes tienen dominio sobre un territorio, similar a los señores feudales. Espiritualmente representa a demonios que se repartieron regiones celestes."
+  },
+  {
+    "id": 47,
+    "texto_hebreo": "כֹּהֵן",
+    "transliteracion": "Kohén",
+    "equivalencia_espanol": "sacerdote",
+    "observacion": "Parte de la rama del poder divino que representa al 'gran libre' y precursor espiritual del pueblo."
+  },
+  {
+    "id": 48,
+    "texto_hebreo": "גָּדוֹל",
+    "transliteracion": "Gadol",
+    "equivalencia_espanol": "grande",
+    "observacion": "Adjetivo usado para distinguir al Sumo Sacerdote (Ha'kohén Hagadol) como la máxima autoridad espiritual."
+  },
+  {
+    "id": 49,
+    "texto_hebreo": "אֲדָמָה",
+    "transliteracion": "Adamáh",
+    "equivalencia_espanol": "suelo / tierra roja",
+    "observacion": "Tierra cultivable o territorio específico que se diferencia de la vastedad de 'Eretz."
   }
 ]
