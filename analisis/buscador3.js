@@ -1,11 +1,50 @@
 
-const REMOTE_ALEFATO_SOURCES = [
-  { name: '01genesis.json', url: '../dic/trilingue/01genesis.json' },
-  { name: '02Éxodo.json', url: '../dic/trilingue/02%C3%89xodo.json' },
-  { name: '03Levítico.json', url: '../dic/trilingue/03Lev%C3%ADtico.json' },
-  { name: '04Números.json', url: '../dic/trilingue/04N%C3%BAmeros.json' },
-  { name: '05Deuteronomio.json', url: '../dic/trilingue/05Deuteronomio.json' }
+const REMOTE_ALEFATO_FILE_NAMES = [
+  '01genesis.json',
+  '02Éxodo.json',
+  '03Levítico.json',
+  '04Números.json',
+  '05Deuteronomio.json',
+  '06Josué.json',
+  '07Jueces.json',
+  '08Rut.json',
+  '09Samuel1.json',
+  '10Samuel2.json',
+  '11Reyes1.json',
+  '12Reyes2.json',
+  '13Crónicas1.json',
+  '14Crónicas2.json',
+  '15Esdras.json',
+  '16Nehemías.json',
+  '17Ester.json',
+  '18Job.json',
+  '19Salmos.json',
+  '20Proverbios.json',
+  '21Eclesiastes.json',
+  '22Cantares.json',
+  '23Isaías.json',
+  '24Jeremías.json',
+  '25Lamentaciones.json',
+  '26Ezequiel.json',
+  '27Daniel.json',
+  '28Oseas.json',
+  '29Joel.json',
+  '30Amós.json',
+  '31Abdías.json',
+  '32Jonás.json',
+  '33Miqueas.json',
+  '34Nahúm.json',
+  '35Habacuc.json',
+  '36Sofonías.json',
+  '37Hageo.json',
+  '38zacarias.json',
+  '39malaquias.json'
 ];
+
+const REMOTE_ALEFATO_SOURCES = REMOTE_ALEFATO_FILE_NAMES.map(name => ({
+  name,
+  url: `../dic/trilingue/${encodeURIComponent(name)}`
+}));
 
 const HE_INFLECTION_MAP = [
   { suffix: 'ַיִם', type: 'dual', label: '(Dual)' },
