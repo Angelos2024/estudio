@@ -346,5 +346,201 @@ Aquí tienes las entradas correspondientes a la sección del Salmo 1:
     "transliteracion": "Adamáh",
     "equivalencia_espanol": "suelo / tierra roja",
     "observacion": "Tierra cultivable o territorio específico que se diferencia de la vastedad de 'Eretz."
+  },
+  {
+    "id": 50,
+    "texto_hebreo": "מַלְכוּת",
+    "transliteracion": "Maljut",
+    "equivalencia_espanol": "reino",
+    "observacion": "En el contexto del Evangelio, representa la revelación divina en este mundo o la expresión corpórea de la deidad[cite: 265]."
+  },
+  {
+    "id": 51,
+    "texto_hebreo": "הַשָּׁמַיִם",
+    "transliteracion": "Hashamayim",
+    "equivalencia_espanol": "los cielos",
+    "observacion": "Utilizado junto a Maljut para referirse al ámbito de la revelación de Dios en la tierra[cite: 265]."
+  },
+  {
+    "id": 52,
+    "texto_hebreo": "רֵאשִׁית",
+    "transliteracion": "Re'shit",
+    "equivalencia_espanol": "principio / portador",
+    "observacion": "Se define como el inicio de todo lo que Dios había prometido; Mashiaj es la manifestación de este principio[cite: 266, 267]."
+  },
+  {
+    "id": 53,
+    "texto_hebreo": "רִיק",
+    "transliteracion": "Reik",
+    "equivalencia_espanol": "vacío / sin fruto",
+    "observacion": "Se refiere a algo que puede tener contenido pero no genera desarrollo ni fruto espiritual. Es el fundamento de la seguridad de las naciones poderosas."
+  },
+  {
+    "id": 54,
+    "texto_hebreo": "מוֹסְרוֹת",
+    "transliteracion": "Mosrot",
+    "equivalencia_espanol": "cuerdas / ligaduras",
+    "observacion": "Representan los mandamientos y compromisos morales que Hashem pone al hombre. Fonéticamente ligadas a la palabra Musar."
+  },
+  {
+    "id": 55,
+    "texto_hebreo": "מוּסָר",
+    "transliteracion": "Musar",
+    "equivalencia_espanol": "reprensión / corrección",
+    "observacion": "La instrucción correctiva de Dios que las naciones intentan cortar para evitar los límites éticos."
+  },
+  {
+    "id": 56,
+    "texto_hebreo": "לָעַג",
+    "transliteracion": "La'ág",
+    "equivalencia_espanol": "reír / burlar",
+    "observacion": "Acción de hacer un proverbio o testimonio de alguien que ha caído repentinamente en un estado deplorable."
+  },
+  {
+    "id": 57,
+    "texto_hebreo": "אֲדֹנָי",
+    "transliteracion": "Adonai",
+    "equivalencia_espanol": "Señor",
+    "observacion": "Atributo que destaca el señorío y la soberanía de Dios sobre los cielos y la tierra."
+  },
+  {
+    "id": 58,
+    "texto_hebreo": "נָסַכְתִּי",
+    "transliteracion": "Nasajti",
+    "equivalencia_espanol": "libar / poner a libación",
+    "observacion": "Verbo que describe el acto de ofrecerse como sacrificio de libación. El Rey se despoja de su majestad para ser ofrecido."
+  },
+  {
+    "id": 59,
+    "texto_hebreo": "נֶסֶךְ",
+    "transliteracion": "Nesej",
+    "equivalencia_espanol": "libación",
+    "observacion": "Sustantivo que se refiere a la ofrenda líquida derramada en los sacrificios."
+  },
+  {
+    "id": 60,
+    "texto_hebreo": "חֹק",
+    "transliteracion": "Joq",
+    "equivalencia_espanol": "promesa / decreto",
+    "observacion": "Referido en el contexto de contar las maravillas de caras a la promesa o estatuto legal de Dios."
+  },
+  {
+    "id": 61,
+    "texto_hebreo": "בֵּן",
+    "transliteracion": "Ben",
+    "equivalencia_espanol": "portador / hijo",
+    "observacion": "Más que un descendiente biológico, es quien porta la esencia y manifiesta la justicia del tribunal en la tierra."
+  },
+  {
+    "id": 62,
+    "texto_hebreo": "יָלַד",
+    "transliteracion": "Yalad",
+    "equivalencia_espanol": "designar / parir",
+    "observacion": "Cuando se usa en masculino, no se refiere al acto biológico de dar a luz, sino a la designación oficial de un sucesor o portador de la herencia."
+  },
+  {
+    "id": 63,
+    "texto_hebreo": "מַלְאָךְ",
+    "transliteracion": "Mal'áj",
+    "equivalencia_espanol": "ángel / mensajero",
+    "observacion": "Ser creado. Se diferencia de la esencia de Dios, ya que ningún mal'áj puede ocupar el trono de la majestad."
+  },
+  {
+    "id": 64,
+    "texto_hebreo": "נָשַׁק",
+    "transliteracion": "Nashaq",
+    "equivalencia_espanol": "besar / recibir en comunión",
+    "observacion": "Indica una correspondencia y comunión perfecta y sin fingimiento. No se refiere necesariamente a un acto literal, sino a procurar la paz y la santidad."
+  },
+  {
+    "id": 65,
+    "texto_hebreo": "בַּר",
+    "transliteracion": "Bar",
+    "equivalencia_espanol": "hijo / pureza",
+    "observacion": "Término usado en el Salmo 2:12 que vincula la figura del hijo con la pureza de la revelación divina."
+  },
+  {
+    "id": 66,
+    "texto_hebreo": "שָׁלוֹם",
+    "transliteracion": "Shalom",
+    "equivalencia_espanol": "paz / bienestar",
+    "observacion": "Relacionado con el beso santo, representando la búsqueda de la armonía y la integridad en la comunidad."
+  },
+  {
+    "id": 67,
+    "texto_hebreo": "דּוֹד",
+    "transliteracion": "Dod",
+    "equivalencia_espanol": "amado",
+    "observacion": "Nombre que refiere a David. Tiene una doble implicación: la histórica del rey de Yisra'el y la profética/espiritual referida a Yehoshua' Hamashiaj."
+  },
+  {
+    "id": 68,
+    "texto_hebreo": "אַבְשָׁלוֹם",
+    "transliteracion": "Abshalom",
+    "equivalencia_espanol": "padre de paz / fundador de Shalom",
+    "observacion": "Hijo de David que se sublevó contra él. Su nombre también implica 'fundador del pago de deudas'."
+  },
+  {
+    "id": 69,
+    "texto_hebreo": "גְּשׁוּר",
+    "transliteracion": "Gesur",
+    "equivalencia_espanol": "Gesur",
+    "observacion": "Lugar ubicado en Aram (Siria) donde Absalón huyó y permaneció tres años tras la muerte de Amnón."
+  },
+  {
+    "id": 70,
+    "texto_hebreo": "אֲרָם",
+    "transliteracion": "Aram",
+    "equivalencia_espanol": "Siria",
+    "observacion": "Región geográfica donde se encontraba el reino de Gesur."
+  },
+  {
+    "id": 71,
+    "texto_hebreo": "יוֹאָב",
+    "transliteracion": "Yoab",
+    "equivalencia_espanol": "Joab",
+    "observacion": "General de David que intervino en la reconciliación superficial entre el rey y Absalón."
+  },
+  {
+    "id": 72,
+    "texto_hebreo": "אַמְנוֹן",
+    "transliteracion": "Amnon",
+    "equivalencia_espanol": "Amnon",
+    "observacion": "Hijo de David cuya conducta injusta contra Tamar, al no ser tratada conforme a la Torah, generó la iniquidad y conspiración posterior."
+  },
+  {
+    "id": 73,
+    "texto_hebreo": "תָּמָר",
+    "transliteracion": "Tamar",
+    "equivalencia_espanol": "Tamar",
+    "observacion": "Hermana de Absalón. El abuso que sufrió fue el detonante de la contienda complicada y la falta de confianza en las instituciones de justicia."
+  },
+  {
+    "id": 74,
+    "texto_hebreo": "מְקַלֵּל",
+    "transliteracion": "Meqalel",
+    "equivalencia_espanol": "el que disminuye la honra",
+    "observacion": "Persona que busca restar el peso o la dignidad de otra. Se aplica a Simei cuando sale a deshonrar a David arrojando piedras."
+  },
+  {
+    "id": 75,
+    "texto_hebreo": "בְּלִיַּעַל",
+    "transliteracion": "Beliya'al",
+    "equivalencia_espanol": "hombre de Satanás / sin provecho",
+    "observacion": "Término usado para describir a una persona que actúa bajo una influencia diabólica, buscando el conflicto y el desprestigio de la autoridad."
+  },
+  {
+    "id": 76,
+    "texto_hebreo": "חֶבְרוֹן",
+    "transliteracion": "Hebrón",
+    "equivalencia_espanol": "Hebrón",
+    "observacion": "Lugar estratégico donde Absalón se proclamó rey, utilizando un supuesto voto religioso como pretexto para iniciar el golpe de estado."
+  },
+  {
+    "id": 77,
+    "texto_hebreo": "בַּחוּרִים",
+    "transliteracion": "Bahurim",
+    "equivalencia_espanol": "Bahurim",
+    "observacion": "Sitio geográfico donde David fue confrontado y maldecido por Simei hijo de Gera durante su huida."
   }
 ]

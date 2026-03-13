@@ -136,8 +136,7 @@
    const TORAH = ['genesis', 'exodo', 'levitico', 'numeros', 'deuteronomio'];
    const HISTORICAL = [
      'josue', 'jueces', 'rut', '1_samuel', '2_samuel', '1_reyes', '2_reyes',
-     '1_cronicas', '2_cronicas', 'esdras', 'nehemias', 'ester', 'hechos'
-   ];
+     '1_cronicas', '2_cronicas', 'esdras', 'nehemias', 'ester'   ];
    const WISDOM = ['job', 'salmos', 'proverbios', 'eclesiastes', 'cantares'];
    const PROPHETS = [
      'isaias', 'jeremias', 'lamentaciones', 'ezequiel', 'daniel', 'oseas', 'joel', 'amos',
@@ -162,12 +161,13 @@ const CANONICAL_BOOK_ORDER = [
   ...WISDOM,
   ...PROPHETS,
   ...GOSPELS,
+  ...ACTS,
   ...LETTERS,
   ...APOCALYPSE
 ];
 const CANON_INDEX = new Map(CANONICAL_BOOK_ORDER.map((slug, i) => [slug, i]));
 const OT_SET = new Set([...TORAH, ...HISTORICAL, ...WISDOM, ...PROPHETS]);
-const NT_SET = new Set([...GOSPELS, ...LETTERS, ...APOCALYPSE]);
+const NT_SET = new Set([...GOSPELS, ...ACTS, ...LETTERS, ...APOCALYPSE]);
 
   const NT_BOOKS = new Set([...GOSPELS, ...ACTS, ...LETTERS, ...APOCALYPSE]);
   const LXX_BOOKS = [

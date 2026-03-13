@@ -438,10 +438,11 @@ function mapLxxRefsToHebrewRefs(refs) {
     if (!filtersPanel) return;
     const { books, ot, nt, otCount, ntCount, allCount } = agg;
 
-    const mkBtn = (id, label, count, active) => {
-      return `
-        <button class="bx-filter-item ${active ? 'is-active' : ''}" type="button"
-          data-bx-filter="${id}">
+ const mkBtn = (id, label, count, active, variant = '') => {
+      const variantClass = variant ? ` bx-filter-item--${variant}` : '';
+            return `
+        <button class="bx-filter-item${variantClass} ${active ? 'is-active' : ''}" type="button"
+                  data-bx-filter="${id}">
           <span>${escapeHtml(label)}</span>
           <span class="bx-count">(${count})</span>
         </button>
@@ -457,10 +458,10 @@ function mapLxxRefsToHebrewRefs(refs) {
 
     filtersPanel.innerHTML = `
       <div class="d-grid gap-2">
-        ${mkBtn('all', 'Todos', allCount, isAll)}
-        ${mkBtn('ot', 'Toráh', otCount, isOT)}
+         ${mkBtn('all', 'Todos', allCount, isAll, 'all')}
+        ${mkBtn('ot', 'Toráh', otCount, isOT, 'ot')}
         <div class="ps-1 d-grid gap-2">${otItems || '<div class="small muted ps-2">Sin resultados.</div>'}</div>
-        ${mkBtn('nt', 'Evangelios', ntCount, isNT)}
+         ${mkBtn('nt', 'Evangelios', ntCount, isNT, 'nt')}
         <div class="ps-1 d-grid gap-2">${ntItems || '<div class="small muted ps-2">Sin resultados.</div>'}</div>
       </div>
     `;
