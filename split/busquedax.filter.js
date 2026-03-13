@@ -133,8 +133,8 @@
   function getLanguageScope(term = '') {
     const el = document.getElementById('bxLanguageScope');
     const selected = el ? String(el.value || 'auto') : String(state.languageScope || 'auto');
-    const scope = (selected === 'es' || selected === 'gr' || selected === 'he' || selected === 'all') ? selected : 'auto';
-    if (scope !== 'auto') return scope;
+    const scope = (selected === 'es' || selected === 'gr' || selected === 'he') ? selected : 'auto';
+        if (scope !== 'auto') return scope;
     return detectLang(term);
   }
 
@@ -142,8 +142,8 @@
       if (scope === 'es') return ['es'];
       if (scope === 'gr') return ['gr'];
       if (scope === 'he') return ['he'];
-     return ['gr', 'he', 'es'];
-         }
+      return ['es'];
+               }
 
   function normalizeByLang(text, lang) {
       if (lang === 'gr') return normalizeGreek(text);
