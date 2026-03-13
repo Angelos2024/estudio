@@ -1,1423 +1,259 @@
+Entendido. Procederé a expandir el diccionario basándome exclusivamente en las enseñanzas del profesor Eric De Jesús Rodríguez Mendoza contenidas en el documento proporcionado, desglosando los términos de forma individual y respetando las reglas de no composición ni citas externas.
+
+Aquí tienes las entradas correspondientes a la sección del Salmo 1:
+
+```json
 [
   {
     "id": 1,
-    "texto_hebreo": "אַשְׁרֵי",
-    "transliteracion": "’Ashrey",
-    "equivalencia_espanol": "felicidades de; dicha en constructo plural",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
+    "texto_hebreo": "אֲשֶׁרֵי",
+    "transliteracion": "Ashrey",
+    "equivalencia_espanol": "felicidades de",
+    "observacion": "Constructo plural de la palabra Eshr. Se traduce comúnmente como bienaventurado o feliz, pero estructuralmente indica una pluralidad de felicidades a causa de algo."
   },
   {
     "id": 2,
-    "texto_hebreo": "אֶשֶׁר",
-    "transliteracion": "’Eshr",
-    "equivalencia_espanol": "felicidad; dicha",
-    "observacion": "Se enfatiza el valor plural o colectivo en el pasaje."
+    "texto_hebreo": "אִישׁ",
+    "transliteracion": "Ish",
+    "observacion": "Varón en punto desarrollado que ha llegado a la madurez espiritual. Se destaca la presencia de la letra Yud en medio como indicador de la presencia de Dios.",
+    "equivalencia_espanol": "varón maduro"
   },
   {
     "id": 3,
     "texto_hebreo": "רְשָׁעִים",
-    "transliteracion": "Resha’im",
-    "equivalencia_espanol": "condenados/culpables de juicio",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
+    "transliteracion": "Resha'im",
+    "equivalencia_espanol": "culpables / condenados",
+    "observacion": "Plural de Rashá'. Se refiere a los que ya están condenados en un juicio. El primer Rashá' es Hasatán."
   },
   {
     "id": 4,
-    "texto_hebreo": "חַטָּא",
-    "transliteracion": "Jata’",
-    "equivalencia_espanol": "errar; fallar",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
+    "texto_hebreo": "לֵצִים",
+    "transliteracion": "Letzim",
+    "equivalencia_espanol": "escarnecedores / de doble ánimo",
+    "observacion": "Mencionado en el contexto de los asentamientos donde el Ish no se sienta."
   },
   {
     "id": 5,
-    "texto_hebreo": "חַטָּאִים",
-    "transliteracion": "Jata’im",
-    "equivalencia_espanol": "pecadores (categoría más grave/contextual)",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
+    "texto_hebreo": "אֱמוּנָה",
+    "transliteracion": "Emunáh",
+    "equivalencia_espanol": "fidelidad / firmeza",
+    "observacion": "Relacionado con la capacidad de permanecer firmes y actuar varonilmente."
   },
   {
     "id": 6,
-    "texto_hebreo": "חֹטֵא",
-    "transliteracion": "Joté’",
-    "equivalencia_espanol": "quien comete error/falla",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
+    "texto_hebreo": "Ανδριζεσθε",
+    "transliteracion": "Andríseste",
+    "equivalencia_espanol": "portaos varonilmente",
+    "observacion": "Término griego equivalente a la acción de llegar a ser un Ish en hebreo."
   },
   {
     "id": 7,
-    "texto_hebreo": "לֵץ",
-    "transliteracion": "Letz",
-    "equivalencia_espanol": "burlador; escarnecedor",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
+    "texto_hebreo": "אִשָּׁה",
+    "transliteracion": "Isha'",
+    "equivalencia_espanol": "mujer / varona",
+    "observacion": "Representa a la edificación que sale del Ish, identificada pedagógicamente con el pueblo de Yisra'él o la asamblea."
   },
   {
     "id": 8,
-    "texto_hebreo": "מוֹשָׁב",
-    "transliteracion": "Moshab",
-    "equivalencia_espanol": "asiento/asentamiento",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
+    "texto_hebreo": "הָלַךְ",
+    "transliteracion": "Halaj",
+    "equivalencia_espanol": "caminó / andar",
+    "observacion": "En el contexto bíblico, al ser una acción consolidada (perfectivo), implica que no anduvo, no anda y no andará."
   },
   {
     "id": 9,
-    "texto_hebreo": "חָפֵץ",
-    "transliteracion": "Jefetz",
-    "equivalencia_espanol": "agrado; satisfacción; deleite",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
+    "texto_hebreo": "εκκλησιαν",
+    "transliteracion": "Ekklesía",
+    "equivalencia_espanol": "asamblea / iglesia",
+    "observacion": "Referente a la congregación que surge del sacrificio del Mashiaj."
   },
   {
     "id": 10,
-    "texto_hebreo": "יָשַׁב",
-    "transliteracion": "Yashab",
-    "equivalencia_espanol": "sentarse; asentarse",
-    "observacion": "Entrada verbal con precisión de uso/contexto."
+    "texto_hebreo": "אָדָם",
+    "transliteracion": "Adam",
+    "equivalencia_espanol": "hombre / humanidad",
+    "observacion": "Citado en el Talmud para diferenciar el estado humano general del estado de madurez del Ish."
   },
   {
     "id": 11,
-    "texto_hebreo": "פַּלְגֵי־מָיִם",
-    "transliteracion": "Palgéy mayim",
-    "equivalencia_espanol": "canales de agua / acequias de riego",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
+    "texto_hebreo": "הֲלָכָה",
+    "transliteracion": "Halajáh",
+    "equivalencia_espanol": "conducta / ley",
+    "observacion": "Deriva del término 'andar'. Se refiere al proceder, al actuar y a la manera en que el creyente se conduce siguiendo el ejemplo del 'Ish[cite: 50, 51, 52]."
   },
   {
     "id": 12,
-    "texto_hebreo": "תַּשְׂכִּיל",
-    "transliteracion": "Taskil",
-    "equivalencia_espanol": "discernimiento; conciencia",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
+    "texto_hebreo": "חֲטָאִים",
+    "transliteracion": "Jata'im",
+    "equivalencia_espanol": "pecadores habituales",
+    "observacion": "Plural de Jata'. Se refiere a personas que se detienen en una costumbre o camino de error constante[cite: 54, 64, 65]."
   },
   {
     "id": 13,
-    "texto_hebreo": "רָגַשׁ",
-    "transliteracion": "Ragash",
-    "equivalencia_espanol": "agitarse; conmoverse",
-    "observacion": "Entrada verbal con precisión de uso/contexto."
+    "texto_hebreo": "חַטָּאת",
+    "transliteracion": "Jatat",
+    "equivalencia_espanol": "ley del error / ofrenda por el pecado",
+    "observacion": "Concepto de Levítico 4 que explica la transgresión por error, olvido o falla sin intención[cite: 55, 56]."
   },
   {
     "id": 14,
-    "texto_hebreo": "רָגְשׁוּ",
-    "transliteracion": "Rageshu",
-    "equivalencia_espanol": "precisión léxica/contextual en el estudio de Salmos",
-    "observacion": "Entrada verbal con precisión de uso/contexto."
+    "texto_hebreo": "חוֹטֶא",
+    "transliteracion": "Joté'",
+    "equivalencia_espanol": "el que yerra",
+    "observacion": "Persona que comete una falla u omisión de manera no intencional. Se diferencia del Jata' en que no es una práctica habitual[cite: 57, 60, 63]."
   },
   {
     "id": 15,
-    "texto_hebreo": "רֶגֶשׁ",
-    "transliteracion": "Regesh",
-    "equivalencia_espanol": "emoción; temblor emotivo",
-    "observacion": "Entrada verbal con precisión de uso/contexto."
+    "texto_hebreo": "חַטָּא",
+    "transliteracion": "Jata'",
+    "equivalencia_espanol": "practicante del error",
+    "observacion": "Estructura que denota una actividad habitual o hábito. Es alguien que ha pasado del simple error (Joté') a una conducta repetitiva[cite: 60, 63, 65]."
   },
   {
     "id": 16,
-    "texto_hebreo": "גּוֹי",
-    "transliteracion": "Goy",
-    "equivalencia_espanol": "gentil; nación (no israelita, según contexto)",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
+    "texto_hebreo": "צַדִּיק",
+    "transliteracion": "Tzadiq",
+    "equivalencia_espanol": "justo",
+    "observacion": "Término usado en Eclesiastés para señalar que no hay hombre que sea totalmente justo y nunca cometa un error[cite: 57]."
   },
   {
     "id": 17,
-    "texto_hebreo": "לְאֻמִּים",
-    "transliteracion": "Le’umin",
-    "equivalencia_espanol": "pueblos/naciones (70 naciones, según el estudio)",
-    "observacion": "Se enfatiza el valor plural o colectivo en el pasaje."
+    "texto_hebreo": "קֹדֶשׁ",
+    "transliteracion": "Qódesh",
+    "equivalencia_espanol": "sagrado / consagrado",
+    "observacion": "Referente a las cosas apartadas para Dios. Profanar lo Qódesh por 'descuido' revela una falta de comunión o interés previo[cite: 66, 67]."
   },
   {
     "id": 18,
-    "texto_hebreo": "לְאֹם",
-    "transliteracion": "Le’óm",
-    "equivalencia_espanol": "pueblo (con énfasis étnico/nacional)",
-    "observacion": "Se enfatiza el valor plural o colectivo en el pasaje."
+    "texto_hebreo": "מִצְוָה",
+    "transliteracion": "Mitzváh",
+    "equivalencia_espanol": "precepto / mandamiento",
+    "observacion": "Instrucción específica cuya omisión o comisión marca la diferencia entre el camino del justo y el del pecador[cite: 73]."
   },
   {
     "id": 19,
-    "texto_hebreo": "מָשִׁיחַ",
-    "transliteracion": "Mashiaj",
-    "equivalencia_espanol": "ungido; representación más amplia que persona individual",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
+    "texto_hebreo": "תּוֹרָה",
+    "transliteracion": "Torah",
+    "equivalencia_espanol": "instrucción / ley",
+    "observacion": "Referencia a la ley divina que debe verificarse constantemente en el texto para no confiar únicamente en la memoria[cite: 72]."
   },
   {
     "id": 20,
-    "texto_hebreo": "וְרוֹזְנִים",
-    "transliteracion": "Verozinim",
-    "equivalencia_espanol": "precisión léxica/contextual en el estudio de Salmos",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
+    "texto_hebreo": "חַיִּים",
+    "transliteracion": "Jayim",
+    "equivalencia_espanol": "vida",
+    "observacion": "Se identifica directamente con Dios. Estar en fastidio hacia la vida es, en esencia, una actitud de rechazo hacia el Creador[cite: 78, 79]."
   },
   {
     "id": 21,
-    "texto_hebreo": "עֲבֹתוֹת",
-    "transliteracion": "’Avot",
-    "equivalencia_espanol": "precisión léxica/contextual en el estudio de Salmos",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
+    "texto_hebreo": "עִמָּנוּאֵל",
+    "transliteracion": "Imanu'el",
+    "equivalencia_espanol": "con nosotros el poderoso",
+    "observacion": "Citado de Isaías 8:10 para enfatizar que ante la presencia divina, los planes o consejos contrarios son anulados[cite: 49]."
   },
   {
     "id": 22,
-    "texto_hebreo": "מוֹסְרוֹת",
-    "transliteracion": "Moserot",
-    "equivalencia_espanol": "cuerdas; ataduras",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
+    "texto_hebreo": "מוֹשָׁב",
+    "transliteracion": "Moshab",
+    "equivalencia_espanol": "asentamiento / habitación",
+    "observacion": "No se refiere a un objeto físico como una silla, sino al lugar donde se reside o se desarrolla comunión profunda[cite: 87]. El 'Ish no habita en la mentalidad de quienes tienen doble ánimo[cite: 87]."
   },
   {
     "id": 23,
-    "texto_hebreo": "לָעַג",
-    "transliteracion": "La’ág",
-    "equivalencia_espanol": "burlarse; hacer mofa del caído",
-    "observacion": "Entrada verbal con precisión de uso/contexto."
+    "texto_hebreo": "לֵץ",
+    "transliteracion": "Lez",
+    "equivalencia_espanol": "burlador / ambiguo",
+    "observacion": "Persona que habla de manera confusa o con doble sentido[cite: 85]. Se asocia con los tibios que buscan provecho personal en lugar de corrección espiritual[cite: 86, 90]."
   },
   {
     "id": 24,
-    "texto_hebreo": "נָסַךְ",
-    "transliteracion": "Nasáj",
-    "equivalencia_espanol": "verter en libación",
-    "observacion": "Entrada verbal con precisión de uso/contexto."
+    "texto_hebreo": "יָשַׁב",
+    "transliteracion": "Yashab",
+    "equivalencia_espanol": "sentarse / asentarse",
+    "observacion": "Verbo que implica tanto el acto de sentarse como el de quedarse a vivir y compartir la vida en un lugar determinado[cite: 92]."
   },
   {
     "id": 25,
-    "texto_hebreo": "יָלַד",
-    "transliteracion": "Yalad",
-    "equivalencia_espanol": "parir; designar (según contexto del estudio)",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
+    "texto_hebreo": "תּוֹשָׁב",
+    "transliteracion": "Toshav",
+    "equivalencia_espanol": "residente / habitante",
+    "observacion": "Derivado de Yashab; se refiere a la persona que reside y habita activamente en medio del pueblo[cite: 92, 93]."
   },
   {
     "id": 26,
-    "texto_hebreo": "נָשַׁק",
-    "transliteracion": "Nashaq",
-    "equivalencia_espanol": "besar; recibir en comunión completa",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
+    "texto_hebreo": "חָפֵץ",
+    "transliteracion": "Jefetz",
+    "equivalencia_espanol": "complacencia / deleite",
+    "observacion": "Implica aquello que produce satisfacción y a lo que se le dedica tiempo, recursos y esfuerzo[cite: 97, 99]. En la Torah, este gusto conlleva la disposición de 'morir al yo'[cite: 103]."
   },
   {
     "id": 27,
-    "texto_hebreo": "נַשְּׁקוּ",
-    "transliteracion": "Nasheku",
-    "equivalencia_espanol": "precisión léxica/contextual en el estudio de Salmos",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
+    "texto_hebreo": "הָגָה",
+    "transliteracion": "Hagah",
+    "equivalencia_espanol": "ronronear / meditar",
+    "observacion": "Sonido emitido desde un estado de completa seguridad y tranquilidad, similar al de un león sobre su presa[cite: 106, 107]. Indica una confianza absoluta en Hashem de día y de noche[cite: 107]."
   },
   {
     "id": 28,
-    "texto_hebreo": "לַמְנַצֵּחַ",
-    "transliteracion": "Lamnatzéaj",
-    "equivalencia_espanol": "al director; al vencedor (título)",
-    "observacion": "Término tratado en el encabezado/título del salmo."
+    "texto_hebreo": "צְבָאוֹת",
+    "transliteracion": "Tzva'ot",
+    "equivalencia_espanol": "ejércitos / huestes",
+    "observacion": "Atributo de YHWH cuando desciende a pelear por el monte de Tziyón, mostrando su poder protector sobre los suyos[cite: 105]."
   },
   {
     "id": 29,
-    "texto_hebreo": "חָנֵּנִי",
-    "transliteracion": "Joneni",
-    "equivalencia_espanol": "agráciame; ten gracia de mí",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
+    "texto_hebreo": "צִיּוֹן",
+    "transliteracion": "Tziyón",
+    "equivalencia_espanol": "Sion",
+    "observacion": "Lugar espiritual y físico (monte y collado) sobre el cual Hashem ejerce su defensa y soberanía[cite: 105]."
   },
   {
     "id": 30,
-    "texto_hebreo": "כָּזָב",
-    "transliteracion": "Kazáb",
-    "equivalencia_espanol": "dar palabra y no cumplir; falsedad/inconstancia",
-    "observacion": "Se precisa una traducción distinta o más exacta que la versión común."
+    "texto_hebreo": "פַּלְגֵי",
+    "transliteracion": "Palgey",
+    "equivalencia_espanol": "repartimientos / canales",
+    "observacion": "Concepto agrícola referido a los canales de regadío dirigidos por el agricultor para dosificar el agua."
   },
   {
     "id": 31,
-    "texto_hebreo": "חָסִיד",
-    "transliteracion": "Jasid",
-    "equivalencia_espanol": "piadoso; hacedor de jesed",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
+    "texto_hebreo": "מַיִם",
+    "transliteracion": "Mayim",
+    "equivalencia_espanol": "aguas",
+    "observacion": "Elemento vital que, en el contexto del árbol, debe ser dosificado por Hashem para evitar que la raíz se pudra por exceso."
   },
   {
     "id": 32,
-    "texto_hebreo": "עָרַךְ",
-    "transliteracion": "’Araj",
-    "equivalencia_espanol": "El verbo ‘Araj /  se utliza cuando Abraham fue de",
-    "observacion": "Entrada verbal con precisión de uso/contexto."
+    "texto_hebreo": "תַּשְׁכִּיל",
+    "transliteracion": "Taskil",
+    "equivalencia_espanol": "discernimiento / conciencia",
+    "observacion": "Capacidad espiritual necesaria para alcanzar el éxito. Sin este discernimiento, el logro de metas carece de sentido bíblico."
   },
   {
     "id": 33,
-    "texto_hebreo": "רַע",
-    "transliteracion": "Ra’",
-    "equivalencia_espanol": "es el perjuicio",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
+    "texto_hebreo": "בְּרִית",
+    "transliteracion": "Brit",
+    "equivalencia_espanol": "promesa / testamento / pacto",
+    "observacion": "Referente a la promesa de Hashem de poner Su Espíritu y Sus palabras en la boca de Su pueblo y su descendencia para siempre."
   },
   {
     "id": 34,
-    "texto_hebreo": "צִנָּה",
-    "transliteracion": "Tzináh / Katzináh",
-    "equivalencia_espanol": "Tzinah es un instrumento de guerra, como una coraza , parecido a",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
+    "texto_hebreo": "עוֹלָם",
+    "transliteracion": "Olam",
+    "equivalencia_espanol": "siempre / eternidad",
+    "observacion": "Dimensión temporal de la promesa divina que trasciende el tiempo presente."
   },
   {
     "id": 35,
-    "texto_hebreo": "חֵמָה",
-    "transliteracion": "Jemáh",
-    "equivalencia_espanol": "ardor; furor (estado candente)",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
+    "texto_hebreo": "רוּחַ",
+    "transliteracion": "Rúaj",
+    "equivalencia_espanol": "espíritu / poder",
+    "observacion": "Identificado como el poder de YHWH que se posa sobre el individuo para constituirlo como 'Ish o 'Ishah."
   },
   {
     "id": 36,
-    "texto_hebreo": "חָנַן",
-    "transliteracion": "Janan",
-    "equivalencia_espanol": "mostrar favor/gracia",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 37,
-    "texto_hebreo": "חֵן",
-    "transliteracion": "Jen",
-    "equivalencia_espanol": "gracia; favor",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 38,
-    "texto_hebreo": "הוֹד",
-    "transliteracion": "Hod",
-    "equivalencia_espanol": "precisión léxica/contextual en el estudio de Salmos",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 39,
-    "texto_hebreo": "עֹז",
-    "transliteracion": "’Oz",
-    "equivalencia_espanol": "precisión léxica/contextual en el estudio de Salmos",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 40,
-    "texto_hebreo": "יִסַּרְתָּ",
-    "transliteracion": "Yisarta",
-    "equivalencia_espanol": "precisión léxica/contextual en el estudio de Salmos",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 41,
-    "texto_hebreo": "אֱנוֹשׁ",
-    "transliteracion": "’Enosh",
-    "equivalencia_espanol": "precisión léxica/contextual en el estudio de Salmos",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 42,
-    "texto_hebreo": "דָּרַשׁ",
-    "transliteracion": "Darash",
-    "equivalencia_espanol": "precisión léxica/contextual en el estudio de Salmos",
-    "observacion": "Entrada verbal con precisión de uso/contexto."
-  },
-  {
-    "id": 43,
-    "texto_hebreo": "יֵשַׁע",
-    "transliteracion": "Yesha’",
-    "equivalencia_espanol": "precisión léxica/contextual en el estudio de Salmos",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 44,
-    "texto_hebreo": "אֶבְיוֹן",
-    "transliteracion": "’Evyon",
-    "equivalencia_espanol": "necesitado",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 45,
-    "texto_hebreo": "אֱמוּנִים",
-    "transliteracion": "’Emunim",
-    "equivalencia_espanol": "fidelidades; firmes/fieles",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 46,
-    "texto_hebreo": "עֲנָוִים",
-    "transliteracion": "’Anavim",
-    "equivalencia_espanol": "aquí habla de los pobres en sentdo espiritual no",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 47,
-    "texto_hebreo": "אֶבְיוֹנִים",
-    "transliteracion": "’Evyonim",
-    "equivalencia_espanol": "precisión léxica/contextual en el estudio de Salmos",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 49,
-    "texto_hebreo": "אֹהֶל",
-    "transliteracion": "’Ohel",
-    "equivalencia_espanol": "tienda",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 50,
-    "texto_hebreo": "אֲדֹנָי",
-    "transliteracion": "’Adonai",
-    "equivalencia_espanol": "Adonai, señor, Dios.",
-    "observacion": "Adonai en principio Hebreo, Señor, soberano, amo, dueño, señor, poseedor. N. T. A) En general. Amo, dueño, señor."
-  },
-  {
-    "id": 51,
-    "texto_hebreo": "נֶסֶךְ",
-    "transliteracion": "Nésej",
-    "equivalencia_espanol": "libación",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 52,
-    "texto_hebreo": "תְּהִלָּה",
-    "transliteracion": "Tehiláh",
-    "equivalencia_espanol": "precisión léxica/contextual en el estudio de Salmos",
-    "observacion": "Se enfatiza el valor plural o colectivo en el pasaje."
-  },
-  {
-    "id": 53,
-    "texto_hebreo": "רִנָּה",
-    "transliteracion": "Riná",
-    "equivalencia_espanol": "clamor/canto de alegría o tristeza",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 54,
-    "texto_hebreo": "אֹרַח",
-    "transliteracion": "’Oraj",
-    "equivalencia_espanol": "itinerario; senda",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 55,
-    "texto_hebreo": "הָדָר",
-    "transliteracion": "Hadar",
-    "equivalencia_espanol": "las canas en un",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 56,
-    "texto_hebreo": "עֲזַבְתָּנִי",
-    "transliteracion": "’Azavtani",
-    "equivalencia_espanol": "tomar distancia; dejar (no necesariamente abandono absoluto)",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 57,
-    "texto_hebreo": "גֹּל",
-    "transliteracion": "Gol",
-    "equivalencia_espanol": "enróllate; encomiéndate",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 58,
-    "texto_hebreo": "דֶּשֶׁן",
-    "transliteracion": "Déshen",
-    "equivalencia_espanol": "precisión léxica/contextual en el estudio de Salmos",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 59,
-    "texto_hebreo": "אֶפֶס",
-    "transliteracion": "Éfes",
-    "equivalencia_espanol": "cero; nulo",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 60,
-    "texto_hebreo": "צֵל",
-    "transliteracion": "Tzel",
-    "equivalencia_espanol": "sombra",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 61,
-    "texto_hebreo": "כּוֹס",
-    "transliteracion": "Kos",
-    "equivalencia_espanol": "vaso",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 62,
-    "texto_hebreo": "דּוֹר",
-    "transliteracion": "Dor",
-    "equivalencia_espanol": "generación",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 63,
-    "texto_hebreo": "בָּגַד",
-    "transliteracion": "Bagad",
-    "equivalencia_espanol": "ser infiel; traicionar",
-    "observacion": "Entrada verbal con precisión de uso/contexto."
-  },
-  {
-    "id": 64,
-    "texto_hebreo": "גַּם",
-    "transliteracion": "Gam",
-    "equivalencia_espanol": "también",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 65,
-    "texto_hebreo": "דָּלֶת",
-    "transliteracion": "Dálet",
-    "equivalencia_espanol": "precisión léxica/contextual en el estudio de Salmos",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 66,
-    "texto_hebreo": "לָמַד",
-    "transliteracion": "Lamad",
-    "equivalencia_espanol": "cuando una persona está",
-    "observacion": "Entrada verbal con precisión de uso/contexto."
-  },
-  {
-    "id": 67,
-    "texto_hebreo": "זְכֹר",
-    "transliteracion": "Zajor / Zejor",
-    "equivalencia_espanol": "recordar; dar prioridad/prevalencia",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 68,
-    "texto_hebreo": "כֹּל",
-    "transliteracion": "Kol",
-    "equivalencia_espanol": "precisión léxica/contextual en el estudio de Salmos",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 69,
-    "texto_hebreo": "טוֹב",
-    "transliteracion": "Tov",
-    "equivalencia_espanol": "bueno",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 70,
-    "texto_hebreo": "שָׁפַט",
-    "transliteracion": "Shafat",
-    "equivalencia_espanol": "juzgar",
-    "observacion": "Entrada verbal con precisión de uso/contexto."
-  },
-  {
-    "id": 71,
-    "texto_hebreo": "בָּחַן",
-    "transliteracion": "Baján",
-    "equivalencia_espanol": "probar; examinar",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 72,
-    "texto_hebreo": "מָעוֹז",
-    "transliteracion": "Ma’oz",
-    "equivalencia_espanol": "precisión léxica/contextual en el estudio de Salmos",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 73,
-    "texto_hebreo": "רָעָה",
-    "transliteracion": "Ra’ah",
-    "equivalencia_espanol": "daño; perjuicio",
-    "observacion": "Se enfatiza el valor plural o colectivo en el pasaje."
-  },
-  {
-    "id": 74,
-    "texto_hebreo": "בּוֹטֵחַ",
-    "transliteracion": "Botéaj",
-    "equivalencia_espanol": "confiado; el que se refugia",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 75,
-    "texto_hebreo": "תְּרוּעָה",
-    "transliteracion": "Teru’áh",
-    "equivalencia_espanol": "clamor/grito; toque",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 76,
-    "texto_hebreo": "אָוֶן",
-    "transliteracion": "’Aven",
-    "equivalencia_espanol": "precisión léxica/contextual en el estudio de Salmos",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 77,
-    "texto_hebreo": "אֵלִים",
-    "transliteracion": "’Elim",
-    "equivalencia_espanol": "precisión léxica/contextual en el estudio de Salmos",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 78,
-    "texto_hebreo": "כֹּחַ",
-    "transliteracion": "Cóaj",
-    "equivalencia_espanol": "fuerza demostrada",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 79,
-    "texto_hebreo": "רִנָּה",
-    "transliteracion": "Rináh",
-    "equivalencia_espanol": "precisión léxica/contextual en el estudio de Salmos",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 80,
-    "texto_hebreo": "הַצִּילֵנִי",
-    "transliteracion": "Hatziléni",
-    "equivalencia_espanol": "rescátame; sálvame técnicamente",
-    "observacion": "Entrada verbal con precisión de uso/contexto."
-  },
-  {
-    "id": 81,
-    "texto_hebreo": "צוּר",
-    "transliteracion": "Tsur",
-    "equivalencia_espanol": "roca",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 82,
-    "texto_hebreo": "לְמַעַן",
-    "transliteracion": "Lema’an",
-    "equivalencia_espanol": "Por el propósito de tu",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 83,
-    "texto_hebreo": "אַשְׁרֵי",
-    "transliteracion": "’Asherey",
-    "equivalencia_espanol": "precisión léxica/contextual en el estudio de Salmos",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 84,
-    "texto_hebreo": "עָוֹן",
-    "transliteracion": "’Avón",
-    "equivalencia_espanol": "precisión léxica/contextual en el estudio de Salmos",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 85,
-    "texto_hebreo": "כִּנּוֹר",
-    "transliteracion": "Kinor",
-    "equivalencia_espanol": "lira",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 86,
-    "texto_hebreo": "נֵבֶל",
-    "transliteracion": "Nével",
-    "equivalencia_espanol": "arpa",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 87,
-    "texto_hebreo": "שִׁיר חָדָשׁ",
-    "transliteracion": "Shir jadash",
-    "equivalencia_espanol": "cántico nuevo",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 88,
-    "texto_hebreo": "תֵּבֵל",
-    "transliteracion": "Tevel",
-    "equivalencia_espanol": "tierra habitada / mundo",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 89,
-    "texto_hebreo": "מֵבִין",
-    "transliteracion": "Mebín",
-    "equivalencia_espanol": "entendedor; el que comprende el funcionamiento",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 90,
-    "texto_hebreo": "פַּחַד",
-    "transliteracion": "Pájad",
-    "equivalencia_espanol": "temor; aquello que se teme",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 91,
-    "texto_hebreo": "עַוְלָה",
-    "transliteracion": "’Avlah",
-    "equivalencia_espanol": "torcedura; iniquidad",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 92,
-    "texto_hebreo": "שָׁכַן",
-    "transliteracion": "Shaján",
-    "equivalencia_espanol": "precisión léxica/contextual en el estudio de Salmos",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 93,
-    "texto_hebreo": "וְהִתְעַנַּג",
-    "transliteracion": "Vehit’anag",
-    "equivalencia_espanol": "deleitarse (deleite no carnal)",
-    "observacion": "Entrada verbal con precisión de uso/contexto."
-  },
-  {
-    "id": 94,
-    "texto_hebreo": "שָׁלוֹם",
-    "transliteracion": "Shalom",
-    "equivalencia_espanol": "paz; integridad",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 95,
-    "texto_hebreo": "לִידוּתוּן",
-    "transliteracion": "Ledutún",
-    "equivalencia_espanol": "1: “«Para el victorioso/ Liditun/  / Ledutun/  Yedutun",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 96,
-    "texto_hebreo": "לִידוּתוּן",
-    "transliteracion": "Liditún",
-    "equivalencia_espanol": "1: “«Para el victorioso/ Liditun/  / Ledutun/  Yedutun",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 97,
-    "texto_hebreo": "עֶצֶם",
-    "transliteracion": "’Etzem",
-    "equivalencia_espanol": "para el que las va",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 98,
-    "texto_hebreo": "סֶלָה",
-    "transliteracion": "Sélah",
-    "equivalencia_espanol": "Selah/",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 99,
-    "texto_hebreo": "מָשָׁל",
-    "transliteracion": "Mashal",
-    "equivalencia_espanol": "proverbio/parábola",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 100,
-    "texto_hebreo": "אָדָם",
-    "transliteracion": "’Adam",
-    "equivalencia_espanol": "me o mí”/  / Mibney ‘Adam /    la suelen",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 101,
-    "texto_hebreo": "גִּבּוֹר",
-    "transliteracion": "Gibor",
-    "equivalencia_espanol": "valiente; poderoso",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 102,
-    "texto_hebreo": "רוּם",
-    "transliteracion": "Rum",
-    "equivalencia_espanol": "aquello que está fotando",
-    "observacion": "Entrada verbal con precisión de uso/contexto."
-  },
-  {
-    "id": 103,
-    "texto_hebreo": "אוֹיֵב",
-    "transliteracion": "’Oyeb",
-    "equivalencia_espanol": "enemigo",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 104,
-    "texto_hebreo": "זֶרַע",
-    "transliteracion": "Zéra’",
-    "equivalencia_espanol": "semilla/Zera’/",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 105,
-    "texto_hebreo": "מְרֵעִים",
-    "transliteracion": "Meré’im",
-    "equivalencia_espanol": "mere’im /    gente que hace daño",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 106,
-    "texto_hebreo": "סוֹד",
-    "transliteracion": "Sod",
-    "equivalencia_espanol": "secreto; consejo íntimo",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 107,
-    "texto_hebreo": "גְּבוּרָה",
-    "transliteracion": "G’vurah",
-    "equivalencia_espanol": "fuerza; poder manifiesto",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 108,
-    "texto_hebreo": "שָׂנֵא",
-    "transliteracion": "Sané’",
-    "equivalencia_espanol": "aborrecer; no corresponder",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 109,
-    "texto_hebreo": "אָשָׁם",
-    "transliteracion": "’Asham",
-    "equivalencia_espanol": "culpa",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 110,
-    "texto_hebreo": "יְהוָה צְבָאוֹת",
-    "transliteracion": "YHWH Tzva’ot",
-    "equivalencia_espanol": "YHWH de los ejércitos",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 111,
-    "texto_hebreo": "יְהוָה",
-    "transliteracion": "YHWH",
-    "equivalencia_espanol": "Hashem (Tetragrámaton)",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 112,
-    "texto_hebreo": "מִנְחָה",
-    "transliteracion": "Minjáh",
-    "equivalencia_espanol": "ofrenda",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 113,
-    "texto_hebreo": "אַךְ",
-    "transliteracion": "’Aj",
-    "equivalencia_espanol": "solo o solamente es",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 114,
-    "texto_hebreo": "קִנֵּאתִי",
-    "transliteracion": "Qiné’t",
-    "equivalencia_espanol": "3: “Porque empecé a imitar/qine’t/   a los que presumen miré el",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 115,
-    "texto_hebreo": "מוֹעֵד",
-    "transliteracion": "Mo’ed",
-    "equivalencia_espanol": "tiempo señalado",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 116,
-    "texto_hebreo": "נוֹדַע",
-    "transliteracion": "Nodá’",
-    "equivalencia_espanol": "Nodá’/  y eso",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 117,
-    "texto_hebreo": "זִמְרָה",
-    "transliteracion": "Zimráh",
-    "equivalencia_espanol": "canto/melodía",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 118,
-    "texto_hebreo": "רָשׁ",
-    "transliteracion": "Rash",
-    "equivalencia_espanol": "necesitado; pobre",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 119,
-    "texto_hebreo": "צָפוֹן",
-    "transliteracion": "Tzafón",
-    "equivalencia_espanol": "lo que está escondido",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 120,
-    "texto_hebreo": "עֵמֶק",
-    "transliteracion": "’Émeq",
-    "equivalencia_espanol": "Valle y el valle es visto en hebreo como hundirse el terreno",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 121,
-    "texto_hebreo": "נָאוָה",
-    "transliteracion": "Na’avah",
-    "equivalencia_espanol": "hermosura apropiada; belleza conveniente",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 122,
-    "texto_hebreo": "הֶבֶל",
-    "transliteracion": "Hével",
-    "equivalencia_espanol": "perecedero; corruptible; vanidad",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 123,
-    "texto_hebreo": "רָשָׁע",
-    "transliteracion": "Rashá’",
-    "equivalencia_espanol": "culpable; condenado de juicio",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 124,
-    "texto_hebreo": "תּוֹדָה",
-    "transliteracion": "Todáh",
-    "equivalencia_espanol": "acción de gracias",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 125,
-    "texto_hebreo": "בֹּהוּ",
-    "transliteracion": "Bóhu",
-    "equivalencia_espanol": "es el que marca la diferencia entre este mundo y el venidero",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 126,
-    "texto_hebreo": "אֱלִילִים",
-    "transliteracion": "’Elilim",
-    "equivalencia_espanol": "ídolos; nulidades",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 127,
-    "texto_hebreo": "שִׂמְחָה",
-    "transliteracion": "Simjáh",
-    "equivalencia_espanol": "alegría",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 128,
-    "texto_hebreo": "זֵכֶר",
-    "transliteracion": "Zéjer",
-    "equivalencia_espanol": "tene el matz de un suvenir, un recuerdo, el recuerdo",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 129,
-    "texto_hebreo": "יָדָה",
-    "transliteracion": "Yadah",
-    "equivalencia_espanol": "dar gracias/confesar",
-    "observacion": "Entrada verbal con precisión de uso/contexto."
-  },
-  {
-    "id": 130,
-    "texto_hebreo": "חֶסֶד",
-    "transliteracion": "Jésed",
-    "equivalencia_espanol": "solidaridad; cooperación; misericordia leal",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 131,
-    "texto_hebreo": "בְּלִיַּעַל",
-    "transliteracion": "Bliya’al",
-    "equivalencia_espanol": "sin provecho",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 132,
-    "texto_hebreo": "שָׁמַר",
-    "transliteracion": "Shamar",
-    "equivalencia_espanol": "guardar",
-    "observacion": "Entrada verbal con precisión de uso/contexto."
-  },
-  {
-    "id": 133,
-    "texto_hebreo": "יְשׁוּעָה",
-    "transliteracion": "Yeshuáh",
-    "equivalencia_espanol": "La palabra Yeshuáh /   como sustantvo la acción",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 134,
-    "texto_hebreo": "שָׂטָן",
-    "transliteracion": "Satán",
-    "equivalencia_espanol": "hacer oposición obstáculo",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 135,
-    "texto_hebreo": "אָדוֹן",
-    "transliteracion": "’Adón",
-    "equivalencia_espanol": "Adon/  que con sufjo queda Adoni/ mi Señor y aquí por los propios",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 136,
-    "texto_hebreo": "כָּבוֹד",
-    "transliteracion": "Kavod",
-    "equivalencia_espanol": "gloria; peso",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 137,
-    "texto_hebreo": "קָרָא",
-    "transliteracion": "Qaráh",
-    "equivalencia_espanol": "ocurrir",
-    "observacion": "Entrada verbal con precisión de uso/contexto."
-  },
-  {
-    "id": 138,
-    "texto_hebreo": "גָּמַל",
-    "transliteracion": "Gamal",
-    "equivalencia_espanol": "crecer por ejemplo la vara de Moisés",
-    "observacion": "Entrada verbal con precisión de uso/contexto."
-  },
-  {
-    "id": 139,
-    "texto_hebreo": "חֶרְפָּה",
-    "transliteracion": "Jerpáh",
-    "equivalencia_espanol": "afrenta; oprobio",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 140,
-    "texto_hebreo": "הִנֵּה",
-    "transliteracion": "Hinéh",
-    "equivalencia_espanol": "he aquí",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 141,
-    "texto_hebreo": "דַּעַת",
-    "transliteracion": "Da’at",
-    "equivalencia_espanol": "conocimiento (relacional/experiencial)",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 142,
-    "texto_hebreo": "טַעַם",
-    "transliteracion": "Ta’am",
-    "equivalencia_espanol": "sabor; criterio/discernimiento",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 143,
-    "texto_hebreo": "תָּמִים",
-    "transliteracion": "Tamim",
-    "equivalencia_espanol": "íntegro; completo",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 144,
-    "texto_hebreo": "כִּמְעַט",
-    "transliteracion": "Kema’at / Kma’t",
-    "equivalencia_espanol": "por poco",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 145,
-    "texto_hebreo": "שָׂמַח",
-    "transliteracion": "Samaj",
-    "equivalencia_espanol": "recostar, apoyarse ,servir de apoyo",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 146,
-    "texto_hebreo": "עָשָׂה",
-    "transliteracion": "’Asah",
-    "equivalencia_espanol": "acontece",
-    "observacion": "Entrada verbal con precisión de uso/contexto."
-  },
-  {
-    "id": 147,
-    "texto_hebreo": "צָעִיר",
-    "transliteracion": "Tza’ir",
-    "equivalencia_espanol": "se utliza cuando alguien es muy poco importante, si bien se utliza en",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 148,
-    "texto_hebreo": "צְדָקָה",
-    "transliteracion": "Tzedaqáh",
-    "equivalencia_espanol": "justicia; favor divino recto (según contexto)",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 149,
-    "texto_hebreo": "קֶדֶם",
-    "transliteracion": "Qedem",
-    "equivalencia_espanol": "oriente; antigüedad",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 150,
-    "texto_hebreo": "רְאֵה",
-    "transliteracion": "Re’éh",
-    "equivalencia_espanol": "mira",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 151,
-    "texto_hebreo": "שָׂשׂ",
-    "transliteracion": "Sas",
-    "equivalencia_espanol": "regocijo, grata sorpresa",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 152,
-    "texto_hebreo": "שֶׁקֶר",
-    "transliteracion": "Shéqer",
-    "equivalencia_espanol": "falsedad/mentira",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 153,
-    "texto_hebreo": "יְשׁוּעָה",
-    "transliteracion": "Yeshu’áh",
-    "equivalencia_espanol": "salvación",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 154,
-    "texto_hebreo": "עֵזֶר",
-    "transliteracion": "’Ezer",
-    "equivalencia_espanol": "ayuda",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 155,
-    "texto_hebreo": "שֵׁבֶט",
-    "transliteracion": "Shévet",
-    "equivalencia_espanol": "vara; cetro; tribu (según contexto)",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 156,
-    "texto_hebreo": "הֵיכָל",
-    "transliteracion": "Heyjal",
-    "equivalencia_espanol": "cámara secreta",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 157,
-    "texto_hebreo": "קֹדֶשׁ",
-    "transliteracion": "Qódesh",
-    "equivalencia_espanol": "santidad; santo",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 158,
-    "texto_hebreo": "שֵׁם",
-    "transliteracion": "Shem",
-    "equivalencia_espanol": "Shem/",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 159,
-    "texto_hebreo": "עָמָל",
-    "transliteracion": "’Amal",
-    "equivalencia_espanol": "afán; trabajo penoso",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 160,
-    "texto_hebreo": "הָלַם",
-    "transliteracion": "Halam",
-    "equivalencia_espanol": "golpear",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 161,
-    "texto_hebreo": "אֱמוּנָה",
-    "transliteracion": "’Emunáh",
-    "equivalencia_espanol": "fidelidad",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 162,
-    "texto_hebreo": "פָּנִים",
-    "transliteracion": "Panim",
-    "equivalencia_espanol": "aquellos que es visible de algo",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 163,
-    "texto_hebreo": "רָצוֹן",
-    "transliteracion": "Ratzón",
-    "equivalencia_espanol": "reconciliación",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 164,
-    "texto_hebreo": "נָדִיב",
-    "transliteracion": "Nadiv",
-    "equivalencia_espanol": "noble / generoso",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 165,
-    "texto_hebreo": "רוּחַ",
-    "transliteracion": "Rúaj",
-    "equivalencia_espanol": "viento/aliento/ánimo (según contexto)",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 166,
-    "texto_hebreo": "לְעוֹלָם",
-    "transliteracion": "Le’olam",
-    "equivalencia_espanol": "para siempre / por tiempo indefinido (según contexto)",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 167,
-    "texto_hebreo": "גָּדוֹל",
-    "transliteracion": "Gadol",
-    "equivalencia_espanol": "que ha venido creciendo de menos a más",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 168,
-    "texto_hebreo": "רֶמֶשׂ",
-    "transliteracion": "Rémes",
-    "equivalencia_espanol": "conjunto de todos animales kasher y animales Tahoro en los cielos",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 169,
-    "texto_hebreo": "קֶרֶן",
-    "transliteracion": "Qeren",
-    "equivalencia_espanol": "cuerno; poder exaltado",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 170,
-    "texto_hebreo": "לֵצִים",
-    "transliteracion": "Letzim",
-    "equivalencia_espanol": "burladores; escarnecedores (plural)",
-    "observacion": "Se precisa el plural del término junto a su matiz ético en el pasaje."
-  },
-  {
-    "id": 171,
-    "texto_hebreo": "חֲסִידִים",
-    "transliteracion": "Jasidim",
-    "equivalencia_espanol": "piadosos; hacedores de jésed (plural)",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 172,
-    "texto_hebreo": "מַלְאָךְ",
-    "transliteracion": "Mal’áj",
-    "equivalencia_espanol": "mensajero; emisario (no necesariamente “ángel”)",
-    "observacion": "Se precisa una traducción distinta o más exacta que la versión común."
-  },
-  {
-    "id": 173,
-    "texto_hebreo": "הָאָרֶץ",
-    "transliteracion": "Ha’áretz",
-    "equivalencia_espanol": "la tierra",
-    "observacion": "Matiz contextual trabajado en el estudio de Salmos."
-  },
-  {
-    "id": 174,
-    "texto_hebreo": "דַּל",
-    "transliteracion": "Dal",
-    "equivalencia_espanol": "pobre; débil; de escasos recursos",
-    "observacion": "Se trabaja con matiz de vulnerabilidad y limitación, no solo pobreza económica."
-  },
-  {
-    "id": 175,
-    "texto_hebreo": "עָנִי",
-    "transliteracion": "‘Ani",
-    "equivalencia_espanol": "necesitado; despojado",
-    "observacion": "Se enfatiza la condición de carencia y despojo en el pasaje."
-  },
-  {
-    "id": 176,
-    "texto_hebreo": "חָלַץ",
-    "transliteracion": "Jalatz",
-    "equivalencia_espanol": "poner adelante; adelantarse; ir como pionero",
-    "observacion": "Se explica como acción de avanzar primero o ir al frente."
-  },
-  {
-    "id": 177,
-    "texto_hebreo": "קָוָה",
-    "transliteracion": "Qavah",
-    "equivalencia_espanol": "esperar de vuelta; esperar manifestación",
-    "observacion": "La espera se presenta como expectativa de retorno o manifestación de la voluntad divina."
-  },
-  {
-    "id": 178,
-    "texto_hebreo": "נָבָל",
-    "transliteracion": "Naval",
-    "equivalencia_espanol": "necio; corrompido; deteriorado",
-    "observacion": "Se asocia con deterioro/corrupción, no solo con falta de inteligencia."
-  },
-  {
-    "id": 179,
-    "texto_hebreo": "נָצַר",
-    "transliteracion": "Natzar",
-    "equivalencia_espanol": "preservar; mantener sin cambio",
-    "observacion": "Se precisa el matiz de conservación estable, preservación."
-  },
-  {
-    "id": 180,
-    "texto_hebreo": "זֵד",
-    "transliteracion": "Zed",
-    "equivalencia_espanol": "persona que actúa con premeditación",
-    "observacion": "Se usa para conducta maquinadora y deliberada."
-  },
-  {
-    "id": 181,
-    "texto_hebreo": "זֵדִים",
-    "transliteracion": "Zedim",
-    "equivalencia_espanol": "premeditados; soberbios maquinadores",
-    "observacion": "Se explica como plural de quienes actúan con maquinación/premeditación."
-  },
-  {
-    "id": 182,
-    "texto_hebreo": "זָרִים",
-    "transliteracion": "Zarim",
-    "equivalencia_espanol": "extraños",
-    "observacion": "Aparece como lectura contrastada frente a Zedim en nota textual."
-  },
-  {
-    "id": 183,
-    "texto_hebreo": "מִרְמָה",
-    "transliteracion": "Mirmáh",
-    "equivalencia_espanol": "amor fingido; engaño adulador",
-    "observacion": "Se describe como fingimiento interesado para obtener algo y luego cambiar."
-  },
-  {
-    "id": 184,
-    "texto_hebreo": "נָטָה",
-    "transliteracion": "Natáh",
-    "equivalencia_espanol": "inclinarse; desviarse; declinar",
-    "observacion": "Se ilustra como camino que se tuerce o se inclina; también con uso positivo según contexto."
-  },
-  {
-    "id": 185,
-    "texto_hebreo": "אַהֲבָה",
-    "transliteracion": "’Ahaváh",
-    "equivalencia_espanol": "amor; servicio desinteresado",
-    "observacion": "Se matiza como amor activo/desinteresado en contraste con sentimentalismo."
-  },
-  {
-    "id": 186,
-    "texto_hebreo": "יָרָה",
-    "transliteracion": "Yarah",
-    "equivalencia_espanol": "lanzar; disparar al blanco",
-    "observacion": "Se usa para explicar la idea de dirección/orientación al blanco."
-  },
-  {
-    "id": 187,
-    "texto_hebreo": "הוֹרֵנִי",
-    "transliteracion": "Horeni",
-    "equivalencia_espanol": "oriéntame; redirígeme",
-    "observacion": "Forma usada en súplica, conectada con la raíz יָרָה."
-  },
-  {
-    "id": 188,
-    "texto_hebreo": "תּוֹרָה",
-    "transliteracion": "Torah",
-    "equivalencia_espanol": "orientación al blanco; instrucción",
-    "observacion": "Se explica desde la raíz יָרָה como orientación/dirección."
-  },
-  {
-    "id": 189,
-    "texto_hebreo": "יָרֵא",
-    "transliteracion": "Yaré’",
-    "equivalencia_espanol": "temer con respeto; reverenciar",
-    "observacion": "Se distingue del miedo/fobia y se define como respeto reverente."
-  },
-  {
-    "id": 190,
-    "texto_hebreo": "יָסַד",
-    "transliteracion": "Yasad",
-    "equivalencia_espanol": "fundar; establecer",
-    "observacion": "Se destaca su uso en Ketuvim para la acción de fundar."
-  },
-  {
-    "id": 191,
-    "texto_hebreo": "יָגוּרוּ",
-    "transliteracion": "Yaguru",
-    "equivalencia_espanol": "recibir; habitar; temer (según contexto)",
-    "observacion": "Se comenta la ambigüedad de lectura y una posible lectura alternativa."
-  },
-  {
-    "id": 192,
-    "texto_hebreo": "יָגוּדוּ",
-    "transliteracion": "Yagudu",
-    "equivalencia_espanol": "caer en emboscada (lectura propuesta)",
-    "observacion": "Se presenta como lectura alternativa contextual frente a Yaguru."
-  },
-  {
-    "id": 193,
-    "texto_hebreo": "פֶּלֶא",
-    "transliteracion": "Péle’",
-    "equivalencia_espanol": "maravilla; algo extraordinario",
-    "observacion": "Se trata como sustantivo: lo maravilloso en sí."
-  },
-  {
-    "id": 194,
-    "texto_hebreo": "נִפְלָאוֹת",
-    "transliteracion": "Nifaot / Nifla’ot",
-    "equivalencia_espanol": "maravillas; cosas imposibles realizadas",
-    "observacion": "Se explica como forma verbal/pasiva relacionada con lo imposible hecho realidad."
-  },
-  {
-    "id": 195,
-    "texto_hebreo": "פִּלְאִי",
-    "transliteracion": "Pili’i / Pil’i",
-    "equivalencia_espanol": "perteneciente a lo maravilloso; de origen maravilloso",
-    "observacion": "Se discute como corrección/lectura comparada frente a otra forma cercana."
-  },
-  {
-    "id": 196,
-    "texto_hebreo": "גָּלַל",
-    "transliteracion": "Galal",
-    "equivalencia_espanol": "rodar; enrollar",
-    "observacion": "Se usa para explicar expresiones de “enrollar” el camino o el velo."
-  },
-  {
-    "id": 197,
-    "texto_hebreo": "גַּל",
-    "transliteracion": "Gal",
-    "equivalencia_espanol": "enrolla; rueda (imperativo)",
-    "observacion": "Se explica como imperativo derivado de גָּלַל en contexto de exhortación."
-  },
-  {
-    "id": 198,
-    "texto_hebreo": "שָׁוְא",
-    "transliteracion": "Shav",
-    "equivalencia_espanol": "sin propósito; sin sentido; vano",
-    "observacion": "Se diferencia de otras palabras para vacío/vanidad en el estudio."
-  },
-  {
-    "id": 199,
-    "texto_hebreo": "שׁוּב",
-    "transliteracion": "Shuv / Shav",
-    "equivalencia_espanol": "volver; regresar",
-    "observacion": "Base verbal para la idea de retorno."
-  },
-  {
-    "id": 200,
-    "texto_hebreo": "תְּשׁוּבָה",
-    "transliteracion": "Tshuváh / Teshuváh",
-    "equivalencia_espanol": "retorno desde el pecado; arrepentimiento con regreso",
-    "observacion": "Se define como retorno dejando el pecado y volviendo a YHWH."
-  },
-  {
-    "id": 201,
-    "texto_hebreo": "חָמָס",
-    "transliteracion": "Jamás / Hamas",
-    "equivalencia_espanol": "violación de límites; violencia",
-    "observacion": "Se explica como consecuencia de romper los límites establecidos."
-  },
-  {
-    "id": 202,
-    "texto_hebreo": "תָּמִיד",
-    "transliteracion": "Tamid",
-    "equivalencia_espanol": "de continuo; sin faltar; constantemente",
-    "observacion": "Se resalta la continuidad sin interrupción."
-  },
-  {
-    "id": 203,
-    "texto_hebreo": "סֶלַע",
-    "transliteracion": "Sela’",
-    "equivalencia_espanol": "roca grande; peñón elevado",
-    "observacion": "Se distingue de צוּר como gran roca única tipo peñón/refugio."
-  },
-  {
-    "id": 204,
-    "texto_hebreo": "צֶלַע",
-    "transliteracion": "Tzela’",
-    "equivalencia_espanol": "costado",
-    "observacion": "Se trabaja explícitamente con el matiz de costado en lectura tipológica/contextual."
+    "texto_hebreo": "מִשְׁפָּט",
+    "transliteracion": "Mishpat",
+    "equivalencia_espanol": "juicio / debido proceso",
+    "observacion": "Contexto legal donde los Resha'im no podrán sostenerse debido a su falta de peso y coherencia espiritual."
   }
 ]
