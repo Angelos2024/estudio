@@ -1045,6 +1045,8 @@ bookList.className = 'mt-2 d-grid gap-1';
         ? selectedScope
         : detectedLang;
 
+  updateDetectedLanguageLabel(searchLang);
+
       state.pagination.page = 1;
       state.pagination.selectedBook = null;
       state.pagination.selectedTestament = null;
@@ -1185,13 +1187,18 @@ bookList.className = 'mt-2 d-grid gap-1';
      }
    }
 
-function handleLanguageScopeChange(event) {
-    const value = String(event?.target?.value || 'auto');
-    state.languageScope = (value === 'es' || value === 'gr' || value === 'he') ? value : 'auto';
-        if (queryInput?.value.trim()) {
-      analyze();
-    }
-   }
+function updateDetectedLanguageLabel(lang) {
+    if (!languageScopeSelect) return;
+    const label = langLabels?.[lang] || lang || '—';
+    languageScopeSelect.innerHTML = `<option value="auto">Idioma detectado: ${escapeHtml(label)}</option>`;
+    languageScopeSelect.value = 'auto';
+  }
+
+  function handleLanguageScopeChange() {
+    // El selector queda fijo en detección automática.
+    state.languageScope = 'auto';
+  }
+ 
  
    
    const debouncedAnalyzeInput = debounce(() => {
@@ -1213,15 +1220,9 @@ analyzeBtn?.addEventListener('click', analyze);
    document.body.addEventListener('click', handleFilterClick);
     languageScopeSelect?.addEventListener('change', handleLanguageScopeChange);
   function applyQueryFromUrl() {
+     state.languageScope = 'auto';
+    updateDetectedLanguageLabel('—');
     const params = new URLSearchParams(window.location.search);
-const rawScope = String(params.get('scope') || params.get('mode') || '').trim();
-    const scopeParam = rawScope.toLowerCase();
-   if (scopeParam === 'es' || scopeParam === 'gr' || scopeParam === 'he' || scopeParam === 'auto') {
-       state.languageScope = scopeParam;
-      if (languageScopeSelect) languageScopeSelect.value = scopeParam;
-    } else if (languageScopeSelect) {
-      languageScopeSelect.value = state.languageScope;
-    }
     const q = String(params.get('q') || '').trim();
     if (!q || !queryInput) return;
     queryInput.value = q;

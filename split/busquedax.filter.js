@@ -131,10 +131,7 @@
     }
 
   function getLanguageScope(term = '') {
-    const el = document.getElementById('bxLanguageScope');
-    const selected = el ? String(el.value || 'auto') : String(state.languageScope || 'auto');
-    const scope = (selected === 'es' || selected === 'gr' || selected === 'he') ? selected : 'auto';
-        if (scope !== 'auto') return scope;
+        // El idioma se detecta siempre por el texto ingresado.
     return detectLang(term);
   }
 
