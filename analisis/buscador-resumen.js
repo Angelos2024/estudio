@@ -416,8 +416,10 @@ lxxSearchCache: new Map()
   }
 
   function getGreek(entry) {
-    return String(entry?.gr || entry?.equivalencia_griega || entry?.greek || '').trim();
-  }
+  const lxxGreek = String(entry?.gr || entry?.equivalencia_griega || entry?.greek || '').trim();
+    const rkantGreek = String(entry?.gr_nt || entry?.equivalencia_griega_nt || entry?.greek_nt || '').trim();
+    return lxxGreek || rkantGreek;
+      }
 
   function getSpanish(entry) {
     return String(
@@ -932,8 +934,36 @@ heWord: heb || (lang === 'he' ? rawQuery : ''),
     try {
       if (lang === 'he' && typeof window.searchHebrewWord === 'function') return window.searchHebrewWord(query);
       if (lang === 'he' && typeof window.searchHebrewWordSingle === 'function') return window.searchHebrewWordSingle(query);
-      if (lang === 'gr' && typeof window.searchGreek === 'function') return window.searchGreek(query);
-      if (typeof window.searchSpanish === 'function') return window.searchSpanish(query);
+       if (lang === 'gr' && typeof window.searchGreek === 'function') {
+        const greekResult = window.searchGreek(query);
+        if (Array.isArray(greekResult?.matches) && greekResult.matches.length) return greekResult;
+      }
+
+      if (typeof window.searchSpanish === 'function') {
+        const spanishResult = window.searchSpanish(query);
+        if (Array.isArray(spanishResult?.matches) && spanishResult.matches.length) return spanishResult;
+
+        if (typeof window.searchRkantNt === 'function') {
+          const ntMatches = window.searchRkantNt(query);
+          if (Array.isArray(ntMatches) && ntMatches.length) {
+            return {
+              ...(spanishResult || {}),
+              ok: true,
+              matches: ntMatches.map(item => ({
+                he: item.he,
+                gr: '',
+                gr_nt: item.gr,
+                es: item.es,
+                candidatos: item.candidatos,
+                _rkntOnly: true
+              })),
+              diag: 'Sin coincidencias en LXX; se usa RKANT como base para el resumen del lema.'
+            };
+          }
+        }
+
+        return spanishResult;
+      }
     } catch (_) {
       return null;
     }
