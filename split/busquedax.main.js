@@ -1026,6 +1026,33 @@ bookList.className = 'mt-2 d-grid gap-1';
     const term = queryInput.value.trim();
     if (!term) return;
 
+
+ const maybeReference = /\d/.test(term)
+      && /[:\-–]|\b\d+\s*:\s*\d+|\b[a-záéíóúñü]+\s+\d+/i.test(term);
+    if (maybeReference) {
+      const params = new URLSearchParams();
+      params.set('search', term);
+      params.set('version', 'RVR1960');
+      params.set('orig', '1');
+
+      const shortReferenceOnly = /^\d+(?::\d+(?:\s*[-–]\s*\d+)?)?$/.test(term);
+      if (shortReferenceOnly) {
+        try {
+          const rawState = sessionStorage.getItem('lectorState');
+          if (rawState) {
+            const state = JSON.parse(rawState);
+            const book = String(state?.currentBookSlug || '').trim();
+            const name = String(state?.currentBookName || '').trim();
+            if (book) params.set('book', book);
+            if (name) params.set('name', name);
+          }
+        } catch {}
+      }
+
+      location.href = `./index.html?${params.toString()}`;
+      return;
+    }
+    
     if (activeSearchController) {
       activeSearchController.abort();
     }
