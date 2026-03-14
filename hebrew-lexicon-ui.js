@@ -143,6 +143,7 @@
     popupEl: null,
      popupDrag: null,
 popupRequestId: 0,
+    popupExpanded: false,
     trilingueFallback: null
       };
  const HEBREW_PREFIX_LETTERS = new Set(['ו', 'ה', 'ב', 'ל', 'כ', 'מ', 'ש']);
@@ -770,9 +771,11 @@ function isLikelyVerbEntry(entry) {
           color:#e9eefc;
           display:none;
         }
+                .he-lex-popup.compact{ max-width:min(320px, calc(100vw - 24px)); }
         .he-lex-popup .t1{ font-weight:700; font-size:15px; margin-bottom:6px; padding-right:18px; direction:rtl; }
         .he-lex-popup .head{ display:flex; align-items:center; justify-content:space-between; gap:8px; cursor:move; user-select:none; }
         .he-lex-popup .head .t1{ margin-bottom:0; flex:1; }
+                .he-lex-popup .toggle{ border:1px solid rgba(255,255,255,.2); background:rgba(255,255,255,.08); color:#dbe5ff; border-radius:8px; font-size:11px; line-height:1; cursor:pointer; padding:4px 8px; }
         .he-lex-popup .t2{ font-size:13px; opacity:.92; line-height:1.35; }
         .he-lex-popup .row{ margin-top:6px; }
         .he-lex-popup .lab{ opacity:.7; margin-right:6px; }
@@ -782,6 +785,8 @@ function isLikelyVerbEntry(entry) {
         .he-lex-popup .rkant-row{ margin-top:4px; font-size:12px; line-height:1.3; }
         .he-lex-popup .muted{ opacity:.7; }
         .he-lex-popup .close{ position:absolute; right:10px; top:8px; background:transparent; border:0; color:#cbd6ff; cursor:pointer; font-size:16px; }
+         .he-lex-popup .content.collapsed .details{ display:none; }
+        .he-lex-popup .content.expanded .details{ display:block; }
         .he-lex-active-word{
           text-decoration: underline;
           text-decoration-thickness: 2px;
@@ -796,22 +801,30 @@ function isLikelyVerbEntry(entry) {
     box.id = 'he-lex-popup';
     box.className = 'he-lex-popup';
     box.innerHTML =
-     '<div class="head"><div class="t1" id="he-lex-word"></div><button class="close" aria-label="Cerrar" type="button">×</button></div>' +
-     '<div class="t2 row"><span class="lab">Lemma:</span><span id="he-lex-entry"></span></div>' +
+ '<div class="head"><div class="t1" id="he-lex-word"></div><div><button class="toggle" id="he-lex-toggle" aria-expanded="false" type="button">Expandir</button> <button class="close" aria-label="Cerrar" type="button">×</button></div></div>' +
+     '<div class="content collapsed" id="he-lex-content">' +
+     '<div class="summary">' +
+          '<div class="t2 row"><span class="lab">Lemma:</span><span id="he-lex-entry"></span></div>' +
       '<div class="t2 row"><span class="lab">Forma léxica:</span><span id="he-lex-translit"></span></div>' +
+      '<div class="t2 row"><span class="lab">Definición:</span><div id="he-lex-desc" class="def"></div></div>' +
+      '</div>' +
+      '<div class="details">' +
 '<div class="t2 row" id="he-lex-printed-row"><span class="lab">Entrada impresa:</span><span id="he-lex-printed"></span></div>' +
       '<div class="t2 row"><span class="lab">Formas:</span><span id="he-lex-variants"></span></div>' +
             '<div class="t2 row" id="he-lex-tri-row"><span class="lab">Equivalencia trilingüe:</span><span id="he-lex-tri"></span></div>' +
-       '<div class="t2 row"><span class="lab">Definición:</span><div id="he-lex-desc" class="def"></div></div>' +
       '<div class="t2 row"><span class="lab">LXX:</span><div id="he-lex-lxx" class="def"></div></div>' +
       '<hr class="sep" />' +
       '<div class="t2"><span class="lab">Correspondencia RKANT:</span></div>' +
-      '<div id="he-lex-rkant" class="rkant"></div>';
-
+'<div id="he-lex-rkant" class="rkant"></div>' +
+      '</div>' +
+      '</div>';
     document.body.appendChild(box);
     state.popupEl = box;
 
     box.querySelector('.close').addEventListener('click', hidePopup, false);
+     box.querySelector('#he-lex-toggle')?.addEventListener('click', () => {
+      setPopupExpanded(!state.popupExpanded);
+    }, false);
       const onPointerMove = (ev) => {
       const drag = state.popupDrag;
       if (!drag) return;
@@ -876,6 +889,23 @@ function isLikelyVerbEntry(entry) {
     if (!state.popupEl) return;
     state.popupEl.style.display = 'none';
      clearActiveWordMarker();
+  }
+
+function setPopupExpanded(expanded) {
+    state.popupExpanded = !!expanded;
+    const popup = state.popupEl;
+    if (!popup) return;
+    const content = popup.querySelector('#he-lex-content');
+    const toggle = popup.querySelector('#he-lex-toggle');
+    if (content) {
+      content.classList.toggle('expanded', state.popupExpanded);
+      content.classList.toggle('collapsed', !state.popupExpanded);
+    }
+    popup.classList.toggle('compact', !state.popupExpanded);
+    if (toggle) {
+      toggle.textContent = state.popupExpanded ? 'Contraer' : 'Expandir';
+      toggle.setAttribute('aria-expanded', state.popupExpanded ? 'true' : 'false');
+    }
   }
 
   function clearActiveWordMarker() {
@@ -1052,6 +1082,7 @@ function isLikelyVerbEntry(entry) {
     if (lxxEl) lxxEl.textContent = '—';
     if (rkantEl) rkantEl.innerHTML = '<div class="rkant-row muted">Buscando correspondencias RKANT…</div>';
     showPopupNear(marker || ev.target);
+        setPopupExpanded(false);
 
     let entry = null;
     try {

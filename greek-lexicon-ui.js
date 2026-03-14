@@ -21,6 +21,7 @@
     tipDrag: null,
     tipRequestId: 0,
     tipStopDrag: null,
+        tipExpanded: false,
   };
 
   function ensureTip() {
@@ -46,6 +47,7 @@
           font: 13px/1.35 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
           display: none;
         }
+                .gr-lex-tip.compact{ max-width:min(320px, calc(100vw - 24px)); }
         .gr-lex-tip{ cursor: default; }
         .gr-lex-tip .t1{ font-size: 14px; font-weight: 700; margin-bottom: 4px; }
         .gr-lex-tip .head{
@@ -61,8 +63,12 @@
         }
         .gr-lex-tip .head .t1{ margin-bottom:0; }
         .gr-lex-tip .close{ border:0; background:transparent; color:#cbd6ff; font-size:16px; line-height:1; cursor:pointer; padding:0 2px; }
+        .gr-lex-tip .toggle{ border:1px solid rgba(255,255,255,.2); background:rgba(255,255,255,.08); color:#dbe5ff; border-radius:8px; font-size:11px; line-height:1; cursor:pointer; padding:4px 8px; }
         .gr-lex-tip .t2{ font-size: 12px; opacity: .9; }
         .gr-lex-tip .t3{ margin-top: 6px; font-size: 12px; opacity: .95; }
+         .gr-lex-tip #gr-lex-content.collapsed .details{ display:none; }
+        .gr-lex-tip #gr-lex-content .summary .t3{ display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+        .gr-lex-tip #gr-lex-content.expanded .summary .t3{ display:block; }
         .gr-lex-tip .muted{ opacity: .7; }
        .gr-lex-tip #gr-lex-content,
         .gr-lex-tip #gr-lex-content *{
@@ -79,8 +85,7 @@
     el.className = 'gr-lex-tip';
     el.setAttribute('role', 'dialog');
     el.setAttribute('aria-hidden', 'true');
-     el.innerHTML = '<div class="head"><div class="t1" id="gr-lex-word"></div><button type="button" class="close" aria-label="Cerrar">×</button></div><div id="gr-lex-content"></div>';     
-    // Cierra al click afuera
+     el.innerHTML = '<div class="head"><div class="t1" id="gr-lex-word"></div><div><button type="button" class="toggle" id="gr-lex-toggle" aria-expanded="false">Expandir</button> <button type="button" class="close" aria-label="Cerrar">×</button></div></div><div id="gr-lex-content" class="collapsed"></div>';    // Cierra al click afuera
     document.addEventListener('pointerdown', (ev) => {
        if (!el || el.style.display === 'none') return;
       if (ev.target === el || el.contains(ev.target)) return;
@@ -132,6 +137,9 @@
    
      const header = el.querySelector('.head');
      header?.addEventListener('pointerdown', beginDrag);
+      el.querySelector('#gr-lex-toggle')?.addEventListener('click', () => {
+      setTipExpanded(!state.tipExpanded);
+    }, false);
     el.querySelector('.close')?.addEventListener('click', hideTip, false);
     document.body.appendChild(el);
     state.tipEl = el;
@@ -164,6 +172,23 @@
     el.style.left = nx + 'px';
     el.style.top  = ny + 'px';
   }
+   function setTipExpanded(expanded) {
+    state.tipExpanded = !!expanded;
+    const el = state.tipEl;
+    if (!el) return;
+    const bodyEl = el.querySelector('#gr-lex-content');
+    const toggleEl = el.querySelector('#gr-lex-toggle');
+    if (bodyEl) {
+      bodyEl.classList.toggle('expanded', state.tipExpanded);
+      bodyEl.classList.toggle('collapsed', !state.tipExpanded);
+    }
+    el.classList.toggle('compact', !state.tipExpanded);
+    if (toggleEl) {
+      toggleEl.textContent = state.tipExpanded ? 'Contraer' : 'Expandir';
+      toggleEl.setAttribute('aria-expanded', state.tipExpanded ? 'true' : 'false');
+    }
+  }
+
 
   function hideTip() {
    state.tipStopDrag?.();
@@ -435,9 +460,9 @@
     if (!hit) {
       showTip(
                norm,
-        `<div class="t2 muted">Sin entrada (aún) en tu data</div>`,
-        ev.clientX, ev.clientY
+        `<div class="summary"><div class="t2 muted">Sin entrada (aún) en tu data</div></div><div class="details"></div>`,        ev.clientX, ev.clientY
       );
+            setTipExpanded(false);
       return;
     }
 
@@ -450,21 +475,15 @@
     showTip(
        norm,
       `
-        <div class="t2"><b>Lema:</b> ${escapeHtml(hit.lemma || '—')} &nbsp; <span class="muted">|</span> &nbsp; <b>Translit.:</b> ${escapeHtml(hit.tr || '—')}</div>
-        ${glossHtml}
-         ${renderLxxSection([], true)}
-      `,
+      renderTipBody(hit, glossHtml, [], true),
       ev.clientX, ev.clientY
     );
+            setTipExpanded(false);
 const lxxSamples = await findLxxSamples(hit.lemma || norm, 4);
     if (requestId !== state.tipRequestId) return;
      if (state.tipEl && state.tipEl.style.display !== 'none') {
      const bodyEl = state.tipEl.querySelector('#gr-lex-content');
-      if (bodyEl) bodyEl.innerHTML = `
-        <div class="t2"><b>Lema:</b> ${escapeHtml(hit.lemma || '—')} &nbsp; <span class="muted">|</span> &nbsp; <b>Translit.:</b> ${escapeHtml(hit.tr || '—')}</div>
-        ${glossHtml}
-        ${renderLxxSection(lxxSamples, false)}
-      `;
+            if (bodyEl) bodyEl.innerHTML = renderTipBody(hit, glossHtml, lxxSamples, false);
     }
   }, false);
 
@@ -472,5 +491,17 @@ const lxxSamples = await findLxxSamples(hit.lemma || norm, 4);
     return String(s ?? '')
       .replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')
       .replaceAll('"','&quot;').replaceAll("'","&#39;");
+  }
+        function renderTipBody(hit, glossHtml, lxxSamples = [], lxxLoading = false) {
+    return `
+      <div class="summary">
+        <div class="t2"><b>Lema:</b> ${escapeHtml(hit.lemma || '—')}</div>
+        <div class="t2"><b>Forma léxica:</b> ${escapeHtml(hit.tr || '—')}</div>
+        ${glossHtml}
+      </div>
+      <div class="details">
+        ${renderLxxSection(lxxSamples, lxxLoading)}
+      </div>
+    `;
   }
 })();
