@@ -542,5 +542,50 @@ Aquí tienes las entradas correspondientes a la sección del Salmo 1:
     "transliteracion": "Bahurim",
     "equivalencia_espanol": "Bahurim",
     "observacion": "Sitio geográfico donde David fue confrontado y maldecido por Simei hijo de Gera durante su huida."
+  },
+  {
+    "id": 78,
+    "texto_hebreo": "אֲחִיתֹפֶל",
+    "transliteracion": "Ahitofel",
+    "equivalencia_espanol": "Ahitofel",
+    "observacion": "Consejero de David que se unió a la rebelión de Absalón por venganza personal, al ser abuelo de Betzabe. Representa la sabiduría terrenal que busca la rencilla."
+  },
+  {
+    "id": 79,
+    "texto_hebreo": "מַחֲנַיִם",
+    "transliteracion": "Mahanáyin",
+    "equivalencia_espanol": "Mahanáyin",
+    "observacion": "Lugar de refugio para David, donde dividió su ejército en tres partes, imitando la acción previa de Ya'aqov."
+  },
+  {
+    "id": 80,
+    "texto_hebreo": "אֲבִישַׁי",
+    "transliteracion": "Abisai",
+    "equivalencia_espanol": "Abisai",
+    "observacion": "Hijo de Sarvia y seguidor de David que quiso ejecutar a Simei por sus deshonras contra el rey."
+  },
+  {
+    "id": 81,
+    "texto_hebreo": "תַּרְגּוּם",
+    "transliteracion": "Targum",
+    "equivalencia_espanol": "interpretación / traducción",
+    "observacion": "Se refiere a las versiones en arameo de las Escrituras; en este caso, el Targum de los Salmos sugiere que las bestias del bosque ayudaron en la batalla."
+  },
+  {
+    "id": 82,
+    "texto_hebreo": "בַּת שֶׁבַע",
+    "transliteracion": "Betzabe",
+    "equivalencia_espanol": "Betsabé",
+    "observacion": "Nietas de Ahitofel. El resentimiento por lo ocurrido con ella y su esposo fue lo que convirtió a Ahitofel en instrumento de venganza."
+  },
+  {
+    "id": 83,
+    "texto_hebreo": "נָתָן",
+    "transliteracion": "Natán",
+    "equivalencia_espanol": "Natán",
+    "observacion": "Profeta y autoridad competente que proferió la sentencia de justicia de parte de Hashem sobre David."
   }
 ]
+
+
+continuar con salmos desde el doc 15
