@@ -644,25 +644,45 @@ function renderResults(items, rawQuery = '') {
 
     if (!displayItems || !displayItems.length) {
         if (resultsTbodyEl) {
-            resultsTbodyEl.innerHTML = '<tr><td colspan="3" class="muted">Sin resultados precisos para esta entrada.</td></tr>';
-        }
+            resultsTbodyEl.innerHTML = '<tr><td colspan="4" class="muted">Sin resultados precisos para esta entrada.</td></tr>';
+                    }
         updateDictionaryComparison([], rawQuery);
         notifyRenderedResults([], rawQuery);
         return;
     }
 
-    const limitedItems = displayItems.slice(0, 4);
+const limitedItems = displayItems.slice(0, 4).map(item => {
+        const rkantMatches = getRkantMatchesForEntry(item);
+        const ntGreekVariants = uniqueByKey(rkantMatches.map(m => m.gr).filter(Boolean), x => normalizeGreekComparable(x));
+        const ntSpanishVariants = uniqueByKey(rkantMatches.map(m => m.es).filter(Boolean), x => normalizeSpanishComparable(x));
+        const ntHebrewVariants = uniqueByKey(rkantMatches.map(m => m.he).filter(Boolean), x => normalizeHebrewComparable(x));
+
+        return {
+            ...item,
+            gr_nt: item.gr_nt || ntGreekVariants[0] || '',
+            es_nt: ntSpanishVariants[0] || '',
+            he_nt: ntHebrewVariants[0] || '',
+            gr_nt_variants: ntGreekVariants,
+            es_nt_variants: ntSpanishVariants,
+            he_nt_variants: ntHebrewVariants
+        };
+    });
 
     if (!resultsTbodyEl) return;
 
 
     resultsTbodyEl.innerHTML = limitedItems.map(e => {
         const griego = e.gr || e.equivalencia_griega || e.greek || '—';
+        const griegoNt = e.gr_nt || e.equivalencia_griega_nt || e.greek_nt || '';
         return `
         <tr>
             <td class="he">${escapeHtml(e.he)}</td>
-            <td class="gr" style="font-family: 'Times New Roman', serif; font-size: 1.2rem; color: #1e3a8a;">
-                ${escapeHtml(griego)}
+            <td class="gr" data-gr-source="lxx" style="font-family: 'Times New Roman', serif; font-size: 1.2rem; color: #1e3a8a;">
+                            ${escapeHtml(griego)}
+            </td>
+
+             <td class="gr gr-nt" data-gr-source="rknt" style="font-family: 'Times New Roman', serif; font-size: 1.2rem; color: #1e3a8a;">
+                ${escapeHtml(griegoNt || '—')}
             </td>
             <td class="es">
                 ${e._isSynthetic ? `<small style="color:var(--muted)">[Sintético]</small> ` : ''}
@@ -688,6 +708,112 @@ function notifyRenderedResults(items, rawQuery) {
 if (typeof window !== 'undefined') {
     window.TrilingueComparativoAPI = Object.assign({}, window.TrilingueComparativoAPI || {}, {
         updateDictionaryComparison
+    });
+}
+
+const RKANT_NT_STATE = {
+    loadAttempted: false,
+    loaded: false,
+    entries: []
+};
+
+async function ensureRkantNtLoaded() {
+    if (RKANT_NT_STATE.loaded || RKANT_NT_STATE.loadAttempted) return RKANT_NT_STATE;
+    RKANT_NT_STATE.loadAttempted = true;
+    try {
+        const files = ['02MateoEf.json', '24Timoteo1EF.json'];
+        const payloads = await Promise.all(files.map(name =>
+            fetchJsonWithFallback([
+                `../dic/trilingueNT/${name}`,
+                `/dic/trilingueNT/${name}`
+            ]).catch(() => [])
+        ));
+        RKANT_NT_STATE.entries = payloads.flat().filter(entry => entry && typeof entry === 'object').map(entry => ({
+            he: String(entry.texto_hebreo || entry.he || '').trim(),
+            gr: String(entry.equivalencia_griega || entry.gr || '').trim(),
+            es: String(entry.equivalencia_espanol || entry.equivalencia_español || entry.es || '').trim(),
+            candidatos: Array.isArray(entry.candidatos) ? entry.candidatos : []
+        })).filter(entry => entry.he || entry.gr || entry.es);
+    } catch (_) {
+        RKANT_NT_STATE.entries = [];
+    }
+    RKANT_NT_STATE.loaded = true;
+    return RKANT_NT_STATE;
+}
+
+function normalizeGreekComparable(text) {
+    return normalizeFuzzy(String(text || '')).replace(/ς/g, 'σ').replace(/[^a-zͰ-Ͽἀ-῿0-9]+/g, '');
+}
+
+function normalizeHebrewComparable(text) {
+    return normalizeHebrewComparableKey(text || '');
+}
+
+function normalizeSpanishComparable(text) {
+    return normalizeFuzzy(String(text || '')).replace(/[^a-z0-9ñ\s]+/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+function tokenizeGreekComparable(text) {
+    return normalizeFuzzy(String(text || ''))
+        .replace(/ς/g, 'σ')
+        .split(/[^a-zͰ-Ͽἀ-῿0-9]+/i)
+        .map(t => t.trim())
+        .filter(Boolean);
+}
+
+function uniqueByKey(list, keyFn) {
+    const seen = new Set();
+    const out = [];
+    list.forEach(item => {
+        const key = keyFn(item);
+        if (!key || seen.has(key)) return;
+        seen.add(key);
+        out.push(item);
+    });
+    return out;
+}
+
+function getRkantMatchesForEntry(baseEntry) {
+    const source = Array.isArray(RKANT_NT_STATE.entries) ? RKANT_NT_STATE.entries : [];
+    if (!source.length || !baseEntry) return [];
+
+    const baseHeb = normalizeHebrewComparable(baseEntry.he || baseEntry.hebrew || '');
+    const baseGreekTokens = tokenizeGreekComparable(baseEntry.gr || baseEntry.equivalencia_griega || baseEntry.greek || '');
+    const baseGreekSet = new Set(baseGreekTokens);
+
+    const byHebrew = baseHeb
+        ? source.filter(entry => normalizeHebrewComparable(entry.he) === baseHeb)
+        : [];
+
+    const byGreek = baseGreekSet.size
+        ? source.filter(entry => tokenizeGreekComparable(entry.gr).some(tok => baseGreekSet.has(tok)))
+        : [];
+
+    return uniqueByKey([...byGreek, ...byHebrew], item => `${item.he}|${item.gr}|${item.es}`);
+}
+
+function searchRkantNt(rawQuery) {
+    const q = String(rawQuery || '').trim();
+    const source = Array.isArray(RKANT_NT_STATE.entries) ? RKANT_NT_STATE.entries : [];
+    if (!q || !source.length) return [];
+
+    const isHebrew = /[֐-׿]/.test(q);
+    const isGreek = /[Ͱ-Ͽἀ-῿]/.test(q);
+
+    if (isHebrew) {
+        const key = normalizeHebrewComparable(q);
+        return source.filter(e => normalizeHebrewComparable(e.he) === key);
+    }
+    if (isGreek) {
+        const token = normalizeGreekComparable(q);
+        return source.filter(e => tokenizeGreekComparable(e.gr).includes(token));
+    }
+
+    const key = normalizeSpanishComparable(q.split(/\s+/)[0] || q);
+    return source.filter(e => {
+        const es = normalizeSpanishComparable(e.es);
+        if (es.split(' ').includes(key)) return true;
+        return (Array.isArray(e.candidatos) ? e.candidatos : []).some(c => normalizeSpanishComparable(c).split(' ').includes(key));
     });
 }
 
@@ -1188,7 +1314,7 @@ async function updateDictionaryComparison(items, rawQuery) {
  * SOBREESCRITURA DE DO-SEARCH
  * Detecta el idioma y dirige al motor correcto.
  */
-function doSearch() {
+async function doSearch() {
     if (!entries || !entries.length) {
         setTierBadge('Sin Datos', false);
         if (diagEl) diagEl.textContent = 'Por favor, cargue los archivos JSON de los libros primero.';
@@ -1202,6 +1328,7 @@ function doSearch() {
     const isHebrew = /[\u0590-\u05FF]/.test(rawQuery);
     const isGreek = /[\u0370-\u03FF\u1F00-\u1FFF]/.test(rawQuery);
 
+    await ensureRkantNtLoaded();
     let res;
 
     if (isHebrew) {
@@ -1213,6 +1340,27 @@ function doSearch() {
     } else {
         // Motor español limitado a una palabra
         res = searchSpanish(rawQuery);
+    }
+
+    // Fallback RKANT: si LXX no devolvió resultados, usar NT
+    if (!res.matches.length) {
+        const ntMatches = searchRkantNt(rawQuery);
+        if (ntMatches.length) {
+            res = {
+                ...res,
+                ok: true,
+                tier: `${res.tier} + RKANT`,
+                matches: ntMatches.map(item => ({
+                    he: item.he,
+                    gr: '',
+                    gr_nt: item.gr,
+                    es: item.es,
+                    candidatos: item.candidatos,
+                    _rkntOnly: true
+                })),
+                diag: 'Sin coincidencias en LXX; se muestran coincidencias desde RKANT (NT).'
+            };
+        }
     }
 
     // Actualizar Interfaz

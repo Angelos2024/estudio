@@ -31,8 +31,8 @@
   const state = {
     rows: [],
     rawQuery: '',
-  selectedByLang: { he: '—', gr: '—', es: '—' },
-    loadingDonut: false
+  selectedByLang: { he: '—', gr_lxx: '—', gr_nt: '—', es: '—' },
+      loadingDonut: false
       };
 
   function escapeHtml(text) {
@@ -268,8 +268,8 @@ function buildRowsFromBookCounts(bookCounts) {
       const [esResult, heResult, grRkantResult, grLxxResult] = await Promise.allSettled([
         rowsForEsWord(state.selectedByLang.es),
         rowsForHeWord(state.selectedByLang.he),
-        rowsForRkantWord(state.selectedByLang.gr),
-        rowsForLxxWord(state.selectedByLang.gr)
+         rowsForRkantWord(state.selectedByLang.gr_nt !== '—' ? state.selectedByLang.gr_nt : state.selectedByLang.gr_lxx),
+        rowsForLxxWord(state.selectedByLang.gr_lxx)
       ]);
 
       const esRows = esResult.status === 'fulfilled' ? esResult.value : [];
@@ -292,14 +292,16 @@ function buildRowsFromBookCounts(bookCounts) {
   function createSelectableRow(entry) {
     const heRaw = entry?.he || entry?.hebrew || entry?.palabra || '';
     const grRaw = entry?.gr || entry?.equivalencia_griega || entry?.greek || '';
+    const grNtRaw = entry?.gr_nt || entry?.equivalencia_griega_nt || entry?.greek_nt || '';
     const esRaw = entry?.es || entry?.equivalencia_espanol || entry?.equivalencia || '';
 
     return {
       entry,
       words: {
         he: splitWords(heRaw, 'he'),
-        gr: splitWords(grRaw, 'gr'),
-        es: splitWords(esRaw, 'es')
+  gr_lxx: splitWords(grRaw, 'gr'),
+        gr_nt: splitWords(grNtRaw, 'gr'),
+                es: splitWords(esRaw, 'es')
       }
     };
   }
@@ -308,8 +310,9 @@ function buildRowsFromBookCounts(bookCounts) {
     const first = state.rows[0];
     state.selectedByLang = {
       he: first?.words?.he?.[0] || '—',
-      gr: first?.words?.gr?.[0] || '—',
-      es: first?.words?.es?.[0] || '—'
+gr_lxx: first?.words?.gr_lxx?.[0] || '—',
+      gr_nt: first?.words?.gr_nt?.[0] || '—',
+            es: first?.words?.es?.[0] || '—'
     };
   }
 
@@ -334,8 +337,9 @@ function buildRowsFromBookCounts(bookCounts) {
     tbody.innerHTML = state.rows.map((row, rowIndex) => `
       <tr data-row-index="${rowIndex}">
         <td class="he">${renderWords(rowIndex, 'he')}</td>
-        <td class="gr" style="font-family: 'Times New Roman', serif; font-size: 1.2rem; color: #1e3a8a;">${renderWords(rowIndex, 'gr')}</td>
-        <td class="es">${row.entry._isSynthetic ? `<small style="color:var(--muted)">[Sintético]</small> ` : ''}${renderWords(rowIndex, 'es')}</td>
+ <td class="gr" data-gr-source="lxx" style="font-family: 'Times New Roman', serif; font-size: 1.2rem; color: #1e3a8a;">${renderWords(rowIndex, 'gr_lxx')}</td>
+        <td class="gr gr-nt" data-gr-source="rknt" style="font-family: 'Times New Roman', serif; font-size: 1.2rem; color: #1e3a8a;">${renderWords(rowIndex, 'gr_nt')}</td>
+                <td class="es">${row.entry._isSynthetic ? `<small style="color:var(--muted)">[Sintético]</small> ` : ''}${renderWords(rowIndex, 'es')}</td>
       </tr>
     `).join('');
   }
@@ -347,8 +351,9 @@ function buildRowsFromBookCounts(bookCounts) {
     return {
       ...baseEntry,
       he: state.selectedByLang.he,
-      gr: state.selectedByLang.gr,
-      es: state.selectedByLang.es
+ gr: state.selectedByLang.gr_lxx,
+      gr_nt: state.selectedByLang.gr_nt,
+            es: state.selectedByLang.es
     };
   }
 
@@ -401,7 +406,8 @@ function buildRowsFromBookCounts(bookCounts) {
 
     const words = state.rows[rowIndex]?.words?.[lang] || [];
     const wordValue = words[wordIndex];
-    if (!wordValue || !['he', 'gr', 'es'].includes(lang)) return;
+ if (!wordValue || !['he', 'gr_lxx', 'gr_nt', 'es'].includes(lang)) return;
+
 
     state.selectedByLang[lang] = wordValue;
 
