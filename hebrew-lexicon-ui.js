@@ -817,11 +817,8 @@ function isLikelyVerbEntry(entry) {
       if (!drag) return;
       const popup = state.popupEl;
       if (!popup) return;
-      const pad = 10;
-      const maxX = Math.max(pad, window.innerWidth - popup.offsetWidth - pad);
-      const maxY = Math.max(pad, window.innerHeight - popup.offsetHeight - pad);
-      const nx = Math.max(pad, Math.min(ev.clientX - drag.offsetX, maxX));
-      const ny = Math.max(pad, Math.min(ev.clientY - drag.offsetY, maxY));
+      const nx = ev.clientX - drag.offsetX;
+      const ny = ev.clientY - drag.offsetY;
       popup.style.left = `${Math.round(nx)}px`;
       popup.style.top = `${Math.round(ny)}px`;
     };

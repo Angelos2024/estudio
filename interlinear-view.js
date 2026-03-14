@@ -248,9 +248,9 @@ const head = remaining.match(/^([\u05D0-\u05EA][\u0591-\u05AF\u05B0-\u05BC\u05BD
     return parts;
   }
 
-  function expandTokenForLookup(token, map){
-    const directKey = normalizeToken(token, true);
-    if(map.has(directKey)) return [token];
+  function expandTokenForLookup(token, map, fallbackMap = null){
+      const directKey = normalizeToken(token, true);
+    if(map.has(directKey) || fallbackMap?.has(directKey)) return [token];
 
     const segmented = splitHebrewPrefixClusters(token, map);
     return segmented.length > 1 ? segmented : [token];
@@ -301,8 +301,8 @@ async function buildInterlinearRows(originalText, options = {}){
       const trilingueFallback = isGreek ? null : await getTrilingueFallback();
     const targetMap = isGreek ? greekMap : hebrewMaps;
     const tokens = splitTokens(originalText)
- .flatMap((token) => (isGreek ? [token] : expandTokenForLookup(token, hebrewMaps.unpointedMap)));
-  const spanish = tokens.map((token) => mapTokenToSpanish(token, targetMap, !isGreek, isGreek, trilingueFallback));
+ .flatMap((token) => (isGreek ? [token] : expandTokenForLookup(token, hebrewMaps.unpointedMap, trilingueFallback?.unpointedMap)));
+   const spanish = tokens.map((token) => mapTokenToSpanish(token, targetMap, !isGreek, isGreek, trilingueFallback));
       return {
       tokens,
       spanishTokens: spanish,
