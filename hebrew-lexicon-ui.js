@@ -772,9 +772,10 @@ function isLikelyVerbEntry(entry) {
           display:none;
         }
                 .he-lex-popup.compact{ max-width:min(320px, calc(100vw - 24px)); }
-        .he-lex-popup .t1{ font-weight:700; font-size:15px; margin-bottom:6px; padding-right:18px; direction:rtl; }
-        .he-lex-popup .head{ display:flex; align-items:center; justify-content:space-between; gap:8px; cursor:move; user-select:none; }
+        .he-lex-popup .t1{ font-weight:700; font-size:15px; margin-bottom:6px; direction:rtl; }
+                .he-lex-popup .head{ display:flex; align-items:center; justify-content:space-between; gap:8px; cursor:move; user-select:none; }
         .he-lex-popup .head .t1{ margin-bottom:0; flex:1; }
+                .he-lex-popup .head-controls{ display:flex; align-items:center; gap:6px; }
                 .he-lex-popup .toggle{ border:1px solid rgba(255,255,255,.2); background:rgba(255,255,255,.08); color:#dbe5ff; border-radius:8px; font-size:11px; line-height:1; cursor:pointer; padding:4px 8px; }
         .he-lex-popup .t2{ font-size:13px; opacity:.92; line-height:1.35; }
         .he-lex-popup .row{ margin-top:6px; }
@@ -784,8 +785,8 @@ function isLikelyVerbEntry(entry) {
         .he-lex-popup .rkant{ margin-top:6px; max-height:180px; overflow:auto; }
         .he-lex-popup .rkant-row{ margin-top:4px; font-size:12px; line-height:1.3; }
         .he-lex-popup .muted{ opacity:.7; }
-        .he-lex-popup .close{ position:absolute; right:10px; top:8px; background:transparent; border:0; color:#cbd6ff; cursor:pointer; font-size:16px; }
-         .he-lex-popup .content.collapsed .details{ display:none; }
+        .he-lex-popup .close{ background:transparent; border:0; color:#cbd6ff; cursor:pointer; font-size:16px; line-height:1; padding:0 2px; }
+                 .he-lex-popup .content.collapsed .details{ display:none; }
         .he-lex-popup .content.expanded .details{ display:block; }
         .he-lex-active-word{
           text-decoration: underline;
@@ -801,8 +802,8 @@ function isLikelyVerbEntry(entry) {
     box.id = 'he-lex-popup';
     box.className = 'he-lex-popup';
     box.innerHTML =
- '<div class="head"><div class="t1" id="he-lex-word"></div><div><button class="toggle" id="he-lex-toggle" aria-expanded="false" type="button">Expandir</button> <button class="close" aria-label="Cerrar" type="button">×</button></div></div>' +
-     '<div class="content collapsed" id="he-lex-content">' +
+ '<div class="head"><div class="head-controls"><button class="toggle" id="he-lex-toggle" aria-expanded="false" type="button">Expandir</button><button class="close" aria-label="Cerrar" type="button">×</button></div><div class="t1" id="he-lex-word"></div></div>' +
+      '<div class="content collapsed" id="he-lex-content">' +
      '<div class="summary">' +
           '<div class="t2 row"><span class="lab">Lemma:</span><span id="he-lex-entry"></span></div>' +
       '<div class="t2 row"><span class="lab">Forma léxica:</span><span id="he-lex-translit"></span></div>' +

@@ -168,6 +168,7 @@ function normalizeSimpleText(value) {
           touch-action:none;
         }
         .gr-lex-tip .head .t1{ margin-bottom:0; }
+                .gr-lex-tip .head-controls{ display:flex; align-items:center; gap:6px; }
         .gr-lex-tip .close{ border:0; background:transparent; color:#cbd6ff; font-size:16px; line-height:1; cursor:pointer; padding:0 2px; }
         .gr-lex-tip .toggle{ border:1px solid rgba(255,255,255,.2); background:rgba(255,255,255,.08); color:#dbe5ff; border-radius:8px; font-size:11px; line-height:1; cursor:pointer; padding:4px 8px; }
         .gr-lex-tip .t2{ font-size: 12px; opacity: .9; }
@@ -191,8 +192,8 @@ function normalizeSimpleText(value) {
     el.className = 'gr-lex-tip';
     el.setAttribute('role', 'dialog');
     el.setAttribute('aria-hidden', 'true');
-     el.innerHTML = '<div class="head"><div class="t1" id="gr-lex-word"></div><div><button type="button" class="toggle" id="gr-lex-toggle" aria-expanded="false">Expandir</button> <button type="button" class="close" aria-label="Cerrar">×</button></div></div><div id="gr-lex-content" class="collapsed"></div>';    // Cierra al click afuera
-    document.addEventListener('pointerdown', (ev) => {
+     el.innerHTML = '<div class="head"><div class="head-controls"><button type="button" class="toggle" id="gr-lex-toggle" aria-expanded="false">Expandir</button><button type="button" class="close" aria-label="Cerrar">×</button></div><div class="t1" id="gr-lex-word"></div></div><div id="gr-lex-content" class="collapsed"></div>';    // Cierra al click afuera
+         document.addEventListener('pointerdown', (ev) => {
        if (!el || el.style.display === 'none') return;
       if (ev.target === el || el.contains(ev.target)) return;
       hideTip();
@@ -582,10 +583,10 @@ function normalizeSimpleText(value) {
 
     const fallbackGloss = trilingueFallback?.gloss || '';
     const glossHtml = dict?.gloss
-      ? `<div class="t3"><b>Def.:</b> ${escapeHtml(String(dict.gloss))}</div>`
-: fallbackGloss
-        ? `<div class="t3"><b>Def.:</b> ${escapeHtml(fallbackGloss)} <span class="muted">(trilingüe NT)</span></div>`
-        : `<div class="t3 muted">Definición: pendiente (no hay diccionario cargado)</div>`;
+      ? `<div class="t3"><b>Definición:</b> ${escapeHtml(String(dict.gloss))}</div>`
+      : fallbackGloss
+        ? `<div class="t3"><b>Definición:</b> ${escapeHtml(fallbackGloss)} <span class="muted">(trilingüe NT)</span></div>`
+                : `<div class="t3 muted">Definición: pendiente (no hay diccionario cargado)</div>`;
     showTip(
        norm,
       renderTipBody(hit, glossHtml, [], true, trilingueFallback),
@@ -609,12 +610,12 @@ function normalizeSimpleText(value) {
       .replaceAll('"','&quot;').replaceAll("'","&#39;");
   }
  function renderTrilingueSection(fallback) {
-    if (!fallback) return `<div class="t3 muted">Trilingüe NT: sin coincidencia</div>`;
-    const gloss = escapeHtml(fallback.gloss || '—');
+    if (!fallback) return `<div class="t3"><b>Equivalencia trilingüe:</b> <span class="muted">sin coincidencia</span></div>`;
+        const gloss = escapeHtml(fallback.gloss || '—');
     const hebrew = escapeHtml(fallback.hebrew || '—');
     const greek = escapeHtml(fallback.greek || '—');
-    return `<div class="t3"><b>Trilingüe NT:</b> ${gloss}</div><div class="t3 muted">Hebreo puente: ${hebrew} · Griego: ${greek}</div>`;
-  }
+    return `<div class="t3"><b>Equivalencia trilingüe:</b> ${gloss}</div><div class="t3 muted">Hebreo puente: ${hebrew} · Griego: ${greek}</div>`;
+      }
 
   function renderTipBody(hit, glossHtml, lxxSamples = [], lxxLoading = false, trilingueFallback = null) {
       return `
@@ -622,9 +623,9 @@ function normalizeSimpleText(value) {
         <div class="t2"><b>Lema:</b> ${escapeHtml(hit.lemma || '—')}</div>
         <div class="t2"><b>Forma léxica:</b> ${escapeHtml(hit.tr || '—')}</div>
         ${glossHtml}
-                ${renderTrilingueSection(trilingueFallback)}
       </div>
       <div class="details">
+                ${renderTrilingueSection(trilingueFallback)}
         ${renderLxxSection(lxxSamples, lxxLoading)}
       </div>
     `;
