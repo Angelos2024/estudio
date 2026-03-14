@@ -1202,15 +1202,8 @@ function updateDetectedLanguageLabel(lang) {
  
  
    
-   const debouncedAnalyzeInput = debounce(() => {
-     if (!hasTokenWithMinLength(queryInput?.value || '', 3)) return;
-     analyze();
-   }, DEBOUNCE_DELAY_MS);
 
 analyzeBtn?.addEventListener('click', analyze);
-   queryInput?.addEventListener('input', () => {
-     debouncedAnalyzeInput();
-   });
    queryInput?.addEventListener('keydown', (event) => {
      if (event.key === 'Enter') {
        event.preventDefault();
