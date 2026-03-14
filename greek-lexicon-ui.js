@@ -7,7 +7,14 @@
 
   // Ajusta la ruta donde pongas el JSON
  const MORPH_PATH = './diccionario/mt-morphgnt.translit.json';
-
+const TRILINGUE_NT_BASE = './dic/trilingueNT/';
+  const TRILINGUE_NT_FILES = [
+    '01JuanEF.json','02MateoEf.json','03MarcosEF.json','04LucasEF.json','05HechosEF.json','06JacoboEF.json',
+    '07Pedro1EF.json','08Pedro2EF.json','09JudasEF.json','10Juan1EF.json','11Juan2EF.json','12Juan3EF.json',
+    '13GálatasEF.json','14Tesalonicenses1EF.json','15Tesalonicenses2EF.json','16Corintios1EF.json','17Corintios2EF.json',
+    '18RomanosEF.json','19EfesiosEF.json','20Filipenses.json','21ColosensesEF.json','22HebreosEF.json','23FilemónEF.json',
+    '24Timoteo1EF.json','25TitoEF.json','26Timoteo2EF.json','27ApocalipsisEF.json'
+  ];
 
   // Si luego tienes un diccionario por lema:
   // window.GREEK_DICTIONARY = { "λέγω": { gloss: "decir", ... }, ... }
@@ -22,7 +29,106 @@
     tipRequestId: 0,
     tipStopDrag: null,
         tipExpanded: false,
+            trilingueFallback: null,
   };
+
+
+function normalizeSimpleText(value) {
+    return String(value || '').replace(/\s+/g, ' ').trim();
+  }
+
+  function normalizeGreekLookup(value) {
+    return normalizeGreekToken(value)
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/\s+/g, '')
+      .toLowerCase();
+  }
+
+  function pickTrilingueGloss(row) {
+    const direct = normalizeSimpleText(row?.equivalencia_espanol || row?.equivalencia_español);
+    if (direct) return direct.split('/')[0].trim();
+    const candidates = Array.isArray(row?.candidatos) ? row.candidatos : [];
+    const firstCandidate = candidates.find((item) => normalizeSimpleText(item));
+    return normalizeSimpleText(firstCandidate);
+  }
+
+  function parseJsonArrayChunks(raw) {
+    const text = String(raw || '').trim();
+    if (!text) return [];
+    try {
+      const parsed = JSON.parse(text);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (_) {
+      // Algunos archivos tienen arreglos JSON concatenados; parseamos por bloques "[...]".
+    }
+
+    const rows = [];
+    let depth = 0;
+    let chunkStart = -1;
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+      if (ch === '[') {
+        if (depth === 0) chunkStart = i;
+        depth++;
+      } else if (ch === ']') {
+        depth--;
+        if (depth === 0 && chunkStart >= 0) {
+          const chunk = text.slice(chunkStart, i + 1);
+          try {
+            const parsed = JSON.parse(chunk);
+            if (Array.isArray(parsed)) rows.push(...parsed);
+          } catch (_) {}
+          chunkStart = -1;
+        }
+      }
+    }
+    return rows;
+  }
+
+  async function loadTrilingueRows(fileName) {
+    const res = await fetch(`${TRILINGUE_NT_BASE}${fileName}`, { cache: 'no-store' });
+    if (!res.ok) throw new Error(`No se pudo cargar ${fileName} (HTTP ${res.status})`);
+    const raw = await res.text();
+    return parseJsonArrayChunks(raw);
+  }
+
+  function buildTrilingueFallback(rowsByBook) {
+    const byGreek = new Map();
+    for (const rows of rowsByBook) {
+      for (const row of rows || []) {
+        const greek = normalizeSimpleText(row?.equivalencia_griega);
+        const key = normalizeGreekLookup(greek);
+        if (!key || byGreek.has(key)) continue;
+        const gloss = pickTrilingueGloss(row);
+        const hebrew = normalizeSimpleText(row?.texto_hebreo);
+        byGreek.set(key, { gloss, hebrew, greek });
+      }
+    }
+    return { byGreek };
+  }
+
+  async function loadTrilingueFallback() {
+    if (state.trilingueFallback) return state.trilingueFallback;
+    const rowsByBook = await Promise.all(
+      TRILINGUE_NT_FILES.map((file) => loadTrilingueRows(file).catch(() => []))
+    );
+    state.trilingueFallback = buildTrilingueFallback(rowsByBook);
+    return state.trilingueFallback;
+  }
+
+  function resolveTrilingueFallback(...greekValues) {
+    const fallback = state.trilingueFallback;
+    if (!fallback?.byGreek) return null;
+    for (const value of greekValues) {
+      const key = normalizeGreekLookup(value);
+      if (!key) continue;
+      const hit = fallback.byGreek.get(key);
+      if (hit) return hit;
+    }
+    return null;
+  }
+
 
   function ensureTip() {
     if (state.tipEl) return state.tipEl;
@@ -456,34 +562,44 @@
     if (!norm) return;
 
     const hit = state.bySurface.get(norm);
-         const requestId = ++state.tipRequestId;
-    if (!hit) {
+ const requestId = ++state.tipRequestId;
+    await loadTrilingueFallback().catch(() => null);
+
+        if (!hit) {
+                const triOnly = resolveTrilingueFallback(norm);
       showTip(
-               norm,
-        `<div class="summary"><div class="t2 muted">Sin entrada (aún) en tu data</div></div><div class="details"></div>`,        ev.clientX, ev.clientY
+              norm,
+        renderTipBody({ lemma: '—', tr: '—' }, `<div class="t3 muted">Sin entrada (aún) en tu data</div>`, [], false, triOnly),
+        ev.clientX,
+        ev.clientY
       );
-            setTipExpanded(false);
-      return;
+      setTipExpanded(false);
+            return;
     }
 
     const dict = getDictEntry(hit.lemma);
+        const trilingueFallback = resolveTrilingueFallback(norm, hit.lemma, hit.surface);
 
+    const fallbackGloss = trilingueFallback?.gloss || '';
     const glossHtml = dict?.gloss
       ? `<div class="t3"><b>Def.:</b> ${escapeHtml(String(dict.gloss))}</div>`
-      : `<div class="t3 muted">Definición: pendiente (no hay diccionario cargado)</div>`;
-
+: fallbackGloss
+        ? `<div class="t3"><b>Def.:</b> ${escapeHtml(fallbackGloss)} <span class="muted">(trilingüe NT)</span></div>`
+        : `<div class="t3 muted">Definición: pendiente (no hay diccionario cargado)</div>`;
     showTip(
        norm,
-      `
-      renderTipBody(hit, glossHtml, [], true),
-      ev.clientX, ev.clientY
+      renderTipBody(hit, glossHtml, [], true, trilingueFallback),
+      ev.clientX,
+      ev.clientY
     );
             setTipExpanded(false);
-const lxxSamples = await findLxxSamples(hit.lemma || norm, 4);
+
+    const lxxSamples = await findLxxSamples(hit.lemma || norm, 4);
+
     if (requestId !== state.tipRequestId) return;
-     if (state.tipEl && state.tipEl.style.display !== 'none') {
-     const bodyEl = state.tipEl.querySelector('#gr-lex-content');
-            if (bodyEl) bodyEl.innerHTML = renderTipBody(hit, glossHtml, lxxSamples, false);
+      if (state.tipEl && state.tipEl.style.display !== 'none') {
+      const bodyEl = state.tipEl.querySelector('#gr-lex-content');
+      if (bodyEl) bodyEl.innerHTML = renderTipBody(hit, glossHtml, lxxSamples, false, trilingueFallback);
     }
   }, false);
 
@@ -492,12 +608,21 @@ const lxxSamples = await findLxxSamples(hit.lemma || norm, 4);
       .replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')
       .replaceAll('"','&quot;').replaceAll("'","&#39;");
   }
-        function renderTipBody(hit, glossHtml, lxxSamples = [], lxxLoading = false) {
-    return `
+ function renderTrilingueSection(fallback) {
+    if (!fallback) return `<div class="t3 muted">Trilingüe NT: sin coincidencia</div>`;
+    const gloss = escapeHtml(fallback.gloss || '—');
+    const hebrew = escapeHtml(fallback.hebrew || '—');
+    const greek = escapeHtml(fallback.greek || '—');
+    return `<div class="t3"><b>Trilingüe NT:</b> ${gloss}</div><div class="t3 muted">Hebreo puente: ${hebrew} · Griego: ${greek}</div>`;
+  }
+
+  function renderTipBody(hit, glossHtml, lxxSamples = [], lxxLoading = false, trilingueFallback = null) {
+      return `
       <div class="summary">
         <div class="t2"><b>Lema:</b> ${escapeHtml(hit.lemma || '—')}</div>
         <div class="t2"><b>Forma léxica:</b> ${escapeHtml(hit.tr || '—')}</div>
         ${glossHtml}
+                ${renderTrilingueSection(trilingueFallback)}
       </div>
       <div class="details">
         ${renderLxxSection(lxxSamples, lxxLoading)}
