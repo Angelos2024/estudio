@@ -315,14 +315,12 @@ gr_lxx: first?.words?.gr_lxx?.[0] || '—',
       gr_nt: first?.words?.gr_nt?.[0] || '—',
             es: first?.words?.es?.[0] || '—'
     };
-      const initialGreek = state.selectedByLang.gr_lxx !== '—'
+     const initialGreek = state.selectedByLang.gr_lxx !== '—'
       ? state.selectedByLang.gr_lxx
       : state.selectedByLang.gr_nt;
 
     if (initialGreek && initialGreek !== '—') {
       applyGreekSelection(state.selectedByLang.gr_lxx !== '—' ? 'gr_lxx' : 'gr_nt', initialGreek);
-    } else {
-      state.activeGreekLang = null;
     }
   }
 
@@ -330,8 +328,7 @@ gr_lxx: first?.words?.gr_lxx?.[0] || '—',
     if (!word || word === '—') return false;
     return state.rows.some((row) => (row?.words?.[lang] || []).includes(word));
   }
-
-  function applyGreekSelection(lang, wordValue) {
+ function applyGreekSelection(lang, wordValue) {
     const isLxx = lang === 'gr_lxx';
     const currentLang = isLxx ? 'gr_lxx' : 'gr_nt';
     const otherLang = isLxx ? 'gr_nt' : 'gr_lxx';
@@ -339,13 +336,6 @@ gr_lxx: first?.words?.gr_lxx?.[0] || '—',
 
     state.selectedByLang[currentLang] = wordValue;
     state.selectedByLang[otherLang] = existsInOther ? wordValue : '—';
-    state.activeGreekLang = existsInOther ? 'both' : currentLang;
-  }
-
-  function isGreekColumnClickable(lang) {
-    if (!['gr_lxx', 'gr_nt'].includes(lang)) return true;
-    if (!state.activeGreekLang || state.activeGreekLang === 'both') return true;
-    return state.activeGreekLang === lang;
   }
 
   function isWordSelected(lang, word) {
@@ -356,13 +346,8 @@ gr_lxx: first?.words?.gr_lxx?.[0] || '—',
     const words = state.rows[rowIndex]?.words?.[lang] || [];
     if (!words.length) return '<span class="result-option-text">—</span>';
 
- const clickable = isGreekColumnClickable(lang);
-
     return words.map((word, wordIndex) => {
       const selected = isWordSelected(lang, word);
-      if (!clickable) {
-        return `<span class="result-option-text ${selected ? 'is-active' : ''}">${escapeHtml(word)}</span>`;
-      }
       return `<button type="button" class="result-word ${selected ? 'is-active' : ''}" data-role="result-word" data-row="${rowIndex}" data-lang="${lang}" data-word-index="${wordIndex}">${escapeHtml(word)}</button>`;
     }).join(' ');
   }
@@ -446,7 +431,7 @@ gr_lxx: first?.words?.gr_lxx?.[0] || '—',
  if (!wordValue || !['he', 'gr_lxx', 'gr_nt', 'es'].includes(lang)) return;
 
 
- if (lang === 'gr_lxx' || lang === 'gr_nt') {
+  if (lang === 'gr_lxx' || lang === 'gr_nt') {
       applyGreekSelection(lang, wordValue);
     } else {
       state.selectedByLang[lang] = wordValue;

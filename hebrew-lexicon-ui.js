@@ -233,6 +233,32 @@ function toArray(value) {
     return entry?.lemma || entry?.strong_detail?.lemma || entry?.hebreo || entry?.palabra || '—';
   }
 
+
+ function getDisplayedHebrewLemma(entry, clickedWord = '') {
+    const lemma = getHebrewLemma(entry);
+    const clicked = stripHebrewCantillation(clickedWord) || clickedWord;
+    const clickedPointed = normalizeHebrewPointed(clickedWord);
+    const clickedUnpointed = normalizeHebrew(clicked);
+    if (!clickedPointed && !clickedUnpointed) return lemma;
+
+    const lemmaPointed = normalizeHebrewPointed(lemma);
+    const lemmaUnpointed = normalizeHebrew(lemma);
+    const forms = getHebrewForms(entry);
+    const hasExactClickedForm = forms.some((form) => {
+      return normalizeHebrewPointed(form) === clickedPointed || normalizeHebrew(form) === clickedUnpointed;
+    });
+
+    if (
+      hasExactClickedForm &&
+      (clickedPointed !== lemmaPointed || clickedUnpointed !== lemmaUnpointed) &&
+      clickedUnpointed.length > lemmaUnpointed.length
+    ) {
+      return clicked;
+    }
+
+    return lemma;
+  }
+
   function getHebrewTranslit(entry) {
     return entry?.translit || entry?.transliteracion || entry?.strong_detail?.transliteracion || '—';
   }
@@ -990,8 +1016,8 @@ function isLikelyVerbEntry(entry) {
         if (variantsEl) variantsEl.textContent = '—';
          if (lxxEl) lxxEl.textContent = '—';
       } else {
-        if (entryEl) entryEl.textContent = getHebrewLemma(entry);
-        if (translitEl) translitEl.textContent = getHebrewTranslit(entry);
+        if (entryEl) entryEl.textContent = getDisplayedHebrewLemma(entry, word);
+                if (translitEl) translitEl.textContent = getHebrewTranslit(entry);
       const printedEntry = getHebrewPrintedEntry(entry);
         if (printedEl) printedEl.textContent = printedEntry || '—';
         if (printedRowEl) printedRowEl.style.display = printedEntry ? '' : 'none';
