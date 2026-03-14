@@ -412,23 +412,29 @@ lxxSearchCache: new Map()
   }
 
   function getHebrew(entry) {
-    return String(entry?.he || entry?.hebrew || entry?.palabra || '').trim();
+ return cleanDisplayValue(entry?.he || entry?.hebrew || entry?.palabra || '');
   }
 
+  function cleanDisplayValue(value) {
+    const text = String(value || '').trim();
+    if (!text || text === '—' || text === '-') return '';
+    return text;
+      }
+
   function getGreek(entry) {
-  const lxxGreek = String(entry?.gr || entry?.equivalencia_griega || entry?.greek || '').trim();
-    const rkantGreek = String(entry?.gr_nt || entry?.equivalencia_griega_nt || entry?.greek_nt || '').trim();
+  const lxxGreek = cleanDisplayValue(entry?.gr || entry?.equivalencia_griega || entry?.greek || '');
+    const rkantGreek = cleanDisplayValue(entry?.gr_nt || entry?.equivalencia_griega_nt || entry?.greek_nt || '');
     return lxxGreek || rkantGreek;
       }
 
   function getSpanish(entry) {
-    return String(
-      entry?.es ||
+    return cleanDisplayValue(
+          entry?.es ||
       entry?.equivalencia_espanol ||
       entry?.equivalencia ||
       entry?.glosa ||
       ''
-    ).trim();
+    );
   }
 
    
