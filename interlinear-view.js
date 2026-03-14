@@ -1,8 +1,16 @@
 (function(){
   const HEBREW_DICT_PATH = './diccionario/diccionario_unificado.min.json';
     const GREEK_DICT_PATH = './diccionario/diccionarioG_unificado.min.json';
+const TRILINGUE_BASE = './dic/trilingue/';
+  const TRILINGUE_BOOK_FILES = [
+    '01genesis.json','02Éxodo.json','03Levítico.json','04Números.json','05Deuteronomio.json','06Josué.json','07Jueces.json','08Rut.json','09Samuel1.json','10Samuel2.json',
+    '11Reyes1.json','12Reyes2.json','13Crónicas1.json','14Crónicas2.json','15Esdras.json','16Nehemías.json','17Ester.json','18Job.json','19Salmos.json','20Proverbios.json',
+    '21Eclesiastes.json','22Cantares.json','23Isaías.json','24Jeremías.json','25Lamentaciones.json','26Ezequiel.json','27Daniel.json','28Oseas.json','29Joel.json','30Amós.json',
+    '31Abdías.json','32Jonás.json','33Miqueas.json','34Nahúm.json','35Habacuc.json','36Sofonías.json','37Hageo.json','38zacarias.json','39malaquias.json'
+  ];
 
   let dictionariesPromise = null;
+    let trilingueFallbackPromise = null;
 
   function normalizeToken(token, isHebrew, isGreek = false, preserveHebrewPoints = false){
     let clean = String(token || '').trim();
@@ -45,7 +53,15 @@ function normalizeGloss(gloss){
     return clean;
   }
  
-
+function pickTrilingueGloss(row){
+    const direct = normalizeGloss(row?.equivalencia_español || row?.equivalencia_espanol);
+    if(direct && direct !== '-') return direct.split('/')[0].trim();
+    const candidates = Array.isArray(row?.candidatos) ? row.candidatos : [];
+    const firstCandidate = normalizeGloss(candidates.find((item) => String(item || '').trim()));
+    if(firstCandidate && firstCandidate !== '-') return firstCandidate;
+    return '-';
+  }
+ 
   async function loadJson(path){
     const response = await fetch(path, { cache: 'force-cache' });
     if(!response.ok){
@@ -127,6 +143,25 @@ return {
     };
   }
 
+function buildTrilingueMap(rowsByBook){
+    const pointed = new Map();
+    const unpointed = new Map();
+
+    for(const rows of rowsByBook){
+      for(const row of rows || []){
+        const hebrew = String(row?.texto_hebreo || '').trim();
+        if(!hebrew) continue;
+        const gloss = pickTrilingueGloss(row);
+        if(!gloss || gloss === '-') continue;
+        const pointedKey = normalizeToken(hebrew, true, false, true);
+        const plainKey = normalizeToken(hebrew, true);
+        if(pointedKey && !pointed.has(pointedKey)) pointed.set(pointedKey, gloss);
+        if(plainKey && !unpointed.has(plainKey)) unpointed.set(plainKey, gloss);
+      }
+    }
+
+    return { pointedMap: pointed, unpointedMap: unpointed };
+  }
   function buildGreekMap(rows){
     const map = new Map();
 
@@ -236,13 +271,22 @@ const head = remaining.match(/^([\u05D0-\u05EA][\u0591-\u05AF\u05B0-\u05BC\u05BD
     return dictionariesPromise;
   }
 
+async function getTrilingueFallback(){
+    if(trilingueFallbackPromise) return trilingueFallbackPromise;
+    trilingueFallbackPromise = Promise.all(
+      TRILINGUE_BOOK_FILES.map((file) => loadJson(`${TRILINGUE_BASE}${file}`).catch(() => []))
+    ).then((rowsByBook) => buildTrilingueMap(rowsByBook));
+    return trilingueFallbackPromise;
+  }
 
-  function mapTokenToSpanish(token, map, isHebrew, isGreek = false){
-    if(isHebrew){
+  function mapTokenToSpanish(token, map, isHebrew, isGreek = false, trilingueFallback = null){
+      if(isHebrew){
       const pointedKey = normalizeToken(token, true, false, true);
       const plainKey = normalizeToken(token, true);
       if(pointedKey && map.pointedMap?.has(pointedKey)) return map.pointedMap.get(pointedKey);
       if(plainKey && map.unpointedMap?.has(plainKey)) return map.unpointedMap.get(plainKey);
+      if(pointedKey && trilingueFallback?.pointedMap?.has(pointedKey)) return trilingueFallback.pointedMap.get(pointedKey);
+      if(plainKey && trilingueFallback?.unpointedMap?.has(plainKey)) return trilingueFallback.unpointedMap.get(plainKey);
       return '-';
     }
 
@@ -254,11 +298,12 @@ const head = remaining.match(/^([\u05D0-\u05EA][\u0591-\u05AF\u05B0-\u05BC\u05BD
 async function buildInterlinearRows(originalText, options = {}){
     const { isGreek = false } = options;
   const { hebrewMaps, greekMap } = await getDictionaries();
+      const trilingueFallback = isGreek ? null : await getTrilingueFallback();
     const targetMap = isGreek ? greekMap : hebrewMaps;
     const tokens = splitTokens(originalText)
  .flatMap((token) => (isGreek ? [token] : expandTokenForLookup(token, hebrewMaps.unpointedMap)));
-  const spanish = tokens.map((token) => mapTokenToSpanish(token, targetMap, !isGreek, isGreek));
-    return {
+  const spanish = tokens.map((token) => mapTokenToSpanish(token, targetMap, !isGreek, isGreek, trilingueFallback));
+      return {
       tokens,
       spanishTokens: spanish,
       originalLine: tokens.join(' '),

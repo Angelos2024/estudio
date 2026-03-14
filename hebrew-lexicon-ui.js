@@ -5,6 +5,13 @@
   'use strict';
 
  const HEBREW_DICT_PATH = './diccionario/diccionario_unificado.min.json';
+  const TRILINGUE_BASE = './dic/trilingue/';
+  const TRILINGUE_BOOK_FILES = [
+    '01genesis.json','02Éxodo.json','03Levítico.json','04Números.json','05Deuteronomio.json','06Josué.json','07Jueces.json','08Rut.json','09Samuel1.json','10Samuel2.json',
+    '11Reyes1.json','12Reyes2.json','13Crónicas1.json','14Crónicas2.json','15Esdras.json','16Nehemías.json','17Ester.json','18Job.json','19Salmos.json','20Proverbios.json',
+    '21Eclesiastes.json','22Cantares.json','23Isaías.json','24Jeremías.json','25Lamentaciones.json','26Ezequiel.json','27Daniel.json','28Oseas.json','29Joel.json','30Amós.json',
+    '31Abdías.json','32Jonás.json','33Miqueas.json','34Nahúm.json','35Habacuc.json','36Sofonías.json','37Hageo.json','38zacarias.json','39malaquias.json'
+  ];
   const HEBREW_INDEX_PATH = './search/index-he.json';
   const GREEK_INDEX_PATH = './search/index-gr.json';
   const TEXT_BASE = './search/texts';
@@ -135,8 +142,9 @@
     lxxBookStatsCache: new Map(),
     popupEl: null,
      popupDrag: null,
-     popupRequestId: 0
-  };
+popupRequestId: 0,
+    trilingueFallback: null
+      };
  const HEBREW_PREFIX_LETTERS = new Set(['ו', 'ה', 'ב', 'ל', 'כ', 'מ', 'ש']);
   const jsonCache = new Map();
   function normalizeHebrew(text) {
@@ -208,6 +216,57 @@ function toArray(value) {
   function uniqueList(values) {
     return [...new Set(toArray(values).map((item) => String(item || '').trim()).filter(Boolean))];
       }
+      function normalizeSimpleText(value) {
+    return String(value || '').replace(/\s+/g, ' ').trim();
+  }
+  function pickTrilingueGloss(row) {
+    const direct = normalizeSimpleText(row?.equivalencia_español);
+    if (direct) return direct.split('/')[0].trim();
+    const candidates = Array.isArray(row?.candidatos) ? row.candidatos : [];
+    const firstCandidate = candidates.find((item) => normalizeSimpleText(item));
+    return normalizeSimpleText(firstCandidate);
+  }
+  function buildTrilingueFallback(rowsByBook) {
+    const pointedMap = new Map();
+    const unpointedMap = new Map();
+    const greekHintMap = new Map();
+
+    for (const rows of rowsByBook) {
+      for (const row of rows || []) {
+        const hebrew = normalizeSimpleText(row?.texto_hebreo);
+        if (!hebrew) continue;
+        const pointedKey = normalizeHebrewPointed(hebrew);
+        const plainKey = normalizeHebrew(hebrew);
+        const gloss = pickTrilingueGloss(row);
+        const greekHint = normalizeSimpleText(row?.equivalencia_griega);
+
+        if (pointedKey && gloss && !pointedMap.has(pointedKey)) pointedMap.set(pointedKey, gloss);
+        if (plainKey && gloss && !unpointedMap.has(plainKey)) unpointedMap.set(plainKey, gloss);
+        if (pointedKey && greekHint && !greekHintMap.has(pointedKey)) greekHintMap.set(pointedKey, greekHint);
+        if (plainKey && greekHint && !greekHintMap.has(plainKey)) greekHintMap.set(plainKey, greekHint);
+      }
+    }
+
+    return { pointedMap, unpointedMap, greekHintMap };
+  }
+  async function loadTrilingueFallback() {
+    if (state.trilingueFallback) return state.trilingueFallback;
+    const rowsByBook = await Promise.all(
+      TRILINGUE_BOOK_FILES.map((file) => loadJson(`${TRILINGUE_BASE}${file}`).catch(() => []))
+    );
+    state.trilingueFallback = buildTrilingueFallback(rowsByBook);
+    return state.trilingueFallback;
+  }
+  function resolveTrilingueFallback(word) {
+    const fallback = state.trilingueFallback;
+    if (!fallback || !word) return null;
+    const pointedKey = normalizeHebrewPointed(word);
+    const plainKey = normalizeHebrew(word);
+    const gloss = (pointedKey && fallback.pointedMap.get(pointedKey)) || (plainKey && fallback.unpointedMap.get(plainKey)) || '';
+    const greekHint = (pointedKey && fallback.greekHintMap.get(pointedKey)) || (plainKey && fallback.greekHintMap.get(plainKey)) || '';
+    if (!gloss && !greekHint) return null;
+    return { gloss, greekHint };
+  }
   function extractHebrewFromStrongHeader(header) {
     const text = String(header || '');
     if (!text) return '';
@@ -742,6 +801,7 @@ function isLikelyVerbEntry(entry) {
       '<div class="t2 row"><span class="lab">Forma léxica:</span><span id="he-lex-translit"></span></div>' +
 '<div class="t2 row" id="he-lex-printed-row"><span class="lab">Entrada impresa:</span><span id="he-lex-printed"></span></div>' +
       '<div class="t2 row"><span class="lab">Formas:</span><span id="he-lex-variants"></span></div>' +
+            '<div class="t2 row" id="he-lex-tri-row"><span class="lab">Equivalencia trilingüe:</span><span id="he-lex-tri"></span></div>' +
        '<div class="t2 row"><span class="lab">Definición:</span><div id="he-lex-desc" class="def"></div></div>' +
       '<div class="t2 row"><span class="lab">LXX:</span><div id="he-lex-lxx" class="def"></div></div>' +
       '<hr class="sep" />' +
@@ -975,6 +1035,8 @@ function isLikelyVerbEntry(entry) {
     const translitEl = document.getElementById('he-lex-translit');
     const printedEl = document.getElementById('he-lex-printed');
      const printedRowEl = document.getElementById('he-lex-printed-row');
+      const trilingueEl = document.getElementById('he-lex-tri');
+    const trilingueRowEl = document.getElementById('he-lex-tri-row');
     const variantsEl = document.getElementById('he-lex-variants');
     const lxxEl = document.getElementById('he-lex-lxx');
     const rkantEl = document.getElementById('he-lex-rkant');
@@ -986,6 +1048,8 @@ function isLikelyVerbEntry(entry) {
     if (translitEl) translitEl.textContent = '—';
     if (printedEl) printedEl.textContent = '—';
      if (printedRowEl) printedRowEl.style.display = '';
+         if (trilingueEl) trilingueEl.textContent = '—';
+    if (trilingueRowEl) trilingueRowEl.style.display = 'none';
     if (descEl) descEl.textContent = 'Buscando entrada en el diccionario hebreo…';
     if (variantsEl) variantsEl.textContent = '—';
     if (lxxEl) lxxEl.textContent = '—';
@@ -994,6 +1058,7 @@ function isLikelyVerbEntry(entry) {
 
     let entry = null;
     try {
+            await loadTrilingueFallback();
       await loadHebrewDict();
       if (requestId !== state.popupRequestId) return;
     const lookupCandidates = uniqueList([
@@ -1007,21 +1072,28 @@ function isLikelyVerbEntry(entry) {
       }
       const lookupWord = found?.lookup || lookupCandidates[0] || normalized;
       entry = found?.entry || null;
+       const trilingueFallback = resolveTrilingueFallback(word) || resolveTrilingueFallback(lookupWord);
+      if (trilingueFallback?.gloss) {
+        if (trilingueEl) trilingueEl.textContent = trilingueFallback.gloss;
+        if (trilingueRowEl) trilingueRowEl.style.display = '';
+      }
       if (!entry) {
         if (entryEl) entryEl.textContent = '—';
-        if (descEl) descEl.textContent = 'Sin entrada para esta palabra.';
-        if (translitEl) translitEl.textContent = '—';
+        if (descEl) descEl.textContent = trilingueFallback?.gloss ? `Sin entrada directa. Sugerencia trilingüe: ${trilingueFallback.gloss}` : 'Sin entrada para esta palabra.';
+        if (translitEl) translitEl.textContent = trilingueFallback?.greekHint || '—';
         if (printedEl) printedEl.textContent = '—';
         if (printedRowEl) printedRowEl.style.display = 'none';
         if (variantsEl) variantsEl.textContent = '—';
          if (lxxEl) lxxEl.textContent = '—';
       } else {
         if (entryEl) entryEl.textContent = getDisplayedHebrewLemma(entry, word);
-                if (translitEl) translitEl.textContent = getHebrewTranslit(entry);
-      const printedEntry = getHebrewPrintedEntry(entry);
+        const translitValue = normalizeSimpleText(getHebrewTranslit(entry));
+        if (translitEl) translitEl.textContent = translitValue && translitValue !== '—' ? translitValue : (trilingueFallback?.greekHint || '—');
+              const printedEntry = getHebrewPrintedEntry(entry);
         if (printedEl) printedEl.textContent = printedEntry || '—';
         if (printedRowEl) printedRowEl.style.display = printedEntry ? '' : 'none';
-       if (descEl) descEl.textContent = getDisplayedHebrewDefinition(entry, word);
+ const displayDefinition = getDisplayedHebrewDefinition(entry, word);
+       if (descEl) descEl.textContent = (displayDefinition && displayDefinition !== '—') ? displayDefinition : (trilingueFallback?.gloss || '—');
         if (variantsEl) variantsEl.textContent = getHebrewForms(entry).join(', ') || '—';
          currentLxxData = formatHebrewLxx(getHebrewLxx(entry));
         if (lxxEl) lxxEl.textContent = currentLxxData;

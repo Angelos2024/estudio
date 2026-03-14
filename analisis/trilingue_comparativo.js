@@ -721,8 +721,36 @@ async function ensureRkantNtLoaded() {
     if (RKANT_NT_STATE.loaded || RKANT_NT_STATE.loadAttempted) return RKANT_NT_STATE;
     RKANT_NT_STATE.loadAttempted = true;
     try {
-        const files = ['02MateoEf.json', '24Timoteo1EF.json'];
-        const payloads = await Promise.all(files.map(name =>
+ const files = [
+            '01JuanEF.json',
+            '02MateoEf.json',
+            '03MarcosEF.json',
+            '04LucasEF.json',
+            '05HechosEF.json',
+            '06JacoboEF.json',
+            '07Pedro1EF.json',
+            '08Pedro2EF.json',
+            '09JudasEF.json',
+            '10Juan1EF.json',
+            '11Juan2EF.json',
+            '12Juan3EF.json',
+            '13GálatasEF.json',
+            '14Tesalonicenses1EF.json',
+            '15Tesalonicenses2EF.json',
+            '16Corintios1EF.json',
+            '17Corintios2EF.json',
+            '18RomanosEF.json',
+            '19EfesiosEF.json',
+            '20Filipenses.json',
+            '21ColosensesEF.json',
+            '22HebreosEF.json',
+            '23FilemónEF.json',
+            '24Timoteo1EF.json',
+            '25TitoEF.json',
+            '26Timoteo2EF.json',
+            '27ApocalipsisEF.json'
+        ];
+                const payloads = await Promise.all(files.map(name =>
             fetchJsonWithFallback([
                 `../dic/trilingueNT/${name}`,
                 `/dic/trilingueNT/${name}`

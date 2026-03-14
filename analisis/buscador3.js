@@ -488,8 +488,8 @@ async function loadRemoteAlefatoFiles() {
 
   for (const source of REMOTE_ALEFATO_SOURCES) {
     try {
-      const resp = await fetch(source.url, { cache: 'no-store' });
-      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const resp = await fetch(source.url, { cache: 'force-cache' });
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
       const txt = await resp.text();
       const data = parseAlefatoJsonFlexible(txt);
       const tmp = [];
@@ -547,8 +547,16 @@ if (resultCountEl) resultCountEl.textContent = '0 resultados';
 if (alefatoFilesEl) alefatoFilesEl.addEventListener('change', (e) => handleFiles(e.target.files));
 if (clearBtn) clearBtn.addEventListener('click', clearAll);
 if (searchBtn) searchBtn.addEventListener('click', doSearch);
-if (queryEl) queryEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') doSearch(); });
-if (normalizeEl) normalizeEl.addEventListener('change', () => { if (entries.length) rebuildIndexes(); if (queryEl && queryEl.value.trim()) doSearch(); });
+if (queryEl) queryEl.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter') return;
+  e.preventDefault();
+  if (searchBtn && typeof searchBtn.click === 'function') {
+    searchBtn.click();
+    return;
+  }
+  doSearch();
+});
+  if (normalizeEl) normalizeEl.addEventListener('change', () => { if (entries.length) rebuildIndexes(); if (queryEl && queryEl.value.trim()) doSearch(); });
 if (splitHyphenatedEl) splitHyphenatedEl.addEventListener('change', () => { if (entries.length) rebuildIndexes(); if (queryEl && queryEl.value.trim()) doSearch(); });
 
 renderLoadInfo();
