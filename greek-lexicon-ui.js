@@ -157,9 +157,9 @@ function normalizeSimpleText(value) {
         .gr-lex-tip{ cursor: default; }
         .gr-lex-tip .t1{ font-size: 14px; font-weight: 700; margin-bottom: 4px; }
         .gr-lex-tip .head{
-          display:flex;
-          align-items:center;
-          justify-content:space-between;
+          display:grid;
+          grid-template-columns:auto 1fr auto;
+           align-items:center;
           gap:8px;
           margin-bottom:4px;
           cursor:move;
@@ -167,8 +167,7 @@ function normalizeSimpleText(value) {
           -webkit-user-select:none;
           touch-action:none;
         }
-        .gr-lex-tip .head .t1{ margin-bottom:0; }
-                .gr-lex-tip .head-controls{ display:flex; align-items:center; gap:6px; }
+        .gr-lex-tip .head .t1{ margin-bottom:0; text-align:center; }
         .gr-lex-tip .close{ border:0; background:transparent; color:#cbd6ff; font-size:16px; line-height:1; cursor:pointer; padding:0 2px; }
         .gr-lex-tip .toggle{ border:1px solid rgba(255,255,255,.2); background:rgba(255,255,255,.08); color:#dbe5ff; border-radius:8px; font-size:11px; line-height:1; cursor:pointer; padding:4px 8px; }
         .gr-lex-tip .t2{ font-size: 12px; opacity: .9; }
@@ -192,8 +191,8 @@ function normalizeSimpleText(value) {
     el.className = 'gr-lex-tip';
     el.setAttribute('role', 'dialog');
     el.setAttribute('aria-hidden', 'true');
-     el.innerHTML = '<div class="head"><div class="head-controls"><button type="button" class="toggle" id="gr-lex-toggle" aria-expanded="false">Expandir</button><button type="button" class="close" aria-label="Cerrar">×</button></div><div class="t1" id="gr-lex-word"></div></div><div id="gr-lex-content" class="collapsed"></div>';    // Cierra al click afuera
-         document.addEventListener('pointerdown', (ev) => {
+     el.innerHTML = '<div class="head"><button type="button" class="toggle" id="gr-lex-toggle" aria-expanded="false">Expandir</button><div class="t1" id="gr-lex-word"></div><button type="button" class="close" aria-label="Cerrar">×</button></div><div id="gr-lex-content" class="collapsed"></div>';    // Cierra al click afuera
+              document.addEventListener('pointerdown', (ev) => {
        if (!el || el.style.display === 'none') return;
       if (ev.target === el || el.contains(ev.target)) return;
       hideTip();
@@ -624,8 +623,8 @@ function normalizeSimpleText(value) {
         <div class="t2"><b>Forma léxica:</b> ${escapeHtml(hit.tr || '—')}</div>
         ${glossHtml}
       </div>
+              ${renderTrilingueSection(trilingueFallback)}
       <div class="details">
-                ${renderTrilingueSection(trilingueFallback)}
         ${renderLxxSection(lxxSamples, lxxLoading)}
       </div>
     `;

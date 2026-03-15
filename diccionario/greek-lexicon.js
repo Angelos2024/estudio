@@ -17,6 +17,7 @@
   var equivDictLoaded = false;
    var lxxCache = new Map(); // Map<lemma_normalizado, samples[]>
      var popupDrag = null;
+       var popupExpanded = false;
 
   // Cantidad de capítulos por libro MorphGNT abbr
   var ABBR_CHAPTERS = {
@@ -438,9 +439,11 @@ function slugToAbbr(slug) {
       ' max-height:calc(100vh - 24px); overflow:auto; background:rgba(17,26,46,0.98);' +
       ' border:1px solid rgba(255,255,255,0.10); border-radius:14px;' +
       ' box-shadow:0 20px 50px rgba(0,0,0,0.35); padding:12px; color:#e9eefc; display:none; }' +
-      '.gk-lex-popup .t1{ font-weight:700; font-size:14px; margin-bottom:6px; padding-right:18px; }' +
-       '.gk-lex-popup .head{ display:flex; align-items:center; justify-content:space-between; gap:8px; cursor:move; user-select:none; }' +
-      '.gk-lex-popup .head .t1{ margin-bottom:0; flex:1; }' +
+       '.gk-lex-popup.compact{ max-width:min(320px, calc(100vw - 24px)); }' +
+      '.gk-lex-popup .t1{ font-weight:700; font-size:14px; margin-bottom:6px; }' +
+      '.gk-lex-popup .head{ display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:8px; cursor:move; user-select:none; }' +
+      '.gk-lex-popup .head .t1{ margin-bottom:0; text-align:center; }' +
+      '.gk-lex-popup .head-controls{ display:flex; align-items:center; gap:6px; }' +
       '.gk-lex-popup .t2{ font-size:13px; opacity:.92; line-height:1.35; }' +
       '.gk-lex-popup .row{ margin-top:6px; }' +
       '.gk-lex-popup .lab{ opacity:.7; margin-right:6px; }' +
@@ -449,7 +452,10 @@ function slugToAbbr(slug) {
        '.gk-lex-popup .lxx{ margin-top:6px; max-height:160px; overflow:auto; }' +
      '.gk-lex-popup .lxx-row{ margin-top:4px; font-size:12px; line-height:1.3; }' +
       '.gk-lex-popup .muted{ opacity:.7; }' +
-      '.gk-lex-popup .close{ position:absolute; right:10px; top:8px; background:transparent; border:0; color:#cbd6ff; cursor:pointer; font-size:16px; }';
+ '.gk-lex-popup .close{ background:transparent; border:0; color:#cbd6ff; cursor:pointer; font-size:16px; line-height:1; padding:0 2px; }' +
+      '.gk-lex-popup .toggle{ border:1px solid rgba(255,255,255,.2); background:rgba(255,255,255,.08); color:#dbe5ff; border-radius:8px; font-size:11px; line-height:1; cursor:pointer; padding:4px 8px; }' +
+      '.gk-lex-popup .content.collapsed .details{ display:none; }' +
+      '.gk-lex-popup .content.expanded .details{ display:block; }';
 
     document.head.appendChild(st);
 
@@ -457,19 +463,29 @@ function slugToAbbr(slug) {
     box.id = 'gk-lex-popup';
     box.className = 'gk-lex-popup';
     box.innerHTML =
-      '<div class="head"><div class="t1" id="gk-lex-g"></div><button class="close" aria-label="Cerrar" type="button">×</button></div>' +
+'<div class="head"><button class="toggle" id="gk-lex-toggle" aria-expanded="false" type="button">Expandir</button><div class="t1" id="gk-lex-g"></div><button class="close" aria-label="Cerrar" type="button">×</button></div>' +
+      '<div class="content collapsed" id="gk-lex-content">' +
+      '<div class="summary">' +
       '<div class="t2"><span class="lab">Lemma:</span><span id="gk-lex-lemma"></span></div>' +
       '<div class="t2 row"><span class="lab">Forma léxica:</span><span id="gk-lex-forma-lex"></span></div>' +
+            '<div class="t2 row"><span class="lab">Equivalencia trilingüe:</span><span id="gk-lex-tri"></span></div>' +
       '<div class="t2 row"><span class="lab">Entrada impresa:</span><span id="gk-lex-entrada"></span></div>' +
-   '<div class="t2"><span class="lab">Definición:</span><div id="gk-lex-def" class="def"></div></div>' +
+  '<div class="t2"><span class="lab">Definición:</span><div id="gk-lex-def" class="def"></div></div>' +
+      '</div>' +
+      '<div class="details">' +
       '<hr class="sep" />' +
       '<div class="t2"><span class="lab">LXX:</span></div>' +
-      '<div id="gk-lex-lxx" class="lxx"></div>';
+'<div id="gk-lex-lxx" class="lxx"></div>' +
+      '</div>' +
+      '</div>';
 
     document.body.appendChild(box);
 
     box.querySelector('.close').addEventListener('click', function () {
       hidePopup();
+    }, false);
+box.querySelector('#gk-lex-toggle').addEventListener('click', function () {
+      setPopupExpanded(!popupExpanded);
     }, false);
 
      var onPointerMove = function (ev) {
@@ -494,8 +510,8 @@ function slugToAbbr(slug) {
 
     box.querySelector('.head').addEventListener('pointerdown', function (ev) {
       if (ev.button !== 0) return;
-      if (ev.target && ev.target.closest && ev.target.closest('.close')) return;
-      var r = box.getBoundingClientRect();
+      if (ev.target && ev.target.closest && ev.target.closest('.close, .toggle')) return;
+            var r = box.getBoundingClientRect();
       popupDrag = { offsetX: ev.clientX - r.left, offsetY: ev.clientY - r.top };
       document.addEventListener('pointermove', onPointerMove, true);
       document.addEventListener('pointerup', stopDrag, true);
@@ -513,6 +529,24 @@ function slugToAbbr(slug) {
       if (ev.target && ev.target.classList && ev.target.classList.contains('gk-w')) return;
       hidePopup();
     }, false);
+    setPopupExpanded(false);
+  }
+
+  function setPopupExpanded(expanded) {
+    popupExpanded = !!expanded;
+    var box = document.getElementById('gk-lex-popup');
+    if (!box) return;
+    var content = document.getElementById('gk-lex-content');
+    var toggle = document.getElementById('gk-lex-toggle');
+    if (content) {
+      content.classList.toggle('expanded', popupExpanded);
+      content.classList.toggle('collapsed', !popupExpanded);
+    }
+    box.classList.toggle('compact', !popupExpanded);
+    if (toggle) {
+      toggle.textContent = popupExpanded ? 'Contraer' : 'Expandir';
+      toggle.setAttribute('aria-expanded', popupExpanded ? 'true' : 'false');
+    }
   }
 
   function showPopupNear(anchorEl, g, lemma) {
@@ -527,7 +561,18 @@ function slugToAbbr(slug) {
     var formaLexEl = document.getElementById('gk-lex-forma-lex');
     var entradaEl = document.getElementById('gk-lex-entrada');
     var defEl = document.getElementById('gk-lex-def');
+    var triEl = document.getElementById('gk-lex-tri');
       var lxxEl = document.getElementById('gk-lex-lxx');
+
+if (triEl) triEl.textContent = 'Buscando…';
+    loadEquivDictionaryOnce().then(function () {
+      var p = document.getElementById('gk-lex-popup');
+      if (!p || p.style.display !== 'block') return;
+      var currentLemma = document.getElementById('gk-lex-lemma');
+      if (!currentLemma || currentLemma.textContent !== (lemma || '—')) return;
+      var equivDef = getEquivDefByLemma(lemma);
+      if (triEl) triEl.textContent = equivDef || 'sin coincidencia';
+    });
 
     if (!masterDictIndex) {
       loadMasterDictionaryOnce().then(function () {
@@ -583,7 +628,8 @@ if (lxxEl) {
     }
 
     box.style.display = 'block';
-
+    setPopupExpanded(false);
+    
     var r = anchorEl.getBoundingClientRect();
     var pad = 10;
 box.style.maxHeight = 'calc(100vh - ' + (pad * 2) + 'px)';

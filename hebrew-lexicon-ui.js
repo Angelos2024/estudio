@@ -773,9 +773,8 @@ function isLikelyVerbEntry(entry) {
         }
                 .he-lex-popup.compact{ max-width:min(320px, calc(100vw - 24px)); }
         .he-lex-popup .t1{ font-weight:700; font-size:15px; margin-bottom:6px; direction:rtl; }
-                .he-lex-popup .head{ display:flex; align-items:center; justify-content:space-between; gap:8px; cursor:move; user-select:none; }
-        .he-lex-popup .head .t1{ margin-bottom:0; flex:1; }
-                .he-lex-popup .head-controls{ display:flex; align-items:center; gap:6px; }
+                 .he-lex-popup .head{ display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:8px; cursor:move; user-select:none; }
+        .he-lex-popup .head .t1{ margin-bottom:0; text-align:center; }
                 .he-lex-popup .toggle{ border:1px solid rgba(255,255,255,.2); background:rgba(255,255,255,.08); color:#dbe5ff; border-radius:8px; font-size:11px; line-height:1; cursor:pointer; padding:4px 8px; }
         .he-lex-popup .t2{ font-size:13px; opacity:.92; line-height:1.35; }
         .he-lex-popup .row{ margin-top:6px; }
@@ -802,8 +801,8 @@ function isLikelyVerbEntry(entry) {
     box.id = 'he-lex-popup';
     box.className = 'he-lex-popup';
     box.innerHTML =
- '<div class="head"><div class="head-controls"><button class="toggle" id="he-lex-toggle" aria-expanded="false" type="button">Expandir</button><button class="close" aria-label="Cerrar" type="button">×</button></div><div class="t1" id="he-lex-word"></div></div>' +
-      '<div class="content collapsed" id="he-lex-content">' +
+ '<div class="head"><button class="toggle" id="he-lex-toggle" aria-expanded="false" type="button">Expandir</button><div class="t1" id="he-lex-word"></div><button class="close" aria-label="Cerrar" type="button">×</button></div>' +
+       '<div class="content collapsed" id="he-lex-content">' +
      '<div class="summary">' +
           '<div class="t2 row"><span class="lab">Lemma:</span><span id="he-lex-entry"></span></div>' +
       '<div class="t2 row"><span class="lab">Forma léxica:</span><span id="he-lex-translit"></span></div>' +

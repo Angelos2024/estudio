@@ -1537,531 +1537,531 @@
     "transliteracion": "eis",
     "texto_hebreo": "εἰς",
     "equivalencia_espanol": "en; para",
-    "observacion": "Término griego que equivale al hebreo 'Le' o 'La'. Indica dirección o propósito, no compañía física[cite: 23]."
+    "observacion": "Término griego que equivale al hebreo 'Le' o 'La'. Indica dirección o propósito, no compañía física."
   },
   {
     "id": 221,
     "transliteracion": "pros",
     "texto_hebreo": "πρὸς",
     "equivalencia_espanol": "para; hacia; con relación a",
-    "observacion": "Se corrige la traducción tradicional 'con' en Juan 1:1, ya que 'con' sugiere dos personas distintas, mientras que 'pros' indica una relación de pertenencia o dirección hacia la plenitud[cite: 26, 27]."
+    "observacion": "Se corrige la traducción tradicional 'con' en Juan 1:1, ya que 'con' sugiere dos personas distintas, mientras que 'pros' indica una relación de pertenencia o dirección hacia la plenitud."
   },
   {
     "id": 222,
     "transliteracion": "Lógos",
     "texto_hebreo": "λόγος",
     "equivalencia_espanol": "palabra; corporeidad de Dios; origen común",
-    "observacion": "Concepto griego que Juan utiliza para referirse al Re’shit hebreo. Es el factor de creación que los griegos llamaban 'arjé'[cite: 28, 32, 33]."
+    "observacion": "Concepto griego que Juan utiliza para referirse al Re’shit hebreo. Es el factor de creación que los griegos llamaban 'arjé'."
   },
   {
     "id": 223,
     "transliteracion": "arjé",
     "texto_hebreo": "ἀρχή",
     "equivalencia_espanol": "origen; principio rector",
-    "observacion": "Término usado por los filósofos presocráticos para el origen común de las cosas, el cual Juan identifica como el Lógos/Re’shit[cite: 32]."
+    "observacion": "Término usado por los filósofos presocráticos para el origen común de las cosas, el cual Juan identifica como el Lógos/Re’shit."
   },
   {
     "id": 224,
     "transliteracion": "Ben ha’adam",
     "texto_hebreo": "בֶּן־הָאָדָם",
     "equivalencia_espanol": "Hijo del Hombre; heredero de los derechos legales",
-    "observacion": "Indica que el Mesías posee los derechos legales de la deidad en una expresión disminuida. En arameo es 'Bar ’enash'[cite: 36, 37, 38]."
+    "observacion": "Indica que el Mesías posee los derechos legales de la deidad en una expresión disminuida. En arameo es 'Bar ’enash'."
   },
   {
     "id": 225,
     "transliteracion": "Maljut hayamain",
     "texto_hebreo": "מלכות שמיא",
     "equivalencia_espanol": "reino de los cielos; disminución mínima",
-    "observacion": "Tecnicismo arameo que se refiere a la disminución mínima de algo para manifestarse en la tierra[cite: 39]."
+    "observacion": "Tecnicismo arameo que se refiere a la disminución mínima de algo para manifestarse en la tierra."
   },
   {
     "id": 226,
     "transliteracion": "Aer",
     "texto_hebreo": "ἀήρ",
     "equivalencia_espanol": "aire; gloria insondable",
-    "observacion": "Préstamo griego que dio origen al término teológico 'avir'. No se refiere a la atmósfera, sino a la gloria de Dios[cite: 40, 41]."
+    "observacion": "Préstamo griego que dio origen al término teológico 'avir'. No se refiere a la atmósfera, sino a la gloria de Dios."
   },
   {
     "id": 227,
     "transliteracion": "Jayáh",
     "texto_hebreo": "הָיָה",
     "equivalencia_espanol": "fue; llegó a ser",
-    "observacion": "Verbo usado para cosas que simplemente llegaron a existir por orden divina sin un proceso de 'hechura' manual inmediata[cite: 50, 51]."
+    "observacion": "Verbo usado para cosas que simplemente llegaron a existir por orden divina sin un proceso de 'hechura' manual inmediata."
   },
   {
     "id": 228,
     "transliteracion": "’Asá",
     "texto_hebreo": "עָשָׂה",
     "equivalencia_espanol": "hacer; completar; hechura",
-    "observacion": "Se diferencia de 'Bará' en que '’Asá' implica trabajar sobre algo que ya tiene forma o contextura (ej: cocinar un cabrito)[cite: 50, 69, 74]."
+    "observacion": "Se diferencia de 'Bará' en que '’Asá' implica trabajar sobre algo que ya tiene forma o contextura (ej: cocinar un cabrito)."
   },
   {
     "id": 229,
     "transliteracion": "Yatzar",
     "texto_hebreo": "יָצַר",
     "equivalencia_espanol": "formar; dar características",
-    "observacion": "Etapa intermedia entre organizar y hacer. Implica el proceso de formación y educación del carácter (ej: Dios 'formó' a Adán)[cite: 73, 75, 104]."
+    "observacion": "Etapa intermedia entre organizar y hacer. Implica el proceso de formación y educación del carácter (ej: Dios 'formó' a Adán)."
   },
   {
     "id": 230,
     "transliteracion": "Demut",
     "texto_hebreo": "דְּמוּת",
     "equivalencia_espanol": "semejanza",
-    "observacion": "A diferencia del Tzélem (resplandor inicial), la semejanza es un proyecto a futuro para el mundo venidero cuando la obra sea terminada[cite: 74, 75]."
+    "observacion": "A diferencia del Tzélem (resplandor inicial), la semejanza es un proyecto a futuro para el mundo venidero cuando la obra sea terminada."
   },
   {
     "id": 231,
     "transliteracion": "Nishmat Jayim",
     "texto_hebreo": "נִשְׁמַת חַיִּים",
     "equivalencia_espanol": "espíritu vivificante; soplo de vida",
-    "observacion": "El poder incorruptible (Mashiaj) que Dios introduce desde fuera de la creación para perfeccionarla[cite: 76, 112, 113]."
+    "observacion": "El poder incorruptible (Mashiaj) que Dios introduce desde fuera de la creación para perfeccionarla."
   },
   {
     "id": 232,
     "transliteracion": "Tohu v’vohu",
     "texto_hebreo": "תֹּהוּ וָבֹהוּ",
     "equivalencia_espanol": "desconectada y sin forma",
-    "observacion": "Estado de la tierra tras la expulsión de satán; representa el desorden previo a la organización divina[cite: 84]."
+    "observacion": "Estado de la tierra tras la expulsión de satán; representa el desorden previo a la organización divina."
   },
   {
     "id": 233,
     "transliteracion": "’Eretz",
     "texto_hebreo": "אֶרֶץ",
     "equivalencia_espanol": "tierra (general)",
-    "observacion": "Se refiere a la tierra organizada de forma general, distinta a la 'Adamáh' que es el suelo específico para el hombre[cite: 97, 100]."
+    "observacion": "Se refiere a la tierra organizada de forma general, distinta a la 'Adamáh' que es el suelo específico para el hombre."
   },
   {
     "id": 234,
     "transliteracion": "’Adamáh",
     "texto_hebreo": "אֲדָמָה",
     "equivalencia_espanol": "suelo organizado; preparación para el Edén",
-    "observacion": "Suelo específico del cual fue formado Adán; es el lugar de las promesas y la educación divina[cite: 97, 99, 103]."
+    "observacion": "Suelo específico del cual fue formado Adán; es el lugar de las promesas y la educación divina."
   },
   {
     "id": 235,
     "transliteracion": "Psykon",
     "texto_hebreo": "ψυχικόν",
     "equivalencia_espanol": "cuerpo animal",
-    "observacion": "Término griego usado por Pablo para el cuerpo animal (Nefesh), en contraste con el espiritual[cite: 110]."
+    "observacion": "Término griego usado por Pablo para el cuerpo animal (Nefesh), en contraste con el espiritual."
   },
   {
     "id": 236,
     "transliteracion": "Nefmaticon",
     "texto_hebreo": "πνευματικόν",
     "equivalencia_espanol": "cuerpo espiritual",
-    "observacion": "Término griego para el cuerpo espiritual (Rúaj) relacionado con la eternidad[cite: 110]."
+    "observacion": "Término griego para el cuerpo espiritual (Rúaj) relacionado con la eternidad."
   },
   {
     "id": 237,
     "transliteracion": "Quéden",
     "texto_hebreo": "קֶדֶם",
     "equivalencia_espanol": "eternidad; tiempo escondido",
-    "observacion": "Se refiere a lo que está antes de la existencia del 'eretz'; las salidas de Mashiaj son desde el Quéden[cite: 117]."
+    "observacion": "Se refiere a lo que está antes de la existencia del 'eretz'; las salidas de Mashiaj son desde el Quéden."
   },
   {
     "id": 238,
     "transliteracion": "Gan",
     "texto_hebreo": "גַּן",
     "equivalencia_espanol": "jardín; huerto",
-    "observacion": "Estructura plantada por Dios en la Adamáh, traída desde la eternidad[cite: 117]."
+    "observacion": "Estructura plantada por Dios en la Adamáh, traída desde la eternidad."
   },
   {
     "id": 239,
     "transliteracion": "’Éden",
     "texto_hebreo": "עֵדֶן",
     "equivalencia_espanol": "delicia; placer",
-    "observacion": "Cualidad del jardín divino que representa el rostro de Hashem[cite: 117, 120]."
+    "observacion": "Cualidad del jardín divino que representa el rostro de Hashem."
   },
   {
     "id": 240,
     "transliteracion": "Isháh",
     "texto_hebreo": "אִשָּׁה",
     "equivalencia_espanol": "mujer; Varona; edificio espiritual",
-    "observacion": "Representa a la iglesia, edificada a partir del 'costado' (herida) del Varón perfecto[cite: 132, 133]."
+    "observacion": "Representa a la iglesia, edificada a partir del 'costado' (herida) del Varón perfecto."
   },
   {
     "id": 241,
     "transliteracion": "Ish",
     "texto_hebreo": "אִישׁ",
     "equivalencia_espanol": "varón; varón perfecto",
-    "observacion": "Se asocia con Yehoshúa’ Hamashiaj, el modelo del cual la mujer es tomada y edificada[cite: 132, 133]."
+    "observacion": "Se asocia con Yehoshúa’ Hamashiaj, el modelo del cual la mujer es tomada y edificada."
   },
   {
     "id": 242,
     "transliteracion": "Rúaj Hayom",
     "texto_hebreo": "רוּחַ הַיּוֹם",
     "equivalencia_espanol": "espíritu del día",
-    "observacion": "Voz de Dios que se paseaba en el huerto; momento de confrontación tras el pecado[cite: 151]."
+    "observacion": "Voz de Dios que se paseaba en el huerto; momento de confrontación tras el pecado."
   },
   {
     "id": 243,
     "transliteracion": "Leshon kavod",
     "texto_hebreo": "לשון כבוד",
     "equivalencia_espanol": "lengua de honra; plural mayestático",
-    "observacion": "Uso del plural ('hagamos', 'uno de nosotros') para denotar la convocatoria de todo el poder y las huestes celestiales[cite: 191]."
+    "observacion": "Uso del plural ('hagamos', 'uno de nosotros') para denotar la convocatoria de todo el poder y las huestes celestiales."
   },
   {
     "id": 244,
     "transliteracion": "Shelaj lejá",
     "texto_hebreo": "שְׁלַח־לְךָ",
     "equivalencia_espanol": "envía para ti",
-    "observacion": "Expresión que denota que el acto de enviar traerá un beneficio personal al que envía[cite: 224]."
+    "observacion": "Expresión que denota que el acto de enviar traerá un beneficio personal al que envía."
   },
   {
     "id": 245,
     "transliteracion": "Brit miláh",
     "texto_hebreo": "בְּרִית מִילָה",
     "equivalencia_espanol": "pacto de la circuncisión (término extra-bíblico)",
-    "observacion": "Concepto acuñado por el judaísmo que el profesor señala como ausente en la Biblia en ese formato legalista[cite: 239]."
+    "observacion": "Concepto acuñado por el judaísmo que el profesor señala como ausente en la Biblia en ese formato legalista."
   },
   {
     "id": 246,
     "transliteracion": "Tzadiq",
     "texto_hebreo": "צַדִּיק",
     "equivalencia_espanol": "justificado",
-    "observacion": "No significa 'bueno' por mérito propio, sino alguien que ha sido declarado justo por Dios[cite: 211, 303]."
+    "observacion": "No significa 'bueno' por mérito propio, sino alguien que ha sido declarado justo por Dios."
   },
   {
     "id": 247,
     "transliteracion": "Mará de atrá",
     "texto_hebreo": "מרא דאתרא",
     "equivalencia_espanol": "marido de la ciudad; rabino patrono",
-    "observacion": "Concepto arameo usado para ilustrar la 'Jerusalén que tiene marido' (ataduras a disposiciones humanas)[cite: 280, 281]."
+    "observacion": "Concepto arameo usado para ilustrar la 'Jerusalén que tiene marido' (ataduras a disposiciones humanas)."
   },
   {
     "id": 248,
     "transliteracion": "Jamal",
     "texto_hebreo": "חָמַל",
     "equivalencia_espanol": "tener lástima; compadecerse",
-    "observacion": "Raíz de 'Jemláh'. Se asocia con la compasión que Dios siente por el esfuerzo humano perdido[cite: 297, 309]."
+    "observacion": "Raíz de 'Jemláh'. Se asocia con la compasión que Dios siente por el esfuerzo humano perdido."
   },
   {
     "id": 249,
     "transliteracion": "Shamar",
     "texto_hebreo": "שָׁמַר",
     "equivalencia_espanol": "vigilar; estar pendiente",
-    "observacion": "Se aclara que 'guardar' el pacto es vigilarlo para que no se filtre nada extraño, no 'esconderlo'[cite: 333, 334]."
+    "observacion": "Se aclara que 'guardar' el pacto es vigilarlo para que no se filtre nada extraño, no 'esconderlo'."
   },
   {
     "id": 250,
     "transliteracion": "Hiqsháh",
     "texto_hebreo": "הִקְשָׁה",
     "equivalencia_espanol": "mostró dureza",
-    "observacion": "Acción propia del Faraón; él mismo endureció su corazón al no querer escuchar[cite: 742]."
+    "observacion": "Acción propia del Faraón; él mismo endureció su corazón al no querer escuchar."
   },
   {
     "id": 251,
     "transliteracion": "Jasaq",
     "texto_hebreo": "חָזַק",
     "equivalencia_espanol": "rígido; a la defensiva",
-    "observacion": "Estado del corazón cuando se cierra y no quiere escuchar razones[cite: 382]."
+    "observacion": "Estado del corazón cuando se cierra y no quiere escuchar razones."
   },
   {
     "id": 252,
     "transliteracion": "Kaved",
     "texto_hebreo": "כָּבֵד",
     "equivalencia_espanol": "pesado; cuando ataca o persigue",
-    "observacion": "Matiz de dureza que implica una acción agresiva o de persecución[cite: 382]."
+    "observacion": "Matiz de dureza que implica una acción agresiva o de persecución."
   },
   {
     "id": 253,
     "transliteracion": "Malajim",
     "texto_hebreo": "מַלְאָכִים",
     "equivalencia_espanol": "mensajeros",
-    "observacion": "Se prefiere sobre 'ángeles' para resaltar su función de portadores de un mensaje o decreto[cite: 401]."
+    "observacion": "Se prefiere sobre 'ángeles' para resaltar su función de portadores de un mensaje o decreto."
   },
   {
     "id": 254,
     "transliteracion": "Matzot",
     "texto_hebreo": "מַצּוֹת",
     "equivalencia_espanol": "panes sin leudar/oxidar",
-    "observacion": "Pan preparado con premura que simboliza la urgencia del juicio y la pureza[cite: 405, 412]."
+    "observacion": "Pan preparado con premura que simboliza la urgencia del juicio y la pureza."
   },
   {
     "id": 255,
     "transliteracion": "Yaldut",
     "texto_hebreo": "יַלְדוּת",
     "equivalencia_espanol": "juventud; servidumbre",
-    "observacion": "Nombre mesiánico que aparece en el Salmo 110:3, asociado con el rocío y el servicio voluntario[cite: 499, 500]."
+    "observacion": "Nombre mesiánico que aparece en el Salmo 110:3, asociado con el rocío y el servicio voluntario."
   },
   {
     "id": 256,
     "transliteracion": "Yeled",
     "texto_hebreo": "יֶלֶד",
     "equivalencia_espanol": "niño; subordinado",
-    "observacion": "Denota la calidad de siervo o alguien bajo autoridad, independientemente de la edad física[cite: 500, 639]."
+    "observacion": "Denota la calidad de siervo o alguien bajo autoridad, independientemente de la edad física."
   },
   {
     "id": 257,
     "transliteracion": "Ratzon",
     "tesxto_hebreo": "רָצוֹן",
     "equivalencia_espanol": "voluntad; reconciliación; complacencia",
-    "observacion": "Cuando una persona entiende su propósito y sirve voluntariamente. Es el fundamento de la reconciliación[cite: 490, 815]."
+    "observacion": "Cuando una persona entiende su propósito y sirve voluntariamente. Es el fundamento de la reconciliación."
   },
   {
     "id": 258,
     "transliteracion": "Pagá",
     "texto_hebreo": "פָּגַע",
     "equivalencia_espanol": "poner en contacto; hacer contacto",
-    "observacion": "Verbo usado para describir el acto de mediar o interceder (poner en contacto a dos partes)[cite: 474, 847]."
+    "observacion": "Verbo usado para describir el acto de mediar o interceder (poner en contacto a dos partes)."
   },
   {
     "id": 259,
     "transliteracion": "Ma’aser sheni",
     "texto_hebreo": "מַעֲשֵׂר שֵׁנִי",
     "equivalencia_espanol": "segundo diezmo",
-    "observacion": "Diezmo recolectado cada tres años destinado al levita, el extranjero, el huérfano y la viuda[cite: 614]."
+    "observacion": "Diezmo recolectado cada tres años destinado al levita, el extranjero, el huérfano y la viuda."
   },
   {
     "id": 260,
     "transliteracion": "Shemitáh",
     "texto_hebreo": "שְׁמִטָּה",
     "equivalencia_espanol": "reposo de la tierra; remisión",
-    "observacion": "Año séptimo de descanso obligatorio para la tierra, que enseña la dependencia absoluta de Dios[cite: 616, 958]."
+    "observacion": "Año séptimo de descanso obligatorio para la tierra, que enseña la dependencia absoluta de Dios."
   },
   {
     "id": 261,
     "transliteracion": "Shájar",
     "texto_hebreo": "שַׁחַר",
     "equivalencia_espanol": "alba; despuntar del sol",
-    "observacion": "Nombre del Mesías. Es la luz que vence a las tinieblas y libera al hombre (ej: Jacob en Peniel)[cite: 634, 637]."
+    "observacion": "Nombre del Mesías. Es la luz que vence a las tinieblas y libera al hombre (ej: Jacob en Peniel)."
   },
   {
     "id": 262,
     "transliteracion": "Bor",
     "texto_hebreo": "בּוֹר",
     "equivalencia_espanol": "hueco; cisterna; calabozo",
-    "observacion": "Lugar de cautiverio donde la presencia de Dios prospera al justo (caso de José)[cite: 651]."
+    "observacion": "Lugar de cautiverio donde la presencia de Dios prospera al justo (caso de José)."
   },
   {
     "id": 263,
     "transliteracion": "’Emet",
     "texto_hebreo": "אֱמֶת",
     "equivalencia_espanol": "verdad; inmutable; lo que permanece",
-    "observacion": "Relacionado con la fidelidad ('Emunáh). Es lo absoluto que no tiene sombra de variación[cite: 653]."
+    "observacion": "Relacionado con la fidelidad ('Emunáh). Es lo absoluto que no tiene sombra de variación."
   },
   {
     "id": 264,
     "transliteracion": "Tzofnat Paneaj",
     "texto_hebreo": "צָפְנַת פַּעְנֵחַ",
     "equivalencia_espanol": "decodificador de códigos",
-    "observacion": "Nombre egipcio dado a José por Faraón tras interpretar los sueños[cite: 656]."
+    "observacion": "Nombre egipcio dado a José por Faraón tras interpretar los sueños."
   },
   {
     "id": 265,
     "transliteracion": "Nagid",
     "texto_hebreo": "נָגִיד",
     "equivalencia_espanol": "gobernador; príncipe",
-    "observacion": "Título del Mesías como el que gobierna las doce tribus bajo el cetro de Judá[cite: 700]."
+    "observacion": "Título del Mesías como el que gobierna las doce tribus bajo el cetro de Judá."
   },
   {
     "id": 266,
     "transliteracion": "’Ehyeh Asher ‘ehyeh",
     "texto_hebreo": "אֶהְיֶה אֲשֶׁר אֶהְיֶה",
     "equivalencia_espanol": "Yo seré el que estaré",
-    "observacion": "Traducción corregida del nombre revelado a Moisés, enfatizando presencia futura y constante[cite: 724]."
+    "observacion": "Traducción corregida del nombre revelado a Moisés, enfatizando presencia futura y constante."
   },
   {
     "id": 267,
     "transliteracion": "Ge’uláh",
     "texto_hebreo": "גְּאוּלָּה",
     "equivalencia_espanol": "redención; liberación absoluta",
-    "observacion": "Proceso de reclamo legal por lo que ya fue comprado; liberación final de toda opresión[cite: 741, 935]."
+    "observacion": "Proceso de reclamo legal por lo que ya fue comprado; liberación final de toda opresión."
   },
   {
     "id": 268,
     "transliteracion": "Ro’sh jodashim",
     "texto_hebreo": "רֹאשׁ חֳדָשִׁים",
     "equivalencia_espanol": "cabeza de meses",
-    "observacion": "El principal de los meses en eminencia (Nisán/Aviv)[cite: 747]."
+    "observacion": "El principal de los meses en eminencia (Nisán/Aviv)."
   },
   {
     "id": 269,
     "transliteracion": "Ro’sh hashanáh",
     "texto_hebreo": "רֹאשׁ הַשָּׁנָה",
     "equivalencia_espanol": "cabeza del año",
-    "observacion": "Inicio del ciclo anual en el mes séptimo (Tishrei)[cite: 747]."
+    "observacion": "Inicio del ciclo anual en el mes séptimo (Tishrei)."
   },
   {
     "id": 270,
     "transliteracion": "Mejes",
     "texto_hebreo": "מֶכֶס",
     "equivalencia_espanol": "tesoro de la Torah; tributo",
-    "observacion": "Término asociado con Mashiaj como el tesoro de la instrucción divina[cite: 1082]."
+    "observacion": "Término asociado con Mashiaj como el tesoro de la instrucción divina."
   },
   {
     "id": 271,
     "transliteracion": "Praqlit",
     "texto_hebreo": "פְּרַקְלִיט",
     "equivalencia_espanol": "abogado preventivo",
-    "observacion": "Del griego 'parákletos'. Es el que previene el pecado antes de que ocurra, a diferencia del que saca del lío[cite: 1183, 1184]."
+    "observacion": "Del griego 'parákletos'. Es el que previene el pecado antes de que ocurra, a diferencia del que saca del lío."
   },
   {
     "id": 272,
     "transliteracion": "Gadol",
     "texto_hebreo": "גָּדוֹל",
     "equivalencia_espanol": "grande; el que ha crecido más",
-    "observacion": "Se emplea para distinguir al hijo mayor o al de mayor rango en las bendiciones patriarcales[cite: 1856]."
+    "observacion": "Se emplea para distinguir al hijo mayor o al de mayor rango en las bendiciones patriarcales."
   },
   {
     "id": 273,
     "transliteracion": "Qatán",
     "texto_hebreo": "קָטָן",
     "equivalencia_espanol": "pequeño; menor",
-    "observacion": "Se usa en contraste con 'Gadol' para referirse al hijo menor o de menor estatura en los relatos de Toldot[cite: 1860]."
+    "observacion": "Se usa en contraste con 'Gadol' para referirse al hijo menor o de menor estatura en los relatos de Toldot."
   },
   {
     "id": 274,
     "transliteracion": "Sulam",
     "texto_hebreo": "סֻלָּם",
     "equivalencia_espanol": "escalera; Mashiaj como el gran día",
-    "observacion": "Su valor guematria (130) equivale a 'Yom Adonay Hagadol' (El gran día del Señor). Representa a Mashiaj como el puente entre cielo y tierra[cite: 1862]."
+    "observacion": "Su valor guematria (130) equivale a 'Yom Adonay Hagadol' (El gran día del Señor). Representa a Mashiaj como el puente entre cielo y tierra."
   },
   {
     "id": 275,
     "transliteracion": "Yesh",
     "texto_hebreo": "יֵשׁ",
     "equivalencia_espanol": "hay; existencia; salvación (forma corta)",
-    "observacion": "Se señala como una alusión a la salvación (Yehoshúa) presente en un lugar específico[cite: 1865]."
+    "observacion": "Se señala como una alusión a la salvación (Yehoshúa) presente en un lugar específico."
   },
   {
     "id": 276,
     "transliteracion": "Hamar ‘aser",
     "texto_hebreo": "הַמַּעֲשֵׂר",
     "equivalencia_espanol": "el diezmo; cerco de la riqueza",
-    "observacion": "Se define como un mandamiento con objetivos sociales diseñado para evitar el egoísmo y asegurar el bienestar de la congregación[cite: 1866, 1872]."
+    "observacion": "Se define como un mandamiento con objetivos sociales diseñado para evitar el egoísmo y asegurar el bienestar de la congregación."
   },
   {
     "id": 277,
     "transliteracion": "Ner tamid",
     "texto_hebreo": "נֵר תָּמִיד",
     "equivalencia_espanol": "luz continua; candela incesante",
-    "observacion": "Representa la luz del Mesías que ilumina el camino hacia el testimonio en el lugar santísimo[cite: 2072]."
+    "observacion": "Representa la luz del Mesías que ilumina el camino hacia el testimonio en el lugar santísimo."
   },
   {
     "id": 278,
     "transliteracion": "Mijseh",
     "texto_hebreo": "מִכְסֶה",
     "equivalencia_espanol": "cubierta; cobertor",
-    "observacion": "Se refiere a las capas de pieles de animales que cubrían el Tabernáculo, simbolizando protección[cite: 2063]."
+    "observacion": "Se refiere a las capas de pieles de animales que cubrían el Tabernáculo, simbolizando protección."
   },
   {
     "id": 279,
     "transliteracion": "Shiqút",
     "texto_hebreo": "שִׁקּוּץ",
     "equivalencia_espanol": "abominación; ídolo que asquea",
-    "observacion": "Se asocia con la idolatría que produce una mancha tanto en la comida como en el cuerpo[cite: 2468]."
+    "observacion": "Se asocia con la idolatría que produce una mancha tanto en la comida como en el cuerpo."
   },
   {
     "id": 280,
     "transliteracion": "Guilúl",
     "texto_hebreo": "גִּלּוּל",
     "equivalencia_espanol": "ídolo; rollo que envuelve / excremento",
-    "observacion": "Metáfora de aquello que envuelve y enceguece la conciencia del hombre, alejándolo de la sensibilidad espiritual[cite: 2468]."
+    "observacion": "Metáfora de aquello que envuelve y enceguece la conciencia del hombre, alejándolo de la sensibilidad espiritual."
   },
   {
     "id": 281,
     "transliteracion": "Qin’ah",
     "texto_hebreo": "קִנְאָה",
     "equivalencia_espanol": "celo; envidia; intolerancia al pecado",
-    "observacion": "Atributo de Dios (Qaná). Se define como la intolerancia absoluta al abandono del pacto[cite: 1905, 2321]."
+    "observacion": "Atributo de Dios (Qaná). Se define como la intolerancia absoluta al abandono del pacto."
   },
   {
     "id": 282,
     "transliteracion": "Qéren",
     "texto_hebreo": "קֶרֶן",
     "equivalencia_espanol": "cuerno; rayo de luz; poder",
-    "observacion": "Se aclara que en el Tabernáculo se refiere a los rayos de luz que emanan de las esquinas del altar o del rostro de Moisés[cite: 2151]."
+    "observacion": "Se aclara que en el Tabernáculo se refiere a los rayos de luz que emanan de las esquinas del altar o del rostro de Moisés."
   },
   {
     "id": 283,
     "transliteracion": "Sguláh",
     "texto_hebreo": "סְגֻלָּה",
     "equivalencia_espanol": "pueblo prototipo; propiedad exclusiva",
-    "observacion": "Define a Israel como el modelo de sociedad que Dios distingue en medio de las naciones[cite: 2451]."
+    "observacion": "Define a Israel como el modelo de sociedad que Dios distingue en medio de las naciones."
   },
   {
     "id": 284,
     "transliteracion": "Dorésh",
     "texto_hebreo": "דֹּרֵשׁ",
     "equivalencia_espanol": "el que investiga / escudriña hacia adentro",
-    "observacion": "Describe la acción de Dios de vigilar la conducta interna del pueblo dentro de la tierra[cite: 2387]."
+    "observacion": "Describe la acción de Dios de vigilar la conducta interna del pueblo dentro de la tierra."
   },
   {
     "id": 285,
     "transliteracion": "HaTzir‘áh",
     "texto_hebreo": "הַצִּרְעָה",
     "equivalencia_espanol": "la lepra; avispa (según la discusión lingüística)",
-    "observacion": "El estudio asocia este término con enfermedades de origen espiritual (tzara'at) enviadas para destruir a los enemigos[cite: 2383]."
+    "observacion": "El estudio asocia este término con enfermedades de origen espiritual (tzara'at) enviadas para destruir a los enemigos."
   },
   {
     "id": 286,
     "transliteracion": "Oneg",
     "texto_hebreo": "עֹנֶג",
     "equivalencia_espanol": "deleite espiritual",
-    "observacion": "Se aplica al placer que se experimenta en Shabat al estar en comunión con Dios[cite: 2393]."
+    "observacion": "Se aplica al placer que se experimenta en Shabat al estar en comunión con Dios."
   },
   {
     "id": 287,
     "transliteracion": "Léqaj tov",
     "texto_hebreo": "לֶקַח טוֹב",
     "equivalencia_espanol": "buena enseñanza; lo que se retiene",
-    "observacion": "Instrucción divina que el poder de Dios planta en el hombre para que sea fructífera[cite: 2502]."
+    "observacion": "Instrucción divina que el poder de Dios planta en el hombre para que sea fructífera."
   },
   {
     "id": 288,
     "transliteracion": "Trefáh",
     "texto_hebreo": "טְרֵפָה",
     "equivalencia_espanol": "animal desgarrado; crueldad",
-    "observacion": "Carne prohibida por implicar violencia o tortura en la muerte del animal, incompatible con la santidad[cite: 2043]."
+    "observacion": "Carne prohibida por implicar violencia o tortura en la muerte del animal, incompatible con la santidad."
   },
   {
     "id": 289,
     "transliteracion": "Se’or",
     "texto_hebreo": "שְׂאֹר",
     "equivalencia_espanol": "levadura vieja; fermento",
-    "observacion": "Elemento prohibido en ciertas ofrendas vegetales por representar el proceso de oxidación o pecado[cite: 2124]."
+    "observacion": "Elemento prohibido en ciertas ofrendas vegetales por representar el proceso de oxidación o pecado."
   },
   {
     "id": 290,
     "transliteracion": "Milu’im",
     "texto_hebreo": "מִלֻּאִים",
     "equivalencia_espanol": "llenuras; capacitación; manos llenas",
-    "observacion": "Referido al proceso donde Dios dota al sacerdote de recursos y competencia para servir[cite: 2081]."
+    "observacion": "Referido al proceso donde Dios dota al sacerdote de recursos y competencia para servir."
   },
   {
     "id": 291,
     "transliteracion": "Jalál",
     "texto_hebreo": "חָלָל",
     "equivalencia_espanol": "atravesado de espada; muerto en guerra",
-    "observacion": "Término específico para alguien que muere violentamente y produce inhabilitación ritual[cite: 2336]."
+    "observacion": "Término específico para alguien que muere violentamente y produce inhabilitación ritual."
   },
   {
     "id": 292,
     "transliteracion": "Homer",
     "texto_hebreo": "חֹמֶר",
     "equivalencia_espanol": "carga; unidad de medida",
-    "observacion": "Relacionado con la raíz del asno (Jamor), indicando la pesadez de una tarea o responsabilidad[cite: 1946]."
+    "observacion": "Relacionado con la raíz del asno (Jamor), indicando la pesadez de una tarea o responsabilidad."
   },
   {
     "id": 293,
     "transliteracion": "Gefen",
     "texto_hebreo": "גֶּפֶן",
     "equivalencia_espanol": "vid; pueblo de Israel",
-    "observacion": "Representa al pueblo en general sobre el cual Mashiaj realiza su obra de limpieza[cite: 1946]."
+    "observacion": "Representa al pueblo en general sobre el cual Mashiaj realiza su obra de limpieza."
   },
   {
     "id": 294,
     "transliteracion": "Sorekáh",
     "texto_hebreo": "שֹׂרֵקָה",
     "equivalencia_espanol": "vid escogida; el remanente",
-    "observacion": "Se refiere al grupo de escogidos dentro de la vid general, con quienes Mashiaj trabaja íntimamente[cite: 1946]."
+    "observacion": "Se refiere al grupo de escogidos dentro de la vid general, con quienes Mashiaj trabaja íntimamente."
   },
   {
     "id": 295,
     "transliteracion": "Botzrah",
     "texto_hebreo": "בָּצְרָה",
     "equivalencia_espanol": "fortalecimiento; Bosra",
-    "observacion": "Topónimo asociado con Babilonia y el juicio que el Mesías ejecutará sobre el reino de Edom[cite: 1945]."
+    "observacion": "Topónimo asociado con Babilonia y el juicio que el Mesías ejecutará sobre el reino de Edom."
   }
 ]

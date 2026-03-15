@@ -114,7 +114,11 @@ body {
 }
 
 .about-panel {
+    display: none;
   animation: fade-in 0.35s ease;
+}
+.about-panel.is-active {
+  display: block;
 }
 
 .about-panel h2 {
@@ -127,7 +131,7 @@ body {
   color: #3e3133;
   line-height: 1.65;
 }
-#panel-nosotros {
+#panel-nosotros.is-active {
   display: grid;
   gap: 0.95rem;
 }
