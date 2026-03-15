@@ -70,6 +70,11 @@
                   <span class="theme-dot" style="background:#ffffff;"></span>Blanco
                 </button>
               </li>
+               <li>
+                <button class="dropdown-item d-flex align-items-center" type="button" data-theme="dark">
+                  <span class="theme-dot" style="background:#111a29;"></span>Oscuro
+                </button>
+              </li>
             </ul>
           </div>
           <button id="btnCopyText" class="btn btn-soft btn-sm" type="button">Copiar</button>
@@ -1041,8 +1046,8 @@ async function copy(text){
   }catch{}
 }
 function applyTheme(theme){
- const allowedThemes = new Set(['cream', 'white']);
-  const safeTheme = allowedThemes.has(theme) ? theme : 'cream';
+ const allowedThemes = new Set(['cream', 'white', 'dark']);
+   const safeTheme = allowedThemes.has(theme) ? theme : 'cream';
   document.documentElement.dataset.theme = safeTheme;
   localStorage.setItem('lectorTheme', safeTheme);
 }
