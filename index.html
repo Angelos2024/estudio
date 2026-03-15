@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="./RKANT/out/rkant-es.css?v=1">
    <link rel="stylesheet" href="./backup-panel.css?v=1">
    <link rel="stylesheet" href="./index.css?v=1">
+      <link rel="stylesheet" href="./menu.css?v=1">
 
 
 
@@ -46,8 +47,37 @@
             <img src="logo.png" alt="Lector"/>
           </div>
           <form id="searchForm" class="search-form d-flex gap-2 flex-grow-1">
-            <input id="searchInput" class="form-control" value="1 Corintios 13:1-7" placeholder="Buscar: ej. 1 Corintios 13 / 1Co 13:1-7"/>
-            <select id="versionSelect" class="form-select" style="max-width:180px">
+            <input id="searchInput" class="form-control" value="Mateo 1" placeholder="Buscar: ej. 1 Corintios 13 / 1Co 13:1-7"/>
+             <div class="book-menu-wrap">
+              <button id="bookMenuToggle" class="book-menu-toggle" type="button" aria-label="Abrir menú de libros" aria-expanded="false" aria-controls="bookMenuDropdown">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M5.5 4.5C5.5 3.67 6.17 3 7 3H19a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H7a1.5 1.5 0 0 0 0 3H20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M7 3v16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+              </button>
+
+              <div id="bookMenuDropdown" class="book-menu-dropdown" hidden>
+                <div class="book-menu-grid">
+                  <div class="book-columns">
+                    <section class="book-column" aria-label="Antiguo Testamento">
+                      <div class="book-column-title">Antiguo Testamento</div>
+                      <div id="bookListOT" class="book-list"></div>
+                    </section>
+                    <section class="book-column" aria-label="Nuevo Testamento">
+                      <div class="book-column-title">Nuevo Testamento</div>
+                      <div id="bookListNT" class="book-list"></div>
+                    </section>
+                  </div>
+                  <section class="chapter-panel" aria-live="polite">
+                    <div id="chapterTitle" class="chapter-title">Capítulos</div>
+                    <div id="chapterList" class="chapter-list">
+                      <div class="chapter-empty">Selecciona un libro.</div>
+                    </div>
+                  </section>
+                </div>
+              </div>
+            </div>
+                        <select id="versionSelect" class="form-select" style="max-width:180px">
               <option value="RVR1960" selected>RVR1960</option>
             </select>
             <button class="btn btn-primary" type="submit">Buscar</button>
@@ -218,9 +248,27 @@ const ORIGINAL_ENABLED_DEFAULT = (params.get('orig') ?? '1') !== '0';
 // Estado actual (se puede cambiar desde el buscador)
 const initialBookParam = (params.get('book') || '').trim();
 const initialNameParam = (params.get('name') || '').trim();
-let currentBookSlug = initialBookParam || '1_corintios';
+let currentBookSlug = initialBookParam || 'mateo';
 let currentBookName = initialNameParam || prettyBookName(currentBookSlug);
 
+const DEFAULT_REFERENCE_SEARCH = 'Mateo 1';
+const LAST_REFERENCE_STORAGE_KEY = 'lectorLastReferenceSearch';
+
+function saveLastReferenceProgress(searchText){
+  const normalized = normalizeSpaces(searchText || '');
+  if(!normalized || !parseSearch(normalized)) return;
+  try{
+    localStorage.setItem(LAST_REFERENCE_STORAGE_KEY, normalized);
+  }catch{}
+}
+
+function getLastReferenceProgress(){
+  try{
+    const saved = normalizeSpaces(localStorage.getItem(LAST_REFERENCE_STORAGE_KEY) || '');
+    if(saved && parseSearch(saved)) return saved;
+  }catch{}
+  return '';
+}
 /***********************
  * Canon + aliases (Genesis -> Apocalipsis)
  ***********************/
@@ -1440,6 +1488,7 @@ async function render(ref){
   updatePageNav(chapterCount);
 
   const userSearch = normalizeSpaces(searchInput.value) || range;
+    saveLastReferenceProgress(buildLastReferenceSearch() || userSearch);
   history.replaceState(
     null,
     '',
@@ -1633,10 +1682,15 @@ btnNextPage?.addEventListener('click', () => {
     const safeRefSearch = normalizeSpaces(pendingRestoreState?.lastReferenceSearch || '');
         const fallbackSearch = normalizeSpaces(pendingRestoreState?.lastSearch || '');
        if (!hasExplicitNavigation) {
+                  const localProgressSearch = getLastReferenceProgress();
           if (safeRefSearch && parseSearch(safeRefSearch) && searchInput) {
             searchInput.value = safeRefSearch;
           } else if (fallbackSearch && parseSearch(fallbackSearch) && searchInput) {
             searchInput.value = fallbackSearch;
+            } else if (localProgressSearch && searchInput) {
+            searchInput.value = localProgressSearch;
+          } else if (searchInput) {
+            searchInput.value = DEFAULT_REFERENCE_SEARCH;
           }
           if (pendingRestoreState?.currentBookSlug) {
             currentBookSlug = pendingRestoreState.currentBookSlug;
@@ -1650,6 +1704,12 @@ btnNextPage?.addEventListener('click', () => {
         }
       }
     }catch{}
+    if (!hasExplicitNavigation && searchInput) {
+      const safeCurrentSearch = normalizeSpaces(searchInput.value || '');
+      if (!parseSearch(safeCurrentSearch)) {
+        searchInput.value = getLastReferenceProgress() || DEFAULT_REFERENCE_SEARCH;
+      }
+    }
     passageTextRV.innerHTML = `<div class="text-muted">Cargando ${leftLabel.textContent}…</div>`;
     passageTextOrig.innerHTML = `<div class="text-muted">Cargando Original…</div>`;
     await ensureBookLoaded(currentBookSlug, currentBookName);
@@ -1683,6 +1743,7 @@ try{
   <script src="./textos-cruzados.js"></script>
 <script src="./comentarios/comentarios.js"></script>
   <script defer src="./rkant-es-ui.js?v=1"></script>
+<script defer src="./menu.js?v=1"></script>
 
 
 
