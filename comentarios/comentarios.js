@@ -63,6 +63,26 @@ function getCommentSlugCandidates(bookSlug){
       return null;
     }
   }
+  function normalizeChapterCommentsShape(data, chapter){
+    if(!data || typeof data !== 'object') return null;
+
+    const chapterKey = String(chapter);
+    const wrapped = data[chapterKey];
+
+    // Compatibilidad: algunos archivos vienen como { "<cap>": { "<verso>": "..." } }
+    // mientras que el formato esperado es { "<verso>": "..." }.
+    if(
+      wrapped &&
+      typeof wrapped === 'object' &&
+      !Array.isArray(wrapped) &&
+      Object.values(wrapped).some(v => typeof v === 'string')
+    ){
+      return wrapped;
+    }
+
+    return data;
+  }
+
 async function loadChapterComments(bookSlug, chapter){
    const cacheKey = `${bookSlug}:${chapter}`;
     if (chapterCommentsCache.has(cacheKey)) {
@@ -71,8 +91,9 @@ async function loadChapterComments(bookSlug, chapter){
     const slugCandidates = getCommentSlugCandidates(bookSlug);
 
     for (const slug of slugCandidates) {
-      const comments = await fetchCommentsBySlug(slug, chapter);
-      if (comments) {
+ const rawComments = await fetchCommentsBySlug(slug, chapter);
+      const comments = normalizeChapterCommentsShape(rawComments, chapter);
+            if (comments) {
         chapterCommentsCache.set(cacheKey, comments);
         return comments;
       }
