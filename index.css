@@ -111,8 +111,8 @@
       padding:.75rem 1rem;
       font-weight:600;
     }
-    .panel-body{ padding:1rem; background:#ffffff; }
-        .meta-row{ color:var(--muted); font-size:.9rem; }
+    .panel-body{ padding:1rem; background:var(--surface); }
+            .meta-row{ color:var(--muted); font-size:.9rem; }
     .passage-title{ font-size:1.25rem; font-weight:700; }
     .passage-text{ font-size:1.05rem; line-height:1.85; }
     .orig-text{ font-size:1.05rem; line-height:1.85; }
@@ -237,6 +237,60 @@
 
     [data-theme="dark"] .dropdown-item:hover{
       background:var(--soft-hover);
+    }
+
+    
+    /* Menú de tema: contraste legible en claro/oscuro */
+    #themeMenuBtn{
+      font-weight:600;
+    }
+    .dropdown-menu{
+      background:var(--surface) !important;
+      border-color:var(--bd);
+      box-shadow: var(--panel-shadow);
+      color:var(--text);
+    }
+    .dropdown-item{ color:var(--text) !important; }
+    .dropdown-item:hover,
+    .dropdown-item:focus{ background:var(--soft-bg); color:var(--text) !important; }
+
+    [data-theme="dark"] #themeMenuBtn{
+      background:#1b2a40;
+      border-color:var(--outline);
+      color:#f8fbff;
+    }
+    [data-theme="dark"] .dropdown-menu{
+      background:#111a29 !important;
+      border-color:var(--outline);
+    }
+    [data-theme="dark"] .dropdown-item{ color:#e5edf7 !important; }
+    [data-theme="dark"] .dropdown-item:hover,
+    [data-theme="dark"] .dropdown-item:focus{
+      background:var(--soft-hover);
+      color:#ffffff !important;
+    }
+
+    [data-theme="white"] #themeMenuBtn{
+      background:#ffffff;
+      border-color:#2563eb;
+      color:#1e3a8a;
+    }
+    [data-theme="white"] .dropdown-item{ color:#0f172a !important; }
+
+    /* Panel principal de Biblias: fondo oscuro con texto claro */
+    #biblePanel{
+      background:#101827;
+      border:1px solid #29364d;
+      border-radius:10px;
+      padding:1rem;
+    }
+    #biblePanel .passage-text,
+    #biblePanel .orig-text,
+    #biblePanel .fw-semibold{
+      color:#f8fafc;
+    }
+    #biblePanel .verse-num{
+      color:#93c5fd;
     }
 
     .theme-dot{
