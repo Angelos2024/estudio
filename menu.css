@@ -1,6 +1,17 @@
+.search-input-wrap{
+  position:relative;
+  min-width: 0;
+}
+
+.search-input-wrap #searchInput{
+  padding-right:2.6rem;
+}
 .book-menu-wrap{
-  position: relative;
-  display:flex;
+ position: absolute;
+  top:50%;
+  right:.35rem;
+  transform:translateY(-50%);
+    display:flex;
   align-items:center;
 }
 
@@ -26,8 +37,9 @@
 
 .book-menu-dropdown{
   position:absolute;
-  top:calc(100% + .45rem);
-  right:0;
+  top:calc(100% + .55rem);
+  left:50%;
+  transform:translateX(-50%);
   width:min(760px,92vw);
   background:#fff;
   border:1px solid #d1d5db;
@@ -113,4 +125,5 @@
 
 @media (max-width: 992px){
   .book-menu-grid{ grid-template-columns:1fr; }
+    .book-menu-dropdown{ width:min(760px,96vw); }
 }

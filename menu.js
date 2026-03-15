@@ -37,7 +37,13 @@
     const resp = await fetch(`./librosRV1960/${slug}.json`);
     if(!resp.ok) return 0;
     const json = await resp.json();
-    const count = Array.isArray(json?.chapters) ? json.chapters.length : 0;
+ let count = 0;
+
+    if(Array.isArray(json?.chapters)){
+      count = json.chapters.length;
+    }else if(json && typeof json === 'object'){
+      count = Object.keys(json).filter((key) => /^\d+$/.test(key)).length;
+    }
     chapterCache.set(slug, count);
     return count;
   }
