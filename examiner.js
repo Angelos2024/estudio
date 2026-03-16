@@ -83,6 +83,49 @@ const BOOK_INDEX = new Map(OT_BOOKS.map((book, index) => [book, index]));
     const segmented = splitHebrewPrefixClusters(token, map);
     return segmented.length > 1 ? segmented : [token];
   }
+function buildHebrewMorphVariantKeys(token){
+    const pointed = normalizeToken(token, true);
+    const baseKey = normalizeToken(token);
+    if(!baseKey) return [];
+
+    const suffixes = [
+      'יכם','יכן','יהם','יהן','כם','כן','הם','הן',
+      'ינו','נו','ני','יך','ייך','יו','יה',
+      'ות','ים','תי','תם','תן','ת',
+      'י','ך','ו','ה','ם','ן'
+    ];
+
+    const all = new Set([baseKey]);
+    const queue = [baseKey];
+
+    for(let depth = 0; depth < 2 && queue.length; depth++){
+      const level = [...queue];
+      queue.length = 0;
+      for(const current of level){
+        for(const suffix of suffixes){
+          if(!current.endsWith(suffix)) continue;
+          const candidate = current.slice(0, -suffix.length);
+          if(candidate.length < 2 || all.has(candidate)) continue;
+          all.add(candidate);
+          queue.push(candidate);
+        }
+
+        if(current.length >= 3 && ['ו','ב','כ','ל','מ','ש'].includes(current[0])){
+          const noPrefix = current.slice(1);
+          if(noPrefix.length >= 2 && !all.has(noPrefix)){
+            all.add(noPrefix);
+            queue.push(noPrefix);
+          }
+        }
+
+        if(current.endsWith('י')) all.add(`${current.slice(0, -1)}ים`);
+        if(current.endsWith('ת')) all.add(`${current.slice(0, -1)}ה`);
+      }
+    }
+
+    if(/^מ/.test(pointed) && baseKey.length >= 3) all.add(baseKey.slice(1));
+    return [...all];
+  }
 
   function setGlossCandidate(map, key, gloss, score){
     if(!key) return;
@@ -135,6 +178,10 @@ const BOOK_INDEX = new Map(OT_BOOKS.map((book, index) => [book, index]));
     const plain = normalizeToken(token);
     if(pointed && maps.pointedMap.has(pointed)) return maps.pointedMap.get(pointed);
     if(plain && maps.unpointedMap.has(plain)) return maps.unpointedMap.get(plain);
+    const variants = buildHebrewMorphVariantKeys(token);
+    for(const variant of variants){
+      if(maps.unpointedMap.has(variant)) return maps.unpointedMap.get(variant);
+    }
     return '-';
   }
 

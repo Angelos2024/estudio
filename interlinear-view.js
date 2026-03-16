@@ -247,7 +247,90 @@ const head = remaining.match(/^([\u05D0-\u05EA][\u0591-\u05AF\u05B0-\u05BC\u05BD
     if(remaining) parts.push(remaining);
     return parts;
   }
+function buildHebrewMorphVariantKeys(token){
+    const pointed = normalizeToken(token, true, false, true);
+    const baseKey = normalizeToken(token, true);
+    if(!baseKey) return [];
 
+    const minLen = 2;
+    const suffixes = [
+      'יכם','יכן','יהם','יהן','כם','כן','הם','הן',
+      'ינו','נו','ני',
+      'ייך','יך',
+      'יו','יה','יהו','הו',
+      'ות','ים','ין','ון',
+      'תי','תם','תן','ת',
+      'י','ך','ו','ה','ם','ן'
+    ];
+
+    const initialVariants = [baseKey];
+
+    const addPrefixVariant = (value, collection) => {
+      if(!value || value.length < 2) return;
+      const first = value[0];
+      const rest = value.slice(1);
+      if(rest.length < minLen) return;
+
+      const inseparable = new Set(['ו', 'ב', 'כ', 'ל', 'ש']);
+      if(inseparable.has(first)) collection.push(rest);
+
+      if(first === 'מ') collection.push(rest);
+    };
+
+    const deriveConstructVariant = (value, collection) => {
+      if(!value || value.length < 3) return;
+      if(value.endsWith('י')){
+        collection.push(value.slice(0, -1) + 'ים');
+      }
+      if(value.endsWith('ת')){
+        collection.push(value.slice(0, -1) + 'ה');
+      }
+    };
+
+    const all = new Set();
+    const queue = [...initialVariants];
+
+    for(let depth = 0; depth < 2 && queue.length; depth++){
+      const level = [...queue];
+      queue.length = 0;
+      for(const current of level){
+        if(!current || all.has(current)) continue;
+        all.add(current);
+
+        for(const suffix of suffixes){
+          if(current.endsWith(suffix)){
+            const candidate = current.slice(0, -suffix.length);
+            if(candidate.length >= minLen && !all.has(candidate)) queue.push(candidate);
+          }
+        }
+
+        const prefCandidates = [];
+        addPrefixVariant(current, prefCandidates);
+        deriveConstructVariant(current, prefCandidates);
+        for(const candidate of prefCandidates){
+          if(candidate.length >= minLen && !all.has(candidate)) queue.push(candidate);
+        }
+      }
+    }
+
+    if(pointed){
+      if(/^ו[ְֵֶַָֻּ]/.test(pointed) && baseKey.length >= 3){
+        all.add(baseKey.slice(1));
+      }
+      if(/^[בכל][ַָּ]/.test(pointed) && baseKey.length >= 3){
+        const noPrefix = baseKey.slice(1);
+        if(noPrefix.length >= minLen){
+          all.add(noPrefix);
+          all.add(`ה${noPrefix}`);
+        }
+      }
+      if(/^מ[ִֵּ]/.test(pointed) && baseKey.length >= 3){
+        all.add(baseKey.slice(1));
+      }
+    }
+
+    return [...all];
+  }
   function expandTokenForLookup(token, map, fallbackMap = null){
       const directKey = normalizeToken(token, true);
     if(map.has(directKey) || fallbackMap?.has(directKey)) return [token];
@@ -285,8 +368,15 @@ async function getTrilingueFallback(){
       const plainKey = normalizeToken(token, true);
       if(pointedKey && map.pointedMap?.has(pointedKey)) return map.pointedMap.get(pointedKey);
       if(plainKey && map.unpointedMap?.has(plainKey)) return map.unpointedMap.get(plainKey);
+      const morphVariants = buildHebrewMorphVariantKeys(token);
+      for(const variant of morphVariants){
+        if(map.unpointedMap?.has(variant)) return map.unpointedMap.get(variant);
+      }
       if(pointedKey && trilingueFallback?.pointedMap?.has(pointedKey)) return trilingueFallback.pointedMap.get(pointedKey);
       if(plainKey && trilingueFallback?.unpointedMap?.has(plainKey)) return trilingueFallback.unpointedMap.get(plainKey);
+      for(const variant of morphVariants){
+        if(trilingueFallback?.unpointedMap?.has(variant)) return trilingueFallback.unpointedMap.get(variant);
+      }
       return '-';
     }
 
