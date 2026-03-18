@@ -451,9 +451,6 @@ const matches = findMatchesByLanguageOrder(terms);
      const prioritized = selectPrioritizedMatches(matches, detectedLang, 3, 4);
     const renderedEntries = prioritized.map((entry, index) => {
       const entryLang = entry?.__lang || detectEntryLang(entry);
-      const isHebrewText = entryLang === 'he';
-      const sourceLabel = isHebrewText ? 'Texto hebreo' : 'Texto griego';
-      const sourceClass = isHebrewText ? 'hebrew' : 'greek';
       const sourceTextValue = getSourceText(entry) || sourceText || '—';
       const normalizedSource = normalizeSourceDisplay(sourceTextValue, entryLang) || '—';
       const spanish = getSpanishTexts(entry)[0] || '—';
@@ -461,23 +458,25 @@ const matches = findMatchesByLanguageOrder(terms);
       const definicion = String(entry?.observacion || '').trim() || '—';
       const book = String(entry?.book || 'Sin contexto').trim() || 'Sin contexto';
 
-     const contextLine = `<div class="trilingual-line"><strong>Contexto:</strong> ${esc(book)}</div>`;
+      
+            const contextLine = `<div class="trilingual-line"><strong>Contexto:</strong> ${esc(book)}</div>`;
       const details = index === 0
         ? `
-          ${contextLine}
-          <div class="trilingual-line"><strong>${sourceLabel}:</strong> <span class="${sourceClass}">${esc(sourceTextValue)}</span></div>
           <div class="trilingual-line"><strong>Transliteración:</strong> ${esc(transliteracion)}</div>
           <div class="trilingual-line"><strong>Equivalencia español:</strong> ${esc(spanish)}</div>
-          <div class="trilingual-line"><strong>Fuente normalizada:</strong> <span class="${sourceClass}">${esc(normalizedSource)}</span></div>
+           <div class="trilingual-line"><strong>Fuente normalizada:</strong> ${esc(normalizedSource)}</div>
+          ${contextLine}
           <div class="trilingual-line"><strong>Definición:</strong> ${esc(definicion).replace(/\n/g, '<br>')}</div>
         `
-        : '';
+        : `
+          ${contextLine}
+          <div class="trilingual-line"><strong>Definición:</strong> ${esc(definicion).replace(/\n/g, '<br>')}</div>
+            `;
 
       return `
         <div class="dict-entry${index ? ' mt-3' : ''}">
           ${details}
-          ${index === 0 ? '' : contextLine}
-       </div>
+        </div>
       `;
     }).join('');
 
@@ -486,11 +485,11 @@ const matches = findMatchesByLanguageOrder(terms);
         <div class="dict-entry-header">
           <div class="dict-entry-kicker">Diccionario · Prof. Eric de Jesús Rodríguez Mendoza</div>
         </div>
-
-         ${renderedEntries || `
-          <div class="trilingual-line"><strong>${detectedLang === 'he' ? 'Texto hebreo' : 'Texto griego'}:</strong> <span class="${detectedLang === 'he' ? 'hebrew' : 'greek'}">${esc(sourceText || '—')}</span></div>
-        `}
-      </div>
+        <div class="trilingual-line"><strong>${sourceLabel}:</strong> <span class="${sourceClass}">${esc(sourceText || '—')}</span></div>
+        <div class="trilingual-line"><strong>Transliteración:</strong> ${esc(transliteracion)}</div>
+        <div class="trilingual-line"><strong>Equivalencia español:</strong> ${esc(spanish)}</div>
+        <div class="trilingual-line"><strong>Definición:</strong> ${esc(definicion).replace(/\n/g, '<br>')}</div>
+              </div>
     `;
   }
 
