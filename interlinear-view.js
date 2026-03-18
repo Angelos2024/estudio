@@ -80,7 +80,7 @@
       rankedMap.set(key, { gloss: normalized, score });
     }
   }
-}
+
 
 function getHebrewTokenLookupForms(orig){
     if(Array.isArray(orig)){

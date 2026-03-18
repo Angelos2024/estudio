@@ -1905,171 +1905,255 @@
     "observacion": "Se refiere tanto al grupo de personas que viven en un tiempo como a los residentes de un estado espiritual."
   },
   {
-    "id": 115,
-    "texto_hebreo": "הוֹלֵךְ",
-    "transliteracion": "Holej",
-    "equivalencia_espanol": "andar; caminar; ir a pie",
-    "observacion": "Relacionado con la idea de Halajáh o procedimiento; indica la forma en que Hashem actúa de manera completa."
+    "id": 285,
+    "texto_hebreo": "הֲלָכָה",
+    "transliteracion": "Halajáh",
+    "equivalencia_espanol": "procedimiento; caminar; conducta",
+    "observacion": "Deriva del verbo andar (Holej); se refiere al modo de actuar completo y perfecto de Hashem."
   },
   {
-    "id": 116,
-    "texto_hebreo": "תָּמִים",
-    "transliteracion": "Tamim",
-    "equivalencia_espanol": "completo; íntegro; perfecto",
-    "observacion": "Atributo de lo que no le falta ni le sobra nada, como el sacrificio o la obra de la Roca."
+    "id": 286,
+    "texto_hebreo": "יָגוּר",
+    "transliteracion": "Yagur",
+    "equivalencia_espanol": "residir; habitar",
+    "observacion": "Utilizado para preguntar quién tiene el mérito de habitar en la morada celestial."
   },
   {
-    "id": 117,
-    "texto_hebreo": "פֹּעֵל",
-    "transliteracion": "Po'el",
-    "equivalencia_espanol": "activista; procurador; el que obra",
-    "observacion": "Se refiere a Hashem como ejecutor del estado ideal o del deber ser."
+    "id": 287,
+    "texto_hebreo": "שְׁבוּת",
+    "transliteracion": "Shevut",
+    "equivalencia_espanol": "cautividad; cautiverio",
+    "observacion": "Se refiere al estado del cual Hashem hace volver a su pueblo para traer gozo."
   },
   {
-    "id": 118,
-    "texto_hebreo": "צֶדֶק",
-    "transliteracion": "Tzédeq",
-    "equivalencia_espanol": "justicia; estado ideal; deber ser",
-    "observacion": "Representa el orden correcto de las cosas según la Torah, distinto a la Tzdaqáh de salvación."
+    "id": 288,
+    "texto_hebreo": "שָׂמַח",
+    "transliteracion": "Samaj",
+    "equivalencia_espanol": "alegrarse; estar alegre",
+    "observacion": "La reacción de Yisra'el ante la restauración y la salvación que viene de Tzyión."
   },
   {
-    "id": 119,
-    "texto_hebreo": "מִצְוֹת",
-    "transliteracion": "Mitzvot",
-    "equivalencia_espanol": "procedimientos; mandamientos",
-    "observacion": "Herramientas a través de la Torah para alcanzar el deber ser de las cosas."
+    "id": 289,
+    "texto_hebreo": "גִּיל",
+    "transliteracion": "Guil",
+    "equivalencia_espanol": "gozarse; regocijarse",
+    "observacion": "Estado de júbilo profundo que experimenta Ya'aqov al ver la obra de Hashem."
   },
   {
-    "id": 120,
-    "texto_hebreo": "צְדָקָה",
-    "transliteracion": "Tzdaqáh",
-    "equivalencia_espanol": "justicia (para salvación)",
-    "observacion": "Acepción de justicia que otorga Hashem y que salta para vida eterna."
+    "id": 290,
+    "texto_hebreo": "אֵשׁ",
+    "transliteracion": "Esh",
+    "equivalencia_espanol": "fuego",
+    "observacion": "Elemento de juicio y santidad que consumió a quienes intentaron acercarse sin habilitación."
   },
   {
-    "id": 121,
-    "texto_hebreo": "אֱמֶת",
-    "transliteracion": "'Emet",
-    "equivalencia_espanol": "verdad; inmutable; lo que no cambia",
-    "observacion": "Nombre y esencia de Hashem y de la Torah; aquello que permanece firme en los cielos."
+    "id": 291,
+    "texto_hebreo": "חֶרֶב",
+    "transliteracion": "Jerev",
+    "equivalencia_espanol": "espada",
+    "observacion": "Símbolo de la restricción que impedía al hombre el ingreso al árbol de la vida."
   },
   {
-    "id": 122,
-    "texto_hebreo": "עוֹלָם",
-    "transliteracion": "'Olam",
-    "equivalencia_espanol": "eternidad; tiempo escondido",
-    "observacion": "Referencia a la duración de la promesa de la tierra y la vida eterna."
+    "id": 292,
+    "texto_hebreo": "כּוֹר",
+    "transliteracion": "Kor",
+    "equivalencia_espanol": "horno",
+    "observacion": "Metáfora de la presencia de Dios en Yerushalayim, ligada a la luz y el fuego purificador."
   },
   {
-    "id": 123,
-    "texto_hebreo": "בַּר",
-    "transliteracion": "Bar",
-    "equivalencia_espanol": "hijo",
-    "observacion": "Componente del título para el Mesías que vino a buscar lo perdido."
+    "id": 293,
+    "texto_hebreo": "אוֹר",
+    "transliteracion": "Or",
+    "equivalencia_espanol": "luz",
+    "observacion": "Atributo de la presencia divina en Tzyión que acompaña al fuego de Su santidad."
   },
   {
-    "id": 124,
-    "texto_hebreo": "אֱנָשׁ",
-    "transliteracion": "'Enash",
-    "equivalencia_espanol": "hombre; humano",
-    "observacion": "Componente que denota la naturaleza humana o el aspecto mortal."
+    "id": 294,
+    "texto_hebreo": "לָשׁוֹן",
+    "transliteracion": "Lashon",
+    "equivalencia_espanol": "lengua",
+    "observacion": "Órgano de la comunicación; se enfatiza que Hashem no 'camina' sobre ella hablando de más."
   },
   {
-    "id": 125,
-    "texto_hebreo": "חֶרְפָּה",
-    "transliteracion": "Hervah",
-    "equivalencia_espanol": "vituperio; afrenta; deshonra",
-    "observacion": "Tiene la connotación de restar, extraer o socavar los fundamentos del prójimo."
+    "id": 295,
+    "texto_hebreo": "רֵעַ",
+    "transliteracion": "Re'a",
+    "equivalencia_espanol": "prójimo; amigo",
+    "observacion": "Aquel a quien Hashem no hace mal; en sentido multidimensional representa a Yisra'el."
   },
   {
-    "id": 126,
-    "texto_hebreo": "צָרַעַת",
-    "transliteracion": "Tzara'at",
-    "equivalencia_espanol": "inhabilitación; afección de piel",
-    "observacion": "Mencionada en el contexto del mendigo Eleazar como una condición de padecimiento físico."
+    "id": 296,
+    "texto_hebreo": "כֶּסֶף",
+    "transliteracion": "Kesef",
+    "equivalencia_espanol": "plata; Torah; riqueza",
+    "observacion": "Se asocia con la pureza de la instrucción divina que no se da por interés humano."
   },
   {
-    "id": 127,
-    "texto_hebreo": "צִיּוֹן",
-    "transliteracion": "Tzyión",
-    "equivalencia_espanol": "Sión",
-    "observacion": "Lugar desde donde sale la salvación de Yisra'el; asociado con la luz divina."
+    "id": 297,
+    "texto_hebreo": "שֹׁחַד",
+    "transliteracion": "Shojad",
+    "equivalencia_espanol": "soborno; cohecho",
+    "observacion": "Práctica corrupta que Hashem rechaza categóricamente al juzgar al limpio."
   },
   {
-    "id": 128,
-    "texto_hebreo": "יַעֲקֹב",
-    "transliteracion": "Ya'aqov",
-    "equivalencia_espanol": "Jacob",
-    "observacion": "Referencia específica al pueblo hebreo que es de nacimiento."
+    "id": 298,
+    "texto_hebreo": "נָקִי",
+    "transliteracion": "Naqi",
+    "equivalencia_espanol": "limpio; inocente",
+    "observacion": "Aquel que está libre de culpa y contra quien no se acepta soborno."
   },
   {
-    "id": 129,
-    "texto_hebreo": "יִשְׂרָאֵל",
-    "transliteracion": "Yisra'el",
-    "equivalencia_espanol": "Israel",
-    "observacion": "Pueblo de Hashem que incluye tanto al remanente de Ya'aqov como a los gentiles."
+    "id": 299,
+    "texto_hebreo": "כּוֹס",
+    "transliteracion": "Kos",
+    "equivalencia_espanol": "copa",
+    "observacion": "Símbolo de la porción o el destino que Hashem mismo representa para el creyente."
   },
   {
-    "id": 130,
-    "texto_hebreo": "אֹהֶל",
-    "transliteracion": "'Ohel",
-    "equivalencia_espanol": "tienda",
-    "observacion": "Usada metafóricamente para referirse a los cielos como morada celestial."
+    "id": 300,
+    "texto_hebreo": "עָפָר",
+    "transliteracion": "Afar",
+    "equivalencia_espanol": "polvo",
+    "observacion": "Indica la naturaleza transitoria y frágil del ser humano en este universo."
   },
   {
-    "id": 131,
-    "texto_hebreo": "מִי",
-    "transliteracion": "Mi",
-    "equivalencia_espanol": "quién; nadie; de dónde",
-    "observacion": "Interrogativo que también denota la pertenencia geográfica o la nulidad de méritos humanos."
+    "id": 301,
+    "texto_hebreo": "חָצִיר",
+    "transliteracion": "Jatzir",
+    "equivalencia_espanol": "hierba; heno",
+    "observacion": "Metáfora de la brevedad de la vida humana que se seca y cae."
   },
   {
-    "id": 132,
-    "texto_hebreo": "שָׁכֵן",
-    "transliteracion": "Shajan",
-    "equivalencia_espanol": "residir; habitar con confianza",
-    "observacion": "Acción de permanecer frecuentemente en un lugar sin que nada cause daño."
+    "id": 302,
+    "texto_hebreo": "כָּבוֹד",
+    "transliteracion": "Kavod",
+    "equivalencia_espanol": "gloria; honor",
+    "observacion": "La manifestación del poder de Hashem de la cual somos instrumentos."
   },
   {
-    "id": 133,
-    "texto_hebreo": "הַר",
-    "transliteracion": "Har",
-    "equivalencia_espanol": "monte; montaña; doctrina",
-    "observacion": "Representa el cuerpo doctrinal o la voluntad divina en el lenguaje profético."
+    "id": 303,
+    "texto_hebreo": "רוּחַ",
+    "transliteracion": "Ruaj",
+    "equivalencia_espanol": "viento; espíritu; pensamiento",
+    "observacion": "Puede referirse a vientos carnales o pensamientos que intentan desviar al hombre de los mandamientos."
   },
   {
-    "id": 134,
-    "texto_hebreo": "קֹדֶשׁ",
-    "transliteracion": "Qódesh",
-    "equivalencia_espanol": "santidad; santificado",
-    "observacion": "Atributo esencial de Hashem sin el cual nadie puede agradarle."
+    "id": 304,
+    "texto_hebreo": "בָּרוּךְ",
+    "transliteracion": "Baruj",
+    "equivalencia_espanol": "bendito",
+    "observacion": "Expresión de alabanza y reconocimiento a la soberanía de YHWH."
   },
   {
-    "id": 135,
+    "id": 305,
+    "texto_hebreo": "תְּהִלִּים",
+    "transliteracion": "Tehilim",
+    "equivalencia_espanol": "alabanzas; maravillas; salmos",
+    "observacion": "Nombre del libro que contiene los himnos y las maravillas de la obra de Dios."
+  },
+  {
+    "id": 306,
+    "texto_hebreo": "שָׁמְרֵנִי",
+    "transliteracion": "Shomreni",
+    "equivalencia_espanol": "guárdame; vigílame",
+    "observacion": "Petición imperativa para no salirse de la guardia o del cerco de los mandamientos de Dios[cite: 114, 235]."
+  },
+  {
+    "id": 307,
+    "texto_hebreo": "טוֹבָתִי",
+    "transliteracion": "Tobati",
+    "equivalencia_espanol": "mi bienestar; mi bien",
+    "observacion": "Forma específica que enfatiza que el beneficio personal reside únicamente dentro de la jurisdicción de Hashem[cite: 130, 134]."
+  },
+  {
+    "id": 308,
+    "texto_hebreo": "כֶּתֶן",
+    "transliteracion": "Keten",
+    "equivalencia_espanol": "oro (variante)",
+    "observacion": "Variante ortográfica de Kétem utilizada en el análisis de las posibles raíces de la palabra Mijtam[cite: 215, 218]."
+  },
+  {
+    "id": 309,
+    "texto_hebreo": "קְדוֹשִׁים",
+    "transliteracion": "Qadoshim",
+    "equivalencia_espanol": "santos; distinguidos",
+    "observacion": "Se refiere a los que se han refugiado en Hashem y viven dentro de los mandamientos[cite: 154, 157]."
+  },
+  {
+    "id": 310,
+    "texto_hebreo": "אֶרֶץ",
+    "transliteracion": "Eretz",
+    "equivalencia_espanol": "tierra",
+    "observacion": "El lugar físico donde residen los santos y donde se manifiestan los poderosos de Hashem[cite: 157]."
+  },
+  {
+    "id": 311,
+    "texto_hebreo": "דָּם",
+    "transliteracion": "Dam",
+    "equivalencia_espanol": "sangre",
+    "observacion": "Elemento prohibido para las libaciones bíblicas por ser símbolo del pecado, pero usado por los gentiles[cite: 168, 178, 181]."
+  },
+  {
+    "id": 312,
+    "texto_hebreo": "מֵם",
+    "transliteracion": "Mem",
+    "equivalencia_espanol": "letra M",
+    "observacion": "Letra hebrea mencionada en el contexto de las variaciones de sonido y reescritura de palabras bíblicas[cite: 214]."
+  },
+  {
+    "id": 313,
     "texto_hebreo": "בֵּית",
-    "transliteracion": "Beyt",
-    "equivalencia_espanol": "casa",
-    "observacion": "Estructura que conforma el lugar de santificación."
+    "transliteracion": "Beit",
+    "equivalencia_espanol": "letra B",
+    "observacion": "Mencionada como parte de los intercambios fonéticos posibles en la lengua bíblica[cite: 214]."
   },
   {
-    "id": 136,
-    "texto_hebreo": "מִקְדָּשׁ",
-    "transliteracion": "Miqdash",
-    "equivalencia_espanol": "santificatorio; santuario",
-    "observacion": "Lugar dedicado a la presencia y el servicio divino."
+    "id": 314,
+    "texto_hebreo": "פֵּה",
+    "transliteracion": "Pe",
+    "equivalencia_espanol": "letra P",
+    "observacion": "Citada como una de las consonantes que puede presentar variaciones en construcciones gramaticales antiguas[cite: 214]."
   },
   {
-    "id": 137,
-    "texto_hebreo": "הֵיכָל",
-    "transliteracion": "Heyjal",
-    "equivalencia_espanol": "palacio; templo",
-    "observacion": "El edificio central del servicio sagrado en Yerushalayim."
+    "id": 315,
+    "texto_hebreo": "דָּלֶת",
+    "transliteracion": "Dalet",
+    "equivalencia_espanol": "letra D",
+    "observacion": "Letra identificada en el análisis de las disonancias y variaciones de sonidos en el texto hebreo[cite: 214]."
   },
   {
-    "id": 138,
-    "texto_hebreo": "מִשְׁמֶרֶת",
-    "transliteracion": "Mishmeret",
-    "equivalencia_espanol": "guardia; vigilancia; espalda",
-    "observacion": "Habilitación divina que permitía acercarse sin morir; el acompañamiento de Dios."
+    "id": 316,
+    "texto_hebreo": "מָסוֹרָה",
+    "transliteracion": "Masora",
+    "equivalencia_espanol": "tradición; texto masorético",
+    "observacion": "Punto de referencia y base del texto hebreo, aunque se considera accidentado en ciertos pasajes[cite: 138, 142]."
+  },
+  {
+    "id": 317,
+    "texto_hebreo": "מֵת",
+    "transliteracion": "Met",
+    "equivalencia_espanol": "muerto; difunto",
+    "observacion": "Concepto aplicado a los ídolos o guardianes de los gentiles, a quienes Hashem considera sin vida[cite: 166, 188]."
+  },
+  {
+    "id": 318,
+    "texto_hebreo": "תַּרְגּוּם",
+    "transliteracion": "Targum",
+    "equivalencia_espanol": "traducción; interpretación",
+    "observacion": "Referencia a la versión aramea utilizada para contrastar y dar sentido armónico al texto bíblico[cite: 139]."
+  },
+  {
+    "id": 319,
+    "texto_hebreo": "קוּמְרָאן",
+    "transliteracion": "Qumram",
+    "equivalencia_espanol": "Qumrán",
+    "observacion": "Referencia a los rollos antiguos que sirven como fuente para filtrar y catalizar el sentido del texto[cite: 139]."
+  },
+  {
+    "id": 320,
+    "texto_hebreo": "נְסָכִים",
+    "transliteracion": "Nesajim",
+    "equivalencia_espanol": "libaciones",
+    "observacion": "Plural de Nesej; se refiere a los vertimientos rituales que el autor se niega a realizar para deidades ajenas[cite: 168]."
   }
 ]
