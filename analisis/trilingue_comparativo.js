@@ -752,8 +752,7 @@ async function ensureRkantNtLoaded() {
         ];
                 const payloads = await Promise.all(files.map(name =>
             fetchJsonWithFallback([
-                `../dic/trilingueNT/${name}`,
-                `/dic/trilingueNT/${name}`
+        `../dic/trilingueNT/${name}`
             ]).catch(() => [])
         ));
         RKANT_NT_STATE.entries = payloads.flat().filter(entry => entry && typeof entry === 'object').map(entry => ({
@@ -897,10 +896,10 @@ if (HEBREW_DICT_STATE.loaded || HEBREW_DICT_STATE.loadAttempted) return HEBREW_D
     }
         try {
         const [entriesData, indexData, lexicoData, unifiedData] = await Promise.all([
-             loadOptionalJson(['../dic/hebrewdic.json', '/dic/hebrewdic.json'], []),
-            loadOptionalJson(['../dic/diccionario_index_by_lemma.json', '/dic/diccionario_index_by_lemma.json'], {}),
-            loadOptionalJson(['../diccionario/lexico_hebreo.json', '/diccionario/lexico_hebreo.json'], []),
-            loadOptionalJson(['../diccionario/diccionario_unificado.min.json', '/diccionario/diccionario_unificado.min.json'], [])
+             loadOptionalJson(['../dic/hebrewdic.json'], []),
+            loadOptionalJson(['../dic/diccionario_index_by_lemma.json'], {}),
+            loadOptionalJson(['../diccionario/lexico_hebreo.json'], []),
+            loadOptionalJson(['../diccionario/diccionario_unificado.min.json'], [])
         ]);
 
         HEBREW_DICT_STATE.entries = Array.isArray(entriesData) ? entriesData : [];

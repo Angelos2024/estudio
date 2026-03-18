@@ -140,9 +140,7 @@ return Array.from(new Set(words));
     if (hebrewRootsIndex) return hebrewRootsIndex;
     if (!hebrewRootsPromise) {
       hebrewRootsPromise = fetchJsonWithFallback([
-        '../dic/hebrew_roots.json',
-        './dic/hebrew_roots.json',
-        '/dic/hebrew_roots.json'
+          '../dic/hebrew_roots.json'
       ]).then((payload) => {
         const entries = Array.isArray(payload) ? payload : [];
         const index = new Map();

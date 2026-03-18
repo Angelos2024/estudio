@@ -253,17 +253,25 @@
       max-width:100%;
     }
     .root-ref-link{
-      display:inline;
-      padding:0;
+ display:inline-flex;
+      align-items:center;
+      gap:.1rem;
+      padding:.08rem .22rem;
       border:none;
+      border-radius:6px;
       background:transparent;
       color:inherit;
       cursor:pointer;
-      text-decoration:underline;
-      text-underline-offset:2px;
+      text-decoration:none;
+      box-shadow:none;
+      transition:background-color .18s ease, color .18s ease, box-shadow .18s ease;
     }
-    .root-ref-link:hover{
+    .root-ref-link:hover,
+    .root-ref-link:focus-visible{
       color:var(--primary);
+      background:color-mix(in srgb, var(--primary) 10%, #ffffff);
+      box-shadow:0 0 0 1px color-mix(in srgb, var(--primary) 28%, #ffffff);
+      outline:none;
     }
     .dict-entry{
       padding:.35rem 0;
@@ -347,9 +355,10 @@
 
  .dictionary-comparison-wrap{
       border:1px solid color-mix(in srgb, var(--text) 15%, #ffffff);
-      border-radius:12px;
+      border-radius:14px;
       overflow:hidden;
       background:#ffffff;
+            box-shadow:0 10px 28px rgba(15, 23, 42, .06);
     }
     .dictionary-comparison-table thead th{
       background:color-mix(in srgb, var(--soft-bg) 70%, #ffffff);
@@ -362,6 +371,12 @@
     .dictionary-comparison-table td{
       vertical-align:top;
       background:#ffffff;
+      font-family:'Inter','Segoe UI',Tahoma,Arial,sans-serif;
+      color:#172033;
+    }
+    .dictionary-comparison-table tbody td{
+      line-height:1.72;
+      font-size:.98rem;
     }
 
     [data-theme="cream"] .trilingual-brief{
@@ -502,28 +517,45 @@
      
   
     .results-table th, .results-table td{ vertical-align:middle; text-align:center; }
-    .results-table td.he{ direction:rtl; unicode-bidi:plaintext; font-family:'SBL Hebrew','Ezra SIL','Times New Roman',serif; font-size:1.08rem; text-align:center; }
-    .results-table td.gr{ font-family:'Gentium Plus','SBL Greek','Times New Roman',serif; font-size:1.05rem; text-align:center; }
+    .results-table tbody td{
+      background:#ffffff;
+      color:#172033;
+      font-family:'Inter','Segoe UI',Tahoma,Arial,sans-serif;
+      padding:.85rem .75rem;
+      line-height:1.55;
+    }
+    .results-table td.he{ direction:rtl; unicode-bidi:plaintext; font-family:'SBL Hebrew','Ezra SIL','Times New Roman',serif; font-size:1.22rem; text-align:center; background:#ffffff; }
+    .results-table td.gr{ font-family:'Gentium Plus','SBL Greek','Times New Roman',serif; font-size:1.16rem; text-align:center; background:#ffffff; color:#1e3a8a; }
     .results-table td.gr.justify-long-greek{ text-align:justify; text-justify:inter-word; }
-    .results-table td.es{ font-size:.95rem; text-align:center; }
-    .results-scroll{ max-height:520px; overflow:auto; border:1px solid #000000; border-radius:12px; background:#fff; }
-    .results-table thead th{ text-align:center; border-bottom:1px solid #000000; }
+     .results-table td.es{ font-size:1rem; text-align:center; font-weight:500; }
+    .results-scroll{ max-height:520px; overflow:auto; border:1px solid #d6dce5; border-radius:14px; background:#fff; box-shadow:0 10px 28px rgba(15, 23, 42, .05); }
+    .results-table thead th{ text-align:center; border-bottom:1px solid #cfd8e3; background:#f8fafc; color:#334155; font-weight:700; letter-spacing:.01em; padding:.82rem .75rem; }
     .results-table th + th,
-    .results-table td + td{ border-left:1px solid #000000; }
-    .results-table tbody tr + tr td{ border-top:1px solid color-mix(in srgb, var(--text) 10%, #ffffff); }
+ .results-table td + td{ border-left:1px solid #e2e8f0; }
+    .results-table tbody tr:nth-child(even) td{ background:#f8fbff; }
+    .results-table tbody tr:hover td{ background:#f3f7fd; }
+        .results-table tbody tr + tr td{ border-top:1px solid color-mix(in srgb, var(--text) 10%, #ffffff); }
 .result-word{
+    display:inline-flex;
+      align-items:center;
       border:none;
       background:transparent;
       color:inherit;
-      padding:0;
-      margin:0 .2rem 0 0;
-      line-height:1.45;
-      display:inline;
+      padding:.08rem .22rem;
+      margin:0 .16rem .08rem 0;
+      line-height:1.5;
       cursor:pointer;
+   text-decoration:none;
+      border-radius:6px;
+      transition:background-color .18s ease, color .18s ease, box-shadow .18s ease;
     }
-    .result-word:hover{
-      text-decoration:underline;
-      text-underline-offset:2px;
+    .result-word:hover,
+    .result-word:focus-visible{
+      text-decoration:none;
+      color:#0f172a;
+      background:#e8f0fb;
+      box-shadow:0 0 0 1px rgba(37,99,235,.22);
+      outline:none;
     }
 .result-word.is-active{
   background:#ffffff;

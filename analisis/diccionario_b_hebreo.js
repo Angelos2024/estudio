@@ -71,9 +71,9 @@
   async function ensureLoaded() {
     if (state.loaded) return state;
     const [entriesData, indexData, unifiedData] = await Promise.all([
-       fetchJsonWithFallback(['../dic/hebrewdic.json', './dic/hebrewdic.json', './hebrewdic.json', '/dic/hebrewdic.json']),
-      fetchJsonWithFallback(['../dic/diccionario_index_by_lemma.json', './dic/diccionario_index_by_lemma.json', './diccionario_index_by_lemma.json', '/dic/diccionario_index_by_lemma.json']),
-      fetchJsonWithFallback(['../diccionario/diccionario_unificado.min.json', './diccionario/diccionario_unificado.min.json', './diccionario_unificado.min.json', '/diccionario/diccionario_unificado.min.json'])
+ fetchJsonWithFallback(['../dic/hebrewdic.json']),
+      fetchJsonWithFallback(['../dic/diccionario_index_by_lemma.json']),
+      fetchJsonWithFallback(['../diccionario/diccionario_unificado.min.json'])
     ]);
 
     state.entries = Array.isArray(entriesData) ? entriesData : [];
