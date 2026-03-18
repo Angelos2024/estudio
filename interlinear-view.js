@@ -1,43 +1,42 @@
 (function(){
-  const HEBREW_DICT_PATH = './diccionario/diccionario_unificado.min.json';
-    const GREEK_DICT_PATH = './diccionario/diccionarioG_unificado.min.json';
-const TRILINGUE_BASE = './dic/trilingue/';
-  const TRILINGUE_BOOK_FILES = [
-    '01genesis.json','02Éxodo.json','03Levítico.json','04Números.json','05Deuteronomio.json','06Josué.json','07Jueces.json','08Rut.json','09Samuel1.json','10Samuel2.json',
-    '11Reyes1.json','12Reyes2.json','13Crónicas1.json','14Crónicas2.json','15Esdras.json','16Nehemías.json','17Ester.json','18Job.json','19Salmos.json','20Proverbios.json',
-    '21Eclesiastes.json','22Cantares.json','23Isaías.json','24Jeremías.json','25Lamentaciones.json','26Ezequiel.json','27Daniel.json','28Oseas.json','29Joel.json','30Amós.json',
-    '31Abdías.json','32Jonás.json','33Miqueas.json','34Nahúm.json','35Habacuc.json','36Sofonías.json','37Hageo.json','38zacarias.json','39malaquias.json'
+  const HEBREW_INTERLINEAR_BASE = './IdiomaORIGEN/interlineal';
+  const HEBREW_INTERLINEAR_BOOK_FILES = [
+    '01_Génesis.json','02_Éxodo.json','03_Levítico.json','04_Números.json','05_Deuteronomio.json','06_Josué.json','07_Jueces.json','08_Rut.json','09_1_Samuel.json','10_2_Samuel.json',
+    '11_1_Reyes.json','12_2_Reyes.json','13_1_Crónicas.json','14_2_Crónicas.json','15_Esdras.json','16_Nehemías.json','17_Ester.json','18_Job.json','19_Salmos.json','20_Proverbios.json',
+    '21_Eclesiastés.json','22_Cantares.json','23_Isaías.json','24_Jeremías.json','25_Lamentaciones.json','26_Ezequiel.json','27_Daniel.json','28_Oseas.json','29_Joel.json','30_Amós.json',
+    '31_Abdías.json','32_Jonás.json','33_Miqueas.json','34_Nahúm.json','35_Habacuc.json','36_Sofonías.json','37_Hageo.json','38_Zacarías.json','39_Malaquías.json'
   ];
+  const GREEK_DICT_PATH = './diccionario/diccionarioG_unificado.min.json';
 
   let dictionariesPromise = null;
-    let trilingueFallbackPromise = null;
 
   function normalizeToken(token, isHebrew, isGreek = false, preserveHebrewPoints = false){
     let clean = String(token || '').trim();
-     // Quita primero marcas invisibles para que no bloqueen la limpieza de puntuación final/inicial.
     clean = clean.replace(/[\u200c-\u200f\u202a-\u202e\u2066-\u2069\ufeff]/g, '');
     clean = clean
- .replace(/^[\s.,;:!?¡¿()\[\]{}"'“”‘’«»··;᾽᾿ʼʹʽ\-‐‑‒–—―]+|[\s.,;:!?¡¿()\[\]{}"'“”‘’«»··;᾽᾿ʼʹʽ\-‐‑‒–—―]+$/g, '');
-    clean = clean.replace(/[\u200c-\u200f\u202a-\u202e\u2066-\u2069\ufeff]/g, '');    
-    
+      .replace(/^[\s.,;:!?¡¿()\[\]{}"'“”‘’«»··;᾽᾿ʼʹʽ\-‐‑‒–—―]+|[\s.,;:!?¡¿()\[\]{}"'“”‘’«»··;᾽᾿ʼʹʽ\-‐‑‒–—―]+$/g, '');
+    clean = clean.replace(/[\u200c-\u200f\u202a-\u202e\u2066-\u2069\ufeff]/g, '');
+
     if(isHebrew){
-clean = clean.replace(/[\u0591-\u05AF]/g, '');
+      clean = clean.replace(/[\u0591-\u05AF]/g, '');
       if(!preserveHebrewPoints){
         clean = clean.replace(/[\u05B0-\u05BC\u05BD\u05BF\u05C1-\u05C2\u05C7]/g, '');
       }
       clean = clean.replace(/[\u05BE\u05C0\u05C3\u05C6\u05F3\u05F4]/g, '');
     }
 
-     if(isGreek){
+    if(isGreek){
       clean = clean.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     }
-    
+
     return clean.toLowerCase();
   }
-  function hasHebrewNikkud(token){
-    return /[\u05B0-\u05BC\u05BD\u05BF\u05C1-\u05C2\u05C7]/.test(String(token || ''));
-  }
 
+  function normalizeGloss(gloss){
+    const clean = String(gloss || '').replace(/\s+/g, ' ').trim();
+    if(!clean) return '-';
+    return clean;
+  }
 
   function takeFirstGloss(value){
     if(!value) return '-';
@@ -47,21 +46,7 @@ clean = clean.replace(/[\u0591-\u05AF]/g, '');
     }
     return String(value).trim() || '-';
   }
-function normalizeGloss(gloss){
-    const clean = String(gloss || '').replace(/\s+/g, ' ').trim();
-    if(!clean) return '-';
-    return clean;
-  }
- 
-function pickTrilingueGloss(row){
-    const direct = normalizeGloss(row?.equivalencia_español || row?.equivalencia_espanol);
-    if(direct && direct !== '-') return direct.split('/')[0].trim();
-    const candidates = Array.isArray(row?.candidatos) ? row.candidatos : [];
-    const firstCandidate = normalizeGloss(candidates.find((item) => String(item || '').trim()));
-    if(firstCandidate && firstCandidate !== '-') return firstCandidate;
-    return '-';
-  }
- 
+
   async function loadJson(path){
     const response = await fetch(path, { cache: 'force-cache' });
     if(!response.ok){
@@ -69,13 +54,14 @@ function pickTrilingueGloss(row){
     }
     return response.json();
   }
-function setGlossCandidate(map, key, gloss, score, usage, exactLemmaMatch = false){
-  if(!key) return;
+
+  function setGlossCandidate(map, key, gloss, score, usage, exactLemmaMatch = false){
+    if(!key) return;
     const normalizedGloss = normalizeGloss(gloss);
     if(!normalizedGloss || normalizedGloss === '-') return;
-      const prev = map.get(key);
+    const prev = map.get(key);
 
-   if(
+    if(
       !prev ||
       score > prev.score ||
       (score === prev.score && Number(exactLemmaMatch) > Number(prev.exactLemmaMatch)) ||
@@ -84,89 +70,62 @@ function setGlossCandidate(map, key, gloss, score, usage, exactLemmaMatch = fals
       map.set(key, { gloss: normalizedGloss, score, usage, exactLemmaMatch });
     }
   }
-  function buildHebrewMap(rows){
- const pointedMap = new Map();
+
+  function setHebrewInterlinearGlossCandidate(rankedMap, key, gloss, score){
+    if(!key) return;
+    const normalized = normalizeGloss(gloss);
+    if(!normalized || normalized === '-') return;
+    const previous = rankedMap.get(key);
+    if(!previous || score > previous.score){
+      rankedMap.set(key, { gloss: normalized, score });
+    }
+  }
+
+  function buildHebrewMapFromInterlinear(books){
+    const pointedRankedMap = new Map();
+    const unpointedRankedMap = new Map();
+
+    for(const book of books || []){
+      const chapters = book?.chapters && typeof book.chapters === 'object' ? Object.values(book.chapters) : [];
+      for(const chapter of chapters){
+        const verses = chapter && typeof chapter === 'object' ? Object.values(chapter) : [];
+        for(const verse of verses){
+          const tokens = Array.isArray(verse?.tokens) ? verse.tokens : [];
+          for(const token of tokens){
+            const hebrew = String(token?.orig || '').trim();
+            if(!hebrew) continue;
+            const pointedKey = normalizeToken(hebrew, true, false, true);
+            const plainKey = normalizeToken(hebrew, true);
+
+            setHebrewInterlinearGlossCandidate(pointedRankedMap, pointedKey, token?.es, 3);
+            setHebrewInterlinearGlossCandidate(unpointedRankedMap, plainKey, token?.es, 3);
+            setHebrewInterlinearGlossCandidate(pointedRankedMap, pointedKey, token?.added, 2);
+            setHebrewInterlinearGlossCandidate(unpointedRankedMap, plainKey, token?.added, 2);
+            setHebrewInterlinearGlossCandidate(pointedRankedMap, pointedKey, token?.notrans, 1);
+            setHebrewInterlinearGlossCandidate(unpointedRankedMap, plainKey, token?.notrans, 1);
+          }
+        }
+      }
+    }
+
+    const pointedMap = new Map();
     const unpointedMap = new Map();
-    
-    for(const row of rows || []){
-      const usage = Number(row?.stats?.tokens) || 0;
-      const fallbackGloss = takeFirstGloss(row?.glosas || row?.glosa || row?.strong_detail?.def_rv);
-      const normalizedLemma = normalizeToken(row?.hebreo, true);
-      if(Array.isArray(row?.formas) && Array.isArray(row?.glosas)){
-        const limit = Math.min(row.formas.length, row.glosas.length);
-        for(let i = 0; i < limit; i++){
-          const formKey = normalizeToken(row.formas[i], true);
-const formPointedKey = normalizeToken(row.formas[i], true, false, true);
-          setGlossCandidate(unpointedMap, formKey, row.glosas[i], 4, usage, formKey === normalizedLemma);
-          if(hasHebrewNikkud(row.formas[i])){
-            setGlossCandidate(pointedMap, formPointedKey, row.glosas[i], 6, usage, formKey === normalizedLemma);
-          }
-        }
-      }
 
-    const primaryFormKey = normalizeToken(row?.forma, true);
-    const primaryFormPointedKey = normalizeToken(row?.forma, true, false, true);
-     setGlossCandidate(unpointedMap, primaryFormKey, row?.glosa || fallbackGloss, 3, usage, primaryFormKey === normalizedLemma);
-      setGlossCandidate(unpointedMap, normalizedLemma, fallbackGloss, 2, usage, true);
-      if(hasHebrewNikkud(row?.forma)){
-        setGlossCandidate(pointedMap, primaryFormPointedKey, row?.glosa || fallbackGloss, 5, usage, primaryFormKey === normalizedLemma);
-      }
-
-      const pointedLemma = normalizeToken(row?.strong_detail?.lemma || row?.lemma, true, false, true);
-      if(hasHebrewNikkud(row?.strong_detail?.lemma || row?.lemma)){
-        setGlossCandidate(pointedMap, pointedLemma, fallbackGloss, 4.5, usage, true);
-      }
-      if(Array.isArray(row?.formas)){
-        for(const form of row.formas){
-          const formKey = normalizeToken(form, true);
- const formPointedKey = normalizeToken(form, true, false, true);
-          setGlossCandidate(unpointedMap, formKey, fallbackGloss, 1, usage, formKey === normalizedLemma);
-          if(hasHebrewNikkud(form)){
-            setGlossCandidate(pointedMap, formPointedKey, fallbackGloss, 2.5, usage, formKey === normalizedLemma);
-          }
-        }
-      }
+    for(const [key, value] of pointedRankedMap.entries()){
+      pointedMap.set(key, value.gloss);
+    }
+    for(const [key, value] of unpointedRankedMap.entries()){
+      unpointedMap.set(key, value.gloss);
     }
 
-   const toPlainMap = (rankedMap) => {
-      const plain = new Map();
-      for(const [key, value] of rankedMap.entries()){
-        plain.set(key, value.gloss);
-      }
-      return plain;
-    };
-
-
-return {
-      pointedMap: toPlainMap(pointedMap),
-      unpointedMap: toPlainMap(unpointedMap)
-    };
+    return { pointedMap, unpointedMap };
   }
 
-function buildTrilingueMap(rowsByBook){
-    const pointed = new Map();
-    const unpointed = new Map();
-
-    for(const rows of rowsByBook){
-      for(const row of rows || []){
-        const hebrew = String(row?.texto_hebreo || '').trim();
-        if(!hebrew) continue;
-        const gloss = pickTrilingueGloss(row);
-        if(!gloss || gloss === '-') continue;
-        const pointedKey = normalizeToken(hebrew, true, false, true);
-        const plainKey = normalizeToken(hebrew, true);
-        if(pointedKey && !pointed.has(pointedKey)) pointed.set(pointedKey, gloss);
-        if(plainKey && !unpointed.has(plainKey)) unpointed.set(plainKey, gloss);
-      }
-    }
-
-    return { pointedMap: pointed, unpointedMap: unpointed };
-  }
   function buildGreekMap(rows){
     const map = new Map();
 
     for(const row of rows || []){
-       if(Array.isArray(row)){
+      if(Array.isArray(row)){
         const lemma = normalizeToken(row[0], false, true);
         const gloss = takeFirstGloss(row[1]);
         setGlossCandidate(map, lemma, gloss, 2, 0, true);
@@ -212,6 +171,7 @@ function buildTrilingueMap(rowsByBook){
 
     return plainMap;
   }
+
   function splitTokens(text){
     return String(text || '')
       .replace(/[\u05BE]/g, ' ')
@@ -232,7 +192,7 @@ function buildTrilingueMap(rowsByBook){
 
       if(map && map.has(normalizeToken(remaining, true))) break;
 
-const head = remaining.match(/^([\u05D0-\u05EA][\u0591-\u05AF\u05B0-\u05BC\u05BD\u05BF\u05C1-\u05C2\u05C7]*)/);
+      const head = remaining.match(/^([\u05D0-\u05EA][\u0591-\u05AF\u05B0-\u05BC\u05BD\u05BF\u05C1-\u05C2\u05C7]*)/);
       if(!head) break;
 
       const baseLetter = head[1].charAt(0);
@@ -248,45 +208,40 @@ const head = remaining.match(/^([\u05D0-\u05EA][\u0591-\u05AF\u05B0-\u05BC\u05BD
     return parts;
   }
 
-  function expandTokenForLookup(token, map, fallbackMap = null){
-      const directKey = normalizeToken(token, true);
-    if(map.has(directKey) || fallbackMap?.has(directKey)) return [token];
+  function expandTokenForLookup(token, map){
+    const directKey = normalizeToken(token, true);
+    if(map.has(directKey)) return [token];
 
     const segmented = splitHebrewPrefixClusters(token, map);
     return segmented.length > 1 ? segmented : [token];
   }
 
-
+  async function getHebrewInterlinearMaps(){
+    const books = await Promise.all(
+      HEBREW_INTERLINEAR_BOOK_FILES.map((file) => loadJson(`${HEBREW_INTERLINEAR_BASE}/${file}`).catch(() => null))
+    );
+    return buildHebrewMapFromInterlinear(books.filter(Boolean));
+  }
 
   async function getDictionaries(){
     if(dictionariesPromise) return dictionariesPromise;
     dictionariesPromise = Promise.all([
-      loadJson(HEBREW_DICT_PATH),
+      getHebrewInterlinearMaps(),
       loadJson(GREEK_DICT_PATH)
-    ]).then(([hebrewRows, greekRows]) => ({
-      hebrewMaps: buildHebrewMap(hebrewRows),
+    ]).then(([hebrewMaps, greekRows]) => ({
+      hebrewMaps,
       greekMap: buildGreekMap(greekRows)
     }));
 
     return dictionariesPromise;
   }
 
-async function getTrilingueFallback(){
-    if(trilingueFallbackPromise) return trilingueFallbackPromise;
-    trilingueFallbackPromise = Promise.all(
-      TRILINGUE_BOOK_FILES.map((file) => loadJson(`${TRILINGUE_BASE}${file}`).catch(() => []))
-    ).then((rowsByBook) => buildTrilingueMap(rowsByBook));
-    return trilingueFallbackPromise;
-  }
-
-  function mapTokenToSpanish(token, map, isHebrew, isGreek = false, trilingueFallback = null){
-      if(isHebrew){
+  function mapTokenToSpanish(token, map, isHebrew, isGreek = false){
+    if(isHebrew){
       const pointedKey = normalizeToken(token, true, false, true);
       const plainKey = normalizeToken(token, true);
       if(pointedKey && map.pointedMap?.has(pointedKey)) return map.pointedMap.get(pointedKey);
       if(plainKey && map.unpointedMap?.has(plainKey)) return map.unpointedMap.get(plainKey);
-      if(pointedKey && trilingueFallback?.pointedMap?.has(pointedKey)) return trilingueFallback.pointedMap.get(pointedKey);
-      if(plainKey && trilingueFallback?.unpointedMap?.has(plainKey)) return trilingueFallback.unpointedMap.get(plainKey);
       return '-';
     }
 
@@ -295,15 +250,15 @@ async function getTrilingueFallback(){
     return map.get(key) || '-';
   }
 
-async function buildInterlinearRows(originalText, options = {}){
+  async function buildInterlinearRows(originalText, options = {}){
     const { isGreek = false } = options;
-  const { hebrewMaps, greekMap } = await getDictionaries();
-      const trilingueFallback = isGreek ? null : await getTrilingueFallback();
+    const { hebrewMaps, greekMap } = await getDictionaries();
     const targetMap = isGreek ? greekMap : hebrewMaps;
     const tokens = splitTokens(originalText)
- .flatMap((token) => (isGreek ? [token] : expandTokenForLookup(token, hebrewMaps.unpointedMap, trilingueFallback?.unpointedMap)));
-   const spanish = tokens.map((token) => mapTokenToSpanish(token, targetMap, !isGreek, isGreek, trilingueFallback));
-      return {
+      .flatMap((token) => (isGreek ? [token] : expandTokenForLookup(token, hebrewMaps.unpointedMap)));
+    const spanish = tokens.map((token) => mapTokenToSpanish(token, targetMap, !isGreek, isGreek));
+
+    return {
       tokens,
       spanishTokens: spanish,
       originalLine: tokens.join(' '),
