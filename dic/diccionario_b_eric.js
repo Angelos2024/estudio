@@ -461,15 +461,23 @@ const matches = findMatchesByLanguageOrder(terms);
       const definicion = String(entry?.observacion || '').trim() || '—';
       const book = String(entry?.book || 'Sin contexto').trim() || 'Sin contexto';
 
-      return `
-        <div class="dict-entry${index ? ' mt-3' : ''}">
+     const contextLine = `<div class="trilingual-line"><strong>Contexto:</strong> ${esc(book)}</div>`;
+      const details = index === 0
+        ? `
+          ${contextLine}
           <div class="trilingual-line"><strong>${sourceLabel}:</strong> <span class="${sourceClass}">${esc(sourceTextValue)}</span></div>
           <div class="trilingual-line"><strong>Transliteración:</strong> ${esc(transliteracion)}</div>
           <div class="trilingual-line"><strong>Equivalencia español:</strong> ${esc(spanish)}</div>
-          <div class="trilingual-line"><strong>Contexto:</strong> ${esc(book)}</div>
           <div class="trilingual-line"><strong>Fuente normalizada:</strong> <span class="${sourceClass}">${esc(normalizedSource)}</span></div>
           <div class="trilingual-line"><strong>Definición:</strong> ${esc(definicion).replace(/\n/g, '<br>')}</div>
-        </div>
+        `
+        : '';
+
+      return `
+        <div class="dict-entry${index ? ' mt-3' : ''}">
+          ${details}
+          ${index === 0 ? '' : contextLine}
+       </div>
       `;
     }).join('');
 
