@@ -80,6 +80,20 @@
       rankedMap.set(key, { gloss: normalized, score });
     }
   }
+}
+
+function getHebrewTokenLookupForms(orig){
+    if(Array.isArray(orig)){
+      const parts = orig
+        .map((part) => String(part || '').trim())
+        .filter(Boolean);
+      if(parts.length === 0) return [];
+      return [parts.join('')];
+    }
+
+    const clean = String(orig || '').trim();
+    return clean ? [clean] : [];
+  }
 
   function buildHebrewMapFromInterlinear(books){
     const pointedRankedMap = new Map();
@@ -92,17 +106,18 @@
         for(const verse of verses){
           const tokens = Array.isArray(verse?.tokens) ? verse.tokens : [];
           for(const token of tokens){
-            const hebrew = String(token?.orig || '').trim();
-            if(!hebrew) continue;
-            const pointedKey = normalizeToken(hebrew, true, false, true);
-            const plainKey = normalizeToken(hebrew, true);
+          const hebrewForms = getHebrewTokenLookupForms(token?.orig);
+            for(const hebrew of hebrewForms){
+              const pointedKey = normalizeToken(hebrew, true, false, true);
+              const plainKey = normalizeToken(hebrew, true);
 
-            setHebrewInterlinearGlossCandidate(pointedRankedMap, pointedKey, token?.es, 3);
-            setHebrewInterlinearGlossCandidate(unpointedRankedMap, plainKey, token?.es, 3);
-            setHebrewInterlinearGlossCandidate(pointedRankedMap, pointedKey, token?.added, 2);
-            setHebrewInterlinearGlossCandidate(unpointedRankedMap, plainKey, token?.added, 2);
-            setHebrewInterlinearGlossCandidate(pointedRankedMap, pointedKey, token?.notrans, 1);
-            setHebrewInterlinearGlossCandidate(unpointedRankedMap, plainKey, token?.notrans, 1);
+              setHebrewInterlinearGlossCandidate(pointedRankedMap, pointedKey, token?.es, 3);
+              setHebrewInterlinearGlossCandidate(unpointedRankedMap, plainKey, token?.es, 3);
+              setHebrewInterlinearGlossCandidate(pointedRankedMap, pointedKey, token?.added, 2);
+              setHebrewInterlinearGlossCandidate(unpointedRankedMap, plainKey, token?.added, 2);
+              setHebrewInterlinearGlossCandidate(pointedRankedMap, pointedKey, token?.notrans, 1);
+              setHebrewInterlinearGlossCandidate(unpointedRankedMap, plainKey, token?.notrans, 1);
+            }
           }
         }
       }

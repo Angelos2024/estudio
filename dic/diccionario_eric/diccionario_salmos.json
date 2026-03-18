@@ -1,8 +1,3 @@
-Entendido. Procederé a expandir el diccionario basándome exclusivamente en las enseñanzas del profesor Eric De Jesús Rodríguez Mendoza contenidas en el documento proporcionado, desglosando los términos de forma individual y respetando las reglas de no composición ni citas externas.
-
-Aquí tienes las entradas correspondientes a la sección del Salmo 1:
-
-```json
 [
   {
     "id": 1,
@@ -584,8 +579,1497 @@ Aquí tienes las entradas correspondientes a la sección del Salmo 1:
     "transliteracion": "Natán",
     "equivalencia_espanol": "Natán",
     "observacion": "Profeta y autoridad competente que proferió la sentencia de justicia de parte de Hashem sobre David."
+  },
+  {
+    "id": 84,
+    "texto_hebreo": "מָגֵן",
+    "transliteracion": "Magén",
+    "equivalencia_espanol": "escudo",
+    "observacion": "Se asocia con la protección que Hashem prometió a Abraham y se vincula directamente con la 'Emunáh."
+  },
+  {
+    "id": 85,
+    "texto_hebreo": "כָּבוֹד",
+    "transliteracion": "Kavod",
+    "equivalencia_espanol": "peso de honra; gloria",
+    "observacion": "En el Salmo 3:3, David reconoce que Hashem es su honra y el que levanta su cabeza frente a quienes lo deshonran."
+  },
+  {
+    "id": 86,
+    "texto_hebreo": "אֱמוּנָה",
+    "transliteracion": "'Emunáh",
+    "equivalencia_espanol": "fidelidad; firmeza",
+    "observacion": "Se define como el escudo que es Dios mismo; la fidelidad divina que permite apagar los dardos del maligno."
+  },
+  {
+    "id": 87,
+    "texto_hebreo": "הַר",
+    "transliteracion": "Har",
+    "equivalencia_espanol": "monte; montaña",
+    "observacion": "Referencia al lugar de santidad desde donde Hashem responde al clamor."
+  },
+  {
+    "id": 89,
+    "texto_hebreo": "קָדְשׁוֹ",
+    "transliteracion": "Qodshó",
+    "equivalencia_espanol": "su santidad",
+    "observacion": "Utilizado para describir la naturaleza del monte de Dios, identificado en la enseñanza con Mashiaj."
+  },
+  {
+    "id": 90,
+    "texto_hebreo": "הַשֵּׁם",
+    "transliteracion": "Hashem",
+    "equivalencia_espanol": "El Nombre",
+    "observacion": "Referencia a la Deidad que sostiene la vida cotidiana y frustra los consejos del adversario."
+  },
+  {
+    "id":92,
+    "texto_hebreo": "מָשִׁיחַ",
+    "transliteracion": "Mashiaj",
+    "equivalencia_espanol": "Ungido",
+    "observacion": "Es identificado como el Monte de la Santidad a través de cuyo nombre se recibe siempre respuesta."
+  },
+  {
+    "id": 93,
+    "texto_hebreo": "אֱלֹהִים",
+    "transliteracion": "'Elohim",
+    "equivalencia_espanol": "Dios; Juez Supremo",
+    "observacion": "Mencionado en el contexto de la justicia divina a la cual el creyente se somete como acto de guerra espiritual."
+  },
+  [
+  {
+    "id": 94,
+    "texto_hebreo": "רְשָׁעִים",
+    "transliteracion": "Resha’im",
+    "equivalencia_espanol": "malvados; impíos",
+    "observacion": "En el Salmo 3:7 se menciona que Hashem romperá sus dientes, refiriéndose a quienes se levantan contra Su autoridad."
+  },
+  {
+    "id": 95,
+    "texto_hebreo": "תְּהִלִּים",
+    "transliteracion": "Tehilim",
+    "equivalencia_espanol": "Salmos; alabanzas",
+    "observacion": "Nombre del libro de los Salmos donde se integran los himnos con música."
+  },
+  {
+    "id": 96,
+    "texto_hebreo": "נְגִינוֹת",
+    "transliteracion": "Neginot",
+    "equivalencia_espanol": "himnos con música",
+    "observacion": "Plural de Negináh. Se refiere a composiciones que implican el uso de instrumentos de cuerda."
+  },
+  {
+    "id": 97,
+    "texto_hebreo": "נְגִינָה",
+    "transliteracion": "Negináh",
+    "equivalencia_espanol": "tañido; acción de tocar",
+    "observacion": "Acción de tocar instrumentos de cuerda melódicos para emular la letra de una canción con sonidos."
+  },
+  {
+    "id": 98,
+    "texto_hebreo": "מַנְגִּינָה",
+    "transliteracion": "Mangináh",
+    "equivalencia_espanol": "melodía",
+    "observacion": "Es el conjunto de todas las notas dadas (el punteo) que conforma la melodía de una canción."
+  },
+  {
+    "id": 99,
+    "texto_hebreo": "לַמְנַצֵּחַ",
+    "transliteracion": "Lamnatzéaj",
+    "equivalencia_espanol": "al victorioso; al director del coro",
+    "observacion": "Acento masorético que indica no solo el golpe de voz, sino la cadencia y temporalidad al cantar la Torah."
+  },
+  {
+    "id": 100,
+    "texto_hebreo": "תְּפִלָּה",
+    "transliteracion": "Tefiláh",
+    "equivalencia_espanol": "oración",
+    "observacion": "En el Salmo 4:1 se presenta como una petición sumisa y suplicante, no imperativa ni arrogante."
+  },
+  {
+    "id": 101,
+    "texto_hebreo": "צֶדֶק",
+    "transliteracion": "Tzédeq",
+    "equivalencia_espanol": "rectitud; el deber ser",
+    "observacion": "Representa el estado ideal o correcto de las cosas que solo Hashem conoce, más allá de la percepción humana."
+  },
+  {
+    "id": 102,
+    "texto_hebreo": "צִדְקִי",
+    "transliteracion": "Tzidqí",
+    "equivalencia_espanol": "justicia para conmigo",
+    "observacion": "Apelación a que Hashem restablezca el estado ideal que Él tiene determinado para el individuo."
+  },
+  {
+    "id": 103,
+    "texto_hebreo": "צָר",
+    "transliteracion": "Tzar",
+    "equivalencia_espanol": "estrechez; angustia",
+    "observacion": "Situación de limitación o conflicto donde las circunstancias externas presionan al creyente."
+  },
+  {
+    "id": 104,
+    "texto_hebreo": "הִרְחַבְתָּ",
+    "transliteracion": "Hirjavta",
+    "equivalencia_espanol": "ensanchaste; hiciste lugar espacioso",
+    "observacion": "Acción divina de otorgar libertad y propósito abundante incluso en medio de la estrechez."
+  },
+  {
+    "id": 105,
+    "texto_hebreo": "אֱמוּנָתְךָ",
+    "transliteracion": "'Emunatja",
+    "equivalencia_espanol": "tu fidelidad; la fidelidad para contigo",
+    "observacion": "Indica que la fidelidad no es propiedad del hombre, sino la fidelidad de Dios operando hacia la persona."
+  },
+  {
+    "id": 106,
+    "texto_hebreo": "חָנַן",
+    "transliteracion": "Janan",
+    "equivalencia_espanol": "raíz de gracia; mostrar favor",
+    "observacion": "Base etimológica de donde proviene el concepto de favor inmerecido en el Tanaj."
+  },
+  {
+    "id": 107,
+    "texto_hebreo": "חֵן",
+    "transliteracion": "Jen",
+    "equivalencia_espanol": "gracia",
+    "observacion": "Categoría que ya conocían los antiguos hebreos, aunque a veces se presente erróneamente como un concepto exclusivo del nuevo testamento."
+  },
+  {
+    "id": 108,
+    "texto_hebreo": "אִישׁ",
+    "transliteracion": "'Ish",
+    "equivalencia_espanol": "varón de categoría; autosuficiente",
+    "observacion": "En el contexto del Salmo 4:2, se refiere a quienes se creen encumbrados y consideran ridículo depender de Dios."
+  },
+  {
+    "id": 109,
+    "texto_hebreo": "רִיק",
+    "transliteracion": "Riq",
+    "equivalencia_espanol": "vacío; sin propósito",
+    "observacion": "Hebreo moderno para designar la vacuidad de aquellos que aman lo vano en lugar de la justicia divina."
+  },
+  {
+    "id": 110,
+    "texto_hebreo": "כָּזָב",
+    "transliteracion": "Cazáb",
+    "equivalencia_espanol": "mentira; palabra no cumplida",
+    "observacion": "Se define como el acto de dar una palabra y no cumplirla, o llegar a ninguna parte; opuesto al carácter de Dios."
+  },
+  {
+    "id": 111,
+    "texto_hebreo": "סֶלָה",
+    "transliteracion": "Selah",
+    "equivalencia_espanol": "continuamente; pausa",
+    "observacion": "Marca de elevación o continuidad en la cadencia de los Salmos."
+  },
+  {
+    "id": 112,
+    "texto_hebreo": "הֶבֶל",
+    "transliteracion": "Hével",
+    "equivalencia_espanol": "corruptible; perecedero",
+    "observacion": "Concepto que define aquello que no tiene permanencia frente a la eternidad de Hashem."
+  },
+  {
+    "id": 123,
+    "texto_hebreo": "לַשָּׁוְא",
+    "transliteracion": "Lashav",
+    "equivalencia_espanol": "sin propósito; sin sentido",
+    "observacion": "Término para designar acciones que carecen de dirección espiritual o significado real."
+  },
+  {
+    "id": 124,
+    "texto_hebreo": "רֵיקָא",
+    "transliteracion": "Reyqa'",
+    "equivalencia_espanol": "sin esperanza; incrédulo",
+    "observacion": "Palabra aramea que implica estar sin Dios en el mundo; es considerado un insulto teológico grave."
+  },
+  {
+    "id": 125,
+    "texto_hebreo": "חָסִיד",
+    "transliteracion": "Jasid",
+    "equivalencia_espanol": "piadoso; hacedor de Jésed",
+    "observacion": "Se asocia directamente con Mashiaj como aquel que realiza actos de solidaridad y cooperación divina."
+  },
+  {
+    "id": 126,
+    "texto_hebreo": "חֶסֶד",
+    "transliteracion": "Jésed",
+    "equivalencia_espanol": "solidaridad; misericordia cooperativa",
+    "observacion": "Atributo de socorro y apoyo, ejemplificado en la ayuda a la semilla de Abraham."
+  },
+  {
+    "id": 127,
+    "texto_hebreo": "יְהוֹשֻׁעַ",
+    "transliteracion": "Yehoshua'",
+    "equivalencia_espanol": "Dios sujetándose a su palabra",
+    "observacion": "Nombre que representa a Dios actuando en absoluta sujeción a Sus propios edictos y sentencias."
+  },
+  {
+    "id": 128,
+    "texto_hebreo": "מִקְרָא",
+    "transliteracion": "Miqrá'",
+    "equivalencia_espanol": "Biblia; lectura sagrada",
+    "observacion": "La Escritura donde originalmente aparecen conceptos como la gracia, antes de las difuminaciones de las traducciones."
+  },
+  {
+    "id": 129,
+    "texto_hebreo": "תָּנָךְ",
+    "transliteracion": "Tanaj",
+    "equivalencia_espanol": "conjunto de los libros sagrados",
+    "observacion": "Acrónimo de Torah, Nevi'im y Ketuvim; fuente de la instrucción antigua."
+  },
+  {
+    "id": 130,
+    "texto_hebreo": "תּוֹרָה",
+    "transliteracion": "Torah",
+    "equivalencia_espanol": "instrucción; ley",
+    "observacion": "Fundamento de la palabra de Hashem donde el concepto de Jen (gracia) está intrínsecamente presente."
+  },
+  {
+    "id": 131,
+    "texto_hebreo": "חָנֵּנִי",
+    "transliteracion": "Joneni",
+    "equivalencia_espanol": "dame gracia",
+    "observacion": "Petición basada en la raíz de Jen; el autor enfatiza que los traductores han intentado difuminar este concepto en la Torah."
+  },
+  {
+    "id": 132,
+    "texto_hebreo": "יָרַשׁ",
+    "transliteracion": "Yarash",
+    "equivalencia_espanol": "heredar; conquistar",
+    "observacion": "Se utiliza cuando la herencia o posesión es para un individuo o un pueblo como unidad."
+  },
+  {
+    "id": 133,
+    "texto_hebreo": "חָרִישׁ",
+    "transliteracion": "Jorish",
+    "equivalencia_espanol": "conquistar; tomar",
+    "observacion": "Forma de la raíz Yarash en edificio Ifil; implica tomar lo ajeno o conquistar."
+  },
+  {
+    "id": 134,
+    "texto_hebreo": "נָחַל",
+    "transliteracion": "Najal",
+    "equivalencia_espanol": "heredar; repartir",
+    "observacion": "Raíz utilizada para la transferencia de bienes o tierras entre varias personas o tribus."
+  },
+  {
+    "id": 135,
+    "texto_hebreo": "נְחִילוֹת",
+    "transliteracion": "Nejilot",
+    "equivalencia_espanol": "instrumento musical; herencias",
+    "observacion": "Término debatido; puede referirse a un instrumento de viento o al concepto de heredades."
+  },
+  {
+    "id": 136,
+    "texto_hebreo": "דּוֹד",
+    "transliteracion": "Dod",
+    "equivalencia_espanol": "amado",
+    "observacion": "Referencia directa a David; aquel que es objeto de afecto."
+  },
+  {
+    "id": 137,
+    "texto_hebreo": "בִּינָה",
+    "transliteracion": "Binah",
+    "equivalencia_espanol": "entender; discernir",
+    "observacion": "Verbo que implica entrar a analizar la parte emocional o el interior."
+  },
+  {
+    "id": 138,
+    "texto_hebreo": "הֲגִיג",
+    "transliteracion": "Hagig",
+    "equivalencia_espanol": "susurro; gemido",
+    "observacion": "Referencia a la expresión íntima y pausada del alma ante la divinidad."
+  },
+  {
+    "id": 139,
+    "texto_hebreo": "הַקְשִׁיבָה",
+    "transliteracion": "Haqshivah",
+    "equivalencia_espanol": "prestar atención",
+    "observacion": "Imperativo que denota no solo oír, sino dar prioridad a lo que se pide."
+  },
+  {
+    "id": 140,
+    "texto_hebreo": "לְשַׁוֵּעַ",
+    "transliteracion": "Leshavea'",
+    "equivalencia_espanol": "clamar; pedir salvación",
+    "observacion": "Verbo vinculado estrechamente con la urgencia de ser rescatado."
+  },
+  {
+    "id": 141,
+    "texto_hebreo": "אֶתְפַּלֵּל",
+    "transliteracion": "'Etpalal",
+    "equivalencia_espanol": "oraré; me presentaré",
+    "observacion": "Denota una disposición exclusiva hacia el único a quien se puede acudir en juicio."
+  },
+  {
+    "id": 142,
+    "texto_hebreo": "בֹּקֶר",
+    "transliteracion": "Boker",
+    "equivalencia_espanol": "mañana; de día",
+    "observacion": "Asociado a la vida, la luz y la existencia funcional; no indica necesariamente una hora específica."
+  },
+  {
+    "id": 143,
+    "texto_hebreo": "עָרַךְ",
+    "transliteracion": "'Araj",
+    "equivalencia_espanol": "disponer; ordenar",
+    "observacion": "Poner en orden elementos, como los leños para un sacrificio o una mesa preparada."
+  },
+  {
+    "id": 144,
+    "texto_hebreo": "אֲצַפֶּה",
+    "transliteracion": "'Atzapeh",
+    "equivalencia_espanol": "esperar; vigilar",
+    "observacion": "Acción de mantenerse atento, revisando e inspeccionando constantemente como un guardián."
+  },
+  {
+    "id": 145,
+    "texto_hebreo": "צָפָה",
+    "transliteracion": "Tzafá",
+    "equivalencia_espanol": "vigilar; observar",
+    "observacion": "Raíz que implica la labor de la atalaya, observar desde lo alto."
+  },
+  {
+    "id": 146,
+    "texto_hebreo": "מִצְוָה",
+    "transliteracion": "Mitzváh",
+    "equivalencia_espanol": "torre de vigilancia",
+    "observacion": "Lugar alto para maximizar la visualización y detectar amenazas a distancia."
+  },
+  {
+    "id": 147,
+    "texto_hebreo": "צֹפֶה",
+    "transliteracion": "Tzofé",
+    "equivalencia_espanol": "atalaya; centinela",
+    "observacion": "Persona encargada de dar la alerta ante el primer asomo de algo extraño."
+  },
+  {
+    "id": 148,
+    "texto_hebreo": "אֵל",
+    "transliteracion": "'El",
+    "equivalencia_espanol": "poder; poderoso",
+    "observacion": "Cualidad de poder absoluto que emana de Eloah."
+  },
+  {
+    "id": 149,
+    "texto_hebreo": "רַע",
+    "transliteracion": "Ra'",
+    "equivalencia_espanol": "maldad; perjuicio",
+    "observacion": "Aquello que no puede habitar ni residir en la presencia del Todopoderoso."
+  },
+  {
+    "id": 150,
+    "texto_hebreo": "חָטָא",
+    "transliteracion": "Jata",
+    "equivalencia_espanol": "errar; fallar",
+    "observacion": "Pecado entendido como un error inherente al código genético humano; tendencia a fallar."
+  },
+  {
+    "id": 151,
+    "texto_hebreo": "צֶדֶק",
+    "transliteracion": "Tzédeq",
+    "equivalencia_espanol": "justicia; deber ser",
+    "observacion": "El estado ideal de las cosas; aquello que debe ser perseguido constantemente."
+  },
+  {
+    "id": 152,
+    "texto_hebreo": "שָׁלוֹם",
+    "transliteracion": "Shalom",
+    "equivalencia_espanol": "paz; pagar la cuota",
+    "observacion": "Hacer la parte que a uno le corresponde para que el orden y la seguridad se manifiesten."
+  },
+  {
+    "id": 153,
+    "texto_hebreo": "אָוֶן",
+    "transliteracion": "'Aven",
+    "equivalencia_espanol": "inaplicación; iniquidad",
+    "observacion": "Se refiere a no aplicar la Torah tanto en sus mandamientos como en sus promesas."
+  },
+  {
+    "id": 154,
+    "texto_hebreo": "כָּזָב",
+    "transliteracion": "Cazáb",
+    "equivalencia_espanol": "inconstante; mentira",
+    "observacion": "Relativo a quienes hablan y no cumplen su palabra, cambiando según sus intereses."
+  },
+  {
+    "id": 155,
+    "texto_hebreo": "מִרְמָה",
+    "transliteracion": "Mirmah",
+    "equivalencia_espanol": "amor fingido; engaño",
+    "observacion": "Adulaciones hechas para obtener objetivos personales; similar al concepto de hipocresía."
+  },
+  {
+    "id": 156,
+    "texto_hebreo": "טָהוֹר",
+    "transliteracion": "Tahor",
+    "equivalencia_espanol": "apto; puro",
+    "observacion": "Estado del corazón necesario para que el amor sea genuino y no fingido."
+  },
+  {
+    "id": 157,
+    "texto_hebreo": "רִמָּה",
+    "transliteracion": "Rima",
+    "equivalencia_espanol": "gusano",
+    "observacion": "Término usado en juegos de palabras para ilustrar la podredumbre del engaño."
+  },
+  {
+    "id": 158,
+    "texto_hebreo": "הֵיכָל",
+    "transliteracion": "Heyjal",
+    "equivalencia_espanol": "aposento; depósito; recámara",
+    "observacion": "Lugar más profundo y secreto; se asocia con el depósito de la santidad."
+  },
+  {
+    "id": 159,
+    "texto_hebreo": "חָסִיד",
+    "transliteracion": "Jasid",
+    "equivalencia_espanol": "piadoso",
+    "observacion": "Aquel que manifiesta la piedad y solidaridad divina."
+  },
+  {
+    "id": 160,
+    "texto_hebreo": "יִרְאָה",
+    "transliteracion": "Yirah",
+    "equivalencia_espanol": "temor; reverencia",
+    "observacion": "Sentimiento de pesadumbre o vergüenza por haber fallado delante de la divinidad."
+  },
+  {
+    "id": 161,
+    "texto_hebreo": "צְדָקָה",
+    "transliteracion": "Tzedaqáh",
+    "equivalencia_espanol": "justicia-compasión; favor",
+    "observacion": "Favor divino que atenúa circunstancias; justicia obtenida por la fe."
+  },
+  {
+    "id": 162,
+    "texto_hebreo": "אֱמוּנָה",
+    "transliteracion": "'Emunáh",
+    "equivalencia_espanol": "fidelidad; fe",
+    "observacion": "El medio por el cual se recibe la justificación (Tzedaqáh) para luego vivir en los mandamientos."
+  },
+  {
+    "id": 163,
+    "texto_hebreo": "שׁוֹרֵר",
+    "transliteracion": "Shorer",
+    "equivalencia_espanol": "asaltante; perseguidor",
+    "observacion": "Enemigo que escala muros o murallas con la intención de causar daño."
+  },
+  {
+    "id": 164,
+    "texto_hebreo": "אָשָׁם",
+    "transliteracion": "'Asham",
+    "equivalencia_espanol": "culpabilidad; profanación",
+    "observacion": "Culpabilidad específica derivada de haber profanado lo sagrado o por iniquidad."
+  },
+  {
+    "id": 165,
+    "texto_hebreo": "צִינָּה",
+    "transliteracion": "Tzinah",
+    "equivalencia_espanol": "escudo; coraza",
+    "observacion": "Instrumento de guerra protector, similar a un yelmo o protección corporal total."
+  },
+  {
+    "id": 166,
+    "texto_hebreo": "רָצוֹן",
+    "transliteracion": "Ratzon",
+    "equivalencia_espanol": "favor; reconciliación",
+    "observacion": "El beneplácito divino que corona al justo, asociado con la morada celestial."
+  },
+  {
+    "id": 167,
+    "texto_hebreo": "צַדִּיק",
+    "transliteracion": "Tzadiq",
+    "equivalencia_espanol": "justificado",
+    "observacion": "Aquel que ha recibido la extensión de la adopción y el favor de YHWH."
+  },
+  {
+    "id": 168,
+    "texto_hebreo": "שְׁמִינִית",
+    "transliteracion": "Shiminit",
+    "equivalencia_espanol": "octava",
+    "observacion": "Referencia a una escala musical de ocho cuerdas o al concepto del octavo día (lo venidero)."
+  },
+  {
+    "id": 169,
+    "texto_hebreo": "נְגִינָה",
+    "transliteracion": "Neginot",
+    "equivalencia_espanol": "melodía; música de cuerdas",
+    "observacion": "Forma de ejecución musical que acompaña la composición de los himnos."
+  },
+  {
+    "id": 170,
+    "texto_hebreo": "אַף",
+    "transliteracion": "'Af",
+    "equivalencia_espanol": "repudio; nariz",
+    "observacion": "Figura retórica que describe el distanciamiento divino ante el pecado."
+  },
+  {
+    "id": 171,
+    "texto_hebreo": "יָכַח",
+    "transliteracion": "Yacaj",
+    "equivalencia_espanol": "demostrar",
+    "observacion": "Acción de dejar evidenciado o probado algo, usualmente en un contexto de reprensión."
+  },
+  {
+    "id": 172,
+    "texto_hebreo": "חֵמָה",
+    "transliteracion": "Jemah",
+    "equivalencia_espanol": "estado candente; ardor",
+    "observacion": "Metáfora del fuego que arde ante el pecado, comparado con el sacrificio en el altar."
+  },
+  {
+    "id": 173,
+    "texto_hebreo": "רוּחַ",
+    "transliteracion": "Rúaj",
+    "equivalencia_espanol": "espíritu; soplo",
+    "observacion": "Agente mediante el cual los profetas y autores hablaron sobre el Mashiaj."
+  },
+  {
+    "id": 174,
+    "texto_hebreo": "קֹדֶשׁ",
+    "transliteracion": "Qódesh",
+    "equivalencia_espanol": "santidad; apartado",
+    "observacion": "Cualidad de lo que es sagrado y separado para el uso divino."
+  },
+  {
+    "id": 175,
+    "texto_hebreo": "יָסַר",
+    "transliteracion": "Yasar",
+    "equivalencia_espanol": "corregir; guiar",
+    "observacion": "Verbo que en su forma intensiva (Piel: Yisar) implica instruir en las buenas maneras."
+  },
+  {
+    "id": 176,
+    "texto_hebreo": "מוּסָר",
+    "transliteracion": "Musar",
+    "equivalencia_espanol": "buenas maneras; ética",
+    "observacion": "Se define como la versión corregida o mejorada de algo; la instrucción que perfecciona."
+  },
+  {
+    "id": 177,
+    "texto_hebreo": "חֵן",
+    "transliteracion": "Jen",
+    "equivalencia_espanol": "gracia; favor",
+    "observacion": "Vínculo de favor que se extiende de una persona a otra; es la versión pausada de la corrección divina."
+  },
+  {
+    "id": 178,
+    "texto_hebreo": "חָנַן",
+    "transliteracion": "Janan",
+    "equivalencia_espanol": "dar gracia; favorecer",
+    "observacion": "Raíz verbal de la cual deriva la gracia, solicitada para recibir paciencia en el proceso de corrección."
+  },
+  {
+    "id": 179,
+    "texto_hebreo": "אֻמְלַל",
+    "transliteracion": "Umlal",
+    "equivalencia_espanol": "marchito",
+    "observacion": "Estado de debilidad extrema que afecta incluso el vigor de los huesos."
+  },
+  {
+    "id": 180,
+    "texto_hebreo": "בָּהַל",
+    "transliteracion": "Bahal",
+    "equivalencia_espanol": "desmoralizado; aterrorizado",
+    "observacion": "Verbo utilizado cuando se pierde la fuerza moral o se experimenta una falta de ánimo imponente."
+  },
+  {
+    "id": 181,
+    "texto_hebreo": "חָלַץ",
+    "transliteracion": "Jalatz",
+    "equivalencia_espanol": "poner adelante",
+    "observacion": "Acción de posicionar el ser o el alma frente a la presencia de Hashem para protección."
+  },
+  {
+    "id": 182,
+    "texto_hebreo": "חֶסֶד",
+    "transliteracion": "Jésed",
+    "equivalencia_espanol": "solidaridad; piedad",
+    "observacion": "Ayuda extendida por Hashem a pesar de las razones para estar disgustado; vinculada a la resurrección."
+  },
+  {
+    "id": 183,
+    "texto_hebreo": "שְׁאוֹל",
+    "transliteracion": "Sh'ol",
+    "equivalencia_espanol": "sepulcro; lugar de silencio",
+    "observacion": "Ámbito donde, según el texto, no existe la confesión activa ni la memoria de las obras de Hashem."
+  },
+  {
+    "id": 184,
+    "texto_hebreo": "תְּפִלָּה",
+    "transliteracion": "Tfiláh",
+    "equivalencia_espanol": "intermediación; oración",
+    "observacion": "Presentación formal en juicio; la mediación que el autor realiza ante la justicia divina."
+  },
+  {
+    "id": 185,
+    "texto_hebreo": "אַבָּא",
+    "transliteracion": "Abá",
+    "equivalencia_espanol": "padre",
+    "observacion": "Término arameo/hebreo citado para referirse a la relación de confianza con el Padre celestial."
+  },
+  {
+    "id": 186,
+    "texto_hebreo": "פּוֹעֵל",
+    "transliteracion": "Poel",
+    "equivalencia_espanol": "activista; hacedor",
+    "observacion": "Aquel que participa activamente en una conducta; usado para describir a quienes no aplican la voluntad divina."
+  },
+  {
+    "id": 187,
+    "texto_hebreo": "שִׁגָּיוֹן",
+    "transliteracion": "Shigayion",
+    "equivalencia_espanol": "sigaión; error",
+    "observacion": "Término técnico de los Salmos que, por su raíz gramatical, se interpreta como una composición tras un error o equivocación."
+  },
+  {
+    "id": 188,
+    "texto_hebreo": "שָׁגָה",
+    "transliteracion": "Shagah",
+    "equivalencia_espanol": "equivocarse; errar",
+    "observacion": "Raíz verbal vinculada a Shigayion, indicando el reconocimiento de una falta o desvío."
+  },
+  {
+    "id": 189,
+    "texto_hebreo": "כּוּשׁ",
+    "transliteracion": "Kush",
+    "equivalencia_espanol": "Etiopía; Kush",
+    "observacion": "Nombre del reino etíope y, en el Salmo 7, sobrenombre aplicado a Shaúl por su actitud inmutable ante David."
+  },
+  {
+    "id": 190,
+    "texto_hebreo": "כּוּשִׁי",
+    "transliteracion": "Kushi",
+    "equivalencia_espanol": "etíope",
+    "observacion": "Gentilicio masculino. Puede referirse a un individuo de la tribu de Benjamín o al informante que trajo noticias a David."
+  },
+  {
+    "id": 191,
+    "texto_hebreo": "כּוּשִׁית",
+    "transliteracion": "Kushit",
+    "equivalencia_espanol": "etíope (femenino)",
+    "observacion": "Término aplicado a la mujer de Moisés, indicando su procedencia de territorios bajo dominio del reino de Kush."
+  },
+  {
+    "id": 192,
+    "texto_hebreo": "חָסָה",
+    "transliteracion": "Jasah",
+    "equivalencia_espanol": "refugiarse",
+    "observacion": "La acción del ser humano de buscar amparo y protección en la divinidad."
+  },
+  {
+    "id": 193,
+    "texto_hebreo": "הוֹשִׁיעַ",
+    "transliteracion": "Hoshia",
+    "equivalencia_espanol": "dar amparo; dar refugio",
+    "observacion": "La acción de Hashem de proporcionar resguardo al que acude a refugiarse en Él."
+  },
+  {
+    "id": 194,
+    "texto_hebreo": "פָּרַק",
+    "transliteracion": "Paraq",
+    "equivalencia_espanol": "desgarrar; despedazar",
+    "observacion": "Verbo que describe el ataque violento de animales salvajes, como un león destrozando a su presa."
+  },
+  {
+    "id": 195,
+    "texto_hebreo": "אֱלֹהִים",
+    "transliteracion": "'Elohim",
+    "equivalencia_espanol": "amor entrañable",
+    "observacion": "En el contexto del Salmo 7:3, se destaca este atributo como complemento a la justicia divina."
+  },
+  {
+    "id": 196,
+    "texto_hebreo": "עָוֶל",
+    "transliteracion": "'Avel",
+    "equivalencia_espanol": "torcedura; iniquidad",
+    "observacion": "Desvío del camino recto o presencia de maldad en las acciones de una persona."
+  },
+  {
+    "id": 197,
+    "texto_hebreo": "כַּף",
+    "transliteracion": "Kaf",
+    "equivalencia_espanol": "palma",
+    "observacion": "Símbolo de la inocencia y de las intenciones de una persona al mostrar sus manos vacías de iniquidad."
+  },
+  {
+    "id": 198,
+    "texto_hebreo": "מִשְׁפָּט",
+    "transliteracion": "Mishpat",
+    "equivalencia_espanol": "debido proceso; juicio",
+    "observacion": "El orden judicial divino que David solicita para que Hashem intervenga como Juez."
+  },
+  {
+    "id": 199,
+    "texto_hebreo": "שָׁב",
+    "transliteracion": "Shav",
+    "equivalencia_espanol": "regresar; volver",
+    "observacion": "Verbo que indica el retorno desde el pecado hacia Hashem."
+  },
+  {
+    "id": 200,
+    "texto_hebreo": "תְּשׁוּבָה",
+    "transliteracion": "Tshuvah",
+    "equivalencia_espanol": "retorno; arrepentimiento",
+    "observacion": "Acción de dejar la práctica del pecado para volver a YHWH."
+  },
+  {
+    "id": 201,
+    "texto_hebreo": "שְׁלֵמָה",
+    "transliteracion": "Shlemah",
+    "equivalencia_espanol": "completa; íntegra",
+    "observacion": "Relativo a una restauración total a las condiciones originales antes de pecar."
+  },
+  {
+    "id": 202,
+    "texto_hebreo": "חָמָס",
+    "transliteracion": "Jamás",
+    "equivalencia_espanol": "violación de límites; violencia",
+    "observacion": "Consecuencia de romper los límites establecidos por Dios; carga que aplasta al transgresor."
+  },
+  {
+    "id": 203,
+    "texto_hebreo": "עֶלְיוֹן",
+    "transliteracion": "'Elyión",
+    "equivalencia_espanol": "Altísimo",
+    "observacion": "Título de YHWH que indica que está por encima de todo y de todos."
+  },
+  {
+    "id": 204,
+    "texto_hebreo": "עֵדָה",
+    "transliteracion": "'Edah",
+    "equivalencia_espanol": "congregación; comunidad",
+    "observacion": "Referencia a un grupo o asamblea, pudiendo referirse a naciones poderosas o potestades espirituales."
+  },
+  {
+    "id": 205,
+    "texto_hebreo": "רְשָׁעִים",
+    "transliteracion": "Resha'im",
+    "equivalencia_espanol": "culpables; impíos",
+    "observacion": "Personas que resultan culpables en un juicio divino por su propia maldad."
+  },
+  {
+    "id": 206,
+    "texto_hebreo": "בָּחַן",
+    "transliteracion": "Bojen",
+    "equivalencia_espanol": "refinador; evaluador",
+    "observacion": "Acción de pasar las intenciones por una evaluación o piedra de toque para mostrar su veracidad."
+  },
+  {
+    "id": 207,
+    "texto_hebreo": "כְּלָיוֹת",
+    "transliteracion": "Qelayot",
+    "equivalencia_espanol": "riñones; intenciones profundas",
+    "observacion": "Órganos que representan lo más secreto y profundo de la mente y las emociones humanas."
+  },
+  {
+    "id": 208,
+    "texto_hebreo": "תְּהִלִּים",
+    "transliteracion": "Tehilim",
+    "equivalencia_espanol": "himnos; salmos",
+    "observacion": "Colección de alabanzas entregada por David, paralela a los cinco libros de la Torah."
+  },
+  {
+    "id": 209,
+    "texto_hebreo": "כְּתוּבִים",
+    "transliteracion": "Ketuvim",
+    "equivalencia_espanol": "escritos",
+    "observacion": "Sección de la literatura bíblica que incluye los Salmos, Rut y Job."
+  },
+  {
+    "id": 210,
+    "texto_hebreo": "גִּתִּית",
+    "transliteracion": "Gitit",
+    "equivalencia_espanol": "prensa; instrumento musical",
+    "observacion": "Asociado por la Septuaginta con la prensa de aceite o uvas; simbólicamente refiere a la humillación de Mashiaj."
+  },
+  {
+    "id": 211,
+    "texto_hebreo": "אַדִּיר",
+    "transliteracion": "Adir",
+    "equivalencia_espanol": "poderoso; sublime",
+    "observacion": "Atributo de Dios que denota una potencia superior y majestuosa."
+  },
+  {
+    "id": 212,
+    "texto_hebreo": "שֵׁם",
+    "transliteracion": "Shem",
+    "equivalencia_espanol": "fama; renombre; nombre",
+    "observacion": "En hebreo no es solo una etiqueta, sino aquello por lo que alguien es conocido o su reputación."
+  },
+  {
+    "id": 213,
+    "texto_hebreo": "נָתַן",
+    "transliteracion": "Natan",
+    "equivalencia_espanol": "dar; poner",
+    "observacion": "Raíz verbal que, según el acento (Natatá), puede interpretarse en sentido profético futuro."
+  },
+  {
+    "id": 214,
+    "texto_hebreo": "הוֹד",
+    "transliteracion": "Hod",
+    "equivalencia_espanol": "potencia; fuerza; resistencia",
+    "observacion": "Mezcla de fuerza y capacidad; representa la máxima potencia y resistencia de una obra."
+  },
+  {
+    "id": 215,
+    "texto_hebreo": "הָדָר",
+    "transliteracion": "Hadar",
+    "equivalencia_espanol": "esplendor; desarrollo",
+    "observacion": "El punto de máximo desarrollo o belleza de algo, como los cuernos en un toro crecido."
+  },
+  {
+    "id": 216,
+    "texto_hebreo": "אֱנוֹשׁ",
+    "transliteracion": "Enosh",
+    "equivalencia_espanol": "hombre débil; enfermizo",
+    "observacion": "Refiere al ser humano en su condición más frágil y debilitada."
+  },
+  {
+    "id": 217,
+    "texto_hebreo": "חָסַר",
+    "transliteracion": "Jasar",
+    "equivalencia_espanol": "disminuir; faltar",
+    "observacion": "Verbo que describe la humillación voluntaria del Mesías al venir por debajo de los ángeles."
+  },
+  {
+    "id": 218,
+    "texto_hebreo": "כָּבוֹד",
+    "transliteracion": "Kavod",
+    "equivalencia_espanol": "peso de la gloria",
+    "observacion": "Relacionado con la obra sacerdotal actual de Mashiaj y su dignidad intrínseca."
+  },
+  {
+    "id": 219,
+    "texto_hebreo": "יִשְׂרָאֵל",
+    "transliteracion": "Yisra'el",
+    "equivalencia_espanol": "potencia de Dios; maravilla",
+    "observacion": "Nombre que engloba todas las promesas divinas y el poder manifestado en el mundo."
+  },
+  {
+    "id": 220,
+    "texto_hebreo": "קְרִי",
+    "transliteracion": "Qeri",
+    "equivalencia_espanol": "lectura",
+    "observacion": "Capacidad de maniobrar con la lectura de las consonantes o vocales para hallar el sentido profético."
+  },
+  {
+    "id": 221,
+    "texto_hebreo": "יָסַר",
+    "transliteracion": "Yisarta",
+    "equivalencia_espanol": "fundar; restaurar; cimentar",
+    "observacion": "Poner en orden o dar un cimiento sólido a algo, como la alabanza desde la sencillez."
+  },
+  {
+    "id": 222,
+    "texto_griego": "Λινός",
+    "transliteracion": "Linon",
+    "equivalencia_espanol": "prensa",
+    "observacion": "Término griego usado en la Septuaginta para interpretar Gitit, aludiendo a la prensa de aceite."
+  },
+  {
+    "id": 223,
+    "texto_hebreo": "עַלְמוּת",
+    "transliteracion": "'Almut",
+    "equivalencia_espanol": "eternidad",
+    "observacion": "Vocalización que sugiere la victoria sobre la muerte; se asocia con el hijo que ha vencido el juicio."
+  },
+  {
+    "id": 224,
+    "texto_hebreo": "אוֹדֶה",
+    "transliteracion": "'Odeh",
+    "equivalencia_espanol": "alabaré; confesaré",
+    "observacion": "Acto interno de conciencia y reconocimiento de Hashem; raíz del nombre Yehudá'."
+  },
+  {
+    "id": 225,
+    "texto_hebreo": "אֲסַפְּרָה",
+    "transliteracion": "'Asaperah",
+    "equivalencia_espanol": "relatar; publicar",
+    "observacion": "Referencia a lo que se publica hacia afuera, concretando el testimonio público de las maravillas divinas."
+  },
+  {
+    "id": 226,
+    "texto_hebreo": "גּוֹיִם",
+    "transliteracion": "Goyim",
+    "equivalencia_espanol": "gentil; naciones",
+    "observacion": "Se refiere a los pueblos que no observan la voluntad de 'Elohim y que enfrentan el juicio."
+  },
+  {
+    "id": 227,
+    "texto_hebreo": "רָשָׁע",
+    "transliteracion": "Rashá'",
+    "equivalencia_espanol": "condenado; culpable",
+    "observacion": "Persona que ha recibido sentencia en un proceso judicial; figura asociada al anti-mesiánico."
+  },
+  {
+    "id": 228,
+    "texto_hebreo": "אַרְמִילוּס",
+    "transliteracion": "Armilus",
+    "equivalencia_espanol": "Armilo",
+    "observacion": "Figura anti-mesiánica del esoterismo judío comparable al Anticristo; aquel que será derrotado por el Mesías."
+  },
+  {
+    "id": 229,
+    "texto_hebreo": "לְאֻמִּים",
+    "transliteracion": "Leumim",
+    "equivalencia_espanol": "grandes imperios; naciones poderosas",
+    "observacion": "Plural de Leom; refiere a las potencias mundiales que serán procesadas con rectitud."
+  },
+  {
+    "id": 230,
+    "texto_hebreo": "דָּרַשׁ",
+    "transliteracion": "Darash",
+    "equivalencia_espanol": "ser atraído; buscar",
+    "observacion": "Concepto donde el hombre se dirige a Dios al ser impactado por el resplandor de Su rostro."
+  },
+  {
+    "id": 231,
+    "texto_hebreo": "צִיּוֹן",
+    "transliteracion": "Tziyón",
+    "equivalencia_espanol": "doctrina de Mashiaj",
+    "observacion": "Más que un monte geográfico, representa la enseñanza más alta y la aparición del Mesías."
+  },
+  {
+    "id": 232,
+    "texto_hebreo": "יֶשַׁע",
+    "transliteracion": "Yesha",
+    "equivalencia_espanol": "salvación; refugio",
+    "observacion": "Término vinculado a la provisión de seguridad y amparo ante la persecución."
+  },
+  {
+    "id": 233,
+    "texto_hebreo": "עֲנָוִים",
+    "transliteracion": "Anavin",
+    "equivalencia_espanol": "mansos",
+    "observacion": "Aquellos que están sujetos a la voluntad de Hashem y cuya esperanza no perecerá."
+  },
+  {
+    "id": 234,
+    "texto_hebreo": "אֶבְיוֹן",
+    "transliteracion": "Evyon",
+    "equivalencia_espanol": "necesitado espiritual",
+    "observacion": "Persona que tiene sed y hambre de justicia; trabajador que no logra cubrir sus necesidades básicas."
+  },
+  {
+    "id": 235,
+    "texto_hebreo": "לָמָה",
+    "transliteracion": "Lamah",
+    "equivalencia_espanol": "por qué",
+    "observacion": "Interrogativo que, en el contexto de súplica, funciona como una petición para no ser abandonado."
+  },
+  {
+    "id": 236,
+    "texto_hebreo": "חָסִיתִי",
+    "transliteracion": "Jasiti'",
+    "equivalencia_espanol": "me he refugiado",
+    "observacion": "Expresión de confianza absoluta en la protección de Hashem ante la persecución."
+  },
+  {
+    "id": 237,
+    "texto_hebreo": "מֵימְרָא",
+    "transliteracion": "Meymra'",
+    "equivalencia_espanol": "expresión corpórea; palabra",
+    "observacion": "Concepto arameo que denota la percepción tangible y material de la deidad, no algo etéreo."
+  },
+  {
+    "id": 238,
+    "texto_hebreo": "מִנְחָה",
+    "transliteracion": "Minjáh",
+    "equivalencia_espanol": "ofrenda; olor fragante",
+    "observacion": "Tecnicismo para el aroma del arrepentimiento y la oración que Hashem acepta."
+  },
+  {
+    "id": 239,
+    "texto_hebreo": "קוֹרֵא",
+    "transliteracion": "Core",
+    "equivalencia_espanol": "perdiz; el que hace bulla",
+    "observacion": "Ave que corre a esconderse en las montañas; metáfora del perseguido."
+  },
+  {
+    "id": 240,
+    "texto_hebreo": "הַר",
+    "transliteracion": "Har",
+    "equivalencia_espanol": "montaña",
+    "observacion": "Lugar de refugio físico y espiritual mencionado en el contexto de la huida de David."
+  },
+  {
+    "id": 241,
+    "texto_hebreo": "צִפּוֹר",
+    "transliteracion": "Tzipor",
+    "equivalencia_espanol": "pájaro",
+    "observacion": "Símbolo de la fragilidad del alma que busca escapar de la red del cazador."
+  },
+  {
+    "id": 242,
+    "texto_hebreo": "קָרְבָּן",
+    "transliteracion": "Qorban",
+    "equivalencia_espanol": "sacrificio; ofrenda",
+    "observacion": "Relacionado con la consumación del sacrificio del cuerpo de Mashiaj para el refinamiento humano."
+  },
+  {
+    "id": 243,
+    "texto_hebreo": "הוֹשִׁיעָה",
+    "transliteracion": "Hoshiah",
+    "equivalencia_espanol": "ampáranos; provéenos refugio",
+    "observacion": "Petición urgente de protección específica ante una catástrofe o peligro inminente."
+  },
+  {
+    "id": 244,
+    "texto_hebreo": "גָּמַר",
+    "transliteracion": "Gamar",
+    "equivalencia_espanol": "acabarse; terminarse",
+    "observacion": "Verbo en perfectivo que indica la desaparición de los piadosos en la tierra."
+  },
+  {
+    "id": 245,
+    "texto_hebreo": "אֱמוּנִים",
+    "transliteracion": "'Emunim",
+    "equivalencia_espanol": "fieles; portadores de fidelidad",
+    "observacion": "Sustantivo que designa a quienes cargan y entregan la verdad divina."
+  },
+  {
+    "id": 246,
+    "texto_hebreo": "סָפוּ",
+    "transliteracion": "Safu",
+    "equivalencia_espanol": "agotarse; consumirse",
+    "observacion": "Estado de los fieles que han desaparecido o han sido erradicados del medio de los hombres."
+  },
+  {
+    "id": 247,
+    "texto_hebreo": "מָשִׁיחַ",
+    "transliteracion": "Mashiaj",
+    "equivalencia_espanol": "ungido; representante",
+    "observacion": "Persona u objeto que representa personalmente la autoridad divina en la tierra."
+  },
+  {
+    "id": 248,
+    "texto_hebreo": "חָלֶק",
+    "transliteracion": "Jalaq",
+    "equivalencia_espanol": "liso; ligero",
+    "observacion": "Adjetivo que describe una superficie sin asperezas; metafóricamente refiere a lo que es fácil o sin compromiso."
+  },
+  {
+    "id": 249,
+    "texto_hebreo": "חֲלָקוֹת",
+    "transliteracion": "Jalaqot",
+    "equivalencia_espanol": "cosas ligeras; lenguaje liso",
+    "observacion": "Lenguaje que busca aligerar las palabras de la Torah o evadir las responsabilidades del pacto."
+  },
+  {
+    "id": 250,
+    "texto_hebreo": "יְשׁוּעָה",
+    "transliteracion": "Yeshuáh",
+    "equivalencia_espanol": "provisión de amparo",
+    "observacion": "Sustantivo que define la salvación como un refugio concreto provisto por Hashem ante las tinieblas."
+  },
+  {
+    "id": 251,
+    "texto_hebreo": "דָּתִי",
+    "transliteracion": "Dati",
+    "equivalencia_espanol": "religioso",
+    "observacion": "Término que describe al individuo que sigue leyes humanas por falta de fidelidad auténtica; no es sinónimo de ortodoxo."
+  },
+  {
+    "id": 252,
+    "texto_hebreo": "אֶבְיוֹנִים",
+    "transliteracion": "Evionim",
+    "equivalencia_espanol": "necesitados",
+    "observacion": "Refiere a quienes padecen escasez espiritual o hambre de justicia y por quienes YHWH promete actuar."
+  },
+  {
+    "id": 253,
+    "texto_hebreo": "מוֹעֵד",
+    "transliteracion": "Mo'ed",
+    "equivalencia_espanol": "fecha fijada",
+    "observacion": "Tiempo o cita determinada por la divinidad para manifestar su gracia o juicio."
+  },
+  {
+    "id": 254,
+    "texto_hebreo": "הוֹשִׁיעַ",
+    "transliteracion": "Yehoshia'",
+    "equivalencia_espanol": "salvará; proveer amparo",
+    "observacion": "Forma verbal que describe la acción de Hashem de rescatar a su pueblo de la iniquidad."
+  },
+  {
+    "id": 255,
+    "texto_hebreo": "אוֹפִיעַ",
+    "transliteracion": "Ofía'",
+    "equivalencia_espanol": "apareceré; me manifestaré",
+    "observacion": "Acción de la deidad de hacerse presente o brillar a través de su representante en la tierra."
+  },
+  {
+    "id": 256,
+    "texto_hebreo": "מְזֻקָּק",
+    "transliteracion": "Mezuqaq",
+    "equivalencia_espanol": "machacado; refinado",
+    "observacion": "Proceso de moler finamente un metal; describe la pureza absoluta de la palabra divina tras ser probada."
+  },
+  {
+    "id": 257,
+    "texto_hebreo": "תִּשְׁמְרֶנּוּ",
+    "transliteracion": "Tishmerenu",
+    "equivalencia_espanol": "lo guardarás a él",
+    "observacion": "Lectura corregida que enfatiza la preservación del amado frente a una generación hostil."
+  },
+  {
+    "id": 258,
+    "texto_hebreo": "בְּתוּלָה",
+    "transliteracion": "Betula'",
+    "equivalencia_espanol": "virgen",
+    "observacion": "Concepto que denota la pureza y aptitud del pueblo que se presenta ante el Mashiaj."
+  },
+  {
+    "id": 259,
+    "texto_hebreo": "טְהוֹרָה",
+    "transliteracion": "Tehora",
+    "equivalencia_espanol": "pura",
+    "observacion": "Estado femenino de pureza; aquello que es compatible con la santidad de Dios."
+  },
+  {
+    "id": 260,
+    "texto_hebreo": "לָמָה",
+    "transliteracion": "Lamah",
+    "equivalencia_espanol": "¿hasta dónde?; ¿por qué?",
+    "observacion": "Interrogativo que encabeza las lamentaciones, expresando la angustia del alma que busca respuesta divina."
+  },
+  {
+    "id": 261,
+    "texto_hebreo": "פֶּשֶׁר",
+    "transliteracion": "Pesher",
+    "equivalencia_espanol": "interpretación; analogía",
+    "observacion": "Metodología que permite conectar lo histórico con lo singular (Mashiaj) y lo escatológico."
+  },
+  {
+    "id": 262,
+    "texto_hebreo": "נֶצַח",
+    "transliteracion": "Netzaj",
+    "equivalencia_espanol": "victoria; eternidad",
+    "observacion": "Referencia a la victoria sobre la muerte e inmortalidad, donde el concepto de tiempo desaparece [cite: 929-932, 938]."
+  },
+  {
+    "id": 263,
+    "texto_hebreo": "תְּשׁוּעָה",
+    "transliteracion": "Teshuah",
+    "equivalencia_espanol": "victoria militar",
+    "observacion": "Triunfo de un ejército en el contexto de una guerra física[cite: 933]."
+  },
+  {
+    "id": 264,
+    "texto_hebreo": "מְנוּחָה",
+    "transliteracion": "Mnujáh",
+    "equivalencia_espanol": "descanso",
+    "observacion": "Estado de reposo espiritual que representa estar dentro de Mashiaj[cite: 964, 965]."
+  },
+  {
+    "id": 265,
+    "texto_hebreo": "טָמֵא",
+    "transliteracion": "Tamé'",
+    "equivalencia_espanol": "inhabilitado; impuro",
+    "observacion": "Estado de aquel que no es apto para la santidad divina[cite: 886]."
+  },
+  {
+    "id": 266,
+    "texto_hebreo": "גָּמַל",
+    "transliteracion": "Gamal",
+    "equivalencia_espanol": "nutrir; sustentar",
+    "observacion": "Analogía con el acto de amamantar; proporción de piedades que vigorizan al creyente[cite: 909]."
+  },
+  {
+    "id": 267,
+    "texto_hebreo": "נָבָל",
+    "transliteracion": "Naval",
+    "equivalencia_espanol": "necio",
+    "observacion": "Aquel que en su corazón niega la existencia de 'Elohim y se corrompe en sus obras[cite: 916]."
+  },
+  {
+    "id": 268,
+    "texto_hebreo": "אָנָה",
+    "transliteracion": "Anah",
+    "equivalencia_espanol": "dónde; cuándo",
+    "observacion": "Interrogativo usado para indagar tanto el límite geográfico de la cautividad como el tiempo de la angustia[cite: 950]."
+  },
+  {
+    "id": 269,
+    "texto_hebreo": "נָבָל",
+    "transliteracion": "Naval",
+    "equivalencia_espanol": "necio",
+    "observacion": "Aquel que en su corazón niega el amor de Dios ('Elohim) y cuyas acciones son contrarias a la sabiduría."
+  },
+  {
+    "id": 270,
+    "texto_hebreo": "נְבֵלָה",
+    "transliteracion": "Nevelá",
+    "equivalencia_espanol": "carroña; desgaste",
+    "observacion": "Se refiere a lo que se ha ido deteriorando o pudriendo por haber muerto de causa desconocida."
+  },
+  {
+    "id": 271,
+    "texto_hebreo": "נְבָלָה",
+    "transliteracion": "Nevaláh",
+    "equivalencia_espanol": "insensatez; vileza",
+    "observacion": "Conducta que representa todo lo contrario a la sabiduría y que constituye una afrenta a la justicia."
+  },
+  {
+    "id": 272,
+    "texto_hebreo": "טוֹב",
+    "transliteracion": "Tov",
+    "equivalencia_espanol": "el bueno",
+    "observacion": "Concepto de bien absoluto que emana exclusivamente de Hashem; el origen de lo que es correcto."
+  },
+  {
+    "id": 273,
+    "texto_hebreo": "טוּב",
+    "transliteracion": "Tuv",
+    "equivalencia_espanol": "bondad",
+    "observacion": "Atributo derivado de lo que es bueno en esencia divina."
+  },
+  {
+    "id": 274,
+    "texto_hebreo": "טוֹבָה",
+    "transliteracion": "Továh",
+    "equivalencia_espanol": "benignidad",
+    "observacion": "Concepto subjetivo de bien, referido a las acciones que los seres humanos consideran favorables entre sí."
+  },
+  {
+    "id": 275,
+    "texto_hebreo": "שָׁחַת",
+    "transliteracion": "Shaját",
+    "equivalencia_espanol": "corromper; fosa",
+    "observacion": "Raíz vinculada a lo que se echa a perder y al lugar de corrupción o sepultura."
+  },
+  {
+    "id": 276,
+    "texto_hebreo": "תָּעַב",
+    "transliteracion": "Taav",
+    "equivalencia_espanol": "abominable",
+    "observacion": "Raíz que describe acciones perversas o el estado de una oración cuando el hombre aparta su oído de la Torah."
+  },
+  {
+    "id": 277,
+    "texto_hebreo": "עָשָׂה",
+    "transliteracion": "Asah",
+    "equivalencia_espanol": "vivenciar; realizar",
+    "observacion": "Verbo que denota la acción de llevar algo a la realidad o materializar una conducta."
+  },
+  {
+    "id": 278,
+    "texto_hebreo": "מַעֲשֶׂה",
+    "transliteracion": "Ma'aseh",
+    "equivalencia_espanol": "vivencia; hecho",
+    "observacion": "El resultado concreto de una acción o un suceso histórico que ha tenido lugar."
+  },
+  {
+    "id": 279,
+    "texto_hebreo": "עֲלִילָה",
+    "transliteracion": "Aliláh",
+    "equivalencia_espanol": "acción intencional",
+    "observacion": "Vivencia donde prima la intencionalidad o el gesto causal que conduce a un efecto."
+  },
+  {
+    "id": 280,
+    "texto_hebreo": "מַשְׂכִּיל",
+    "transliteracion": "Masqil",
+    "equivalencia_espanol": "entendido",
+    "observacion": "Aquel que posee discernimiento para buscar a 'Elohim en medio de una generación corrupta."
+  },
+  {
+    "id": 281,
+    "texto_hebreo": "קָרָא",
+    "transliteracion": "Cará'",
+    "equivalencia_espanol": "llamar; invocar; leer",
+    "observacion": "Acción de convocar o leer a conciencia el nombre o la voluntad de Hashem."
+  },
+  {
+    "id": 282,
+    "texto_hebreo": "מִקְרָא",
+    "transliteracion": "Miqra'",
+    "equivalencia_espanol": "convocación; lectura",
+    "observacion": "Término que designa a la Escritura (Tanaj) como la convocación inspirada para instruir al hombre."
+  },
+  {
+    "id": 283,
+    "texto_hebreo": "עָנִי",
+    "transliteracion": "Aní",
+    "equivalencia_espanol": "humilde",
+    "observacion": "Condición de Mashiaj y de sus seguidores, caracterizada por la mansedumbre y la dependencia de YHWH."
+  },
+  {
+    "id": 284,
+    "texto_hebreo": "דּוֹר",
+    "transliteracion": "Dor",
+    "equivalencia_espanol": "generación; habitante",
+    "observacion": "Se refiere tanto al grupo de personas que viven en un tiempo como a los residentes de un estado espiritual."
+  },
+  {
+    "id": 115,
+    "texto_hebreo": "הוֹלֵךְ",
+    "transliteracion": "Holej",
+    "equivalencia_espanol": "andar; caminar; ir a pie",
+    "observacion": "Relacionado con la idea de Halajáh o procedimiento; indica la forma en que Hashem actúa de manera completa."
+  },
+  {
+    "id": 116,
+    "texto_hebreo": "תָּמִים",
+    "transliteracion": "Tamim",
+    "equivalencia_espanol": "completo; íntegro; perfecto",
+    "observacion": "Atributo de lo que no le falta ni le sobra nada, como el sacrificio o la obra de la Roca."
+  },
+  {
+    "id": 117,
+    "texto_hebreo": "פֹּעֵל",
+    "transliteracion": "Po'el",
+    "equivalencia_espanol": "activista; procurador; el que obra",
+    "observacion": "Se refiere a Hashem como ejecutor del estado ideal o del deber ser."
+  },
+  {
+    "id": 118,
+    "texto_hebreo": "צֶדֶק",
+    "transliteracion": "Tzédeq",
+    "equivalencia_espanol": "justicia; estado ideal; deber ser",
+    "observacion": "Representa el orden correcto de las cosas según la Torah, distinto a la Tzdaqáh de salvación."
+  },
+  {
+    "id": 119,
+    "texto_hebreo": "מִצְוֹת",
+    "transliteracion": "Mitzvot",
+    "equivalencia_espanol": "procedimientos; mandamientos",
+    "observacion": "Herramientas a través de la Torah para alcanzar el deber ser de las cosas."
+  },
+  {
+    "id": 120,
+    "texto_hebreo": "צְדָקָה",
+    "transliteracion": "Tzdaqáh",
+    "equivalencia_espanol": "justicia (para salvación)",
+    "observacion": "Acepción de justicia que otorga Hashem y que salta para vida eterna."
+  },
+  {
+    "id": 121,
+    "texto_hebreo": "אֱמֶת",
+    "transliteracion": "'Emet",
+    "equivalencia_espanol": "verdad; inmutable; lo que no cambia",
+    "observacion": "Nombre y esencia de Hashem y de la Torah; aquello que permanece firme en los cielos."
+  },
+  {
+    "id": 122,
+    "texto_hebreo": "עוֹלָם",
+    "transliteracion": "'Olam",
+    "equivalencia_espanol": "eternidad; tiempo escondido",
+    "observacion": "Referencia a la duración de la promesa de la tierra y la vida eterna."
+  },
+  {
+    "id": 123,
+    "texto_hebreo": "בַּר",
+    "transliteracion": "Bar",
+    "equivalencia_espanol": "hijo",
+    "observacion": "Componente del título para el Mesías que vino a buscar lo perdido."
+  },
+  {
+    "id": 124,
+    "texto_hebreo": "אֱנָשׁ",
+    "transliteracion": "'Enash",
+    "equivalencia_espanol": "hombre; humano",
+    "observacion": "Componente que denota la naturaleza humana o el aspecto mortal."
+  },
+  {
+    "id": 125,
+    "texto_hebreo": "חֶרְפָּה",
+    "transliteracion": "Hervah",
+    "equivalencia_espanol": "vituperio; afrenta; deshonra",
+    "observacion": "Tiene la connotación de restar, extraer o socavar los fundamentos del prójimo."
+  },
+  {
+    "id": 126,
+    "texto_hebreo": "צָרַעַת",
+    "transliteracion": "Tzara'at",
+    "equivalencia_espanol": "inhabilitación; afección de piel",
+    "observacion": "Mencionada en el contexto del mendigo Eleazar como una condición de padecimiento físico."
+  },
+  {
+    "id": 127,
+    "texto_hebreo": "צִיּוֹן",
+    "transliteracion": "Tzyión",
+    "equivalencia_espanol": "Sión",
+    "observacion": "Lugar desde donde sale la salvación de Yisra'el; asociado con la luz divina."
+  },
+  {
+    "id": 128,
+    "texto_hebreo": "יַעֲקֹב",
+    "transliteracion": "Ya'aqov",
+    "equivalencia_espanol": "Jacob",
+    "observacion": "Referencia específica al pueblo hebreo que es de nacimiento."
+  },
+  {
+    "id": 129,
+    "texto_hebreo": "יִשְׂרָאֵל",
+    "transliteracion": "Yisra'el",
+    "equivalencia_espanol": "Israel",
+    "observacion": "Pueblo de Hashem que incluye tanto al remanente de Ya'aqov como a los gentiles."
+  },
+  {
+    "id": 130,
+    "texto_hebreo": "אֹהֶל",
+    "transliteracion": "'Ohel",
+    "equivalencia_espanol": "tienda",
+    "observacion": "Usada metafóricamente para referirse a los cielos como morada celestial."
+  },
+  {
+    "id": 131,
+    "texto_hebreo": "מִי",
+    "transliteracion": "Mi",
+    "equivalencia_espanol": "quién; nadie; de dónde",
+    "observacion": "Interrogativo que también denota la pertenencia geográfica o la nulidad de méritos humanos."
+  },
+  {
+    "id": 132,
+    "texto_hebreo": "שָׁכֵן",
+    "transliteracion": "Shajan",
+    "equivalencia_espanol": "residir; habitar con confianza",
+    "observacion": "Acción de permanecer frecuentemente en un lugar sin que nada cause daño."
+  },
+  {
+    "id": 133,
+    "texto_hebreo": "הַר",
+    "transliteracion": "Har",
+    "equivalencia_espanol": "monte; montaña; doctrina",
+    "observacion": "Representa el cuerpo doctrinal o la voluntad divina en el lenguaje profético."
+  },
+  {
+    "id": 134,
+    "texto_hebreo": "קֹדֶשׁ",
+    "transliteracion": "Qódesh",
+    "equivalencia_espanol": "santidad; santificado",
+    "observacion": "Atributo esencial de Hashem sin el cual nadie puede agradarle."
+  },
+  {
+    "id": 135,
+    "texto_hebreo": "בֵּית",
+    "transliteracion": "Beyt",
+    "equivalencia_espanol": "casa",
+    "observacion": "Estructura que conforma el lugar de santificación."
+  },
+  {
+    "id": 136,
+    "texto_hebreo": "מִקְדָּשׁ",
+    "transliteracion": "Miqdash",
+    "equivalencia_espanol": "santificatorio; santuario",
+    "observacion": "Lugar dedicado a la presencia y el servicio divino."
+  },
+  {
+    "id": 137,
+    "texto_hebreo": "הֵיכָל",
+    "transliteracion": "Heyjal",
+    "equivalencia_espanol": "palacio; templo",
+    "observacion": "El edificio central del servicio sagrado en Yerushalayim."
+  },
+  {
+    "id": 138,
+    "texto_hebreo": "מִשְׁמֶרֶת",
+    "transliteracion": "Mishmeret",
+    "equivalencia_espanol": "guardia; vigilancia; espalda",
+    "observacion": "Habilitación divina que permitía acercarse sin morir; el acompañamiento de Dios."
   }
 ]
-
-
-continuar con salmos desde el doc 15
