@@ -411,6 +411,27 @@ function getDisplayedHebrewDefinition(entry, clickedWord = '') {
     state.rootsLoaded = true;
     return state.rootsByStrong;
   }
+  function resolveStrongReferenceLexeme(strongRef) {
+    const strongKey = String(strongRef || '').trim().toUpperCase();
+    if (!/^H\d+$/.test(strongKey)) return '';
+    const direct = state.rootsByStrong.get(strongKey) || [];
+    const candidate = direct.find((item) => normalizeSimpleText(item?.lexeme)) || direct.find((item) => normalizeSimpleText(item?.root_lexeme));
+    return normalizeSimpleText(candidate?.lexeme || candidate?.root_lexeme || '');
+  }
+
+  function replaceStrongReferencesWithLexemes(text) {
+    return String(text || '').replace(/\bH(\d+)\b/gi, (match, digits) => {
+      const lexeme = resolveStrongReferenceLexeme(`H${digits}`);
+      return lexeme || '';
+    }).replace(/\s{2,}/g, ' ').replace(/\s+([;:,.])/g, '$1').trim();
+  }
+
+  function formatRootDefinitionSegment(item, fieldName) {
+    const raw = normalizeSimpleText(item?.[fieldName]);
+    if (!raw) return '';
+    const replaced = replaceStrongReferencesWithLexemes(raw);
+    return replaced || raw;
+  }
 
   function getHebrewRootData(entry) {
     if (!entry) return [];
@@ -1205,8 +1226,8 @@ function setPopupExpanded(expanded) {
         if (variantsEl) variantsEl.textContent = getHebrewForms(entry).join(', ') || '—';
  const rootData = getHebrewRootData(entry);
         const rootLexemes = uniqueList(rootData.map((item) => item?.root_lexeme));
-        const rootDefinitions = uniqueList(rootData.map((item) => item?.root_first_segment));
-        if (rootLexemeEl) rootLexemeEl.textContent = rootLexemes.join(' · ') || '—';
+        const rootDefinitions = uniqueList(rootData.map((item) => formatRootDefinitionSegment(item, 'root_first_segment')));
+                if (rootLexemeEl) rootLexemeEl.textContent = rootLexemes.join(' · ') || '—';
         if (rootLexemeRowEl) rootLexemeRowEl.style.display = rootLexemes.length ? '' : 'none';
         const rootLabelWord = rootLexemes[0] || '';
         if (rootDefinitionLabelEl) rootDefinitionLabelEl.textContent = rootLabelWord ? `Definición de ${rootLabelWord}:` : 'Definición de derivación:';
