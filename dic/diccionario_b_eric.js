@@ -485,11 +485,8 @@ const matches = findMatchesByLanguageOrder(terms);
         <div class="dict-entry-header">
           <div class="dict-entry-kicker">Diccionario · Prof. Eric de Jesús Rodríguez Mendoza</div>
         </div>
-        <div class="trilingual-line"><strong>${sourceLabel}:</strong> <span class="${sourceClass}">${esc(sourceText || '—')}</span></div>
-        <div class="trilingual-line"><strong>Transliteración:</strong> ${esc(transliteracion)}</div>
-        <div class="trilingual-line"><strong>Equivalencia español:</strong> ${esc(spanish)}</div>
-        <div class="trilingual-line"><strong>Definición:</strong> ${esc(definicion).replace(/\n/g, '<br>')}</div>
-              </div>
+ ${renderedEntries}
+      </div> 
     `;
   }
 
