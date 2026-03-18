@@ -25,6 +25,7 @@
   const jsonCache = new Map();
    let hebrewRootsPromise = null;
   let hebrewRootsIndex = null;
+    let hebrewRootsStrongIndex = null;
   let lxxFrequencyIndexPromise = null;
   let esFrequencyIndexPromise = null;
   let heFrequencyIndexPromise = null;
@@ -117,6 +118,17 @@ return Array.from(new Set(words));
       .trim()
       .normalize('NFC');
   }
+  function normalizeStrongKey(value) {
+    const match = String(value || '').toUpperCase().match(/H\d+/);
+    return match ? match[0] : '';
+  }
+
+  function getHebrewRootEntryByStrong(strong) {
+    const key = normalizeStrongKey(strong);
+    if (!key) return null;
+    return hebrewRootsStrongIndex?.get(key) || null;
+  }
+
    function tokenizeHebrewForLookup(text) {
     const normalized = normalizeHebrew(text);
     if (!normalized) return [];
@@ -134,38 +146,77 @@ return Array.from(new Set(words));
       ]).then((payload) => {
         const entries = Array.isArray(payload) ? payload : [];
         const index = new Map();
+        const strongIndex = new Map();
         entries.forEach((entry) => {
           const key = normalizeHebrewRootKey(entry?.lexeme || '');
-          if (!key || index.has(key)) return;
-          index.set(key, entry);
         });
+        const strongKey = normalizeStrongKey(entry?.strong || '');
+          if (key && !index.has(key)) index.set(key, entry);
+          if (strongKey && !strongIndex.has(strongKey)) strongIndex.set(strongKey, entry);
         hebrewRootsIndex = index;
+        hebrewRootsStrongIndex = strongIndex;
         return index;
       }).catch((error) => {
         console.warn('No se pudo cargar dic/hebrew_roots.json.', error);
         hebrewRootsIndex = new Map();
+         hebrewRootsStrongIndex = new Map();
         return hebrewRootsIndex;
       });
     }
     return hebrewRootsPromise;
   }
 
+ function createRootReferenceButton(label, strong) {
+    const strongKey = normalizeStrongKey(strong);
+    if (!strongKey) return escapeHtml(label);
+    return `<button type="button" class="root-ref-link hebrew" data-role="hebrew-root-link" data-strong="${escapeHtml(strongKey)}">${escapeHtml(label)}</button>`;
+  }
+
+  function renderRootTextWithLinks(text) {
+    const raw = String(text || '').trim();
+    if (!raw) return '—';
+
+    const strongPattern = /H\d+/gi;
+    let lastIndex = 0;
+    let html = '';
+    let match;
+
+    while ((match = strongPattern.exec(raw))) {
+      const strong = normalizeStrongKey(match[0]);
+      const entry = getHebrewRootEntryByStrong(strong);
+      const replacement = entry?.lexeme ? createRootReferenceButton(entry.lexeme, strong) : escapeHtml(match[0]);
+      html += escapeHtml(raw.slice(lastIndex, match.index));
+      html += replacement;
+      lastIndex = match.index + match[0].length;
+    }
+
+    html += escapeHtml(raw.slice(lastIndex));
+    return html || '—';
+  }
   function renderHebrewRootsPanel(entry) {
     const derivedEl = document.getElementById('hebrewRootDerivedFrom');
     const definitionEl = document.getElementById('hebrewRootDefinition');
     if (!derivedEl || !definitionEl) return;
 
-    derivedEl.textContent = String(entry?.derived_from || '—').trim() || '—';
-    definitionEl.textContent = String(entry?.root_first_segment || '—').trim() || '—';
+   if (!entry) {
+      derivedEl.textContent = '—';
+      definitionEl.textContent = '—';
+      return;
+    }
+
+    derivedEl.innerHTML = `<span class="hebrew">${escapeHtml(entry?.lexeme || '—')}</span>`;
+    definitionEl.innerHTML = renderRootTextWithLinks(entry?.definition_first_segment || entry?.root_first_segment || '—');
   }
 
-  async function updateHebrewRootsPanel(word) {
-    const derivedEl = document.getElementById('hebrewRootDerivedFrom');
+  async function updateHebrewRootsPanel(wordOrStrong) {
+      const derivedEl = document.getElementById('hebrewRootDerivedFrom');
     const definitionEl = document.getElementById('hebrewRootDefinition');
     if (!derivedEl || !definitionEl) return;
 
-    const normalizedWord = normalizeHebrewRootKey(word || '');
-    if (!normalizedWord || normalizedWord === '—') {
+     const rawValue = String(wordOrStrong || '').trim();
+    const normalizedWord = normalizeHebrewRootKey(rawValue);
+    const normalizedStrong = normalizeStrongKey(rawValue);
+    if ((!normalizedWord || normalizedWord === '—') && !normalizedStrong) {
       renderHebrewRootsPanel(null);
       return;
     }
@@ -174,8 +225,9 @@ return Array.from(new Set(words));
     definitionEl.textContent = 'Consultando…';
 
     const index = await ensureHebrewRootsLoaded();
-    renderHebrewRootsPanel(index.get(normalizedWord) || null);
-  }
+ const entry = (normalizedStrong && getHebrewRootEntryByStrong(normalizedStrong)) || index.get(normalizedWord) || null;
+    renderHebrewRootsPanel(entry);
+      }
 
   async function fetchJsonWithFallback(urls) {
     let lastError = null;
@@ -481,6 +533,16 @@ gr_lxx: first?.words?.gr_lxx?.[0] || '—',
     refreshComparisonAndSummary();
     updateDonutFromSelection();
   }
+function onHebrewRootsClick(event) {
+    const target = event.target instanceof HTMLElement
+      ? event.target.closest('[data-role="hebrew-root-link"]')
+      : null;
+    if (!target) return;
+
+    const strong = String(target.dataset.strong || '').trim();
+    if (!strong) return;
+    updateHebrewRootsPanel(strong).catch(() => {});
+  }
 
   function onResultsClick(event) {
     const target = event.target instanceof HTMLElement
@@ -516,6 +578,9 @@ gr_lxx: first?.words?.gr_lxx?.[0] || '—',
     window.addEventListener('trilingue:results-rendered', onResultsRendered);
     const tbody = document.getElementById('resultsTbody');
     if (tbody) tbody.addEventListener('click', onResultsClick);
+    
+    const rootsPanel = document.getElementById('hebrewRootsPanel');
+    if (rootsPanel) rootsPanel.addEventListener('click', onHebrewRootsClick);
   }
 
   if (document.readyState === 'loading') {

@@ -211,21 +211,51 @@
 
 .roots-panel{
       min-height:100%;
+       width:100%;
+      overflow:hidden;
+    }
+    .roots-panel .panel-body{
+      padding:.75rem;
     }
     .roots-panel .roots-line + .roots-line{
-      margin-top:.45rem;
+ margin-top:.35rem;
     }
+    .roots-panel .roots-line strong{
+      display:block;
+      margin-bottom:.15rem;
+      font-size:.84rem;
+    }
+
     .roots-panel .roots-value{
       display:block;
-      margin-top:.15rem;
-      padding:.5rem .65rem;
+        width:100%;
+      max-width:100%;
+      margin-top:.1rem;
+      padding:.4rem .5rem;
       border:1px solid color-mix(in srgb, var(--text) 16%, #ffffff);
-      border-radius:10px;
+      border-radius:8px;
       background:color-mix(in srgb, var(--soft-bg) 78%, #ffffff);
-      line-height:1.5;
+      line-height:1.35;
+      font-size:.88rem;
+      overflow-wrap:anywhere;
+      word-break:break-word;
+      white-space:normal;
     }
     .roots-panel .roots-value.hebrew{
-      font-size:1rem;
+      font-size:.94rem;
+    }
+    .root-ref-link{
+      display:inline;
+      padding:0;
+      border:none;
+      background:transparent;
+      color:inherit;
+      cursor:pointer;
+      text-decoration:underline;
+      text-underline-offset:2px;
+    }
+    .root-ref-link:hover{
+      color:var(--primary);
     }
     .dict-entry{
       padding:.35rem 0;
