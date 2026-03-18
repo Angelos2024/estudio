@@ -13,6 +13,7 @@
     '31Abdías.json','32Jonás.json','33Miqueas.json','34Nahúm.json','35Habacuc.json','36Sofonías.json','37Hageo.json','38zacarias.json','39malaquias.json'
   ];
   const HEBREW_INDEX_PATH = './search/index-he.json';
+    const HEBREW_ROOTS_PATH = './dic/hebrew_roots.json';
   const GREEK_INDEX_PATH = './search/index-gr.json';
   const TEXT_BASE = './search/texts';
   const LXX_FILES = [
@@ -144,8 +145,11 @@
      popupDrag: null,
 popupRequestId: 0,
     popupExpanded: false,
-    trilingueFallback: null
-      };
+trilingueFallback: null,
+    rootsLoaded: false,
+    rootsByStrong: new Map(),
+    rootsByLexeme: new Map()
+          };
  const HEBREW_PREFIX_LETTERS = new Set(['ו', 'ה', 'ב', 'ל', 'כ', 'מ', 'ש']);
   const jsonCache = new Map();
   function normalizeHebrew(text) {
@@ -376,6 +380,67 @@ function getDisplayedHebrewDefinition(entry, clickedWord = '') {
 
   function getHebrewLxx(entry) {
     return entry?.LXX || entry?.lxx || entry?.lxx_refs || null;
+  }
+  function getHebrewStrong(entry) {
+    const raw = String(entry?.strong || entry?.strongs || entry?.strong_detail?.strong || '').trim();
+    if (!raw) return '';
+    const normalized = raw.toUpperCase();
+    return normalized.startsWith('H') ? normalized : `H${normalized}`;
+  }
+
+  function registerRootCandidate(map, key, item) {
+    if (!key) return;
+    if (!map.has(key)) map.set(key, []);
+    map.get(key).push(item);
+  }
+
+  async function loadHebrewRoots() {
+    if (state.rootsLoaded) return state.rootsByStrong;
+    const data = await loadJson(HEBREW_ROOTS_PATH);
+    (data || []).forEach((item) => {
+      const strongKey = String(item?.strong || '').trim().toUpperCase();
+      if (strongKey) registerRootCandidate(state.rootsByStrong, strongKey, item);
+
+      uniqueList([item?.lexeme, item?.root_lexeme]).forEach((token) => {
+        const plain = normalizeHebrew(token);
+        const pointed = normalizeHebrewPointed(token);
+        registerRootCandidate(state.rootsByLexeme, plain, item);
+        if (pointed && pointed !== plain) registerRootCandidate(state.rootsByLexeme, pointed, item);
+      });
+    });
+    state.rootsLoaded = true;
+    return state.rootsByStrong;
+  }
+
+  function getHebrewRootData(entry) {
+    if (!entry) return [];
+    const matches = [];
+    const seen = new Set();
+    const strongKey = getHebrewStrong(entry);
+    const addUnique = (item) => {
+      if (!item) return;
+      const key = `${item?.strong || ''}|${item?.root_lexeme || ''}|${item?.root_first_segment || ''}`;
+      if (seen.has(key)) return;
+      seen.add(key);
+      matches.push(item);
+    };
+
+    (state.rootsByStrong.get(strongKey) || []).forEach(addUnique);
+
+    uniqueList([
+      entry?.strong_detail?.lemma,
+      entry?.lemma,
+      entry?.hebreo,
+      entry?.palabra,
+      entry?.forma
+    ]).forEach((token) => {
+      const plain = normalizeHebrew(token);
+      const pointed = normalizeHebrewPointed(token);
+      (state.rootsByLexeme.get(plain) || []).forEach(addUnique);
+      if (pointed && pointed !== plain) (state.rootsByLexeme.get(pointed) || []).forEach(addUnique);
+    });
+
+    return matches.filter((item) => item?.root_lexeme || item?.root_first_segment);
   }
    function resolveClickedFormContext(entry, clickedWord = '') {
     if (!entry) return null;
@@ -811,8 +876,9 @@ function isLikelyVerbEntry(entry) {
       '<div class="details">' +
 '<div class="t2 row" id="he-lex-printed-row"><span class="lab">Entrada impresa:</span><span id="he-lex-printed"></span></div>' +
       '<div class="t2 row"><span class="lab">Formas:</span><span id="he-lex-variants"></span></div>' +
-            '<div class="t2 row" id="he-lex-tri-row"><span class="lab">Equivalencia trilingüe:</span><span id="he-lex-tri"></span></div>' +
-      '<div class="t2 row"><span class="lab">LXX:</span><div id="he-lex-lxx" class="def"></div></div>' +
+'<div class="t2 row" id="he-lex-root-lexeme-row" style="display:none"><span class="lab">Raíz de:</span><span id="he-lex-root-lexeme"></span></div>' +
+      '<div class="t2 row" id="he-lex-root-definition-row" style="display:none"><span class="lab" id="he-lex-root-definition-label">Definición de Raíz:</span><div id="he-lex-root-definition" class="def"></div></div>' +
+            '<div class="t2 row"><span class="lab">LXX:</span><div id="he-lex-lxx" class="def"></div></div>' +
       '<hr class="sep" />' +
       '<div class="t2"><span class="lab">Correspondencia RKANT:</span></div>' +
 '<div id="he-lex-rkant" class="rkant"></div>' +
@@ -1067,6 +1133,11 @@ function setPopupExpanded(expanded) {
     const variantsEl = document.getElementById('he-lex-variants');
     const lxxEl = document.getElementById('he-lex-lxx');
     const rkantEl = document.getElementById('he-lex-rkant');
+     const rootLexemeEl = document.getElementById('he-lex-root-lexeme');
+    const rootLexemeRowEl = document.getElementById('he-lex-root-lexeme-row');
+    const rootDefinitionEl = document.getElementById('he-lex-root-definition');
+    const rootDefinitionRowEl = document.getElementById('he-lex-root-definition-row');
+    const rootDefinitionLabelEl = document.getElementById('he-lex-root-definition-label');
 
     let currentLxxData = '—';
     const displayWord = stripHebrewCantillation(word) || word || normalized;
@@ -1080,6 +1151,11 @@ function setPopupExpanded(expanded) {
     if (descEl) descEl.textContent = 'Buscando entrada en el diccionario hebreo…';
     if (variantsEl) variantsEl.textContent = '—';
     if (lxxEl) lxxEl.textContent = '—';
+    if (rootLexemeEl) rootLexemeEl.textContent = '—';
+    if (rootLexemeRowEl) rootLexemeRowEl.style.display = 'none';
+    if (rootDefinitionEl) rootDefinitionEl.textContent = '—';
+    if (rootDefinitionRowEl) rootDefinitionRowEl.style.display = 'none';
+    if (rootDefinitionLabelEl) rootDefinitionLabelEl.textContent = 'Definición de Raíz:';
     if (rkantEl) rkantEl.innerHTML = '<div class="rkant-row muted">Buscando correspondencias RKANT…</div>';
     showPopupNear(marker || ev.target);
         setPopupExpanded(false);
@@ -1087,8 +1163,8 @@ function setPopupExpanded(expanded) {
     let entry = null;
     try {
             await loadTrilingueFallback();
-      await loadHebrewDict();
-      if (requestId !== state.popupRequestId) return;
+      await Promise.all([loadHebrewDict(), loadHebrewRoots()]);
+            if (requestId !== state.popupRequestId) return;
     const lookupCandidates = uniqueList([
         ...compoundTokens.sort((a, b) => b.length - a.length),
         normalized
@@ -1112,6 +1188,10 @@ function setPopupExpanded(expanded) {
         if (printedEl) printedEl.textContent = '—';
         if (printedRowEl) printedRowEl.style.display = 'none';
         if (variantsEl) variantsEl.textContent = '—';
+        if (rootLexemeEl) rootLexemeEl.textContent = '—';
+        if (rootLexemeRowEl) rootLexemeRowEl.style.display = 'none';
+        if (rootDefinitionEl) rootDefinitionEl.textContent = '—';
+        if (rootDefinitionRowEl) rootDefinitionRowEl.style.display = 'none';
          if (lxxEl) lxxEl.textContent = '—';
       } else {
         if (entryEl) entryEl.textContent = getDisplayedHebrewLemma(entry, word);
@@ -1123,8 +1203,17 @@ function setPopupExpanded(expanded) {
  const displayDefinition = getDisplayedHebrewDefinition(entry, word);
        if (descEl) descEl.textContent = (displayDefinition && displayDefinition !== '—') ? displayDefinition : (trilingueFallback?.gloss || '—');
         if (variantsEl) variantsEl.textContent = getHebrewForms(entry).join(', ') || '—';
-         currentLxxData = formatHebrewLxx(getHebrewLxx(entry));
-        if (lxxEl) lxxEl.textContent = currentLxxData;
+ const rootData = getHebrewRootData(entry);
+        const rootLexemes = uniqueList(rootData.map((item) => item?.root_lexeme));
+        const rootDefinitions = uniqueList(rootData.map((item) => item?.root_first_segment));
+        if (rootLexemeEl) rootLexemeEl.textContent = rootLexemes.join(' · ') || '—';
+        if (rootLexemeRowEl) rootLexemeRowEl.style.display = rootLexemes.length ? '' : 'none';
+        const rootLabelWord = rootLexemes[0] || '';
+        if (rootDefinitionLabelEl) rootDefinitionLabelEl.textContent = rootLabelWord ? `Definición de ${rootLabelWord}:` : 'Definición de derivación:';
+        if (rootDefinitionEl) rootDefinitionEl.textContent = rootDefinitions.join('\n\n') || '—';
+        if (rootDefinitionRowEl) rootDefinitionRowEl.style.display = rootDefinitions.length ? '' : 'none';
+        currentLxxData = formatHebrewLxx(getHebrewLxx(entry));
+                if (lxxEl) lxxEl.textContent = currentLxxData;
       }
   
       const heIndex = await loadIndex('he');
@@ -1176,6 +1265,10 @@ const refCandidates = uniqueList([lookupWord, normalized, ...compoundTokens]);
       if (printedEl) printedEl.textContent = '—';
        if (printedRowEl) printedRowEl.style.display = 'none';
       if (variantsEl) variantsEl.textContent = '—';
+      if (rootLexemeEl) rootLexemeEl.textContent = '—';
+      if (rootLexemeRowEl) rootLexemeRowEl.style.display = 'none';
+      if (rootDefinitionEl) rootDefinitionEl.textContent = '—';
+      if (rootDefinitionRowEl) rootDefinitionRowEl.style.display = 'none';
       if (lxxEl) lxxEl.textContent = '—';
       if (rkantEl) rkantEl.innerHTML = '<div class="rkant-row muted">No se pudo cargar la correspondencia RKANT.</div>';
     }
