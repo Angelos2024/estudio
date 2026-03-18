@@ -147,12 +147,15 @@ return Array.from(new Set(words));
         const entries = Array.isArray(payload) ? payload : [];
         const index = new Map();
         const strongIndex = new Map();
+
         entries.forEach((entry) => {
           const key = normalizeHebrewRootKey(entry?.lexeme || '');
-        });
         const strongKey = normalizeStrongKey(entry?.strong || '');
+
           if (key && !index.has(key)) index.set(key, entry);
           if (strongKey && !strongIndex.has(strongKey)) strongIndex.set(strongKey, entry);
+           });
+        
         hebrewRootsIndex = index;
         hebrewRootsStrongIndex = strongIndex;
         return index;
@@ -578,7 +581,7 @@ function onHebrewRootsClick(event) {
     window.addEventListener('trilingue:results-rendered', onResultsRendered);
     const tbody = document.getElementById('resultsTbody');
     if (tbody) tbody.addEventListener('click', onResultsClick);
-    
+
     const rootsPanel = document.getElementById('hebrewRootsPanel');
     if (rootsPanel) rootsPanel.addEventListener('click', onHebrewRootsClick);
   }
