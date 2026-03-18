@@ -29,6 +29,28 @@
       .trim();
   }
 
+ function normalizeSourceDisplay(value, lang) {
+    const text = String(value || '').trim();
+    if (!text) return '';
+
+    if (lang === 'he') {
+      return text
+        .normalize('NFD')
+        .replace(/[\u0591-\u05C7]/g, '')
+        .normalize('NFC')
+        .trim();
+    }
+
+    if (lang === 'gr') {
+      return text
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .normalize('NFC')
+        .trim();
+    }
+
+    return text;
+  }
 
   function flattenPayload(payload) {
     if (Array.isArray(payload)) return payload;
@@ -36,6 +58,67 @@
     if (Array.isArray(payload?.entries)) return payload.entries;
     if (Array.isArray(payload?.data)) return payload.data;
     return [];
+  }
+
+function extractJsonObjects(text) {
+    const source = String(text || '');
+    const objects = [];
+    let depth = 0;
+    let start = -1;
+    let inString = false;
+    let escape = false;
+
+    for (let i = 0; i < source.length; i += 1) {
+      const char = source[i];
+
+      if (inString) {
+        if (escape) {
+          escape = false;
+        } else if (char === '\\') {
+          escape = true;
+        } else if (char === '"') {
+          inString = false;
+        }
+        continue;
+      }
+
+      if (char === '"') {
+        inString = true;
+        continue;
+      }
+
+      if (char === '{') {
+        if (depth === 0) start = i;
+        depth += 1;
+        continue;
+      }
+
+      if (char === '}') {
+        if (depth > 0) depth -= 1;
+        if (depth === 0 && start >= 0) {
+          const chunk = source.slice(start, i + 1);
+          try {
+            objects.push(JSON.parse(chunk));
+          } catch (_) {
+            // Ignora objetos aislados que sigan malformados.
+          }
+          start = -1;
+        }
+      }
+    }
+
+    return objects;
+  }
+
+  function parsePayloadFromText(text) {
+    const source = String(text || '').trim();
+    if (!source) return [];
+
+    try {
+      return flattenPayload(JSON.parse(source));
+    } catch (_) {
+      return extractJsonObjects(source);
+    }
   }
 
   function hasHebrewChars(value) {
@@ -71,8 +154,8 @@
         const response = await fetch(source.url, { cache: 'no-store' });
         if (!response.ok) continue;
 
-        const payload = await response.json();
-        const rows = flattenPayload(payload);
+         const rawText = await response.text();
+        const rows = parsePayloadFromText(rawText);
 
         rows.forEach((entry) => {
           if (!entry || typeof entry !== 'object') return;
@@ -273,6 +356,65 @@ function findMatchesByLanguageOrder(terms) {
 
     return out;
   }
+
+   function buildEntryUniquenessKey(entry, lang) {
+    return [
+      lang || entry?.__lang || detectEntryLang(entry),
+      normalize(getSourceText(entry)),
+      normalize(String(entry?.transliteracion || '')),
+      normalize((getSpanishTexts(entry)[0] || '')),
+      normalize(String(entry?.observacion || ''))
+    ].join('||');
+  }
+
+  function selectPrioritizedMatches(matches, lang, minCount = 3, maxCount = 4) {
+    const byBook = new Map();
+    const seenContent = new Set();
+
+    for (const entry of matches) {
+      const entryLang = entry?.__lang || detectEntryLang(entry);
+      if (lang && entryLang && entryLang !== lang) continue;
+
+      const uniqKey = buildEntryUniquenessKey(entry, entryLang);
+      if (!uniqKey || seenContent.has(uniqKey)) continue;
+      seenContent.add(uniqKey);
+
+      const book = String(entry?.book || 'Sin contexto').trim() || 'Sin contexto';
+      if (!byBook.has(book)) byBook.set(book, []);
+      byBook.get(book).push(entry);
+    }
+
+    const selected = [];
+    const selectedKeys = new Set();
+    const books = Array.from(byBook.keys());
+
+    for (const book of books) {
+      const first = byBook.get(book)?.[0];
+      if (!first) continue;
+      const key = buildEntryUniquenessKey(first, first?.__lang || detectEntryLang(first));
+      if (selectedKeys.has(key)) continue;
+      selected.push(first);
+      selectedKeys.add(key);
+      if (selected.length >= maxCount) return selected;
+    }
+
+    if (selected.length >= minCount) return selected.slice(0, maxCount);
+
+    for (const book of books) {
+      const entries = byBook.get(book) || [];
+      for (let i = 1; i < entries.length; i += 1) {
+        const entry = entries[i];
+        const key = buildEntryUniquenessKey(entry, entry?.__lang || detectEntryLang(entry));
+        if (selectedKeys.has(key)) continue;
+        selected.push(entry);
+        selectedKeys.add(key);
+        if (selected.length >= minCount) return selected.slice(0, maxCount);
+      }
+    }
+
+    return selected.slice(0, maxCount);
+  }
+
   function esc(value) {
     return String(value || '')
       .replace(/&/g, '&amp;')
@@ -306,24 +448,41 @@ const matches = findMatchesByLanguageOrder(terms);
 
     const sourceText = getSourceText(hit);
     const detectedLang = hit?.__lang || detectEntryLang(hit);
-    const isHebrewText = detectedLang === 'he';
-    const sourceLabel = isHebrewText ? 'Texto hebreo' : 'Texto griego';
-    const sourceClass = isHebrewText ? 'hebrew' : 'greek';
-    const spanish = getSpanishTexts(hit)[0] || '—';
-    const transliteracion = String(hit?.transliteracion || '').trim() || '—';
-     const allDefinitions = collectDefinitions(matches, detectedLang);
-    const definicion = allDefinitions.length ? allDefinitions.join('\n') : '—';
+     const prioritized = selectPrioritizedMatches(matches, detectedLang, 3, 4);
+    const renderedEntries = prioritized.map((entry, index) => {
+      const entryLang = entry?.__lang || detectEntryLang(entry);
+      const isHebrewText = entryLang === 'he';
+      const sourceLabel = isHebrewText ? 'Texto hebreo' : 'Texto griego';
+      const sourceClass = isHebrewText ? 'hebrew' : 'greek';
+      const sourceTextValue = getSourceText(entry) || sourceText || '—';
+      const normalizedSource = normalizeSourceDisplay(sourceTextValue, entryLang) || '—';
+      const spanish = getSpanishTexts(entry)[0] || '—';
+      const transliteracion = String(entry?.transliteracion || '').trim() || '—';
+      const definicion = String(entry?.observacion || '').trim() || '—';
+      const book = String(entry?.book || 'Sin contexto').trim() || 'Sin contexto';
+
+      return `
+        <div class="dict-entry${index ? ' mt-3' : ''}">
+          <div class="trilingual-line"><strong>${sourceLabel}:</strong> <span class="${sourceClass}">${esc(sourceTextValue)}</span></div>
+          <div class="trilingual-line"><strong>Transliteración:</strong> ${esc(transliteracion)}</div>
+          <div class="trilingual-line"><strong>Equivalencia español:</strong> ${esc(spanish)}</div>
+          <div class="trilingual-line"><strong>Contexto:</strong> ${esc(book)}</div>
+          <div class="trilingual-line"><strong>Fuente normalizada:</strong> <span class="${sourceClass}">${esc(normalizedSource)}</span></div>
+          <div class="trilingual-line"><strong>Definición:</strong> ${esc(definicion).replace(/\n/g, '<br>')}</div>
+        </div>
+      `;
+    }).join('');
 
     return `
       <div class="trilingual-brief mt-3 dict-entry">
         <div class="dict-entry-header">
           <div class="dict-entry-kicker">Diccionario · Prof. Eric de Jesús Rodríguez Mendoza</div>
         </div>
-        <div class="trilingual-line"><strong>${sourceLabel}:</strong> <span class="${sourceClass}">${esc(sourceText || '—')}</span></div>
-        <div class="trilingual-line"><strong>Transliteración:</strong> ${esc(transliteracion)}</div>
-        <div class="trilingual-line"><strong>Equivalencia español:</strong> ${esc(spanish)}</div>
-        <div class="trilingual-line"><strong>Definición:</strong> ${esc(definicion).replace(/\n/g, '<br>')}</div>
-              </div>
+
+         ${renderedEntries || `
+          <div class="trilingual-line"><strong>${detectedLang === 'he' ? 'Texto hebreo' : 'Texto griego'}:</strong> <span class="${detectedLang === 'he' ? 'hebrew' : 'greek'}">${esc(sourceText || '—')}</span></div>
+        `}
+      </div>
     `;
   }
 
