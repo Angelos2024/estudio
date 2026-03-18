@@ -209,6 +209,24 @@
       border-left:5px solid color-mix(in srgb, var(--text) 25%, #ffffff);
     }
 
+.roots-panel{
+      min-height:100%;
+    }
+    .roots-panel .roots-line + .roots-line{
+      margin-top:.45rem;
+    }
+    .roots-panel .roots-value{
+      display:block;
+      margin-top:.15rem;
+      padding:.5rem .65rem;
+      border:1px solid color-mix(in srgb, var(--text) 16%, #ffffff);
+      border-radius:10px;
+      background:color-mix(in srgb, var(--soft-bg) 78%, #ffffff);
+      line-height:1.5;
+    }
+    .roots-panel .roots-value.hebrew{
+      font-size:1rem;
+    }
     .dict-entry{
       padding:.35rem 0;
     }
@@ -531,7 +549,20 @@
                 </div>
               </div>
 
-
+ <section id="hebrewRootsPanel" class="panel roots-panel">
+                <div class="panel-header">Raíces hebreas</div>
+                <div class="panel-body">
+                  <div class="small muted mb-2">Selecciona una equivalencia hebrea en los resultados para ver su raíz.</div>
+                  <div class="roots-line">
+                    <strong>Raíz de:</strong>
+                    <span id="hebrewRootDerivedFrom" class="roots-value hebrew">—</span>
+                  </div>
+                  <div class="roots-line">
+                    <strong>Definición de raíz:</strong>
+                    <span id="hebrewRootDefinition" class="roots-value">—</span>
+                  </div>
+                </div>
+              </section>
             </div>
           </div>
 

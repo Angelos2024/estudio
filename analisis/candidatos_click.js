@@ -23,6 +23,8 @@
   ];
 
   const jsonCache = new Map();
+   let hebrewRootsPromise = null;
+  let hebrewRootsIndex = null;
   let lxxFrequencyIndexPromise = null;
   let esFrequencyIndexPromise = null;
   let heFrequencyIndexPromise = null;
@@ -107,10 +109,72 @@ return Array.from(new Set(words));
       .replace(/\s+/g, ' ')
       .trim();
   }
+    function normalizeHebrewRootKey(text) {
+    return normalizeHebrew(text)
+      .normalize('NFD')
+      .replace(/[\u0591-\u05C7]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .normalize('NFC');
+  }
    function tokenizeHebrewForLookup(text) {
     const normalized = normalizeHebrew(text);
     if (!normalized) return [];
     return normalized.match(/[^ \t\r\n]+/g) || [];
+  }
+
+
+ async function ensureHebrewRootsLoaded() {
+    if (hebrewRootsIndex) return hebrewRootsIndex;
+    if (!hebrewRootsPromise) {
+      hebrewRootsPromise = fetchJsonWithFallback([
+        '../dic/hebrew_roots.json',
+        './dic/hebrew_roots.json',
+        '/dic/hebrew_roots.json'
+      ]).then((payload) => {
+        const entries = Array.isArray(payload) ? payload : [];
+        const index = new Map();
+        entries.forEach((entry) => {
+          const key = normalizeHebrewRootKey(entry?.lexeme || '');
+          if (!key || index.has(key)) return;
+          index.set(key, entry);
+        });
+        hebrewRootsIndex = index;
+        return index;
+      }).catch((error) => {
+        console.warn('No se pudo cargar dic/hebrew_roots.json.', error);
+        hebrewRootsIndex = new Map();
+        return hebrewRootsIndex;
+      });
+    }
+    return hebrewRootsPromise;
+  }
+
+  function renderHebrewRootsPanel(entry) {
+    const derivedEl = document.getElementById('hebrewRootDerivedFrom');
+    const definitionEl = document.getElementById('hebrewRootDefinition');
+    if (!derivedEl || !definitionEl) return;
+
+    derivedEl.textContent = String(entry?.derived_from || '—').trim() || '—';
+    definitionEl.textContent = String(entry?.root_first_segment || '—').trim() || '—';
+  }
+
+  async function updateHebrewRootsPanel(word) {
+    const derivedEl = document.getElementById('hebrewRootDerivedFrom');
+    const definitionEl = document.getElementById('hebrewRootDefinition');
+    if (!derivedEl || !definitionEl) return;
+
+    const normalizedWord = normalizeHebrewRootKey(word || '');
+    if (!normalizedWord || normalizedWord === '—') {
+      renderHebrewRootsPanel(null);
+      return;
+    }
+
+    derivedEl.textContent = 'Consultando…';
+    definitionEl.textContent = 'Consultando…';
+
+    const index = await ensureHebrewRootsLoaded();
+    renderHebrewRootsPanel(index.get(normalizedWord) || null);
   }
 
   async function fetchJsonWithFallback(urls) {
@@ -389,6 +453,7 @@ gr_lxx: first?.words?.gr_lxx?.[0] || '—',
     }
 
     api?.updateDictionaryComparison?.([selectedEntry], state.rawQuery);
+    updateHebrewRootsPanel(selectedEntry.he).catch(() => {});
 
     const summaryApi = window.BuscadorResumenLema;
     if (summaryApi?.renderLemmaSummaryForSearch) {
@@ -406,6 +471,7 @@ gr_lxx: first?.words?.gr_lxx?.[0] || '—',
 
     if (!items.length) {
       state.rows = [];
+            updateHebrewRootsPanel('').catch(() => {});
       window.AnalisisComparativoOccurrenceDonut?.setData?.({ es: [], he: [], gr_rkant: [], gr_lxx: [] });      return;
       }
 
