@@ -1024,7 +1024,23 @@ bookList.className = 'mt-2 d-grid gap-1';
  
   async function analyze() {
     const term = queryInput.value.trim();
-    if (!term) return;
+if (!term) {
+      setValidationMessage('');
+      return;
+    }
+
+    const validation = getSearchValidation(term);
+    if (!validation.ok) {
+      setValidationMessage(validation.message);
+      renderCorrespondence([]);
+      renderExamples([]);
+      if (lemmaSummary) lemmaSummary.textContent = validation.message || '';
+      if (resultsByCorpus) resultsByCorpus.hidden = true;
+      if (resultsList) resultsList.innerHTML = '';
+      if (paginationEl) paginationEl.innerHTML = '';
+      return;
+    }
+    setValidationMessage('');
 
 
  const maybeReference = /\d/.test(term)
@@ -1080,8 +1096,10 @@ bookList.className = 'mt-2 d-grid gap-1';
       state.pagination.selectedTestament = null;
       state.pagination.activeLang = searchLang;
 
-      const normalized = normalizeByLang(term, searchLang);
-      let tags = [
+  const normalized = validation.normalized && validation.lang === searchLang
+        ? validation.normalized
+        : normalizeByLang(term, searchLang);
+              let tags = [
         `Idioma: <span class="fw-semibold">${langLabels[searchLang] || searchLang}</span>`,
         `Búsqueda: <span class="fw-semibold">${escapeHtml(term)}</span>`
       ];
@@ -1231,6 +1249,15 @@ function updateDetectedLanguageLabel(lang) {
    
 
 analyzeBtn?.addEventListener('click', analyze);
+queryInput?.addEventListener('input', () => {
+     const term = queryInput?.value.trim() || '';
+     if (!term) {
+       setValidationMessage('');
+       return;
+     }
+     const validation = getSearchValidation(term);
+     setValidationMessage(validation.ok ? '' : validation.message);
+   });
    queryInput?.addEventListener('keydown', (event) => {
      if (event.key === 'Enter') {
        event.preventDefault();

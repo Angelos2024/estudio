@@ -2155,5 +2155,146 @@
     "transliteracion": "Nesajim",
     "equivalencia_espanol": "libaciones",
     "observacion": "Plural de Nesej; se refiere a los vertimientos rituales que el autor se niega a realizar para deidades ajenas[cite: 168]."
+  },
+  {
+    "id": 321,
+    "texto_hebreo": "גּוֹי",
+    "transliteracion": "Goy",
+    "equivalencia_espanol": "gentil; nación",
+    "observacion": "Utilizado en la promesa a Abram sobre su descendencia como una nación grande[cite: 240]."
+  },
+  {
+    "id": 322,
+    "texto_hebreo": "גָּדוֹל",
+    "transliteracion": "Gadol",
+    "equivalencia_espanol": "grande",
+    "observacion": "Adjetivo que califica la magnitud de la nación o el nombre que Hashem engrandecerá[cite: 240]."
+  },
+  {
+    "id": 323,
+    "texto_hebreo": "נֶגֶד",
+    "transliteracion": "Neged",
+    "equivalencia_espanol": "delante; enfrente; oposición",
+    "observacion": "Describe lo que se confronta; indica tener a Hashem presente ante todas las acciones[cite: 243, 244, 246]."
+  },
+  {
+    "id": 324,
+    "texto_hebreo": "עֵזֶר",
+    "transliteracion": "Ezer",
+    "equivalencia_espanol": "ayuda",
+    "observacion": "Concepto de auxilio o apoyo que puede confrontar u oponerse para corregir[cite: 245]."
+  },
+  {
+    "id": 325,
+    "texto_hebreo": "כְּנֶגְדּוֹ",
+    "transliteracion": "Kenegdó",
+    "equivalencia_espanol": "en oposición; frente a él",
+    "observacion": "Matiz de la ayuda que es capaz de hacer oposición para el bien del otro[cite: 245]."
+  },
+  {
+    "id": 326,
+    "texto_hebreo": "כִּלְיָה",
+    "transliteracion": "Kiliya",
+    "equivalencia_espanol": "riñón; lo profundo; inconsciente",
+    "observacion": "Órgano que purifica; representa el pozo del inconsciente donde Hashem corrige durante el sueño[cite: 352, 353, 354]."
+  },
+  {
+    "id": 327,
+    "texto_hebreo": "כְּבוֹדִי",
+    "transliteracion": "Kvodi",
+    "equivalencia_espanol": "mi peso; peso de honra",
+    "observacion": "Término que en ciertos textos se intercambia o se analiza junto con la palabra riñones/hígado[cite: 259]."
+  },
+  {
+    "id": 328,
+    "texto_hebreo": "שְׁאוֹל",
+    "transliteracion": "Sh'ol",
+    "equivalencia_espanol": "sepulcro; foso; lugar de juicio",
+    "observacion": "Lugar del juicio donde se ejecuta la sentencia, no abandonado para el piadoso[cite: 267, 269]."
+  },
+  {
+    "id": 329,
+    "texto_hebreo": "נֵצֶר",
+    "transliteracion": "Netzér",
+    "equivalencia_espanol": "retoño; brote",
+    "observacion": "Título mesiánico referido a Jesús como el varón aprobado de Dios[cite: 272]."
+  },
+  {
+    "id": 330,
+    "texto_hebreo": "תְּפִלָּה",
+    "transliteracion": "Tfiláh",
+    "equivalencia_espanol": "oración",
+    "observacion": "Género de comunicación con Dios que encabeza el capítulo 17 de los Salmos[cite: 291]."
+  },
+  {
+    "id": 331,
+    "texto_hebreo": "נְבִיאִים",
+    "transliteracion": "Nevi'im",
+    "equivalencia_espanol": "profetas",
+    "observacion": "Segunda parte del Tanaj; su función es volver al pueblo a la instrucción[cite: 295, 301]."
+  },
+  {
+    "id": 332,
+    "texto_hebreo": "כְּתוּבִים",
+    "transliteracion": "Ketuvim",
+    "equivalencia_espanol": "escritos",
+    "observacion": "Tercera sección de la Biblia hebrea que incluye los Salmos[cite: 296, 301]."
+  },
+  {
+    "id": 333,
+    "texto_hebreo": "הַמִּקְרָא",
+    "transliteracion": "Hamiqra'",
+    "equivalencia_espanol": "la lectura",
+    "observacion": "Otra forma de referirse a la Biblia en su conjunto[cite: 303]."
+  },
+  {
+    "id": 334,
+    "texto_hebreo": "כִּתְבֵי",
+    "transliteracion": "Kitvey",
+    "equivalencia_espanol": "escritos (de)",
+    "observacion": "Parte del término compuesto para referirse a las Escrituras de la Santidad[cite: 303]."
+  },
+  {
+    "id": 335,
+    "texto_hebreo": "ψαλμός",
+    "transliteracion": "Psalmós",
+    "equivalencia_espanol": "melodía",
+    "observacion": "Término griego del cual se origina la palabra castellana Salmo[cite: 304, 311]."
+  },
+  {
+    "id": 336,
+    "texto_hebreo": "נָגֵן",
+    "transliteracion": "Nagen",
+    "equivalencia_espanol": "tocar melodía",
+    "observacion": "Habilidad musical atribuida a David para ejecutar instrumentos[cite: 305, 311, 313]."
+  },
+  {
+    "id": 337,
+    "texto_hebreo": "זְמִרוֹת",
+    "transliteracion": "Zemirot",
+    "equivalencia_espanol": "melodías; cánticos",
+    "observacion": "Referido a las composiciones musicales deleitosas de Yisra'el[cite: 317]."
+  },
+  {
+    "id": 338,
+    "texto_hebreo": "חֵלֶק",
+    "transliteracion": "Jéleq",
+    "equivalencia_espanol": "parte; asignación",
+    "observacion": "La porción de tierra o destino asignada a cada persona o tribu por Hashem[cite: 321, 327, 328]."
+  },
+  {
+    "id": 339,
+    "texto_hebreo": "מְנָת",
+    "transliteracion": "Menat",
+    "equivalencia_espanol": "porción completa; lo que colma",
+    "observacion": "Indica una parte rebosante que llena las expectativas y más[cite: 320, 327, 331]."
+  },
+  {
+    "id": 340,
+    "texto_hebreo": "גּוֹרָל",
+    "transliteracion": "Goral",
+    "equivalencia_espanol": "suerte; asignación divina",
+    "observacion": "A diferencia del azar, es el resultado determinado por la sabiduría de Hashem[cite: 332, 335]."
   }
 ]
+continuar del 56 en adelante.

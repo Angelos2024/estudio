@@ -252,6 +252,7 @@ dict: null,
  
    const queryInput = document.getElementById('bxQueryInput');
    const analyzeBtn = document.getElementById('bxAnalyzeBtn');
+      const validationMessage = document.getElementById('bxValidationMessage');
    const lemmaTags = document.getElementById('bxLemmaTags');
    const lemmaSummary = document.getElementById('bxLemmaSummary');
   const lemmaCorrespondence = document.getElementById('bxLemmaCorrespondence');

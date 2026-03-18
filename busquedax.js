@@ -253,6 +253,7 @@ dict: null,
  
    const queryInput = document.getElementById('bxQueryInput');
    const analyzeBtn = document.getElementById('bxAnalyzeBtn');
+      const validationMessage = document.getElementById('bxValidationMessage');
    const lemmaTags = document.getElementById('bxLemmaTags');
    const lemmaSummary = document.getElementById('bxLemmaSummary');
   const lemmaCorrespondence = document.getElementById('bxLemmaCorrespondence');
@@ -286,6 +287,36 @@ dict: null,
       .split(/\s+/)
       .map((token) => token.trim())
       .some((token) => token.length >= minLength);
+  }
+
+ function countHebrewConsonants(text) {
+    return (String(text || '').match(/[א-ת]/g) || []).length;
+  }
+
+  function getSearchValidation(term) {
+    const raw = String(term || '').trim();
+    if (!raw) return { ok: false, message: '' };
+
+    const lang = detectLang(raw);
+    const normalized = normalizeByLang(raw, lang);
+    const minLetters = lang === 'he' ? countHebrewConsonants(normalized) : normalized.length;
+
+    if (minLetters < 2) {
+      return {
+        ok: false,
+        lang,
+        message: lang === 'he'
+          ? 'En hebreo debes escribir al menos 2 consonantes para buscar.'
+          : 'Debes escribir al menos 2 letras para buscar en español o griego.'
+      };
+    }
+
+    return { ok: true, lang, normalized };
+  }
+
+  function setValidationMessage(message = '') {
+    if (!validationMessage) return;
+    validationMessage.textContent = message;
   }
 
   function throwIfAborted(signal) {
@@ -2406,7 +2437,23 @@ bookList.className = 'mt-2 d-grid gap-1';
  
   async function analyze() {
     const term = queryInput.value.trim();
-    if (!term) return;
+     if (!term) {
+      setValidationMessage('');
+      return;
+    }
+
+    const validation = getSearchValidation(term);
+    if (!validation.ok) {
+      setValidationMessage(validation.message);
+      renderCorrespondence([]);
+      renderExamples([]);
+      if (lemmaSummary) lemmaSummary.textContent = validation.message || '';
+      if (resultsByCorpus) resultsByCorpus.hidden = true;
+      if (resultsList) resultsList.innerHTML = '';
+      if (paginationEl) paginationEl.innerHTML = '';
+      return;
+    }
+    setValidationMessage('');
 
     if (activeSearchController) {
       activeSearchController.abort();
@@ -2442,8 +2489,10 @@ bookList.className = 'mt-2 d-grid gap-1';
       if (!isCompoundQuery) { await loadTrilingualEquivalences(options); }
      const aliasCandidates = isCompoundQuery ? { es: [], gr: [], he: [], lxx: [] } : getAliasCandidates(term, lang);
       const equivalenceTerms = isCompoundQuery ? { es: [], gr: [], he: [], lxx: [] } : getEquivalenceSearchTerms(term, lang);
-      const normalized = normalizeByLang(term, lang);
-      const canCrossDisplay = (!isCompoundQuery) && (lang === 'es') && (selectedScope === 'gr' || selectedScope === 'he');
+ const normalized = validation.normalized && validation.lang === lang
+        ? validation.normalized
+        : normalizeByLang(term, lang);
+              const canCrossDisplay = (!isCompoundQuery) && (lang === 'es') && (selectedScope === 'gr' || selectedScope === 'he');
       // Para búsquedas de una sola palabra: si el usuario cambió a gr/he, seguimos buscando en ES para no perder el NT,
       // y usamos equivalencias solo para resaltar / abrir en el idioma elegido.
       const searchLang = canCrossDisplay ? 'es' : (isCompoundQuery ? selectedScope : lang);
@@ -2950,6 +2999,13 @@ function handleLanguageScopeChange(event) {
 
 analyzeBtn?.addEventListener('click', analyze);
    queryInput?.addEventListener('input', () => {
+     const term = queryInput?.value.trim() || '';
+     if (!term) {
+       setValidationMessage('');
+     } else {
+       const validation = getSearchValidation(term);
+       setValidationMessage(validation.ok ? '' : validation.message);
+     }
      debouncedAnalyzeInput();
    });
    queryInput?.addEventListener('keydown', (event) => {

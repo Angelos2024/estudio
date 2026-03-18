@@ -17,6 +17,35 @@
       .some((token) => token.length >= minLength);
   }
 
+function countHebrewConsonants(text) {
+    return (String(text || '').match(/[א-ת]/g) || []).length;
+  }
+
+  function getSearchValidation(term) {
+    const raw = String(term || '').trim();
+    if (!raw) return { ok: false, message: '' };
+
+    const lang = detectLang(raw);
+    const normalized = normalizeByLang(raw, lang);
+    const minLetters = lang === 'he' ? countHebrewConsonants(normalized) : normalized.length;
+
+    if (minLetters < 2) {
+      return {
+        ok: false,
+        lang,
+        message: lang === 'he'
+          ? 'En hebreo debes escribir al menos 2 consonantes para buscar.'
+          : 'Debes escribir al menos 2 letras para buscar en español o griego.'
+      };
+    }
+
+    return { ok: true, lang, normalized };
+  }
+
+  function setValidationMessage(message = '') {
+    if (!validationMessage) return;
+    validationMessage.textContent = message;
+  }
   function throwIfAborted(signal) {
     if (signal?.aborted) {
       throw new DOMException('Aborted', 'AbortError');
