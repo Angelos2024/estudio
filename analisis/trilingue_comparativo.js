@@ -873,14 +873,89 @@ async function fetchJsonWithFallback(urls) {
                 lastError = new Error(`No se pudo cargar ${url} (HTTP ${response.status}).`);
                 continue;
             }
-            return await response.json();
-        } catch (error) {
+const rawText = await response.text();
+            return parseJsonPayload(rawText, url);
+                    } catch (error) {
             lastError = error;
         }
     }
     throw lastError || new Error('No se pudo cargar el recurso JSON solicitado.');
 }
 
+function parseJsonPayload(rawText, sourceLabel = 'JSON') {
+    const text = String(rawText || '').trim();
+    if (!text) return [];
+
+    try {
+        return JSON.parse(text);
+    } catch (singleParseError) {
+        const decoder = [];
+        let index = 0;
+
+        while (index < text.length) {
+            while (index < text.length && /\s/.test(text[index])) index += 1;
+            if (index >= text.length) break;
+
+            let parsedChunk;
+            try {
+                parsedChunk = JSON.parse(text.slice(index));
+            } catch (_) {
+                parsedChunk = null;
+            }
+
+            if (parsedChunk !== null) {
+                decoder.push(parsedChunk);
+                break;
+            }
+
+            let end = index;
+            let depth = 0;
+            let inString = false;
+            let escaping = false;
+            for (; end < text.length; end += 1) {
+                const char = text[end];
+                if (inString) {
+                    if (escaping) {
+                        escaping = false;
+                    } else if (char === '\\') {
+                        escaping = true;
+                    } else if (char === '"') {
+                        inString = false;
+                    }
+                    continue;
+                }
+
+                if (char === '"') {
+                    inString = true;
+                    continue;
+                }
+
+                if (char === '[' || char === '{') {
+                    depth += 1;
+                } else if (char === ']' || char === '}') {
+                    depth -= 1;
+                    if (depth === 0) {
+                        end += 1;
+                        break;
+                    }
+                }
+            }
+
+            const chunk = text.slice(index, end).trim();
+            if (!chunk) break;
+
+            decoder.push(JSON.parse(chunk));
+            index = end;
+        }
+
+        if (!decoder.length) {
+            throw new Error(`No se pudo interpretar ${sourceLabel}: ${singleParseError.message}`);
+        }
+
+        if (decoder.length === 1) return decoder[0];
+        return decoder.flatMap(part => Array.isArray(part) ? part : [part]);
+    }
+}
 
 async function ensureHebrewDictionaryLoaded() {
 
