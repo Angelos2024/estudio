@@ -477,6 +477,7 @@ async function handleFiles(fileList) {
       }
 }
 
+let remoteAlefatoLoadPromise = null;
 
 async function loadRemoteAlefatoFiles() {
   const collected = [];
@@ -489,7 +490,7 @@ async function loadRemoteAlefatoFiles() {
   for (const source of REMOTE_ALEFATO_SOURCES) {
     try {
       const resp = await fetch(source.url, { cache: 'force-cache' });
-            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
       const txt = await resp.text();
       const data = parseAlefatoJsonFlexible(txt);
       const tmp = [];
@@ -511,14 +512,37 @@ async function loadRemoteAlefatoFiles() {
   if (errs.length) {
     if (diagEl) diagEl.textContent = 'Se cargó la base con incidencias: ' + errs.join(' | ');
   } else if (collected.length) {
-    if (diagEl) diagEl.textContent = `Carga automática correcta: ${collected.length.toLocaleString()} entradas detectadas antes de deduplicar.`;
-  } else {
+    if (diagEl) diagEl.textContent = `Base remota cargada al consultar: ${collected.length.toLocaleString()} entradas detectadas antes de deduplicar.`;
+      } else {
     if (diagEl) diagEl.textContent = 'No se pudo cargar la base remota.';
   }
 }
 
-function doSearch() {
+function ensureRemoteAlefatoLoaded() {
+  if (entries.length) return Promise.resolve(entries);
+  if (remoteAlefatoLoadPromise) return remoteAlefatoLoadPromise;
+
+  remoteAlefatoLoadPromise = loadRemoteAlefatoFiles()
+    .catch((error) => {
+      remoteAlefatoLoadPromise = null;
+      throw error;
+    })
+    .then(() => entries);
+
+  return remoteAlefatoLoadPromise;
+}
+
+async function doSearch() {
   if (!entries.length) {
+    try {
+      await ensureRemoteAlefatoLoaded();
+    } catch (error) {
+      setTierBadge('Sin base cargada', false);
+    if (diagEl) diagEl.textContent = 'No se pudo cargar la base remota.';
+          return;
+    }
+  }
+    if (!entries.length) {
     setTierBadge('Sin base cargada', false);
     if (diagEl) diagEl.textContent = 'Primero cargue uno o más archivos JSON del alefato.';    return;
   }
@@ -534,6 +558,7 @@ if (diagEl) diagEl.textContent = res.diag;
 function clearAll() {
   entries = [];
   loadedFiles = 0;
+  remoteAlefatoLoadPromise = null;
   clearIndexes();
   renderLoadInfo();
   renderResults([]);
@@ -560,5 +585,8 @@ if (queryEl) queryEl.addEventListener('keydown', (e) => {
 if (splitHyphenatedEl) splitHyphenatedEl.addEventListener('change', () => { if (entries.length) rebuildIndexes(); if (queryEl && queryEl.value.trim()) doSearch(); });
 
 renderLoadInfo();
-if (searchBtn) searchBtn.disabled = true;
-loadRemoteAlefatoFiles();
+if (diagEl) diagEl.textContent = 'La base remota se cargará cuando hagas la primera consulta.';
+
+if (typeof window !== 'undefined') {
+  window.ensureRemoteAlefatoLoaded = ensureRemoteAlefatoLoaded;
+}

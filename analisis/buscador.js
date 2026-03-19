@@ -526,7 +526,7 @@ function dedupeEntries(list) {
 }
 
 function renderLoadInfo() {
-  if (searchBtn) searchBtn.disabled = entries.length === 0;
+  if (searchBtn) searchBtn.disabled = false;
 }
 
 function setTierBadge(text, ok=false) {

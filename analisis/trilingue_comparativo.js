@@ -1417,6 +1417,16 @@ async function updateDictionaryComparison(items, rawQuery) {
  * Detecta el idioma y dirige al motor correcto.
  */
 async function doSearch() {
+     if ((!entries || !entries.length) && typeof window.ensureRemoteAlefatoLoaded === 'function') {
+        try {
+            await window.ensureRemoteAlefatoLoaded();
+        } catch (error) {
+            setTierBadge('Sin Datos', false);
+        if (diagEl) diagEl.textContent = 'No se pudo cargar la base remota para la consulta.';
+            return;
+        }
+    }
+
     if (!entries || !entries.length) {
         setTierBadge('Sin Datos', false);
         if (diagEl) diagEl.textContent = 'Por favor, cargue los archivos JSON de los libros primero.';
