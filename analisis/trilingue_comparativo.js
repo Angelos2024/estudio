@@ -79,6 +79,17 @@ const CANONICAL_BOOK_ORDER = [
 ];
 
 const entryOrderCache = new WeakMap();
+const loadingOverlayEl = document.getElementById('loadingOverlay');
+
+function setSearchLoading(isLoading) {
+    if (!loadingOverlayEl) return;
+    loadingOverlayEl.classList.toggle('is-visible', !!isLoading);
+    loadingOverlayEl.setAttribute('aria-hidden', isLoading ? 'false' : 'true');
+    if (searchBtn) {
+        searchBtn.disabled = !!isLoading;
+        searchBtn.setAttribute('aria-busy', isLoading ? 'true' : 'false');
+    }
+}
 
 function getEntryLoadOrder(entry) {
     if (!entry || typeof entry !== 'object') return Number.MAX_SAFE_INTEGER;
@@ -1417,28 +1428,31 @@ async function updateDictionaryComparison(items, rawQuery) {
  * Detecta el idioma y dirige al motor correcto.
  */
 async function doSearch() {
-     if ((!entries || !entries.length) && typeof window.ensureRemoteAlefatoLoaded === 'function') {
-        try {
-            await window.ensureRemoteAlefatoLoaded();
-        } catch (error) {
+    setSearchLoading(true);
+    try {
+        if ((!entries || !entries.length) && typeof window.ensureRemoteAlefatoLoaded === 'function') {
+            try {
+                await window.ensureRemoteAlefatoLoaded();
+            } catch (error) {
+                setTierBadge('Sin Datos', false);
+                if (diagEl) diagEl.textContent = 'No se pudo cargar la base remota para la consulta.';
+                return;
+            }
+        }
+
+        if (!entries || !entries.length) {
             setTierBadge('Sin Datos', false);
-        if (diagEl) diagEl.textContent = 'No se pudo cargar la base remota para la consulta.';
+if (diagEl) diagEl.textContent = 'Por favor, cargue los archivos JSON de los libros primero.';
             return;
         }
-    }
-
-    if (!entries || !entries.length) {
-        setTierBadge('Sin Datos', false);
-        if (diagEl) diagEl.textContent = 'Por favor, cargue los archivos JSON de los libros primero.';
-        return;
-    }
+    
 
     const rawQuery = queryEl?.value?.trim() || '';
-        if (!rawQuery) return;
+    if (!rawQuery) return;
 
-    // Rangos Unicode para detección
-    const isHebrew = /[\u0590-\u05FF]/.test(rawQuery);
-    const isGreek = /[\u0370-\u03FF\u1F00-\u1FFF]/.test(rawQuery);
+      // Rangos Unicode para detección
+        const isHebrew = /[֐-׿]/.test(rawQuery);
+        const isGreek = /[Ͱ-Ͽἀ-῿]/.test(rawQuery);
 
     await ensureRkantNtLoaded();
     let res;
@@ -1454,34 +1468,37 @@ async function doSearch() {
         res = searchSpanish(rawQuery);
     }
 
-    // Fallback RKANT: si LXX no devolvió resultados, usar NT
-    if (!res.matches.length) {
-        const ntMatches = searchRkantNt(rawQuery);
-        if (ntMatches.length) {
-            res = {
-                ...res,
-                ok: true,
-                tier: `${res.tier} + RKANT`,
-                matches: ntMatches.map(item => ({
-                    he: item.he,
-                    gr: '',
-                    gr_nt: item.gr,
-                    es: item.es,
-                    candidatos: item.candidatos,
-                    _rkntOnly: true
-                })),
-                diag: 'Sin coincidencias en LXX; se muestran coincidencias desde RKANT (NT).'
-            };
+// Fallback RKANT: si LXX no devolvió resultados, usar NT
+        if (!res.matches.length) {
+            const ntMatches = searchRkantNt(rawQuery);
+            if (ntMatches.length) {
+                res = {
+                    ...res,
+                    ok: true,
+                    tier: `${res.tier} + RKANT`,
+                    matches: ntMatches.map(item => ({
+                        he: item.he,
+                        gr: '',
+                        gr_nt: item.gr,
+                        es: item.es,
+                        candidatos: item.candidatos,
+                        _rkntOnly: true
+                    })),
+                    diag: 'Sin coincidencias en LXX; se muestran coincidencias desde RKANT (NT).'
+                };
+            }
         }
-    }
-
-    // Actualizar Interfaz
-    renderResults(res.matches, rawQuery);
     
-    if (resultCountEl) resultCountEl.textContent = `${res.matches.length} resultado(s)`;
-    setTierBadge(res.tier, !!res.ok);
-    if (diagEl) diagEl.textContent = res.diag;
-    if (traceEl) traceEl.textContent = (res.trace || []).join('\n');
+     // Actualizar Interfaz
+        renderResults(res.matches, rawQuery);
+        
+         if (resultCountEl) resultCountEl.textContent = `${res.matches.length} resultado(s)`;
+        setTierBadge(res.tier, !!res.ok);
+        if (diagEl) diagEl.textContent = res.diag;
+        if (traceEl) traceEl.textContent = (res.trace || []).join('\n');
+    } finally {
+        setSearchLoading(false);
+    }
 
 }
 
