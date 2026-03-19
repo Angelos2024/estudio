@@ -98,7 +98,14 @@ function waitForNextPaint() {
         });
     });
 }
+function isSingleWordQuery(rawQuery) {
+    const parts = String(rawQuery || '')
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean);
 
+    return parts.length <= 1;
+}
 function getEntryLoadOrder(entry) {
     if (!entry || typeof entry !== 'object') return Number.MAX_SAFE_INTEGER;
     if (entryOrderCache.has(entry)) return entryOrderCache.get(entry);
@@ -1437,8 +1444,8 @@ async function updateDictionaryComparison(items, rawQuery) {
  */
 async function doSearch() {
     setSearchLoading(true);
-        setSearchLoading(true);
-    try {
+    await waitForNextPaint();
+        try {
         if ((!entries || !entries.length) && typeof window.ensureRemoteAlefatoLoaded === 'function') {
             try {
                 await window.ensureRemoteAlefatoLoaded();
@@ -1458,6 +1465,14 @@ if (diagEl) diagEl.textContent = 'Por favor, cargue los archivos JSON de los lib
 
     const rawQuery = queryEl?.value?.trim() || '';
     if (!rawQuery) return;
+    if (!isSingleWordQuery(rawQuery)) {
+        renderResults([], rawQuery);
+        if (resultCountEl) resultCountEl.textContent = '0 resultado(s)';
+        setTierBadge('Entrada no válida', false);
+        if (diagEl) diagEl.textContent = 'Solo se aceptan entradas de palabras únicas, no frases.';
+        if (traceEl) traceEl.textContent = 'Consulta rechazada: se recibió más de una palabra.';
+        return;
+    }
 
       // Rangos Unicode para detección
         const isHebrew = /[֐-׿]/.test(rawQuery);
