@@ -91,6 +91,14 @@ function setSearchLoading(isLoading) {
     }
 }
 
+function waitForNextPaint() {
+    return new Promise(resolve => {
+        requestAnimationFrame(() => {
+            requestAnimationFrame(resolve);
+        });
+    });
+}
+
 function getEntryLoadOrder(entry) {
     if (!entry || typeof entry !== 'object') return Number.MAX_SAFE_INTEGER;
     if (entryOrderCache.has(entry)) return entryOrderCache.get(entry);
@@ -1429,6 +1437,7 @@ async function updateDictionaryComparison(items, rawQuery) {
  */
 async function doSearch() {
     setSearchLoading(true);
+        setSearchLoading(true);
     try {
         if ((!entries || !entries.length) && typeof window.ensureRemoteAlefatoLoaded === 'function') {
             try {
@@ -1491,7 +1500,7 @@ if (diagEl) diagEl.textContent = 'Por favor, cargue los archivos JSON de los lib
     
      // Actualizar Interfaz
         renderResults(res.matches, rawQuery);
-        
+
          if (resultCountEl) resultCountEl.textContent = `${res.matches.length} resultado(s)`;
         setTierBadge(res.tier, !!res.ok);
         if (diagEl) diagEl.textContent = res.diag;
