@@ -1526,7 +1526,24 @@ if (diagEl) diagEl.textContent = 'Por favor, cargue los archivos JSON de los lib
 
 }
 
-// Inicialización: Asegurarnos de que el botón use esta nueva función
+function handleComparativeSearchTrigger(event) {
+    if (event) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+    }
+    void doSearch();
+}
+
+// Inicialización: centralizamos el disparo para evitar que listeners previos
+// bloqueen el repintado del overlay antes de cada nueva búsqueda.
 if (searchBtn) {
-    searchBtn.onclick = doSearch;
+ searchBtn.onclick = null;
+    searchBtn.addEventListener('click', handleComparativeSearchTrigger, true);
+}
+
+if (queryEl) {
+    queryEl.addEventListener('keydown', (event) => {
+        if (event.key !== 'Enter') return;
+        handleComparativeSearchTrigger(event);
+    }, true);
 }
