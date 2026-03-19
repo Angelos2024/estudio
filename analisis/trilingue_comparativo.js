@@ -80,11 +80,21 @@ const CANONICAL_BOOK_ORDER = [
 
 const entryOrderCache = new WeakMap();
 const loadingOverlayEl = document.getElementById('loadingOverlay');
+const MIN_LOADING_OVERLAY_MS = 450;
+let loadingOverlayShownAt = 0;
 
 function setSearchLoading(isLoading) {
     if (!loadingOverlayEl) return;
     loadingOverlayEl.classList.toggle('is-visible', !!isLoading);
-    loadingOverlayEl.setAttribute('aria-hidden', isLoading ? 'false' : 'true');
+
+if (isLoading) {
+        loadingOverlayShownAt = Date.now();
+        loadingOverlayEl.classList.remove('is-visible');
+        void loadingOverlayEl.offsetWidth;
+        loadingOverlayEl.classList.add('is-visible');
+    } else {
+        loadingOverlayEl.classList.remove('is-visible');
+    }
     if (searchBtn) {
         searchBtn.disabled = !!isLoading;
         searchBtn.setAttribute('aria-busy', isLoading ? 'true' : 'false');
@@ -98,6 +108,11 @@ function waitForNextPaint() {
         });
     });
 }
+function wait(ms) {
+    if (!ms || ms <= 0) return Promise.resolve();
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 function isSingleWordQuery(rawQuery) {
     const parts = String(rawQuery || '')
         .trim()
@@ -1521,6 +1536,8 @@ if (diagEl) diagEl.textContent = 'Por favor, cargue los archivos JSON de los lib
         if (diagEl) diagEl.textContent = res.diag;
         if (traceEl) traceEl.textContent = (res.trace || []).join('\n');
     } finally {
+        const elapsed = Date.now() - loadingOverlayShownAt;
+        await wait(MIN_LOADING_OVERLAY_MS - elapsed);
         setSearchLoading(false);
     }
 
