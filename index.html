@@ -986,24 +986,84 @@ function fmtVerse(raw){
   // escapa HTML y luego convierte saltos a <br>
   return esc(normalized).replace(/\n/g, '<br>');
 }
-function fmtOrigVerse(raw, isGreek){
-  const normalized = String(raw ?? '').replace(/\/n|\\n/g, '\n');
-  if(!isGreek) return esc(normalized).replace(/\n/g, '<br>');
+const KNOWN_GREEK_ADDED_RANGES = [
+  { book: 'marcos', chapterStart: 16, verseStart: 9, chapterEnd: 16, verseEnd: 20 },
+  { book: 'juan', chapterStart: 7, verseStart: 53, chapterEnd: 8, verseEnd: 11 }
+];
+function isVerseWithinKnownGreekAddition(bookSlug, chapter, verse){
+  if(!bookSlug || !Number.isFinite(chapter) || !Number.isFinite(verse)) return false;
+  return KNOWN_GREEK_ADDED_RANGES.some((range) => {
+    if(range.book !== bookSlug) return false;
+    const current = chapter * 1000 + verse;
+    const start = range.chapterStart * 1000 + range.verseStart;
+    const end = range.chapterEnd * 1000 + range.verseEnd;
+    return current >= start && current <= end;
+  });
+}
+function renderGreekAddedSegments(raw, context = {}){
+  const source = String(raw ?? '');
+  const knownFullAddition = isVerseWithinKnownGreekAddition(
+    context.bookSlug,
+    Number(context.chapter),
+    Number(context.verse)
+  );
 
   const phraseRe = /verso añadido no existe\./gi;
-  if(!phraseRe.test(normalized)) return esc(normalized).replace(/\n/g, '<br>');
-
-  phraseRe.lastIndex = 0;
-  let out = '';
-  let last = 0;
-  for(const match of normalized.matchAll(phraseRe)){
-    const idx = match.index ?? 0;
-    out += esc(normalized.slice(last, idx));
-    out += `<span class="verse-added">${esc(match[0])}</span>`;
-    last = idx + match[0].length;
+if(phraseRe.test(source)){
+    phraseRe.lastIndex = 0;
+    let out = '';
+    let last = 0;
+    for(const match of source.matchAll(phraseRe)){
+      const idx = match.index ?? 0;
+      out += esc(source.slice(last, idx));
+      out += `<span class="verse-added">${esc(match[0])}</span>`;
+      last = idx + match[0].length;
+    }
+    out += esc(source.slice(last));
+    return out;
   }
-  out += esc(normalized.slice(last));
-  return out.replace(/\n/g, '<br>');
+
+  const hasOpen = source.includes('[[');
+  const hasClose = source.includes(']]');
+  if(!hasOpen && !hasClose && !knownFullAddition){
+    return esc(source);
+  }
+
+  if((knownFullAddition && hasClose && !hasOpen) || (knownFullAddition && !hasOpen && !hasClose)){
+    return `<span class="verse-added">${esc(source.replace(/\[\[|\]\]/g, ''))}</span>`;
+  }
+
+  let out = '';
+  let cursor = 0;
+  let inAdded = knownFullAddition && !hasOpen;
+  while(cursor < source.length){
+    if(source.startsWith('[[', cursor)){
+      inAdded = true;
+      cursor += 2;
+      continue;
+    }
+    if(source.startsWith(']]', cursor)){
+      inAdded = false;
+      cursor += 2;
+      continue;
+    }
+    let nextSpecial = source.length;
+    const nextOpen = source.indexOf('[[', cursor);
+    const nextClose = source.indexOf(']]', cursor);
+    if(nextOpen !== -1) nextSpecial = Math.min(nextSpecial, nextOpen);
+    if(nextClose !== -1) nextSpecial = Math.min(nextSpecial, nextClose);
+    const chunk = source.slice(cursor, nextSpecial);
+    out += inAdded
+      ? `<span class="verse-added">${esc(chunk)}</span>`
+      : esc(chunk);
+    cursor = nextSpecial;
+  }
+  return out;
+}
+function fmtOrigVerse(raw, isGreek, context = {}){
+  const normalized = String(raw ?? '').replace(/\/n|\\n/g, '\n');
+  if(!isGreek) return esc(normalized).replace(/\n/g, '<br>');
+  return renderGreekAddedSegments(normalized, context).replace(/\n/g, '<br>');
 }
     function buildInterlinearWordMarkup(rows, fallbackText, isGreek){
       const tokens = Array.isArray(rows?.tokens) ? rows.tokens : [];
@@ -1011,8 +1071,8 @@ function fmtOrigVerse(raw, isGreek){
       const originalWordClass = isGreek ? 'interlinear-greek' : 'interlinear-hebrew';
   const directionClass = isGreek ? 'interlinear-dir-ltr' : 'interlinear-dir-rtl';
   if(!tokens.length){
-    return `<span class="${originalWordClass}">${fmtOrigVerse(fallbackText || '-', isGreek)}</span>`;
-  }
+    return `<span class="${originalWordClass}">${fmtOrigVerse(fallbackText || '-', isGreek, rows?.context || {})}</span>`;
+      }
 
   const words = tokens.map((token, idx) => {
     const originalWord = esc(token || '-');
@@ -1469,14 +1529,14 @@ async function render(ref){
         }else{
           htmlOrig += `<p class="mb-2 verse-line interlinear-verse" data-side="orig" data-book="${esc(currentBookSlug)}" data-ch="${ch}" data-v="${v}">
             <span class="verse-num">${v}</span>
-            <span class="interlinear-original ${isGreekBook ? 'interlinear-dir-ltr' : 'interlinear-dir-rtl'}">${fmtOrigVerse(t, isGreekBook)}</span>
-            <span class="interlinear-spanish">-</span>
+            <span class="interlinear-original ${isGreekBook ? 'interlinear-dir-ltr' : 'interlinear-dir-rtl'}">${fmtOrigVerse(t, isGreekBook, { bookSlug: currentBookSlug, chapter: ch, verse: v })}</span>
+                        <span class="interlinear-spanish">-</span>
           </p>`;
         }
       }else{
         htmlOrig += `<p class="mb-2 verse-line" data-side="orig" data-book="${esc(currentBookSlug)}" data-ch="${ch}" data-v="${v}">
-           <span class="verse-num">${v}</span><span class="verse-text">${fmtOrigVerse(t, isGreekBook)}</span>
-        </p>`;
+           <span class="verse-num">${v}</span><span class="verse-text">${fmtOrigVerse(t, isGreekBook, { bookSlug: currentBookSlug, chapter: ch, verse: v })}</span>
+                   </p>`;
       }
     }
     passageTextOrig.innerHTML = htmlOrig || `<div class="text-muted">Sin contenido original para esta referencia.</div>`;
