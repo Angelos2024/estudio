@@ -1009,7 +1009,7 @@ function renderGreekAddedSegments(raw, context = {}){
   );
 
   const phraseRe = /verso añadido no existe\./gi;
-if(phraseRe.test(source)){
+ if(phraseRe.test(source)){
     phraseRe.lastIndex = 0;
     let out = '';
     let last = 0;
@@ -1030,9 +1030,8 @@ if(phraseRe.test(source)){
   }
 
   if((knownFullAddition && hasClose && !hasOpen) || (knownFullAddition && !hasOpen && !hasClose)){
-    return `<span class="verse-added">${esc(source.replace(/\[\[|\]\]/g, ''))}</span>`;
+    return `<span class="verse-added">verso añadido no existe.</span>`;
   }
-
   let out = '';
   let cursor = 0;
   let inAdded = knownFullAddition && !hasOpen;
@@ -1058,7 +1057,11 @@ if(phraseRe.test(source)){
       : esc(chunk);
     cursor = nextSpecial;
   }
-  return out;
+
+  if((hasOpen || hasClose) && !knownFullAddition){
+    out += ` <span class="verse-added">palabras añadidas</span>`;
+  }
+ return out;
 }
 function fmtOrigVerse(raw, isGreek, context = {}){
   const normalized = String(raw ?? '').replace(/\/n|\\n/g, '\n');
