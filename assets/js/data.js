@@ -1,5 +1,5 @@
 /*
- * Catálogo de contenidos de AnÍmales.
+ * Catálogo de contenidos de Animales.
  * Fuente única de datos: se consume desde las páginas de categoría y desde el inicio.
  * Editar aquí para actualizar textos, precios o agregar servicios nuevos.
  */
@@ -74,7 +74,7 @@ const SERVICIOS = [
     categoria: 'formaciones',
     nombre: 'Comunidad de Graduados',
     modalidad: 'Continua',
-    dirigido: 'Exclusivo para egresados de AnÍmales',
+    dirigido: 'Exclusivo para egresados de Animales',
     resumen:
       'Red profesional de supervisión clínica y actualización de conocimientos.',
     descripcion:
@@ -218,7 +218,7 @@ const SERVICIOS = [
     resumen:
       'Un obsequio con propósito: regalar una experiencia de sanación o descanso.',
     descripcion:
-      'Un obsequio con propósito. Permite regalar a un ser querido una experiencia de sanación, crecimiento o descanso en AnÍmales.',
+      'Un obsequio con propósito. Permite regalar a un ser querido una experiencia de sanación, crecimiento o descanso en Animales.',
   },
   {
     slug: 'hospedaje-retiro',

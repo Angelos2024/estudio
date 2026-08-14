@@ -190,9 +190,44 @@ sección queda oculta.
 
 ---
 
+## Parte C — Administración (Clientes frecuentes y Días inhábiles)
+
+El panel local (`panel-local`) tiene **tres secciones** en la barra superior:
+
+1. **Solicitudes** — las reservas que llegan del sitio (confirmar/reagendar/rechazar).
+2. **Clientes** — registro de clientes frecuentes (CRM).
+3. **Días inhábiles** — calendario para marcar días cerrados.
+
+Todo se guarda en la **misma Google Sheet**, en pestañas nuevas que el script crea
+solo (`Clientes` y `DiasInhabiles`). No hay que configurar nada extra: al
+redeployar y abrir el panel, las pestañas aparecen la primera vez que se usan.
+
+### Clientes frecuentes
+- Botón **“+ Nuevo cliente”**: nombre (obligatorio), teléfono, correo, etiqueta
+  (Frecuente/VIP/…), **días de visita** (Lun–Dom), frecuencia y notas.
+- **Editar** o **Eliminar** desde la tarjeta de cada cliente.
+- Buscador por nombre, teléfono o correo.
+- El teléfono/correo entran como **texto** (sin el error de fórmula del `+`).
+
+### Días inhábiles
+- Calendario mensual: **tocá un día** para marcarlo/quitarlo como inhábil
+  (con motivo opcional: feriado, mantenimiento, vacaciones…).
+- Los días con solicitudes muestran un **punto verde** con la cantidad.
+- Si entra una solicitud (o se reagenda) en un **día inhábil**, el correo y el
+  evento del calendario se marcan con **⚠️ [DÍA INHÁBIL]** para que lo notes.
+- La lista lateral muestra los próximos días cerrados; se quitan con un clic.
+
+> El panel usa una sola llamada (`accion=datos`) que trae solicitudes + clientes
+> + días inhábiles juntos, así carga rápido.
+
+---
+
 ## Migrar al cliente (más adelante)
 
 Cuando el cliente tenga su cuenta lista:
-1. Repetí los pasos 1–4 con **su** cuenta de Google.
+1. Repetí los pasos 1–4 con **su** cuenta de Google (el script crea las pestañas
+   `Solicitudes`, `Clientes` y `DiasInhabiles` solo; o corré `prepararHoja` una vez).
 2. Actualizá `reservas.endpoint` (y `agendaEmbed` si aplica) con las nuevas URLs.
-3. Actualizá `CORREO_AVISOS` dentro del script.
+3. Actualizá `CORREO_AVISOS` dentro del script y el **TOKEN** (línea de `CONFIG`).
+4. En la otra laptop: instalá Python + `pip install -r panel-local/requirements.txt`
+   y poné el nuevo endpoint + token en **Ajustes** del panel (o en `config.json`).

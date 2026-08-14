@@ -1,5 +1,5 @@
 /*
- * AnÍmales — Lógica compartida del sitio.
+ * Animales — Lógica compartida del sitio.
  * Depende de config.js y data.js, que deben cargarse antes que este archivo.
  */
 
@@ -93,7 +93,7 @@
   function tarjetaServicio(servicio) {
     const cat = CATEGORIAS[servicio.categoria];
     const mensaje =
-      'Hola AnÍmales, quisiera información sobre: ' + servicio.nombre + '.';
+      'Hola Animales, quisiera información sobre: ' + servicio.nombre + '.';
 
     return [
       '<div class="col-md-6 col-lg-4 an-revelar">',
@@ -201,7 +201,7 @@
     {
       img: 'imagenes/tarjeta-8.jpg', color: 'amarillo', icono: 'bi-gift', pagina: 'experiencias.html',
       titulo: 'Certificados de Regalo',
-      texto: 'Un obsequio con propósito, canjeable por cualquier servicio de AnÍmales.',
+      texto: 'Un obsequio con propósito, canjeable por cualquier servicio de Animales.',
     },
   ];
 
@@ -290,7 +290,7 @@
       };
 
       const mensajeWA = [
-        'Hola AnÍmales, quisiera solicitar información o reservar.',
+        'Hola Animales, quisiera solicitar información o reservar.',
         '',
         'Nombre: ' + solicitud.nombre,
         'Correo: ' + solicitud.email,
