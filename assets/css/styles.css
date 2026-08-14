@@ -1,0 +1,690 @@
+/* ==========================================================================
+   AnÍmales — Hoja de estilos principal
+   Se carga después de Bootstrap 5.3 para poder sobrescribir sus variables.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Tokens de diseño
+   -------------------------------------------------------------------------- */
+:root {
+  /* Paleta institucional del documento de gestión web */
+  --an-rosa: #d4759b;
+  --an-rosa-suave: #f7e6ee;
+  --an-morado: #7a5c9e;
+  --an-morado-suave: #ece5f5;
+  --an-verde: #5b8f6a;
+  --an-verde-suave: #e3efe5;
+  --an-amarillo: #e2a93b;
+  --an-amarillo-suave: #fbf0d9;
+  --an-ocre: #a97442;
+  --an-ocre-suave: #f4e7da;
+
+  /* Neutros */
+  --an-tinta: #2c231d;
+  --an-tinta-suave: #6b5f56;
+  --an-crema: #faf6f1;
+  --an-borde: #e7ddd2;
+  --an-blanco: #ffffff;
+
+  /* Tipografía */
+  --an-fuente-titulo: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --an-fuente-texto: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Formas y sombras */
+  --an-radio: 1rem;
+  --an-radio-sm: 0.5rem;
+  --an-sombra: 0 4px 24px rgba(44, 35, 29, 0.08);
+  --an-sombra-alta: 0 12px 40px rgba(44, 35, 29, 0.16);
+  --an-transicion: 200ms ease;
+
+  /* Sobrescritura de Bootstrap */
+  --bs-primary: var(--an-ocre);
+  --bs-body-color: var(--an-tinta);
+  --bs-body-bg: var(--an-blanco);
+  --bs-border-color: var(--an-borde);
+  --bs-link-color: var(--an-ocre);
+  --bs-link-hover-color: var(--an-tinta);
+}
+
+/* --------------------------------------------------------------------------
+   2. Base
+   -------------------------------------------------------------------------- */
+body {
+  font-family: var(--an-fuente-texto);
+  color: var(--an-tinta);
+  background-color: var(--an-blanco);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, .an-titulo {
+  font-family: var(--an-fuente-titulo);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+h1 { font-size: clamp(2.25rem, 5vw, 3.75rem); line-height: 1.1; }
+h2 { font-size: clamp(1.75rem, 3.5vw, 2.75rem); line-height: 1.15; }
+h3 { font-size: clamp(1.25rem, 2vw, 1.6rem); }
+
+p { line-height: 1.7; }
+
+a { text-decoration: none; transition: color var(--an-transicion); }
+
+::selection { background: var(--an-ocre); color: #fff; }
+
+:focus-visible {
+  outline: 3px solid var(--an-ocre);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Utilidades de composición */
+.an-fondo-crema { background-color: var(--an-crema); }
+.an-fondo-tinta { background-color: var(--an-tinta); color: var(--an-crema); }
+.an-seccion { padding: clamp(3.5rem, 8vw, 6rem) 0; }
+.an-medida { max-width: 62ch; }
+
+.an-antetitulo {
+  font-family: var(--an-fuente-texto);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--an-ocre);
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+.an-fondo-tinta .an-antetitulo { color: var(--an-amarillo); }
+
+/* --------------------------------------------------------------------------
+   3. Colores por categoría
+   Cada tarjeta o sección hereda su acento con la clase .an-cat-<color>
+   -------------------------------------------------------------------------- */
+.an-cat-rosa      { --an-acento: var(--an-rosa);     --an-acento-suave: var(--an-rosa-suave); }
+.an-cat-morado    { --an-acento: var(--an-morado);   --an-acento-suave: var(--an-morado-suave); }
+.an-cat-verde     { --an-acento: var(--an-verde);    --an-acento-suave: var(--an-verde-suave); }
+.an-cat-amarillo  { --an-acento: var(--an-amarillo); --an-acento-suave: var(--an-amarillo-suave); }
+.an-cat-ocre      { --an-acento: var(--an-ocre);     --an-acento-suave: var(--an-ocre-suave); }
+
+/* --------------------------------------------------------------------------
+   4. Barra de navegación
+   -------------------------------------------------------------------------- */
+/* La barra se superpone al hero (fija) y arranca transparente.
+   Al desplazar, main.js agrega .an-navbar--scroll y se vuelve sólida. */
+.an-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1030;
+  background-color: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background-color 300ms ease, box-shadow var(--an-transicion),
+              border-color 300ms ease;
+}
+
+.an-navbar.an-navbar--scroll {
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom-color: var(--an-borde);
+  box-shadow: var(--an-sombra);
+}
+
+.an-navbar .navbar-brand {
+  font-family: var(--an-fuente-titulo);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+  transition: color 300ms ease;
+}
+
+.an-navbar .navbar-brand small {
+  display: block;
+  font-family: var(--an-fuente-texto);
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+  transition: color 300ms ease;
+}
+
+/* Logo institucional: versión clara sobre el hero, oscura al desplazar */
+.an-logo { height: 54px; width: auto; display: block; }
+.an-logo--oscuro { display: none; }
+.an-navbar--scroll .an-logo--claro { display: none; }
+.an-navbar--scroll .an-logo--oscuro { display: block; }
+
+@media (max-width: 575.98px) {
+  .an-logo { height: 46px; }
+}
+
+.an-navbar .nav-link {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.94rem;
+  font-weight: 500;
+  padding: 0.5rem 0.85rem;
+  position: relative;
+  transition: color var(--an-transicion);
+}
+
+.an-navbar .nav-link:hover { color: #fff; }
+.an-navbar .nav-link.active { color: #fff; font-weight: 600; }
+
+/* Estado sólido (con scroll): texto oscuro */
+.an-navbar--scroll .navbar-brand { color: var(--an-tinta); }
+.an-navbar--scroll .navbar-brand small { color: var(--an-tinta-suave); }
+.an-navbar--scroll .nav-link { color: var(--an-tinta-suave); }
+.an-navbar--scroll .nav-link:hover { color: var(--an-tinta); }
+.an-navbar--scroll .nav-link.active { color: var(--an-ocre); }
+
+/* Botón hamburguesa: claro sobre el hero, oscuro al desplazar */
+.an-navbar .navbar-toggler {
+  color: #fff;
+  box-shadow: none;
+}
+.an-navbar .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255,255,255,0.9)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+.an-navbar--scroll .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(44,35,29,0.85)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+@media (min-width: 992px) {
+  .an-navbar .nav-link.active::after {
+    content: '';
+    position: absolute;
+    left: 0.85rem;
+    right: 0.85rem;
+    bottom: 0.1rem;
+    height: 2px;
+    background-color: currentColor;
+    border-radius: 2px;
+  }
+}
+
+/* En móvil el menú se despliega como panel claro para poder leerlo sobre el hero */
+@media (max-width: 991.98px) {
+  .an-navbar .navbar-collapse {
+    background-color: #fff;
+    border: 1px solid var(--an-borde);
+    border-radius: var(--an-radio);
+    margin-top: 0.6rem;
+    padding: 0.85rem 1rem;
+    box-shadow: var(--an-sombra);
+  }
+  .an-navbar .navbar-collapse .nav-link { color: var(--an-tinta-suave); }
+  .an-navbar .navbar-collapse .nav-link:hover,
+  .an-navbar .navbar-collapse .nav-link.active { color: var(--an-ocre); }
+}
+
+/* --------------------------------------------------------------------------
+   5. Botones
+   -------------------------------------------------------------------------- */
+.btn {
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.7rem 1.6rem;
+  transition: transform var(--an-transicion), box-shadow var(--an-transicion),
+              background-color var(--an-transicion), color var(--an-transicion);
+}
+
+.btn:hover { transform: translateY(-2px); }
+
+.an-btn-principal {
+  background-color: var(--an-ocre);
+  border: 1px solid var(--an-ocre);
+  color: #fff;
+}
+
+.an-btn-principal:hover {
+  background-color: var(--an-tinta);
+  border-color: var(--an-tinta);
+  color: #fff;
+}
+
+.an-btn-contorno {
+  background-color: transparent;
+  border: 1px solid currentColor;
+  color: var(--an-tinta);
+}
+
+.an-btn-contorno:hover {
+  background-color: var(--an-tinta);
+  border-color: var(--an-tinta);
+  color: #fff;
+}
+
+.an-btn-claro {
+  background-color: #fff;
+  border: 1px solid #fff;
+  color: var(--an-tinta);
+}
+
+.an-btn-claro:hover { background-color: var(--an-amarillo); border-color: var(--an-amarillo); }
+
+.an-btn-whatsapp {
+  background-color: #25d366;
+  border: 1px solid #25d366;
+  color: #fff;
+}
+
+.an-btn-whatsapp:hover { background-color: #1da851; border-color: #1da851; color: #fff; }
+
+/* --------------------------------------------------------------------------
+   6. Portada (hero)
+   -------------------------------------------------------------------------- */
+.an-hero {
+  position: relative;
+  min-height: clamp(30rem, 78vh, 44rem);
+  display: flex;
+  align-items: center;
+  color: #fff;
+  background-color: var(--an-tinta);
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
+
+.an-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, rgba(30, 24, 19, 0.6) 0%, rgba(30, 24, 19, 0.32) 50%, rgba(30, 24, 19, 0.12) 100%);
+}
+
+.an-hero > .container { position: relative; z-index: 1; }
+
+.an-hero h1 { color: #fff; text-shadow: 0 2px 20px rgba(0, 0, 0, 0.25); }
+
+.an-hero p.lead {
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 1.15rem;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.45);
+}
+
+/* Antetítulo del hero como chip legible sobre la foto */
+.an-hero .an-antetitulo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: #fff;
+  background: rgba(30, 24, 19, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+}
+
+.an-hero .an-antetitulo::before {
+  content: '';
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--an-amarillo);
+  box-shadow: 0 0 0 3px rgba(226, 169, 59, 0.35);
+}
+
+/* Portada reducida para páginas internas */
+.an-hero--interno { min-height: clamp(18rem, 42vh, 26rem); }
+
+.an-hero--interno::after {
+  background: linear-gradient(180deg, rgba(30, 24, 19, 0.72) 0%, rgba(30, 24, 19, 0.78) 100%);
+}
+
+/* --------------------------------------------------------------------------
+   7. Tarjetas de categoría (accesos del inicio)
+   -------------------------------------------------------------------------- */
+.an-tarjeta-cat {
+  display: block;
+  height: 100%;
+  padding: 2rem 1.6rem;
+  border-radius: var(--an-radio);
+  background-color: var(--an-acento-suave, var(--an-crema));
+  border: 1px solid transparent;
+  color: var(--an-tinta);
+  transition: transform var(--an-transicion), box-shadow var(--an-transicion);
+}
+
+.an-tarjeta-cat:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--an-sombra-alta);
+  color: var(--an-tinta);
+}
+
+.an-tarjeta-cat .an-icono {
+  width: 3rem;
+  height: 3rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background-color: var(--an-acento);
+  color: #fff;
+  font-size: 1.4rem;
+  margin-bottom: 1.1rem;
+}
+
+.an-tarjeta-cat h3 { margin-bottom: 0.5rem; }
+
+.an-tarjeta-cat p {
+  color: var(--an-tinta-suave);
+  font-size: 0.94rem;
+  margin-bottom: 1rem;
+}
+
+.an-tarjeta-cat .an-enlace {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--an-acento);
+}
+
+/* --------------------------------------------------------------------------
+   7b. Carril de tarjetas flotantes (marquesina sobre el borde del hero)
+   -------------------------------------------------------------------------- */
+.an-carril-seccion {
+  position: relative;
+  z-index: 6;
+  margin-top: -6.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.an-carril {
+  overflow: hidden;
+  padding: 1.25rem 0;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+}
+
+.an-carril__pista {
+  display: flex;
+  gap: 1.25rem;
+  width: max-content;
+  padding: 0 1.25rem;
+  animation: an-desliza 48s linear infinite;
+}
+
+/* Se detiene al pasar el mouse o al enfocar un elemento interno */
+.an-carril:hover .an-carril__pista,
+.an-carril__pista:focus-within {
+  animation-play-state: paused;
+}
+
+@keyframes an-desliza {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.an-flotante-card {
+  flex: 0 0 clamp(222px, 74vw, 264px);
+  background: #fff;
+  border-radius: var(--an-radio);
+  box-shadow: var(--an-sombra-alta);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.an-flotante-card__media {
+  position: relative;
+  height: 128px;
+  background-color: var(--an-acento, var(--an-ocre));
+  background-size: cover;
+  background-position: center;
+  display: grid;
+  place-items: center;
+}
+
+.an-flotante-card__media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.28));
+}
+
+.an-flotante-card__icono {
+  position: relative;
+  z-index: 1;
+  width: 3rem;
+  height: 3rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--an-acento, var(--an-ocre));
+  font-size: 1.35rem;
+}
+
+.an-flotante-card__cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.05rem 1.1rem;
+  flex: 1;
+}
+
+.an-flotante-card__cuerpo h3 { font-size: 1.08rem; margin: 0; }
+.an-flotante-card__cuerpo p { font-size: 0.9rem; color: var(--an-tinta-suave); margin: 0; }
+.an-flotante-card__cuerpo .btn { margin-top: auto; align-self: flex-start; }
+
+@media (max-width: 575.98px) {
+  .an-carril-seccion { margin-top: -5.5rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .an-carril { overflow-x: auto; }
+  .an-carril__pista { animation: none; }
+}
+
+/* --------------------------------------------------------------------------
+   8. Tarjetas de servicio
+   -------------------------------------------------------------------------- */
+.an-tarjeta {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  border: 1px solid var(--an-borde);
+  border-top: 4px solid var(--an-acento, var(--an-ocre));
+  border-radius: var(--an-radio);
+  padding: 1.75rem;
+  transition: transform var(--an-transicion), box-shadow var(--an-transicion);
+}
+
+.an-tarjeta:hover { transform: translateY(-4px); box-shadow: var(--an-sombra); }
+
+.an-tarjeta h3 { font-size: 1.3rem; margin-bottom: 0.85rem; }
+
+.an-tarjeta p { color: var(--an-tinta-suave); font-size: 0.95rem; }
+
+.an-tarjeta .an-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.an-tarjeta .an-acciones { margin-top: auto; padding-top: 1.25rem; }
+
+.an-etiqueta {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  background-color: var(--an-acento-suave, var(--an-crema));
+  color: var(--an-acento, var(--an-ocre));
+}
+
+.an-etiqueta--linea {
+  background-color: transparent;
+  border: 1px solid var(--an-borde);
+  color: var(--an-tinta-suave);
+}
+
+/* --------------------------------------------------------------------------
+   9. Bloques de contenido
+   -------------------------------------------------------------------------- */
+.an-cita {
+  font-family: var(--an-fuente-titulo);
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  line-height: 1.4;
+  font-style: italic;
+}
+
+.an-lista-check { list-style: none; padding: 0; margin: 0; }
+
+.an-lista-check li {
+  position: relative;
+  padding-left: 1.9rem;
+  margin-bottom: 0.85rem;
+  color: var(--an-tinta-suave);
+}
+
+.an-lista-check li::before {
+  content: '\F26E'; /* bi-check-lg */
+  font-family: 'bootstrap-icons';
+  position: absolute;
+  left: 0;
+  top: 0.05rem;
+  color: var(--an-verde);
+  font-size: 1rem;
+}
+
+.an-dato { text-align: center; padding: 1rem; }
+
+.an-dato .an-dato-numero {
+  font-family: var(--an-fuente-titulo);
+  font-size: clamp(2.2rem, 5vw, 3.2rem);
+  font-weight: 700;
+  color: var(--an-amarillo);
+  line-height: 1;
+}
+
+.an-dato .an-dato-texto {
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(250, 246, 241, 0.7);
+  margin-top: 0.5rem;
+}
+
+.an-imagen-marco {
+  border-radius: var(--an-radio);
+  overflow: hidden;
+  box-shadow: var(--an-sombra);
+  background-color: var(--an-crema);
+}
+
+.an-imagen-marco img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* Marcador de posición mientras no hay fotografías definitivas */
+.an-placeholder {
+  display: grid;
+  place-items: center;
+  min-height: 18rem;
+  background: repeating-linear-gradient(45deg, var(--an-crema), var(--an-crema) 12px, #f3ece4 12px, #f3ece4 24px);
+  color: var(--an-tinta-suave);
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 1rem;
+}
+
+/* Testimonios */
+.an-testimonio {
+  height: 100%;
+  background-color: #fff;
+  border: 1px solid var(--an-borde);
+  border-radius: var(--an-radio);
+  padding: 1.75rem;
+}
+
+.an-testimonio .an-estrellas { color: var(--an-amarillo); margin-bottom: 0.85rem; }
+
+.an-testimonio blockquote { font-size: 0.98rem; color: var(--an-tinta-suave); margin-bottom: 1.25rem; }
+
+.an-testimonio figcaption { font-size: 0.85rem; font-weight: 600; }
+
+.an-testimonio figcaption span { display: block; font-weight: 400; color: var(--an-tinta-suave); }
+
+/* Acordeón de preguntas frecuentes */
+.accordion-item { border: 1px solid var(--an-borde); border-radius: var(--an-radio-sm) !important; margin-bottom: 0.75rem; overflow: hidden; }
+.accordion-button { font-weight: 600; background-color: #fff; }
+.accordion-button:not(.collapsed) { background-color: var(--an-crema); color: var(--an-ocre); box-shadow: none; }
+.accordion-button:focus { box-shadow: none; border-color: var(--an-borde); }
+
+/* --------------------------------------------------------------------------
+   10. Formularios
+   -------------------------------------------------------------------------- */
+.form-control, .form-select {
+  border-radius: var(--an-radio-sm);
+  border-color: var(--an-borde);
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--an-ocre);
+  box-shadow: 0 0 0 3px rgba(169, 116, 66, 0.15);
+}
+
+.form-label { font-size: 0.88rem; font-weight: 600; margin-bottom: 0.4rem; }
+
+/* --------------------------------------------------------------------------
+   11. Pie de página
+   -------------------------------------------------------------------------- */
+.an-footer { background-color: var(--an-tinta); color: rgba(250, 246, 241, 0.75); padding: 4rem 0 1.5rem; }
+.an-footer h4 { font-family: var(--an-fuente-texto); font-size: 0.8rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--an-amarillo); margin-bottom: 1.1rem; }
+.an-footer a { color: rgba(250, 246, 241, 0.75); font-size: 0.92rem; }
+.an-footer a:hover { color: #fff; }
+.an-footer ul { list-style: none; padding: 0; margin: 0; }
+.an-footer li { margin-bottom: 0.55rem; }
+.an-footer .an-footer-marca { font-family: var(--an-fuente-titulo); font-size: 1.8rem; color: #fff; }
+.an-footer .an-redes a { display: inline-grid; place-items: center; width: 2.4rem; height: 2.4rem; border-radius: 50%; border: 1px solid rgba(250, 246, 241, 0.25); margin-right: 0.5rem; }
+.an-footer .an-redes a:hover { background-color: var(--an-amarillo); border-color: var(--an-amarillo); color: var(--an-tinta); }
+.an-footer .an-legal { border-top: 1px solid rgba(250, 246, 241, 0.15); margin-top: 3rem; padding-top: 1.5rem; font-size: 0.82rem; }
+
+/* --------------------------------------------------------------------------
+   12. Botón flotante de WhatsApp
+   -------------------------------------------------------------------------- */
+.an-flotantes {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 1029;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.an-flotante {
+  width: 3.4rem;
+  height: 3.4rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 1.6rem;
+  box-shadow: var(--an-sombra-alta);
+  transition: transform var(--an-transicion);
+}
+
+.an-flotante:hover { transform: scale(1.08); color: #fff; }
+.an-flotante--wa { background-color: #25d366; }
+.an-flotante--fb { background-color: #1877f2; }
+
+/* --------------------------------------------------------------------------
+   13. Animación de entrada
+   -------------------------------------------------------------------------- */
+.an-revelar { opacity: 0; transform: translateY(18px); transition: opacity 600ms ease, transform 600ms ease; }
+.an-revelar.an-visible { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .an-revelar { opacity: 1; transform: none; transition: none; }
+  .btn:hover, .an-tarjeta:hover, .an-tarjeta-cat:hover, .an-wa-flotante:hover { transform: none; }
+}

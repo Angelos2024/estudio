@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="es-CR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contacto y Reservas | AnÍmales</title>
+  <meta name="description" content="Reservá tu sesión, formación o estadía en AnÍmales. Formulario de contacto, WhatsApp Business y ubicación en Costa Rica.">
+  <link rel="canonical" href="./contacto.html">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="assets/css/styles.css" rel="stylesheet">
+</head>
+<body>
+
+  <header>
+    <nav class="navbar navbar-expand-lg an-navbar">
+      <div class="container">
+        <a class="navbar-brand p-0" href="index.html" aria-label="AnÍmales · Inicio">
+          <img class="an-logo an-logo--claro" src="assets/img/logo-blanco.png" alt="AnÍmales" width="59" height="54">
+          <img class="an-logo an-logo--oscuro" src="assets/img/logo-oscuro.png" alt="AnÍmales" width="59" height="54">
+        </a>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal" aria-controls="menuPrincipal" aria-expanded="false" aria-label="Abrir menú">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="menuPrincipal">
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
+            <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+            <li class="nav-item"><a class="nav-link" href="formaciones.html">Formaciones</a></li>
+            <li class="nav-item"><a class="nav-link" href="servicios.html">Servicios y Sesiones</a></li>
+            <li class="nav-item"><a class="nav-link" href="terapias.html">Terapias y Visitas</a></li>
+            <li class="nav-item"><a class="nav-link" href="experiencias.html">Hospedaje</a></li>
+            <li class="nav-item"><a class="nav-link" href="nosotros.html">Nosotros</a></li>
+            <li class="nav-item ms-lg-3">
+              <a class="btn an-btn-principal btn-sm" href="contacto.html">Reservar</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="an-hero an-hero--interno" style="background-image: url('assets/img/contacto.jpg');">
+      <div class="container">
+        <nav aria-label="Ruta de navegación">
+          <ol class="breadcrumb small mb-2">
+            <li class="breadcrumb-item"><a class="text-white-50" href="index.html">Inicio</a></li>
+            <li class="breadcrumb-item active text-white" aria-current="page">Contacto</li>
+          </ol>
+        </nav>
+        <span class="an-antetitulo">Estamos para ayudarte</span>
+        <h1 class="mb-3">Contacto y Reservas</h1>
+        <p class="lead mb-0 an-medida">
+          Completá el formulario y coordinamos fecha, formato y detalles de tu visita.
+          También podés escribirnos directamente por WhatsApp.
+        </p>
+      </div>
+    </section>
+
+    <section class="an-seccion">
+      <div class="container">
+        <div class="row g-5">
+          <!-- Formulario -->
+          <div class="col-lg-7">
+            <span class="an-antetitulo">Solicitud de reserva</span>
+            <h2 class="mb-4">Contanos qué necesitás</h2>
+
+            <div id="aviso-envio" class="alert alert-success d-none" role="alert">
+              <i class="bi bi-check-circle me-2"></i>
+              <span data-aviso-texto>¡Recibimos tu solicitud! Te contactaremos para confirmar los detalles.</span>
+            </div>
+
+            <form id="form-contacto" class="row g-3 needs-validation" novalidate>
+              <div class="col-md-6">
+                <label class="form-label" for="nombre">Nombre completo *</label>
+                <input type="text" class="form-control" id="nombre" name="nombre" required>
+                <div class="invalid-feedback">Indicá tu nombre.</div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="email">Correo electrónico *</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+                <div class="invalid-feedback">Indicá un correo válido.</div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="telefono">Teléfono / WhatsApp</label>
+                <input type="tel" class="form-control" id="telefono" name="telefono" placeholder="+506 0000 0000">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="servicio">Servicio de interés</label>
+                <select class="form-select" id="servicio" name="servicio">
+                  <option value="">Consulta general</option>
+                  <!-- Las opciones se cargan desde data.js -->
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="fecha">Fecha tentativa</label>
+                <input type="date" class="form-control" id="fecha" name="fecha">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="personas">Cantidad de personas</label>
+                <input type="number" class="form-control" id="personas" name="personas" min="1" max="60" placeholder="1">
+              </div>
+              <div class="col-12">
+                <label class="form-label" for="mensaje">Mensaje</label>
+                <textarea class="form-control" id="mensaje" name="mensaje" rows="5" placeholder="Contanos brevemente qué buscás y cualquier detalle relevante."></textarea>
+              </div>
+              <div class="col-12">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="consentimiento" required>
+                  <label class="form-check-label small text-secondary" for="consentimiento">
+                    Autorizo el uso de mis datos para responder a esta solicitud. *
+                  </label>
+                  <div class="invalid-feedback">Necesitamos tu autorización para contactarte.</div>
+                </div>
+              </div>
+              <div class="col-12 d-flex flex-wrap gap-2">
+                <button type="submit" class="btn an-btn-principal">
+                  <i class="bi bi-send me-1"></i> Enviar solicitud
+                </button>
+                <a class="btn an-btn-whatsapp" data-wa="" href="#" target="_blank" rel="noopener">
+                  <i class="bi bi-whatsapp me-1"></i> Escribir directamente
+                </a>
+              </div>
+              <p class="small text-secondary mb-0">
+                * Campos obligatorios. Registramos tu solicitud y te contactamos por teléfono o
+                correo para confirmar la fecha según disponibilidad. Si preferís, podés escribirnos
+                directamente por WhatsApp.
+              </p>
+            </form>
+          </div>
+
+          <!-- Datos de contacto -->
+          <div class="col-lg-5">
+            <div class="an-tarjeta an-cat-ocre">
+              <h3 class="mb-4">Datos de contacto</h3>
+              <ul class="list-unstyled mb-0">
+                <li class="d-flex gap-3 mb-3">
+                  <i class="bi bi-geo-alt fs-5 text-secondary"></i>
+                  <div>
+                    <div class="fw-semibold">Ubicación</div>
+                    <span class="text-secondary" data-sitio="direccion"></span>
+                  </div>
+                </li>
+                <li class="d-flex gap-3 mb-3">
+                  <i class="bi bi-whatsapp fs-5 text-secondary"></i>
+                  <div>
+                    <div class="fw-semibold">WhatsApp Business</div>
+                    <a data-sitio="telefono" href="#"></a>
+                  </div>
+                </li>
+                <li class="d-flex gap-3 mb-3">
+                  <i class="bi bi-envelope fs-5 text-secondary"></i>
+                  <div>
+                    <div class="fw-semibold">Correo</div>
+                    <a data-sitio="email" href="#"></a>
+                  </div>
+                </li>
+                <li class="d-flex gap-3">
+                  <i class="bi bi-clock fs-5 text-secondary"></i>
+                  <div>
+                    <div class="fw-semibold">Horario de atención</div>
+                    <span class="text-secondary" data-sitio="horario"></span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            <div class="alert alert-warning mt-4 small" role="alert">
+              <i class="bi bi-exclamation-triangle me-1"></i>
+              Datos de contacto por confirmar con el cliente antes de publicar.
+            </div>
+
+            <div class="an-imagen-marco mt-4">
+              <iframe data-mapa src="" title="Ubicación de AnÍmales" width="100%" height="320" style="border:0; display:block;" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="an-seccion d-none" data-agenda-seccion>
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-10">
+            <div class="text-center mb-4 an-revelar">
+              <span class="an-antetitulo">Agenda en línea</span>
+              <h2>Elegí un horario disponible</h2>
+              <p class="text-secondary an-medida mx-auto">
+                Seleccioná un espacio libre según nuestros días y horarios de atención.
+                Confirmamos la cita por teléfono antes de dejarla en firme.
+              </p>
+            </div>
+            <div class="an-imagen-marco" data-agenda-embed></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="an-seccion an-fondo-crema">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-9">
+            <div class="text-center mb-4 an-revelar">
+              <span class="an-antetitulo">Preguntas frecuentes</span>
+              <h2>Sobre reservas y visitas</h2>
+            </div>
+            <div class="accordion an-revelar" id="faqContacto">
+              <div class="accordion-item">
+                <h3 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#fc1">
+                    ¿Necesito reservar con anticipación?
+                  </button>
+                </h3>
+                <div id="fc1" class="accordion-collapse collapse" data-bs-parent="#faqContacto">
+                  <div class="accordion-body text-secondary">
+                    Sí. Todas las sesiones y visitas se coordinan con cita previa para asegurar la
+                    disponibilidad del facilitador y de la manada.
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-item">
+                <h3 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#fc2">
+                    ¿Qué debo llevar el día de la visita?
+                  </button>
+                </h3>
+                <div id="fc2" class="accordion-collapse collapse" data-bs-parent="#faqContacto">
+                  <div class="accordion-body text-secondary">
+                    Ropa cómoda, zapato cerrado, protector solar y agua. Te enviamos las
+                    indicaciones completas al confirmar la reserva.
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-item">
+                <h3 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#fc3">
+                    ¿Atienden personas del extranjero?
+                  </button>
+                </h3>
+                <div id="fc3" class="accordion-collapse collapse" data-bs-parent="#faqContacto">
+                  <div class="accordion-body text-secondary">
+                    Sí. Coordinamos agendas para visitantes internacionales y ofrecemos Hospedaje
+                    de Retiro dentro de las instalaciones.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="an-footer">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-4">
+          <div class="an-footer-marca">AnÍmales</div>
+          <p class="mt-2 mb-3">Centro de Terapia Asistida con Animales · Costa Rica · Modelo CEEC</p>
+          <div class="an-redes">
+            <a data-red="instagram" href="#" aria-label="Instagram" target="_blank" rel="noopener"><i class="bi bi-instagram"></i></a>
+            <a data-red="facebook" href="#" aria-label="Facebook" target="_blank" rel="noopener"><i class="bi bi-facebook"></i></a>
+            <a data-red="youtube" href="#" aria-label="YouTube" target="_blank" rel="noopener"><i class="bi bi-youtube"></i></a>
+          </div>
+        </div>
+        <div class="col-6 col-lg-2">
+          <h4>Navegación</h4>
+          <ul>
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="formaciones.html">Formaciones</a></li>
+            <li><a href="servicios.html">Servicios y Sesiones</a></li>
+            <li><a href="terapias.html">Terapias y Visitas</a></li>
+          </ul>
+        </div>
+        <div class="col-6 col-lg-2">
+          <h4>Más</h4>
+          <ul>
+            <li><a href="experiencias.html">Hospedaje</a></li>
+            <li><a href="nosotros.html">Nosotros</a></li>
+            <li><a href="contacto.html">Contacto</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-4">
+          <h4>Contacto</h4>
+          <ul>
+            <li><i class="bi bi-geo-alt me-2"></i><span data-sitio="direccion"></span></li>
+            <li><i class="bi bi-envelope me-2"></i><a data-sitio="email" href="#"></a></li>
+            <li><i class="bi bi-telephone me-2"></i><a data-sitio="telefono" href="#"></a></li>
+            <li><i class="bi bi-clock me-2"></i><span data-sitio="horario"></span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="an-legal d-flex flex-wrap justify-content-between gap-2">
+        <span>&copy; <span data-sitio="anio"></span> AnÍmales. Todos los derechos reservados.</span>
+        <span>Sitio en construcción · Maqueta de trabajo</span>
+      </div>
+    </div>
+  </footer>
+
+  <div class="an-flotantes">
+    <a class="an-flotante an-flotante--fb" data-red="facebook" href="#" target="_blank" rel="noopener" aria-label="Facebook">
+      <i class="bi bi-facebook"></i>
+    </a>
+    <a class="an-flotante an-flotante--wa" data-wa="" href="#" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp">
+      <i class="bi bi-whatsapp"></i>
+    </a>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

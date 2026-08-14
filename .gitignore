@@ -1,0 +1,30 @@
+# Sistema operativo
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+
+# Editores
+.vscode/
+.idea/
+*.code-workspace
+*.swp
+
+# ============================================================
+# PROCESO LOCAL — NO se publica (queda solo en tu equipo).
+# El panel de reservas y el código de Apps Script son de uso
+# interno; el token vive en panel-local/config.json.
+# ============================================================
+panel-local/
+integraciones/
+
+# Python
+__pycache__/
+*.pyc
+*.spec
+build/
+dist/
+
+# Imágenes fuente sin procesar
+imagenes/*.jfif
