@@ -7,7 +7,7 @@
 const CATEGORIAS = {
   formaciones: {
     id: 'formaciones',
-    nombre: 'Formaciones Académicas',
+    nombre: 'Formaciones',
     color: 'rosa',
     pagina: 'formaciones.html',
     icono: 'bi-mortarboard',
@@ -44,7 +44,7 @@ const CATEGORIAS = {
 };
 
 const SERVICIOS = [
-  // Categoría 1: Formaciones Académicas
+  // Categoría 1: Formaciones
   {
     slug: 'diplomado-equinoterapia',
     categoria: 'formaciones',
