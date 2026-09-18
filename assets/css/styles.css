@@ -293,7 +293,7 @@ a { text-decoration: none; transition: color var(--an-transicion); }
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(100deg, rgba(30, 24, 19, 0.6) 0%, rgba(30, 24, 19, 0.32) 50%, rgba(30, 24, 19, 0.12) 100%);
+  background: linear-gradient(100deg, rgba(30, 24, 19, 0.30) 0%, rgba(30, 24, 19, 0.32) 50%, rgba(30, 24, 19, 0.12) 100%);
 }
 
 .an-hero > .container { position: relative; z-index: 1; }
