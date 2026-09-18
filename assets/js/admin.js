@@ -46,11 +46,15 @@
     'h1,h2,h3,h4,h5,h6,p,li,blockquote,figcaption,dt,dd,' +
     '.an-antetitulo,.lead,.an-footer-marca,.an-etiqueta,.an-enlace';
 
-  var ZONAS_EXCLUIDAS = '.an-admin-ui,.an-carril,nav,form,.modal,.an-flotantes';
+  // Nota: la marquesina (.an-carril) SÍ es editable; los textos dentro de
+  // enlaces (tarjetas "Cuatro caminos") también. Sólo se excluyen la barra de
+  // administración, la navegación, los formularios, los modales y los botones
+  // flotantes.
+  var ZONAS_EXCLUIDAS = '.an-admin-ui,nav,form,.modal,.an-flotantes';
 
   function esEditableTexto(el) {
     if (el.closest(ZONAS_EXCLUIDAS)) return false;
-    if (el.closest('a,button')) return false;
+    if (el.closest('button')) return false;
     if (el.matches('[data-sitio],[data-wa],[data-red]')) return false;
     if (el.querySelector('[data-sitio],[data-wa],[data-red]')) return false;
     if (el.querySelector(SEL_TEXTO)) return false;
@@ -59,24 +63,62 @@
   }
 
   function esImagenValida(el) {
-    return !el.closest('.an-admin-ui,.an-carril,.modal,.an-flotantes');
+    return !el.closest('.an-admin-ui,.modal,.an-flotantes');
+  }
+
+  // Fondos editables: SÓLO bloques de imagen pequeños (cabeceras de tarjeta),
+  // NO secciones/encabezados grandes (que contienen títulos o textos). Así se
+  // evita el overlay que oscurecía la portada y dificultaba editar el texto.
+  function esFondoEditable(el) {
+    if (!esImagenValida(el)) return false;
+    var t = el.tagName;
+    if (t === 'SECTION' || t === 'HEADER' || t === 'MAIN' || t === 'BODY' || t === 'FOOTER') return false;
+    if (el.classList.contains('an-hero')) return false;
+    if (el.querySelector('h1,h2,h3,h4,h5,h6,.an-antetitulo,.lead,p')) return false;
+    return true;
+  }
+
+  // Íconos editables (Bootstrap Icons), salvo los de zonas de UI/flotantes y los
+  // que están dentro de un texto editable (para no anidar edición).
+  function esIconoEditable(el) {
+    if (el.closest('.an-admin-ui,.modal,.an-flotantes')) return false;
+    var leaf = el.closest(SEL_TEXTO);
+    if (leaf && esEditableTexto(leaf)) return false;
+    return true;
   }
 
   /* =================================================================
      Asignación de IDs estables sobre el DOM prístino
      ================================================================= */
   function marcarContenido() {
-    var sel = SEL_TEXTO + ',img,[style*="background-image"]';
+    var sel = SEL_TEXTO + ',img,[style*="background-image"],i[class*="bi-"]';
     var i = 0;
     document.querySelectorAll(sel).forEach(function (el) {
       if (el.hasAttribute('data-ed-id')) return;
       var tipo = null;
       if (el.tagName === 'IMG') { if (esImagenValida(el)) tipo = 'img'; }
-      else if (el.matches('[style*="background-image"]')) { if (esImagenValida(el)) tipo = 'bg'; }
+      else if (el.tagName === 'I' && /\bbi-/.test(el.className)) { if (esIconoEditable(el)) tipo = 'icon'; }
+      else if (el.matches('[style*="background-image"]')) { if (esFondoEditable(el)) tipo = 'bg'; }
       else if (esEditableTexto(el)) { tipo = 't'; }
       if (!tipo) return;
       el.setAttribute('data-ed-id', 'e' + (i++));
       el.setAttribute('data-ed-tipo', tipo);
+    });
+    emparejarCarril();
+  }
+
+  // La marquesina duplica sus tarjetas (copia + copia) para el bucle. Emparejo
+  // cada elemento editable con su gemelo para que al editar uno, se actualice el
+  // otro y la marquesina se vea consistente.
+  function emparejarCarril() {
+    document.querySelectorAll('.an-carril__pista').forEach(function (pista) {
+      var eds = pista.querySelectorAll('[data-ed-id]');
+      var n = eds.length, mitad = n / 2;
+      if (!n || mitad !== Math.floor(mitad)) return;
+      for (var k = 0; k < mitad; k++) {
+        eds[k].setAttribute('data-ed-twin', eds[k + mitad].getAttribute('data-ed-id'));
+        eds[k + mitad].setAttribute('data-ed-twin', eds[k].getAttribute('data-ed-id'));
+      }
     });
   }
 
@@ -147,16 +189,39 @@
     });
   }
 
+  function aplicarIcono(el, nombre) {
+    el.className = el.className.replace(/\bbi-[a-z0-9-]+/g, '').replace(/\s+/g, ' ').trim();
+    if (!/(^|\s)bi(\s|$)/.test(el.className)) el.className = ('bi ' + el.className).trim();
+    if (nombre) el.classList.add(nombre);
+  }
+
+  function aplicarUno(el, o) {
+    if (o.t != null) el.innerHTML = o.t;
+    else if (o.img != null) { el.src = o.img; el.removeAttribute('srcset'); }
+    else if (o.bg != null) el.style.backgroundImage = "url('" + o.bg + "')";
+    else if (o.icon != null) aplicarIcono(el, o.icon);
+  }
+
+  // Fija un override para un elemento y, si es de la marquesina, replica en su
+  // gemelo para que ambas copias se vean iguales.
+  function fijarOverride(el, o) {
+    var id = el.getAttribute('data-ed-id');
+    if (id) datosPag().content[id] = o;
+    aplicarUno(el, o);
+    var tw = el.getAttribute('data-ed-twin');
+    if (tw) {
+      var g = document.querySelector('[data-ed-id="' + tw + '"]');
+      if (g) { datosPag().content[tw] = o; aplicarUno(g, o); }
+    }
+    marcarCambios(true);
+  }
+
   function aplicarContenido() {
     if (!OVER[PAGINA]) return;
     var c = OVER[PAGINA].content || {};
     Object.keys(c).forEach(function (id) {
       var el = document.querySelector('[data-ed-id="' + id + '"]');
-      if (!el) return;
-      var o = c[id];
-      if (o.t != null) el.innerHTML = o.t;
-      else if (o.img != null) { el.src = o.img; el.removeAttribute('srcset'); }
-      else if (o.bg != null) el.style.backgroundImage = "url('" + o.bg + "')";
+      if (el) aplicarUno(el, c[id]);
     });
   }
 
@@ -180,8 +245,9 @@
     todos.forEach(function (n) {
       n.removeAttribute && n.removeAttribute('contenteditable');
       n.removeAttribute && n.removeAttribute('spellcheck');
+      n.removeAttribute && n.removeAttribute('data-ed-twin');
       if (n.classList) {
-        ['an-ed', 'an-ed-t', 'an-ed-img', 'an-ed-bg', 'an-ed-bloque', 'an-arrastrando'].forEach(function (c) {
+        ['an-ed', 'an-ed-t', 'an-ed-img', 'an-ed-bg', 'an-ed-icono', 'an-ed-bloque', 'an-arrastrando'].forEach(function (c) {
           n.classList.remove(c);
         });
       }
@@ -207,7 +273,13 @@
     var el = e.currentTarget;
     var id = el.getAttribute('data-ed-id');
     if (!id) return;
-    datosPag().content[id] = { t: el.innerHTML.trim() };
+    var o = { t: el.innerHTML.trim() };
+    datosPag().content[id] = o;
+    var tw = el.getAttribute('data-ed-twin');
+    if (tw) {
+      var g = document.querySelector('[data-ed-id="' + tw + '"]');
+      if (g) { datosPag().content[tw] = o; g.innerHTML = o.t; }
+    }
     marcarCambios(true);
   }
 
@@ -220,6 +292,13 @@
     elegirImagen(el);
   }
 
+  function onClicIcono(e) {
+    if (!adminOn) return;
+    e.preventDefault();
+    e.stopPropagation();
+    abrirSelectorIcono(e.currentTarget);
+  }
+
   function bloquearEnlaces(e) {
     if (!adminOn) return;
     var a = e.target.closest('a');
@@ -230,13 +309,17 @@
     scope.querySelectorAll('[data-ed-id]').forEach(function (el) {
       if (el._edC) return; el._edC = true;
       var tipo = el.getAttribute('data-ed-tipo') ||
-        (el.tagName === 'IMG' ? 'img' : (el.matches('[style*="background-image"]') ? 'bg' : 't'));
+        (el.tagName === 'IMG' ? 'img' : (el.tagName === 'I' ? 'icon' : (el.matches('[style*="background-image"]') ? 'bg' : 't')));
       el.setAttribute('data-ed-tipo', tipo);
       if (tipo === 't') {
         el.classList.add('an-ed', 'an-ed-t');
         el.setAttribute('contenteditable', 'true');
         el.setAttribute('spellcheck', 'false');
         el.addEventListener('input', onTextoInput);
+      } else if (tipo === 'icon') {
+        el.classList.add('an-ed', 'an-ed-icono');
+        el.setAttribute('title', 'Clic para cambiar el ícono');
+        el.addEventListener('click', onClicIcono);
       } else {
         el.classList.add('an-ed', tipo === 'img' ? 'an-ed-img' : 'an-ed-bg');
         el.dataset.edt = tipo;
@@ -417,13 +500,72 @@
       if (!f) return;
       var ruta = CARPETA_IMAGENES + '/' + nombreSeguro(f.name);
       var url = URL.createObjectURL(f);
-      var id = el.getAttribute('data-ed-id');
-      if (el.dataset.edt === 'img') { el.src = url; el.removeAttribute('srcset'); datosPag().content[id] = { img: ruta }; }
-      else { el.style.backgroundImage = "url('" + url + "')"; datosPag().content[id] = { bg: ruta }; }
+      var esBg = el.dataset.edt === 'bg';
+      // Se muestra con blob local; el override guarda la ruta final del archivo.
+      if (esBg) el.style.backgroundImage = "url('" + url + "')";
+      else { el.src = url; el.removeAttribute('srcset'); }
+      fijarOverride(el, esBg ? { bg: ruta } : { img: ruta });
+      // El gemelo (marquesina) también debe mostrar la imagen local al instante.
+      var tw = el.getAttribute('data-ed-twin');
+      if (tw) {
+        var g = document.querySelector('[data-ed-id="' + tw + '"]');
+        if (g) { if (esBg) g.style.backgroundImage = "url('" + url + "')"; else { g.src = url; g.removeAttribute('srcset'); } }
+      }
       imagenesPend[ruta] = f;
-      marcarCambios(true);
     });
     input.click();
+  }
+
+  /* =================================================================
+     Cambiar ícono (Bootstrap Icons)
+     ================================================================= */
+  function abrirSelectorIcono(el) {
+    if (document.getElementById('an-admin-icono')) return;
+    var actual = (el.className.match(/bi-[a-z0-9-]+/) || ['bi-star'])[0];
+    var modal = document.createElement('div');
+    modal.id = 'an-admin-icono';
+    modal.className = 'an-admin-ui an-admin-modal';
+    modal.innerHTML =
+      '<div class="an-admin-modal__caja">' +
+      '  <h3 class="an-admin-modal__titulo">Cambiar ícono</h3>' +
+      '  <p class="an-admin-modal__texto">Escribí el nombre del ícono (Bootstrap Icons). Ej.: <b>bi-heart</b>, <b>bi-star</b>, <b>bi-tree</b>.</p>' +
+      '  <input id="an-icono-input" class="an-admin-modal__input an-admin-modal__input--txt" type="text" autocomplete="off" value="' + actual + '">' +
+      '  <div class="an-admin-iconos" id="an-icono-sugeridos"></div>' +
+      '  <p class="an-admin-modal__texto"><a href="https://icons.getbootstrap.com/" target="_blank" rel="noopener">Ver todos los íconos disponibles</a></p>' +
+      '  <div class="an-admin-modal__acciones">' +
+      '    <button class="an-admin-btn" id="an-icono-cancelar" type="button">Cancelar</button>' +
+      '    <button class="an-admin-btn an-admin-btn--ok" id="an-icono-ok" type="button">Aplicar</button>' +
+      '  </div>' +
+      '</div>';
+    document.body.appendChild(modal);
+
+    var input = document.getElementById('an-icono-input');
+    var prev = document.getElementById('an-icono-sugeridos');
+    var sugeridos = ['bi-heart', 'bi-star', 'bi-tree', 'bi-sun', 'bi-flower1', 'bi-people',
+      'bi-people-fill', 'bi-house-heart', 'bi-gift', 'bi-mortarboard', 'bi-diagram-3',
+      'bi-heart-pulse', 'bi-stars', 'bi-emoji-smile', 'bi-award', 'bi-compass'];
+    prev.innerHTML = sugeridos.map(function (n) {
+      return '<button type="button" class="an-icono-chip" data-i="' + n + '" title="' + n + '"><i class="bi ' + n + '"></i></button>';
+    }).join('');
+    prev.querySelectorAll('.an-icono-chip').forEach(function (chip) {
+      chip.addEventListener('click', function () { input.value = chip.getAttribute('data-i'); });
+    });
+
+    function cerrar() { modal.remove(); }
+    function aplicar() {
+      var nombre = input.value.trim();
+      if (nombre && nombre.indexOf('bi-') !== 0) nombre = 'bi-' + nombre;
+      if (!nombre) { cerrar(); return; }
+      fijarOverride(el, { icon: nombre });
+      var tw = el.getAttribute('data-ed-twin');
+      if (tw) { var g = document.querySelector('[data-ed-id="' + tw + '"]'); if (g) aplicarIcono(g, nombre); }
+      cerrar();
+    }
+    document.getElementById('an-icono-ok').addEventListener('click', aplicar);
+    document.getElementById('an-icono-cancelar').addEventListener('click', cerrar);
+    input.addEventListener('keydown', function (e) { if (e.key === 'Enter') aplicar(); if (e.key === 'Escape') cerrar(); });
+    modal.addEventListener('click', function (e) { if (e.target === modal) cerrar(); });
+    input.focus();
   }
 
   /* =================================================================

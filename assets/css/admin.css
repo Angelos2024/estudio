@@ -5,30 +5,52 @@
  */
 
 /* ---- Resaltado de elementos editables --------------------------------- */
+/* Resaltado con contorno + sombra (sin relleno) para no tapar el texto claro
+   sobre imágenes oscuras como la portada. */
 .an-admin .an-ed-t {
-  outline: 1px dashed rgba(176, 0, 102, 0.35);
+  outline: 1px dashed rgba(176, 0, 102, 0.45);
   outline-offset: 2px;
   border-radius: 3px;
-  transition: outline-color 0.15s ease, background-color 0.15s ease;
+  transition: outline-color 0.15s ease, box-shadow 0.15s ease;
   cursor: text;
 }
 .an-admin .an-ed-t:hover {
-  outline: 1px dashed rgba(176, 0, 102, 0.75);
-  background: rgba(255, 244, 214, 0.35);
+  outline: 1px dashed rgba(176, 0, 102, 0.85);
+  box-shadow: 0 0 0 3px rgba(176, 0, 102, 0.12);
 }
 .an-admin .an-ed-t:focus {
   outline: 2px solid #b00066;
-  background: rgba(255, 244, 214, 0.6);
+  box-shadow: 0 0 0 3px rgba(176, 0, 102, 0.18);
+  background: transparent;
 }
 
 .an-admin .an-ed-img {
   outline: 2px dashed rgba(176, 0, 102, 0.7);
   outline-offset: 2px;
   cursor: pointer;
-  transition: filter 0.15s ease;
+  transition: outline-color 0.15s ease, box-shadow 0.15s ease;
 }
 .an-admin .an-ed-img:hover {
-  filter: brightness(0.9);
+  outline-color: #b00066;
+  box-shadow: 0 0 0 3px rgba(176, 0, 102, 0.18);
+}
+
+/* Íconos editables (Bootstrap Icons) */
+.an-admin .an-ed-icono {
+  outline: 2px dashed rgba(176, 0, 102, 0.75);
+  outline-offset: 3px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: outline-color 0.15s ease, background-color 0.15s ease;
+}
+.an-admin .an-ed-icono:hover {
+  outline-color: #b00066;
+  background: rgba(176, 0, 102, 0.08);
+}
+
+/* En modo administrador la marquesina se detiene para poder editarla. */
+.an-admin .an-carril__pista {
+  animation-play-state: paused !important;
 }
 
 .an-admin .an-ed-bg {
@@ -259,6 +281,32 @@
   width: 100%;
   justify-content: center;
   margin-top: 6px;
+}
+
+/* ---- Selector de íconos ----------------------------------------------- */
+.an-admin-iconos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0 4px;
+}
+.an-icono-chip {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #e0d5da;
+  border-radius: 9px;
+  background: #faf6f8;
+  color: #3a2b31;
+  font-size: 1.15rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.an-icono-chip:hover {
+  border-color: #b00066;
+  color: #b00066;
 }
 .an-admin-modal__error {
   min-height: 18px;
