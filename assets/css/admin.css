@@ -1,0 +1,278 @@
+/*
+ * Anímales — Estilos del modo administrador (editor en la propia página).
+ * Sólo afectan cuando el body tiene la clase .an-admin o al mostrar la barra,
+ * el aviso o el modal de contraseña. No modifican el sitio para el visitante.
+ */
+
+/* ---- Resaltado de elementos editables --------------------------------- */
+.an-admin .an-ed-t {
+  outline: 1px dashed rgba(176, 0, 102, 0.35);
+  outline-offset: 2px;
+  border-radius: 3px;
+  transition: outline-color 0.15s ease, background-color 0.15s ease;
+  cursor: text;
+}
+.an-admin .an-ed-t:hover {
+  outline: 1px dashed rgba(176, 0, 102, 0.75);
+  background: rgba(255, 244, 214, 0.35);
+}
+.an-admin .an-ed-t:focus {
+  outline: 2px solid #b00066;
+  background: rgba(255, 244, 214, 0.6);
+}
+
+.an-admin .an-ed-img {
+  outline: 2px dashed rgba(176, 0, 102, 0.7);
+  outline-offset: 2px;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+.an-admin .an-ed-img:hover {
+  filter: brightness(0.9);
+}
+
+.an-admin .an-ed-bg {
+  position: relative;
+  cursor: pointer;
+}
+.an-admin .an-ed-bg::after {
+  content: "\F3E5  Cambiar imagen";
+  font-family: "bootstrap-icons", "Inter", sans-serif;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 5;
+  background: rgba(28, 20, 24, 0.82);
+  color: #fff;
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  padding: 5px 10px;
+  border-radius: 999px;
+  pointer-events: none;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+}
+
+/* ---- Bloques movibles (secciones y tarjetas) -------------------------- */
+.an-admin .an-ed-bloque {
+  position: relative;
+  outline: 1px dashed rgba(80, 40, 120, 0.28);
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+.an-admin .an-ed-bloque:hover {
+  outline-color: rgba(80, 40, 120, 0.6);
+}
+.an-admin .an-arrastrando {
+  opacity: 0.45;
+  outline: 2px dashed #b00066;
+}
+
+.an-bloque-tools {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 40;
+  display: none;
+  gap: 4px;
+  padding: 4px;
+  background: rgba(28, 20, 24, 0.9);
+  border-radius: 9px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+}
+.an-admin .an-ed-bloque:hover > .an-bloque-tools { display: inline-flex; }
+
+.an-bloque-mover,
+.an-bloque-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.an-bloque-mover { cursor: grab; }
+.an-bloque-mover:active { cursor: grabbing; }
+.an-bloque-mover:hover,
+.an-bloque-btn:hover { background: rgba(255, 255, 255, 0.28); }
+.an-bloque-btn--del:hover { background: #c0284a; }
+
+.an-seccion-nueva {
+  background: linear-gradient(180deg, rgba(176, 0, 102, 0.05), rgba(176, 0, 102, 0.02));
+  border-top: 1px solid rgba(176, 0, 102, 0.12);
+  border-bottom: 1px solid rgba(176, 0, 102, 0.12);
+}
+
+/* ---- Barra flotante del administrador --------------------------------- */
+.an-admin-barra {
+  position: fixed;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 14px;
+  background: #1c1418;
+  color: #fff;
+  border-radius: 14px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.4);
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 0.9rem;
+  max-width: calc(100vw - 24px);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.an-admin-barra__marca {
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+.an-admin-barra__estado {
+  font-size: 0.8rem;
+  opacity: 0.75;
+  white-space: nowrap;
+}
+.an-admin-barra--sucio .an-admin-barra__estado {
+  color: #ffd27a;
+  opacity: 1;
+}
+
+.an-admin-btn {
+  appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: transparent;
+  color: #fff;
+  padding: 7px 16px;
+  border-radius: 10px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, opacity 0.15s ease;
+}
+.an-admin-btn:hover { background: rgba(255, 255, 255, 0.12); }
+.an-admin-btn:disabled { opacity: 0.55; cursor: default; }
+.an-admin-btn--ok {
+  background: #b00066;
+  border-color: #b00066;
+}
+.an-admin-btn--ok:hover { background: #cc0077; }
+
+/* ---- Aviso emergente -------------------------------------------------- */
+.an-admin-aviso {
+  position: fixed;
+  left: 50%;
+  bottom: 84px;
+  transform: translate(-50%, 12px);
+  z-index: 100001;
+  max-width: min(440px, calc(100vw - 24px));
+  background: #123d2b;
+  color: #eafff2;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.32);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.an-admin-aviso--visible { opacity: 1; transform: translate(-50%, 0); }
+.an-admin-aviso--error { background: #5a1622; color: #ffe9ec; }
+
+/* ---- Modal de contraseña ---------------------------------------------- */
+.an-admin-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100002;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(20, 14, 18, 0.55);
+  backdrop-filter: blur(3px);
+  padding: 18px;
+}
+.an-admin-modal__caja {
+  width: 100%;
+  max-width: 360px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 26px 24px 22px;
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.35);
+  font-family: "Inter", system-ui, sans-serif;
+  color: #241a1f;
+}
+.an-admin-modal__titulo {
+  margin: 0 0 6px;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+.an-admin-modal__texto {
+  margin: 0 0 16px;
+  font-size: 0.9rem;
+  color: #6a5d63;
+}
+.an-admin-modal__input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid #e0d5da;
+  border-radius: 10px;
+  font-size: 1.05rem;
+  letter-spacing: 0.15em;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.an-admin-modal__input:focus { border-color: #b00066; }
+.an-admin-modal__input--txt {
+  letter-spacing: normal;
+  text-align: left;
+  font-size: 0.92rem;
+}
+.an-admin-campo {
+  display: block;
+  margin-top: 10px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #6a5d63;
+}
+.an-admin-campo .an-admin-modal__input { margin-top: 4px; }
+.an-admin-fila {
+  display: flex;
+  gap: 8px;
+}
+.an-admin-fila .an-admin-campo { flex: 1; }
+.an-admin-btn--bloque {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  justify-content: center;
+  margin-top: 6px;
+}
+.an-admin-modal__error {
+  min-height: 18px;
+  margin: 8px 2px 0;
+  font-size: 0.82rem;
+  color: #c02040;
+}
+.an-admin-modal__acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 14px;
+}
+.an-admin-modal .an-admin-btn { color: #241a1f; border-color: #d8ccd2; }
+.an-admin-modal .an-admin-btn:hover { background: #f2eaee; }
+.an-admin-modal .an-admin-btn--ok { color: #fff; border-color: #b00066; }
+.an-admin-modal .an-admin-btn--ok:hover { background: #cc0077; }
