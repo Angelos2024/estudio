@@ -66,14 +66,14 @@
     return !el.closest('.an-admin-ui,.modal,.an-flotantes');
   }
 
-  // Fondos editables: SÓLO bloques de imagen pequeños (cabeceras de tarjeta),
-  // NO secciones/encabezados grandes (que contienen títulos o textos). Así se
-  // evita el overlay que oscurecía la portada y dificultaba editar el texto.
+  // Fondos editables: la PORTADA grande (.an-hero) de cada página SÍ se puede
+  // cambiar (con un botón dedicado para no interferir con el texto encima), y las
+  // cabeceras de tarjeta. Se excluyen las demás secciones/encabezados grandes.
   function esFondoEditable(el) {
     if (!esImagenValida(el)) return false;
+    if (el.classList.contains('an-hero')) return true;
     var t = el.tagName;
     if (t === 'SECTION' || t === 'HEADER' || t === 'MAIN' || t === 'BODY' || t === 'FOOTER') return false;
-    if (el.classList.contains('an-hero')) return false;
     if (el.querySelector('h1,h2,h3,h4,h5,h6,.an-antetitulo,.lead,p')) return false;
     return true;
   }
@@ -299,6 +299,21 @@
     abrirSelectorIcono(e.currentTarget);
   }
 
+  // Botón visible "Cambiar foto" para los fondos (imprescindible en la portada,
+  // donde el contenedor del texto tapa el clic directo sobre la imagen).
+  function agregarBotonFondo(el) {
+    if (el.querySelector(':scope > .an-ed-bg-btn')) return;
+    var esHero = el.classList.contains('an-hero');
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'an-admin-ui an-ed-bg-btn' + (esHero ? ' an-ed-bg-btn--hero' : '');
+    btn.innerHTML = '<i class="bi bi-image"></i> ' + (esHero ? 'Cambiar foto de portada' : 'Cambiar imagen');
+    btn.addEventListener('click', function (e) {
+      e.preventDefault(); e.stopPropagation(); elegirImagen(el);
+    });
+    el.appendChild(btn);
+  }
+
   function bloquearEnlaces(e) {
     if (!adminOn) return;
     var a = e.target.closest('a');
@@ -325,6 +340,7 @@
         el.dataset.edt = tipo;
         if (tipo === 'img') el.setAttribute('title', 'Clic para cambiar la imagen');
         el.addEventListener('click', onClicImagen);
+        if (tipo === 'bg') agregarBotonFondo(el);
       }
     });
   }
@@ -352,23 +368,21 @@
     var tools = document.createElement('div');
     tools.className = 'an-admin-ui an-bloque-tools';
     tools.innerHTML =
-      '<span class="an-bloque-mover" draggable="true" title="Arrastrar para reordenar"><i class="bi bi-arrows-move"></i></span>' +
+      '<span class="an-bloque-mover" title="Arrastrar para mover"><i class="bi bi-arrows-move"></i></span>' +
+      '<button class="an-bloque-btn" type="button" data-acc="up" title="Subir"><i class="bi bi-arrow-up"></i></button>' +
+      '<button class="an-bloque-btn" type="button" data-acc="down" title="Bajar"><i class="bi bi-arrow-down"></i></button>' +
       '<button class="an-bloque-btn" type="button" data-acc="dup" title="Duplicar"><i class="bi bi-files"></i></button>' +
       '<button class="an-bloque-btn an-bloque-btn--del" type="button" data-acc="del" title="Eliminar"><i class="bi bi-trash"></i></button>';
     bloque.appendChild(tools);
 
-    var mover = tools.querySelector('.an-bloque-mover');
-    mover.addEventListener('dragstart', function (e) {
-      arrastrando = bloque;
-      bloque.classList.add('an-arrastrando');
-      e.dataTransfer.effectAllowed = 'move';
-      try { e.dataTransfer.setData('text/plain', 'bloque'); } catch (_) {}
+    tools.querySelector('.an-bloque-mover').addEventListener('pointerdown', function (e) {
+      iniciarArrastre(e, bloque);
     });
-    mover.addEventListener('dragend', function () {
-      var cont = arrastrando ? arrastrando.parentElement : null;
-      if (arrastrando) arrastrando.classList.remove('an-arrastrando');
-      arrastrando = null;
-      if (cont) { guardarOrden(cont); marcarCambios(true); }
+    tools.querySelector('[data-acc="up"]').addEventListener('click', function (e) {
+      e.preventDefault(); e.stopPropagation(); moverBloque(bloque, -1);
+    });
+    tools.querySelector('[data-acc="down"]').addEventListener('click', function (e) {
+      e.preventDefault(); e.stopPropagation(); moverBloque(bloque, 1);
     });
     tools.querySelector('[data-acc="dup"]').addEventListener('click', function (e) {
       e.preventDefault(); e.stopPropagation(); duplicarBloque(bloque);
@@ -376,6 +390,68 @@
     tools.querySelector('[data-acc="del"]').addEventListener('click', function (e) {
       e.preventDefault(); e.stopPropagation(); eliminarBloque(bloque);
     });
+  }
+
+  // Hermanos que son bloques movibles dentro del mismo contenedor.
+  function hermanosBloque(cont, excluir) {
+    return Array.prototype.filter.call(cont.children, function (ch) {
+      return ch !== excluir && ch.getAttribute && ch.getAttribute('data-ed-bid');
+    });
+  }
+
+  // Reordenar con los botones ▲/▼ (siempre funciona, sin depender del arrastre).
+  function moverBloque(bloque, dir) {
+    var cont = bloque.parentElement;
+    if (!cont) return;
+    var hs = hermanosBloque(cont, null);
+    var i = hs.indexOf(bloque);
+    if (dir < 0 && i > 0) cont.insertBefore(bloque, hs[i - 1]);
+    else if (dir > 0 && i < hs.length - 1) cont.insertBefore(bloque, hs[i + 1].nextSibling);
+    else return;
+    guardarOrden(cont);
+    marcarCambios(true);
+    bloque.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  // Arrastre por puntero (mouse/táctil): fiable y con auto-scroll en los bordes.
+  function iniciarArrastre(e, bloque) {
+    e.preventDefault();
+    var cont = bloque.parentElement;
+    if (!cont) return;
+    var mover = e.currentTarget;
+    arrastrando = bloque;
+    bloque.classList.add('an-arrastrando');
+    document.body.classList.add('an-arrastrando-activo');
+    try { mover.setPointerCapture(e.pointerId); } catch (_) {}
+
+    function onMove(ev) {
+      if (!arrastrando) return;
+      var ref = null;
+      var hs = hermanosBloque(cont, arrastrando);
+      for (var k = 0; k < hs.length; k++) {
+        var r = hs[k].getBoundingClientRect();
+        if (ev.clientY < r.top + r.height / 2) { ref = hs[k]; break; }
+      }
+      if (ref) { if (arrastrando.nextSibling !== ref) cont.insertBefore(arrastrando, ref); }
+      else if (cont.lastElementChild !== arrastrando) cont.appendChild(arrastrando);
+
+      var margen = 90;
+      if (ev.clientY < margen) window.scrollBy(0, -14);
+      else if (ev.clientY > window.innerHeight - margen) window.scrollBy(0, 14);
+    }
+    function onUp() {
+      mover.removeEventListener('pointermove', onMove);
+      mover.removeEventListener('pointerup', onUp);
+      mover.removeEventListener('pointercancel', onUp);
+      try { mover.releasePointerCapture(e.pointerId); } catch (_) {}
+      bloque.classList.remove('an-arrastrando');
+      document.body.classList.remove('an-arrastrando-activo');
+      if (arrastrando) { guardarOrden(cont); marcarCambios(true); }
+      arrastrando = null;
+    }
+    mover.addEventListener('pointermove', onMove);
+    mover.addEventListener('pointerup', onUp);
+    mover.addEventListener('pointercancel', onUp);
   }
 
   function activarBloques(scope) {
@@ -466,21 +542,39 @@
     activarContenido(document);
     activarBloques(document);
     document.addEventListener('click', bloquearEnlaces, true);
-    document.addEventListener('dragover', onDragOver);
     window.addEventListener('beforeunload', avisoSalida);
     mostrarBarra();
   }
 
-  function onDragOver(e) {
-    if (!arrastrando) return;
-    var cont = arrastrando.parentElement;
-    var over = e.target.closest ? e.target.closest('[data-ed-bid]') : null;
-    if (!over || over === arrastrando) return;
-    if (over.parentElement !== cont) return;
-    e.preventDefault();
-    var r = over.getBoundingClientRect();
-    var antes = (e.clientY - r.top) < r.height / 2;
-    cont.insertBefore(arrastrando, antes ? over : over.nextSibling);
+  // Salir del modo administrador SIN recargar: quita la interfaz y las
+  // afordancias de edición, dejando la página en su estado normal con los
+  // cambios ya aplicados a la vista. Se usa tras guardar.
+  function desactivarAdmin() {
+    if (!adminOn) return;
+    adminOn = false;
+    sessionStorage.removeItem('an_admin');
+    window.removeEventListener('beforeunload', avisoSalida);
+    document.removeEventListener('click', bloquearEnlaces, true);
+
+    document.querySelectorAll('.an-admin-ui').forEach(function (n) { n.remove(); });
+
+    document.querySelectorAll('[data-ed-id]').forEach(function (el) {
+      el.removeEventListener('input', onTextoInput);
+      el.removeEventListener('click', onClicImagen);
+      el.removeEventListener('click', onClicIcono);
+      el.removeAttribute('contenteditable');
+      el.removeAttribute('spellcheck');
+      el.removeAttribute('title');
+      ['an-ed', 'an-ed-t', 'an-ed-img', 'an-ed-bg', 'an-ed-icono'].forEach(function (c) { el.classList.remove(c); });
+      el._edC = false;
+    });
+    document.querySelectorAll('[data-ed-bid]').forEach(function (b) {
+      b.classList.remove('an-ed-bloque', 'an-arrastrando');
+      b._edB = false;
+    });
+    document.querySelectorAll('.an-carril-dup').forEach(function (c) { c.classList.remove('an-carril-dup'); });
+
+    document.body.classList.remove('an-admin', 'an-arrastrando-activo');
   }
 
   function avisoSalida(e) {
@@ -693,9 +787,16 @@
 
     if (algo) { imagenesPend = {}; marcarCambios(false); }
     var todoOk = msgs.every(function (m) { return m.indexOf('✓') > -1; });
-    aviso('Guardado — ' + msgs.join('  ·  ') + (todoOk ? '. La web se actualiza en ~1 minuto.' : ''), todoOk);
-    if (!cfg.token) setTimeout(abrirAjustes, 400);
     if (boton) { boton.disabled = false; boton.textContent = 'Guardar'; }
+    if (algo) {
+      // Guardado correcto: volver al estado normal (sin modo administrador),
+      // mostrando la página tal como quedará para los visitantes.
+      desactivarAdmin();
+      aviso('Guardado — ' + msgs.join('  ·  ') + (todoOk ? '. La web se actualiza en ~1 minuto.' : ''), todoOk);
+    } else {
+      aviso('No se pudo guardar — ' + msgs.join('  ·  '), false);
+      if (!cfg.token) setTimeout(abrirAjustes, 400);
+    }
   }
 
   async function vincularCarpeta() {
