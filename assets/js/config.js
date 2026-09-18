@@ -5,12 +5,12 @@
  */
 
 const SITIO = {
-  nombre: 'Animales',
+  nombre: 'Anímales',
   descripcion: 'Centro de Terapia Asistida con Animales • Costa Rica • Modelo CEEC',
 
   // POR CONFIRMAR: número obtenido de directorios públicos, falta validarlo con el cliente.
   whatsapp: '50683030868',
-  whatsappSaludo: 'Hola Animales, me gustaría recibir más información.',
+  whatsappSaludo: 'Hola Anímales, me gustaría recibir más información.',
 
   // PENDIENTE: correo oficial de atención.
   email: 'info@animalesequinoterapia.com',

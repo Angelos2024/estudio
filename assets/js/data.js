@@ -1,5 +1,5 @@
 /*
- * Catálogo de contenidos de Animales.
+ * Catálogo de contenidos de Anímales.
  * Fuente única de datos: se consume desde las páginas de categoría y desde el inicio.
  * Editar aquí para actualizar textos, precios o agregar servicios nuevos.
  */
@@ -21,7 +21,7 @@ const CATEGORIAS = {
     pagina: 'servicios.html',
     icono: 'bi-people',
     descripcion:
-      'Convivencias grupales y familiares, mentorías de pareja y trabajo sistémico guiado por la manada en libertad.',
+      'Convivencias grupales y familiares, mentorías de pareja y trabajo sistémico guiado por la manada en semilibertad.',
   },
   terapias: {
     id: 'terapias',
@@ -74,9 +74,10 @@ const SERVICIOS = [
   {
     slug: 'comunidad-graduados',
     categoria: 'formaciones',
+    img: 'imagenes/5.jpg',
     nombre: 'Comunidad de Graduados',
     modalidad: 'Continua',
-    dirigido: 'Exclusivo para egresados de Animales',
+    dirigido: 'Exclusivo para egresados de Anímales',
     resumen:
       'Red profesional de supervisión y actualización de conocimientos.',
     descripcion:
@@ -100,6 +101,7 @@ const SERVICIOS = [
   {
     slug: 'convivencias-privadas',
     categoria: 'sesiones',
+    img: 'imagenes/6.jpg',
     nombre: 'Convivencias Grupales Privadas',
     modalidad: 'Grupos Cerrados / Empresas',
     dirigido: 'Enfoque: cohesión y dinámica de equipo',
@@ -111,6 +113,7 @@ const SERVICIOS = [
   {
     slug: 'convivencias-familias',
     categoria: 'sesiones',
+    img: 'imagenes/3.jpg',
     nombre: 'Convivencias Familias',
     modalidad: 'Grupo Familiar',
     dirigido: 'Enfoque: reordenamiento y vínculo',
@@ -134,6 +137,7 @@ const SERVICIOS = [
   {
     slug: 'individual-constelaciones',
     categoria: 'sesiones',
+    img: 'imagenes/7.jpg',
     nombre: 'Sesiones Individuales: Constelaciones y Configuraciones',
     modalidad: 'Individual',
     dirigido: 'Enfoque: proceso personal profundo',
@@ -145,6 +149,7 @@ const SERVICIOS = [
   {
     slug: 'individual-equilibrio-emocional',
     categoria: 'sesiones',
+    img: 'imagenes/4.jpg',
     nombre: 'Sesiones Individuales: Equilibrio Emocional',
     modalidad: 'Individual',
     dirigido: 'Enfoque: regulación del sistema nervioso',
@@ -156,6 +161,7 @@ const SERVICIOS = [
   {
     slug: 'coaching-sistemico',
     categoria: 'sesiones',
+    img: 'imagenes/5.jpg',
     nombre: 'Coaching Sistémico con Caballos',
     modalidad: 'Flexible (grupal e individual)',
     dirigido: 'Enfoque: metas, liderazgo y límites',
@@ -182,6 +188,7 @@ const SERVICIOS = [
   {
     slug: 'monta-terapeutica',
     categoria: 'terapias',
+    img: 'imagenes/8.jpg',
     nombre: 'Monta Terapéutica',
     modalidad: 'Individual',
     dirigido: 'Enfoque: postura, equilibrio y autoconfianza',
@@ -205,6 +212,7 @@ const SERVICIOS = [
   {
     slug: 'visitas-pedagogicas',
     categoria: 'terapias',
+    img: 'imagenes/6.jpg',
     nombre: 'Visitas Pedagógicas Institucionales',
     modalidad: 'Delegaciones',
     dirigido: 'Universidades, Adulto Mayor y Grupos',
@@ -226,7 +234,7 @@ const SERVICIOS = [
     resumen:
       'Un obsequio con propósito: regalar una experiencia de sanación o descanso.',
     descripcion:
-      'Un obsequio con propósito. Permite regalar a un ser querido una experiencia de sanación, crecimiento o descanso en Animales.',
+      'Un obsequio con propósito. Permite regalar a un ser querido una experiencia de sanación, crecimiento o descanso en Anímales.',
   },
   {
     slug: 'hospedaje-retiro',
