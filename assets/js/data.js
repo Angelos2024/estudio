@@ -30,7 +30,7 @@ const CATEGORIAS = {
     pagina: 'terapias.html',
     icono: 'bi-heart-pulse',
     descripcion:
-      'Abordaje clínico en equinoterapia, monta terapéutica, estimulación temprana y visitas institucionales.',
+      'Abordaje terapéutico en equinoterapia, monta terapéutica, estimulación temprana y visitas institucionales.',
   },
   experiencias: {
     id: 'experiencias',
@@ -48,6 +48,7 @@ const SERVICIOS = [
   {
     slug: 'diplomado-equinoterapia',
     categoria: 'formaciones',
+    img: 'imagenes/tarjeta-1.jpg',
     nombre: 'Diplomado en Equinoterapia',
     modalidad: 'Teórico-Práctica',
     dirigido: 'Terapeutas, educadores y apasionados del área equina',
@@ -60,6 +61,7 @@ const SERVICIOS = [
   {
     slug: 'diplomado-ceec',
     categoria: 'formaciones',
+    img: 'imagenes/tarjeta-2.jpg',
     nombre: 'Diplomado CEEC (Constelaciones Familiares y Equilibrio Emocional)',
     modalidad: 'Especialización Avanzada',
     dirigido: 'Enfoque: lenguaje no verbal y campo sistémico',
@@ -76,22 +78,23 @@ const SERVICIOS = [
     modalidad: 'Continua',
     dirigido: 'Exclusivo para egresados de Animales',
     resumen:
-      'Red profesional de supervisión clínica y actualización de conocimientos.',
+      'Red profesional de supervisión y actualización de conocimientos.',
     descripcion:
-      'Red profesional de supervisión clínica, actualización de conocimientos, talleres de profundización y encuentros de convivencia entre graduados.',
+      'Red profesional de supervisión, actualización de conocimientos, talleres de profundización y encuentros de convivencia entre graduados.',
   },
 
   // Categoría 2: Sesiones de Configuración y Crecimiento Personal
   {
     slug: 'convivencias-grupales',
     categoria: 'sesiones',
+    img: 'imagenes/tarjeta-3.jpg',
     nombre: 'Convivencias Grupales de Configuraciones Sistémicas',
     modalidad: 'Inmersión Grupal (Adultos)',
     dirigido: 'Enfoque: trabajo sistémico',
     resumen:
       'Jornadas grupales para identificar y desatar nudos relacionales.',
     descripcion:
-      'Jornadas grupales para identificar y desatar nudos relacionales o dinámicas inconscientes con la guía neutral de la manada en libertad.',
+      'Jornadas grupales para identificar y desatar nudos relacionales o dinámicas inconscientes con la guía neutral de la manada en semilibertad.',
     destacado: true,
   },
   {
@@ -119,6 +122,7 @@ const SERVICIOS = [
   {
     slug: 'mentoria-pareja',
     categoria: 'sesiones',
+    img: 'imagenes/tarjeta-4.jpg',
     nombre: 'Sesiones de Mentoría de Pareja',
     modalidad: 'Parejas',
     dirigido: 'Enfoque: comunicación y resolución vincular',
@@ -134,9 +138,9 @@ const SERVICIOS = [
     modalidad: 'Individual',
     dirigido: 'Enfoque: proceso personal profundo',
     resumen:
-      'Atención personalizada de 2 horas dentro del campo sistémico equino.',
+      'Atención personalizada de 1:30 horas dentro del campo sistémico equino.',
     descripcion:
-      'Atención personalizada de 2 horas para abordar temas de vida, bloqueos personales o metas específicas dentro del campo sistémico equino.',
+      'Atención personalizada de 1:30 horas para abordar temas de vida, bloqueos personales o metas específicas dentro del campo sistémico equino.',
   },
   {
     slug: 'individual-equilibrio-emocional',
@@ -165,13 +169,14 @@ const SERVICIOS = [
   {
     slug: 'equinoterapia-clinica',
     categoria: 'terapias',
-    nombre: 'Equinoterapia Clínica',
+    img: 'imagenes/tarjeta-5.jpg',
+    nombre: 'Equinoterapia',
     modalidad: 'Individual / Evaluación previa',
     dirigido: 'Enfoque: salud integral',
     resumen:
-      'Intervención multidisciplinaria en un ambiente profesional, controlado y seguro.',
+      'Intervención multidisciplinaria en un ambiente natural al aire libre, controlado y seguro.',
     descripcion:
-      'Intervención multidisciplinaria para favorecer aspectos motores, cognitivos y emocionales en un ambiente profesional, controlado y seguro.',
+      'Intervención multidisciplinaria para favorecer aspectos motores, cognitivos y emocionales en un ambiente natural al aire libre, controlado y seguro.',
     destacado: true,
   },
   {
@@ -188,6 +193,7 @@ const SERVICIOS = [
   {
     slug: 'estimulacion-temprana',
     categoria: 'terapias',
+    img: 'imagenes/tarjeta-6.jpg',
     nombre: 'Estimulación Temprana Asistida',
     modalidad: 'Primera Infancia',
     dirigido: 'Enfoque: desarrollo neuromotor',
@@ -212,6 +218,8 @@ const SERVICIOS = [
   {
     slug: 'certificados-regalo',
     categoria: 'experiencias',
+    extraCategorias: ['sesiones'],
+    img: 'imagenes/tarjeta-8.jpg',
     nombre: 'Certificados de Regalo (Gift Cards)',
     modalidad: 'Digital o Impreso',
     dirigido: 'Canjeable por cualquier servicio',
@@ -223,6 +231,7 @@ const SERVICIOS = [
   {
     slug: 'hospedaje-retiro',
     categoria: 'experiencias',
+    img: 'imagenes/tarjeta-7.jpg',
     nombre: 'Hospedaje de Retiro',
     modalidad: 'Alojamiento privado',
     dirigido: 'Enfoque: descanso y reconexión',

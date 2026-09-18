@@ -490,10 +490,46 @@ a { text-decoration: none; transition: color var(--an-transicion); }
   border-top: 4px solid var(--an-acento, var(--an-ocre));
   border-radius: var(--an-radio);
   padding: 1.75rem;
+  overflow: hidden;
   transition: transform var(--an-transicion), box-shadow var(--an-transicion);
 }
 
 .an-tarjeta:hover { transform: translateY(-4px); box-shadow: var(--an-sombra); }
+
+/* Imagen de cabecera de la tarjeta (sangra hasta los bordes de la tarjeta). */
+.an-tarjeta__media {
+  height: 158px;
+  margin: -1.75rem -1.75rem 1.25rem;
+  background-color: var(--an-acento, var(--an-ocre));
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.an-tarjeta__media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0.18));
+}
+
+/* Placeholder sin foto: color de categoría + ícono, sin oscurecer. */
+.an-tarjeta__media--vacia::after { background: none; }
+
+.an-tarjeta__icono {
+  position: relative;
+  z-index: 1;
+  width: 3rem;
+  height: 3rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--an-acento, var(--an-ocre));
+  font-size: 1.35rem;
+}
 
 .an-tarjeta h3 { font-size: 1.3rem; margin-bottom: 0.85rem; }
 
@@ -677,6 +713,9 @@ a { text-decoration: none; transition: color var(--an-transicion); }
 .an-flotante:hover { transform: scale(1.08); color: #fff; }
 .an-flotante--wa { background-color: #25d366; }
 .an-flotante--fb { background-color: #1877f2; }
+.an-flotante--ig {
+  background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285aeb 90%);
+}
 
 /* --------------------------------------------------------------------------
    13. Animación de entrada

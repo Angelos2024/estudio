@@ -105,6 +105,31 @@
                 <label class="form-label" for="personas">Cantidad de personas</label>
                 <input type="number" class="form-control" id="personas" name="personas" min="1" max="60" placeholder="1">
               </div>
+              <div class="col-12 d-none" id="bloque-regalo">
+                <div class="an-tarjeta an-cat-amarillo">
+                  <h3 class="h6 mb-1"><i class="bi bi-gift me-1"></i> Datos del certificado de regalo</h3>
+                  <p class="small text-secondary mb-3">
+                    Indicá quién regala y quién recibe. El certificado queda disponible para
+                    agendar el servicio elegido.
+                  </p>
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <label class="form-label" for="emisor">Emisor (quién regala)</label>
+                      <input type="text" class="form-control" id="emisor" name="emisor">
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label" for="receptor">Receptor (quién recibe)</label>
+                      <input type="text" class="form-control" id="receptor" name="receptor">
+                    </div>
+                    <div class="col-12">
+                      <label class="form-label" for="servicioRegalo">Servicio a agendar con el certificado</label>
+                      <select class="form-select" id="servicioRegalo" name="servicioRegalo">
+                        <option value="">A elección del receptor / por definir</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div class="col-12">
                 <label class="form-label" for="mensaje">Mensaje</label>
                 <textarea class="form-control" id="mensaje" name="mensaje" rows="5" placeholder="Contanos brevemente qué buscás y cualquier detalle relevante."></textarea>
@@ -304,6 +329,9 @@
   </footer>
 
   <div class="an-flotantes">
+    <a class="an-flotante an-flotante--ig" data-red="instagram" href="#" target="_blank" rel="noopener" aria-label="Instagram">
+      <i class="bi bi-instagram"></i>
+    </a>
     <a class="an-flotante an-flotante--fb" data-red="facebook" href="#" target="_blank" rel="noopener" aria-label="Facebook">
       <i class="bi bi-facebook"></i>
     </a>

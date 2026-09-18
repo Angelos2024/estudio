@@ -95,9 +95,19 @@
     const mensaje =
       'Hola Animales, quisiera información sobre: ' + servicio.nombre + '.';
 
+    // Cabecera de la tarjeta. Con 'img' muestra la foto; sin ella, un
+    // placeholder limpio con el color y el ícono de la categoría.
+    const media = servicio.img
+      ? '<div class="an-tarjeta__media" style="background-image:url(\'' +
+          esc(servicio.img) + '\')"></div>'
+      : '<div class="an-tarjeta__media an-tarjeta__media--vacia">' +
+          '<span class="an-tarjeta__icono"><i class="bi ' + cat.icono +
+          '"></i></span></div>';
+
     return [
       '<div class="col-md-6 col-lg-4 an-revelar">',
       '  <article class="an-tarjeta an-cat-' + cat.color + '">',
+      '    ' + media,
       '    <div class="an-meta">',
       '      <span class="an-etiqueta">' + esc(cat.nombre) + '</span>',
       '      <span class="an-etiqueta an-etiqueta--linea">' + esc(servicio.modalidad) + '</span>',
@@ -122,7 +132,10 @@
       const lista =
         filtro === 'destacados'
           ? SERVICIOS.filter(function (s) { return s.destacado; })
-          : SERVICIOS.filter(function (s) { return s.categoria === filtro; });
+          : SERVICIOS.filter(function (s) {
+              return s.categoria === filtro ||
+                (s.extraCategorias && s.extraCategorias.indexOf(filtro) !== -1);
+            });
 
       contenedor.classList.add('row', 'g-4');
       contenedor.innerHTML = lista.map(tarjetaServicio).join('');
@@ -185,8 +198,8 @@
     },
     {
       img: 'imagenes/tarjeta-5.jpg', color: 'verde', icono: 'bi-heart-pulse', pagina: 'terapias.html',
-      titulo: 'Equinoterapia Clínica',
-      texto: 'Intervención multidisciplinaria en un ambiente profesional, controlado y seguro.',
+      titulo: 'Equinoterapia',
+      texto: 'Intervención multidisciplinaria en un ambiente natural al aire libre, controlado y seguro.',
     },
     {
       img: 'imagenes/tarjeta-6.jpg', color: 'verde', icono: 'bi-stars', pagina: 'terapias.html',
@@ -220,7 +233,6 @@
           '  <div class="an-flotante-card__cuerpo">',
           '    <h3>' + esc(t.titulo) + '</h3>',
           '    <p>' + esc(t.texto) + '</p>',
-          '    <a class="btn an-btn-principal btn-sm" href="' + t.pagina + '">Ver más</a>',
           '  </div>',
           '</article>',
         ].join('');
@@ -244,27 +256,49 @@
     const form = document.querySelector('#form-contacto');
     if (!form) return;
 
-    // Poblar el selector de servicios desde el catálogo
-    const select = form.querySelector('#servicio');
-    if (select) {
+    // Rellena un <select> con los servicios agrupados por categoría.
+    function poblarServicios(destino, excluirSlug) {
+      if (!destino) return;
       Object.values(CATEGORIAS).forEach(function (cat) {
+        const items = SERVICIOS.filter(function (s) {
+          return s.categoria === cat.id && s.slug !== excluirSlug;
+        });
+        if (!items.length) return;
         const grupo = document.createElement('optgroup');
         grupo.label = cat.nombre;
-        SERVICIOS.filter(function (s) { return s.categoria === cat.id; }).forEach(function (s) {
+        items.forEach(function (s) {
           const opcion = document.createElement('option');
           opcion.value = s.slug;
           opcion.textContent = s.nombre;
           grupo.appendChild(opcion);
         });
-        select.appendChild(grupo);
+        destino.appendChild(grupo);
       });
-
-      // Preselección al llegar desde una tarjeta: contacto.html?servicio=slug
-      const solicitado = new URLSearchParams(location.search).get('servicio');
-      if (solicitado && select.querySelector('option[value="' + CSS.escape(solicitado) + '"]')) {
-        select.value = solicitado;
-      }
     }
+
+    const SLUG_REGALO = 'certificados-regalo';
+    const select = form.querySelector('#servicio');
+    const selectRegalo = form.querySelector('#servicioRegalo');
+    const bloqueRegalo = form.querySelector('#bloque-regalo');
+
+    poblarServicios(select);
+    // El servicio a canjear con el certificado (sin incluir la propia gift card).
+    poblarServicios(selectRegalo, SLUG_REGALO);
+
+    // Muestra los campos de emisor/receptor solo cuando se elige el certificado.
+    function alternarRegalo() {
+      if (!bloqueRegalo || !select) return;
+      bloqueRegalo.classList.toggle('d-none', select.value !== SLUG_REGALO);
+    }
+    if (select) select.addEventListener('change', alternarRegalo);
+
+    // Preselección al llegar desde una tarjeta: contacto.html?servicio=slug
+    const solicitado = new URLSearchParams(location.search).get('servicio');
+    if (solicitado && select &&
+        select.querySelector('option[value="' + CSS.escape(solicitado) + '"]')) {
+      select.value = solicitado;
+    }
+    alternarRegalo();
 
     form.addEventListener('submit', function (evento) {
       evento.preventDefault();
@@ -275,6 +309,21 @@
 
       const datos = new FormData(form);
       const servicio = SERVICIOS.find(function (s) { return s.slug === datos.get('servicio'); });
+      const esRegalo = datos.get('servicio') === 'certificados-regalo';
+      const servicioRegalo = SERVICIOS.find(function (s) { return s.slug === datos.get('servicioRegalo'); });
+
+      let mensajeUsuario = datos.get('mensaje') || '';
+      if (esRegalo) {
+        // Sin tocar el backend: incrustamos los datos del regalo en el mensaje
+        // para que queden registrados en la hoja y en el correo.
+        const detalleRegalo = [
+          'Certificado de regalo:',
+          '· Emisor (quién regala): ' + (datos.get('emisor') || 'No indicado'),
+          '· Receptor (quién recibe): ' + (datos.get('receptor') || 'No indicado'),
+          '· Servicio a agendar: ' + (servicioRegalo ? servicioRegalo.nombre : 'A elección del receptor'),
+        ].join('\n');
+        mensajeUsuario = mensajeUsuario ? detalleRegalo + '\n\n' + mensajeUsuario : detalleRegalo;
+      }
 
       const solicitud = {
         nombre: datos.get('nombre') || '',
@@ -284,7 +333,11 @@
         servicioSlug: datos.get('servicio') || '',
         fecha: datos.get('fecha') || '',
         personas: datos.get('personas') || '',
-        mensaje: datos.get('mensaje') || '',
+        mensaje: mensajeUsuario,
+        esRegalo: esRegalo,
+        emisor: datos.get('emisor') || '',
+        receptor: datos.get('receptor') || '',
+        servicioRegalo: servicioRegalo ? servicioRegalo.nombre : '',
         origen: location.href,
         enviado: new Date().toISOString(),
       };
