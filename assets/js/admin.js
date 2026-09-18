@@ -445,10 +445,24 @@
     aviso('Sección agregada al final de la página.', true);
   }
 
+  // En modo administrador la marquesina se muestra completa (todas las tarjetas
+  // visibles, en filas, sin animación) y se oculta la copia duplicada, para
+  // poder editar también las que normalmente quedan fuera de pantalla.
+  function prepararCarrilAdmin() {
+    document.querySelectorAll('.an-carril__pista').forEach(function (pista) {
+      var cards = pista.children;
+      var n = cards.length;
+      if (n < 2) return;
+      var mitad = Math.floor(n / 2);
+      for (var k = mitad; k < n; k++) cards[k].classList.add('an-carril-dup');
+    });
+  }
+
   function activarAdmin() {
     if (adminOn) return;
     adminOn = true;
     document.body.classList.add('an-admin');
+    prepararCarrilAdmin();
     activarContenido(document);
     activarBloques(document);
     document.addEventListener('click', bloquearEnlaces, true);

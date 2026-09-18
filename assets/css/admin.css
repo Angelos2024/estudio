@@ -48,9 +48,27 @@
   background: rgba(176, 0, 102, 0.08);
 }
 
-/* En modo administrador la marquesina se detiene para poder editarla. */
+/* En modo administrador la marquesina se muestra COMPLETA: sin animación, todas
+   las tarjetas visibles en filas, y se oculta la copia duplicada. Así se pueden
+   editar también las tarjetas que normalmente quedan fuera de pantalla. */
+.an-admin .an-carril {
+  overflow: visible !important;
+  height: auto !important;
+  max-height: none !important;
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+}
 .an-admin .an-carril__pista {
-  animation-play-state: paused !important;
+  animation: none !important;
+  transform: none !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 18px !important;
+  width: auto !important;
+  justify-content: center !important;
+}
+.an-admin .an-carril-dup {
+  display: none !important;
 }
 
 .an-admin .an-ed-bg {
