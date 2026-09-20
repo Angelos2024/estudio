@@ -63,7 +63,7 @@
   }
 
   function esImagenValida(el) {
-    return !el.closest('.an-admin-ui,.modal,.an-flotantes,.an-galeria,.an-tarjeta__fotos');
+    return !el.closest('.an-admin-ui,.modal,.an-flotantes,.an-galeria,.an-tarjeta__fotos,.an-flotante-card__icono');
   }
 
   // Fondos editables: la PORTADA grande (.an-hero) de cada página SÍ se puede

@@ -185,42 +185,50 @@
   // Mientras la imagen no exista, se muestra el color de la categoría como fondo.
   const CARRIL_TARJETAS = [
     {
-      img: 'imagenes/tarjeta-1.jpg', color: 'rosa', icono: 'bi-mortarboard', pagina: 'formaciones.html',
+      slug: 'diplomado-equinoterapia', img: 'imagenes/tarjeta-1.jpg', color: 'rosa',
+      pagina: 'formaciones.html',
       titulo: 'Diplomado en Equinoterapia',
       texto: 'Formación técnica e integral en intervención terapéutica asistida con caballos.',
     },
     {
-      img: 'imagenes/tarjeta-2.jpg', color: 'rosa', icono: 'bi-diagram-3', pagina: 'formaciones.html',
+      slug: 'diplomado-ceec', img: 'imagenes/tarjeta-2.jpg', color: 'rosa',
+      pagina: 'formaciones.html',
       titulo: 'Diplomado CEEC',
       texto: 'Constelaciones familiares y equilibrio emocional a través del campo sistémico equino.',
     },
     {
-      img: 'imagenes/tarjeta-3.jpg', color: 'morado', icono: 'bi-people', pagina: 'servicios.html',
+      slug: 'convivencias-grupales', img: 'imagenes/tarjeta-3.jpg', color: 'morado',
+      pagina: 'servicios.html',
       titulo: 'Convivencias Grupales',
       texto: 'Jornadas para desatar nudos relacionales con la guía neutral de la manada.',
     },
     {
-      img: 'imagenes/tarjeta-4.jpg', color: 'morado', icono: 'bi-heart', pagina: 'servicios.html',
+      slug: 'mentoria-pareja', img: 'imagenes/tarjeta-4.jpg', color: 'morado',
+      pagina: 'servicios.html',
       titulo: 'Mentoría de Pareja',
       texto: 'Abordaje vivencial para clarificar patrones y fortalecer el vínculo.',
     },
     {
-      img: 'imagenes/tarjeta-5.jpg', color: 'verde', icono: 'bi-heart-pulse', pagina: 'terapias.html',
+      slug: 'equinoterapia-clinica', img: 'imagenes/tarjeta-5.jpg', color: 'verde',
+      pagina: 'terapias.html',
       titulo: 'Equinoterapia',
       texto: 'Intervención multidisciplinaria en un ambiente natural al aire libre, controlado y seguro.',
     },
     {
-      img: 'imagenes/tarjeta-6.jpg', color: 'verde', icono: 'bi-stars', pagina: 'terapias.html',
+      slug: 'estimulacion-temprana', img: 'imagenes/tarjeta-6.jpg', color: 'verde',
+      pagina: 'terapias.html',
       titulo: 'Estimulación Temprana',
       texto: 'Integración sensorial, motricidad y vínculo afectivo en plena naturaleza.',
     },
     {
-      img: 'imagenes/tarjeta-7.jpg', color: 'amarillo', icono: 'bi-house-heart', pagina: 'experiencias.html',
+      slug: 'hospedaje-retiro', img: 'imagenes/tarjeta-7.jpg', color: 'amarillo',
+      pagina: 'experiencias.html',
       titulo: 'Hospedaje de Retiro',
       texto: 'Estancia en un entorno natural de paz para descansar y reconectar.',
     },
     {
-      img: 'imagenes/tarjeta-8.jpg', color: 'amarillo', icono: 'bi-gift', pagina: 'experiencias.html',
+      slug: 'certificados-regalo', img: 'imagenes/tarjeta-8.jpg', color: 'amarillo',
+      pagina: 'experiencias.html',
       titulo: 'Certificados de Regalo',
       texto: 'Un obsequio con propósito, canjeable por cualquier servicio de Anímales.',
     },
@@ -232,11 +240,13 @@
 
     const cards = CARRIL_TARJETAS
       .map(function (t) {
+        var srv = t.slug ? servicioPorSlug(t.slug) : null;
+        var img = (srv && srv.img) || t.img;
         return [
           '<article class="an-flotante-card an-cat-' + t.color + '">',
           '  <div class="an-flotante-card__media" style="background-image:url(\'' +
-            t.img + "')\">",
-          '    <span class="an-flotante-card__icono"><i class="bi ' + t.icono + '"></i></span>',
+            esc(img) + '\')">',
+          '    <span class="an-flotante-card__icono" aria-hidden="true"><img src="assets/img/huella-mano.png" alt=""></span>',
           '  </div>',
           '  <div class="an-flotante-card__cuerpo">',
           '    <h3>' + esc(t.titulo) + '</h3>',
