@@ -50,7 +50,7 @@
   // enlaces (tarjetas "Cuatro caminos") también. Sólo se excluyen la barra de
   // administración, la navegación, los formularios, los modales y los botones
   // flotantes.
-  var ZONAS_EXCLUIDAS = '.an-admin-ui,nav,form,.modal,.an-flotantes';
+  var ZONAS_EXCLUIDAS = '.an-admin-ui,nav,form,.modal,.an-flotantes,.an-galeria,.an-tarjeta__fotos';
 
   function esEditableTexto(el) {
     if (el.closest(ZONAS_EXCLUIDAS)) return false;
@@ -63,7 +63,7 @@
   }
 
   function esImagenValida(el) {
-    return !el.closest('.an-admin-ui,.modal,.an-flotantes');
+    return !el.closest('.an-admin-ui,.modal,.an-flotantes,.an-galeria,.an-tarjeta__fotos');
   }
 
   // Fondos editables: la PORTADA grande (.an-hero) de cada página SÍ se puede
@@ -81,7 +81,7 @@
   // Íconos editables (Bootstrap Icons), salvo los de zonas de UI/flotantes y los
   // que están dentro de un texto editable (para no anidar edición).
   function esIconoEditable(el) {
-    if (el.closest('.an-admin-ui,.modal,.an-flotantes')) return false;
+    if (el.closest('.an-admin-ui,.modal,.an-flotantes,.an-galeria,.an-tarjeta__fotos')) return false;
     var leaf = el.closest(SEL_TEXTO);
     if (leaf && esEditableTexto(leaf)) return false;
     return true;

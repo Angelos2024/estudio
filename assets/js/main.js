@@ -95,18 +95,26 @@
     const mensaje =
       'Hola Anímales, quisiera información sobre: ' + servicio.nombre + '.';
 
+    const tieneGaleria = servicio.galeria && servicio.galeria.length;
+    const btnFotos = tieneGaleria
+      ? '<button type="button" class="an-tarjeta__fotos" data-abrir-galeria="' +
+        esc(servicio.slug) + '" aria-label="Ver fotos de ' + esc(servicio.nombre) + '">' +
+        '<i class="bi bi-images"></i><span>Fotos</span></button>'
+      : '';
+
     // Cabecera de la tarjeta. Con 'img' muestra la foto; sin ella, un
     // placeholder limpio con el color y el ícono de la categoría.
     const media = servicio.img
       ? '<div class="an-tarjeta__media" style="background-image:url(\'' +
-          esc(servicio.img) + '\')"></div>'
+          esc(servicio.img) + '\')">' + btnFotos + '</div>'
       : '<div class="an-tarjeta__media an-tarjeta__media--vacia">' +
           '<span class="an-tarjeta__icono"><i class="bi ' + cat.icono +
-          '"></i></span></div>';
+          '"></i></span>' + btnFotos + '</div>';
 
     return [
       '<div class="col-md-6 col-lg-4 an-revelar">',
-      '  <article class="an-tarjeta an-cat-' + cat.color + '">',
+      '  <article class="an-tarjeta an-cat-' + cat.color +
+        (tieneGaleria ? ' an-tarjeta--galeria" data-galeria="' + esc(servicio.slug) + '"' : '"') + '>',
       '    ' + media,
       '    <div class="an-meta">',
       '      <span class="an-etiqueta">' + esc(cat.nombre) + '</span>',
@@ -457,6 +465,107 @@
   }
 
   /* ---------------------------------------------------------------------
+     Pack de fotos de un servicio (lightbox)
+     Se abre al clic en la tarjeta o en el ícono de fotos.
+     Reservar / Consultar siguen funcionando aparte.
+     --------------------------------------------------------------------- */
+  var galeriaEstado = { slug: '', indice: 0, fotos: [], titulo: '' };
+
+  function servicioPorSlug(slug) {
+    return SERVICIOS.find(function (s) { return s.slug === slug; }) || null;
+  }
+
+  function asegurarVisorGaleria() {
+    if (document.getElementById('an-galeria')) return;
+    var visor = document.createElement('div');
+    visor.id = 'an-galeria';
+    visor.className = 'an-galeria';
+    visor.setAttribute('hidden', '');
+    visor.innerHTML =
+      '<div class="an-galeria__fondo" data-galeria-cerrar></div>' +
+      '<div class="an-galeria__caja" role="dialog" aria-modal="true" aria-labelledby="an-galeria-titulo">' +
+      '  <button type="button" class="an-galeria__cerrar" data-galeria-cerrar aria-label="Cerrar galería"><i class="bi bi-x-lg"></i></button>' +
+      '  <button type="button" class="an-galeria__nav an-galeria__nav--prev" data-galeria-dir="-1" aria-label="Foto anterior"><i class="bi bi-chevron-left"></i></button>' +
+      '  <figure class="an-galeria__marco">' +
+      '    <img id="an-galeria-foto" class="an-galeria__foto" alt="">' +
+      '    <figcaption id="an-galeria-titulo" class="an-galeria__titulo"></figcaption>' +
+      '  </figure>' +
+      '  <button type="button" class="an-galeria__nav an-galeria__nav--next" data-galeria-dir="1" aria-label="Foto siguiente"><i class="bi bi-chevron-right"></i></button>' +
+      '  <div id="an-galeria-thumbs" class="an-galeria__thumbs"></div>' +
+      '</div>';
+    document.body.appendChild(visor);
+
+    visor.addEventListener('click', function (e) {
+      if (e.target.closest('[data-galeria-cerrar]')) { cerrarGaleria(); return; }
+      var dir = e.target.closest('[data-galeria-dir]');
+      if (dir) { moverGaleria(Number(dir.getAttribute('data-galeria-dir'))); return; }
+      var thumb = e.target.closest('[data-galeria-i]');
+      if (thumb) mostrarFotoGaleria(Number(thumb.getAttribute('data-galeria-i')));
+    });
+  }
+
+  function mostrarFotoGaleria(i) {
+    var n = galeriaEstado.fotos.length;
+    if (!n) return;
+    galeriaEstado.indice = ((i % n) + n) % n;
+    var foto = document.getElementById('an-galeria-foto');
+    var titulo = document.getElementById('an-galeria-titulo');
+    foto.src = galeriaEstado.fotos[galeriaEstado.indice];
+    foto.alt = galeriaEstado.titulo + ' · foto ' + (galeriaEstado.indice + 1);
+    titulo.textContent = galeriaEstado.titulo + ' · ' + (galeriaEstado.indice + 1) + ' / ' + n;
+    document.querySelectorAll('#an-galeria-thumbs [data-galeria-i]').forEach(function (el) {
+      el.classList.toggle('is-activa', Number(el.getAttribute('data-galeria-i')) === galeriaEstado.indice);
+    });
+  }
+
+  function moverGaleria(dir) {
+    mostrarFotoGaleria(galeriaEstado.indice + dir);
+  }
+
+  function abrirGaleria(slug, indice) {
+    var servicio = servicioPorSlug(slug);
+    if (!servicio || !servicio.galeria || !servicio.galeria.length) return;
+    asegurarVisorGaleria();
+    galeriaEstado.slug = slug;
+    galeriaEstado.fotos = servicio.galeria;
+    galeriaEstado.titulo = servicio.nombre;
+    var thumbs = document.getElementById('an-galeria-thumbs');
+    thumbs.innerHTML = servicio.galeria.map(function (src, i) {
+      return '<button type="button" class="an-galeria__thumb" data-galeria-i="' + i +
+        '" aria-label="Ver foto ' + (i + 1) + '"><img src="' + esc(src) + '" alt=""></button>';
+    }).join('');
+    var visor = document.getElementById('an-galeria');
+    visor.removeAttribute('hidden');
+    document.body.classList.add('an-galeria-abierta');
+    mostrarFotoGaleria(indice || 0);
+  }
+
+  function cerrarGaleria() {
+    var visor = document.getElementById('an-galeria');
+    if (!visor) return;
+    visor.setAttribute('hidden', '');
+    document.body.classList.remove('an-galeria-abierta');
+  }
+
+  function prepararGalerias() {
+    document.addEventListener('click', function (e) {
+      if (document.body.classList.contains('an-admin')) return;
+      if (e.target.closest('a')) return;
+      var tarjeta = e.target.closest('[data-galeria]');
+      if (!tarjeta) return;
+      e.preventDefault();
+      abrirGaleria(tarjeta.getAttribute('data-galeria'), 0);
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (!document.body.classList.contains('an-galeria-abierta')) return;
+      if (e.key === 'Escape') cerrarGaleria();
+      else if (e.key === 'ArrowLeft') moverGaleria(-1);
+      else if (e.key === 'ArrowRight') moverGaleria(1);
+    });
+  }
+
+  /* ---------------------------------------------------------------------
      Arranque
      --------------------------------------------------------------------- */
   document.addEventListener('DOMContentLoaded', function () {
@@ -468,6 +577,7 @@
     sombraAlDesplazar();
     prepararFormulario();
     renderizarAgenda();
+    prepararGalerias();
     activarRevelado();
   });
 })();
