@@ -1,12 +1,12 @@
 /*
- * Anímales — Editor en la propia página (modo administrador). Versión 2.
+ * Anímales — Editor en la propia página (modo administrador). Versión 3.
  *
  * Se abre con 4 clics en el logo y la contraseña 1411. La web se ve igual; en
  * "modo administrador" se puede:
  *   · Editar cualquier texto (clic y escribir).
- *   · Cambiar imágenes (clic y elegir archivo).
- *   · Arrastrar/reordenar bloques (secciones y tarjetas).
- *   · Duplicar, eliminar y agregar secciones.
+ *   · Cambiar imágenes existentes (clic y elegir archivo).
+ *   · Agregar imagen en espacios vacíos (.an-placeholder).
+ *   · Reordenar bloques con ▲/▼, duplicar, eliminar y agregar secciones.
  *
  * Al Guardar, publica automáticamente en GitHub (API con token) — la web se
  * actualiza sola en ~1 minuto. También hay guardado local (carpeta) opcional.
@@ -15,7 +15,7 @@
  * que se aplica sobre la página al cargar para TODOS los visitantes.
  *
  * Modelo de identidad estable:
- *   - data-ed-id  (e0, e1…): elementos de contenido (texto/imagen/fondo).
+ *   - data-ed-id  (e0, e1…): elementos de contenido (texto/imagen/fondo/slot).
  *   - data-ed-cid (c0, c1…): contenedores ordenables (main y filas .row).
  *   - data-ed-bid (b0, b1…): bloques movibles (hijos directos de un contenedor).
  *   Los IDs se asignan sobre el DOM "prístino" (HTML + render de main.js) antes
@@ -37,7 +37,6 @@
   var adminOn = false;
   var iniciado = false;
   var dirHandle = null;
-  var arrastrando = null;
 
   /* =================================================================
      Selección de elementos editables
@@ -87,11 +86,51 @@
     return true;
   }
 
+  // Espacios vacíos (.an-placeholder) o marcos de imagen sin <img>.
+  function esSlotImagen(el) {
+    if (!el || el.closest('.an-admin-ui,.modal,.an-flotantes,.an-galeria')) return false;
+    if (el.classList.contains('an-placeholder')) return true;
+    if (el.classList.contains('an-imagen-marco') &&
+        !el.querySelector('img') &&
+        !el.querySelector('.an-placeholder')) return true;
+    return false;
+  }
+
+  function altDesdeSlot(el) {
+    var t = (el.getAttribute('data-ed-alt') || el.textContent || '').trim();
+    t = t.split('\n')[0].replace(/\s*assets\/.*/i, '').trim();
+    return t || 'Imagen';
+  }
+
+  function reemplazarSlotPorImg(el, src) {
+    var img = document.createElement('img');
+    img.src = src;
+    img.alt = altDesdeSlot(el);
+    img.loading = 'lazy';
+    var id = el.getAttribute('data-ed-id');
+    if (id) {
+      img.setAttribute('data-ed-id', id);
+      img.setAttribute('data-ed-tipo', 'img');
+    }
+    var twin = el.getAttribute('data-ed-twin');
+    if (twin) img.setAttribute('data-ed-twin', twin);
+
+    // Si el slot es el marco vacío, insertar la img dentro; si es el
+    // placeholder, reemplazarlo (queda dentro del .an-imagen-marco).
+    if (el.classList.contains('an-imagen-marco')) {
+      el.innerHTML = '';
+      el.appendChild(img);
+    } else {
+      el.replaceWith(img);
+    }
+    return img;
+  }
+
   /* =================================================================
      Asignación de IDs estables sobre el DOM prístino
      ================================================================= */
   function marcarContenido() {
-    var sel = SEL_TEXTO + ',img,[style*="background-image"],i[class*="bi-"]';
+    var sel = SEL_TEXTO + ',img,[style*="background-image"],i[class*="bi-"],.an-placeholder,.an-imagen-marco';
     var i = 0;
     document.querySelectorAll(sel).forEach(function (el) {
       if (el.hasAttribute('data-ed-id')) return;
@@ -99,6 +138,12 @@
       if (el.tagName === 'IMG') { if (esImagenValida(el)) tipo = 'img'; }
       else if (el.tagName === 'I' && /\bbi-/.test(el.className)) { if (esIconoEditable(el)) tipo = 'icon'; }
       else if (el.matches('[style*="background-image"]')) { if (esFondoEditable(el)) tipo = 'bg'; }
+      else if (el.classList.contains('an-imagen-marco')) {
+        // Solo el marco vacío es un slot; si ya tiene img o placeholder, no es texto.
+        if (el.querySelector('img, .an-placeholder')) return;
+        if (esSlotImagen(el)) tipo = 'ph';
+      }
+      else if (el.classList.contains('an-placeholder')) { if (esSlotImagen(el)) tipo = 'ph'; }
       else if (esEditableTexto(el)) { tipo = 't'; }
       if (!tipo) return;
       el.setAttribute('data-ed-id', 'e' + (i++));
@@ -196,24 +241,41 @@
   }
 
   function aplicarUno(el, o) {
-    if (o.t != null) el.innerHTML = o.t;
-    else if (o.img != null) { el.src = o.img; el.removeAttribute('srcset'); }
-    else if (o.bg != null) el.style.backgroundImage = "url('" + o.bg + "')";
-    else if (o.icon != null) aplicarIcono(el, o.icon);
+    if (!el || !o) return el;
+    if (o.t != null) { el.innerHTML = o.t; return el; }
+    if (o.img != null) {
+      if (el.tagName === 'IMG') {
+        el.src = o.img;
+        el.removeAttribute('srcset');
+        return el;
+      }
+      if (el.getAttribute('data-ed-tipo') === 'ph' || esSlotImagen(el)) {
+        return reemplazarSlotPorImg(el, o.img);
+      }
+      return el;
+    }
+    if (o.bg != null) { el.style.backgroundImage = "url('" + o.bg + "')"; return el; }
+    if (o.icon != null) { aplicarIcono(el, o.icon); return el; }
+    return el;
   }
 
-  // Fija un override para un elemento y, si es de la marquesina, replica en su
-  // gemelo para que ambas copias se vean iguales.
-  function fijarOverride(el, o) {
+  // Guarda el override. Si applyVisual es true, también pinta el DOM (íconos /
+  // textos). Para imágenes con blob local se pasa false y el caller pinta.
+  function fijarOverride(el, o, applyVisual) {
+    if (applyVisual === undefined) applyVisual = true;
     var id = el.getAttribute('data-ed-id');
     if (id) datosPag().content[id] = o;
-    aplicarUno(el, o);
+    if (applyVisual) el = aplicarUno(el, o) || el;
     var tw = el.getAttribute('data-ed-twin');
     if (tw) {
-      var g = document.querySelector('[data-ed-id="' + tw + '"]');
-      if (g) { datosPag().content[tw] = o; aplicarUno(g, o); }
+      datosPag().content[tw] = o;
+      if (applyVisual) {
+        var g = document.querySelector('[data-ed-id="' + tw + '"]');
+        if (g) aplicarUno(g, o);
+      }
     }
     marcarCambios(true);
+    return el;
   }
 
   function aplicarContenido() {
@@ -247,7 +309,7 @@
       n.removeAttribute && n.removeAttribute('spellcheck');
       n.removeAttribute && n.removeAttribute('data-ed-twin');
       if (n.classList) {
-        ['an-ed', 'an-ed-t', 'an-ed-img', 'an-ed-bg', 'an-ed-icono', 'an-ed-bloque', 'an-arrastrando'].forEach(function (c) {
+        ['an-ed', 'an-ed-t', 'an-ed-img', 'an-ed-bg', 'an-ed-ph', 'an-ed-icono', 'an-ed-bloque'].forEach(function (c) {
           n.classList.remove(c);
         });
       }
@@ -286,7 +348,9 @@
   function onClicImagen(e) {
     if (!adminOn) return;
     var el = e.currentTarget;
-    if (el.dataset.edt === 'bg' && e.target !== el) return;
+    var tipo = el.getAttribute('data-ed-tipo') || el.dataset.edt;
+    // En fondos, ignorar clics que caen en hijos (texto/CTA de la portada).
+    if (tipo === 'bg' && e.target !== el && !e.target.closest('.an-ed-bg-btn')) return;
     e.preventDefault();
     e.stopPropagation();
     elegirImagen(el);
@@ -299,15 +363,14 @@
     abrirSelectorIcono(e.currentTarget);
   }
 
-  // Botón visible "Cambiar foto" para los fondos (imprescindible en la portada,
-  // donde el contenedor del texto tapa el clic directo sobre la imagen).
-  function agregarBotonFondo(el) {
+  // Botón visible para fondos y para slots vacíos (placeholders).
+  function agregarBotonImagen(el, etiqueta) {
     if (el.querySelector(':scope > .an-ed-bg-btn')) return;
     var esHero = el.classList.contains('an-hero');
     var btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'an-admin-ui an-ed-bg-btn' + (esHero ? ' an-ed-bg-btn--hero' : '');
-    btn.innerHTML = '<i class="bi bi-image"></i> ' + (esHero ? 'Cambiar foto de portada' : 'Cambiar imagen');
+    btn.innerHTML = '<i class="bi bi-image"></i> ' + (etiqueta || (esHero ? 'Cambiar foto de portada' : 'Cambiar imagen'));
     btn.addEventListener('click', function (e) {
       e.preventDefault(); e.stopPropagation(); elegirImagen(el);
     });
@@ -320,29 +383,46 @@
     if (a && !a.closest('.an-admin-ui')) e.preventDefault();
   }
 
+  function activarUnEditable(el) {
+    if (!el || el._edC) return;
+    el._edC = true;
+    var tipo = el.getAttribute('data-ed-tipo');
+    if (!tipo) {
+      if (el.tagName === 'IMG') tipo = 'img';
+      else if (el.tagName === 'I') tipo = 'icon';
+      else if (el.matches('[style*="background-image"]')) tipo = 'bg';
+      else if (esSlotImagen(el)) tipo = 'ph';
+      else tipo = 't';
+    }
+    el.setAttribute('data-ed-tipo', tipo);
+    if (tipo === 't') {
+      el.classList.add('an-ed', 'an-ed-t');
+      el.setAttribute('contenteditable', 'true');
+      el.setAttribute('spellcheck', 'false');
+      el.addEventListener('input', onTextoInput);
+    } else if (tipo === 'icon') {
+      el.classList.add('an-ed', 'an-ed-icono');
+      el.setAttribute('title', 'Clic para cambiar el ícono');
+      el.addEventListener('click', onClicIcono);
+    } else if (tipo === 'ph') {
+      el.classList.add('an-ed', 'an-ed-ph');
+      el.dataset.edt = 'ph';
+      el.setAttribute('title', 'Clic para agregar una imagen');
+      el.addEventListener('click', onClicImagen);
+      agregarBotonImagen(el, 'Agregar imagen');
+    } else {
+      el.classList.add('an-ed', tipo === 'img' ? 'an-ed-img' : 'an-ed-bg');
+      el.dataset.edt = tipo;
+      if (tipo === 'img') el.setAttribute('title', 'Clic para cambiar la imagen');
+      el.addEventListener('click', onClicImagen);
+      if (tipo === 'bg') agregarBotonImagen(el);
+    }
+  }
+
   function activarContenido(scope) {
-    scope.querySelectorAll('[data-ed-id]').forEach(function (el) {
-      if (el._edC) return; el._edC = true;
-      var tipo = el.getAttribute('data-ed-tipo') ||
-        (el.tagName === 'IMG' ? 'img' : (el.tagName === 'I' ? 'icon' : (el.matches('[style*="background-image"]') ? 'bg' : 't')));
-      el.setAttribute('data-ed-tipo', tipo);
-      if (tipo === 't') {
-        el.classList.add('an-ed', 'an-ed-t');
-        el.setAttribute('contenteditable', 'true');
-        el.setAttribute('spellcheck', 'false');
-        el.addEventListener('input', onTextoInput);
-      } else if (tipo === 'icon') {
-        el.classList.add('an-ed', 'an-ed-icono');
-        el.setAttribute('title', 'Clic para cambiar el ícono');
-        el.addEventListener('click', onClicIcono);
-      } else {
-        el.classList.add('an-ed', tipo === 'img' ? 'an-ed-img' : 'an-ed-bg');
-        el.dataset.edt = tipo;
-        if (tipo === 'img') el.setAttribute('title', 'Clic para cambiar la imagen');
-        el.addEventListener('click', onClicImagen);
-        if (tipo === 'bg') agregarBotonFondo(el);
-      }
-    });
+    var raiz = scope || document;
+    if (raiz.matches && raiz.matches('[data-ed-id]')) activarUnEditable(raiz);
+    raiz.querySelectorAll('[data-ed-id]').forEach(activarUnEditable);
   }
 
   function guardarOrden(cont) {
@@ -368,16 +448,12 @@
     var tools = document.createElement('div');
     tools.className = 'an-admin-ui an-bloque-tools';
     tools.innerHTML =
-      '<span class="an-bloque-mover" title="Arrastrar para mover"><i class="bi bi-arrows-move"></i></span>' +
       '<button class="an-bloque-btn" type="button" data-acc="up" title="Subir"><i class="bi bi-arrow-up"></i></button>' +
       '<button class="an-bloque-btn" type="button" data-acc="down" title="Bajar"><i class="bi bi-arrow-down"></i></button>' +
       '<button class="an-bloque-btn" type="button" data-acc="dup" title="Duplicar"><i class="bi bi-files"></i></button>' +
       '<button class="an-bloque-btn an-bloque-btn--del" type="button" data-acc="del" title="Eliminar"><i class="bi bi-trash"></i></button>';
     bloque.appendChild(tools);
 
-    tools.querySelector('.an-bloque-mover').addEventListener('pointerdown', function (e) {
-      iniciarArrastre(e, bloque);
-    });
     tools.querySelector('[data-acc="up"]').addEventListener('click', function (e) {
       e.preventDefault(); e.stopPropagation(); moverBloque(bloque, -1);
     });
@@ -399,7 +475,7 @@
     });
   }
 
-  // Reordenar con los botones ▲/▼ (siempre funciona, sin depender del arrastre).
+  // Reordenar con los botones ▲/▼.
   function moverBloque(bloque, dir) {
     var cont = bloque.parentElement;
     if (!cont) return;
@@ -411,47 +487,6 @@
     guardarOrden(cont);
     marcarCambios(true);
     bloque.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
-
-  // Arrastre por puntero (mouse/táctil): fiable y con auto-scroll en los bordes.
-  function iniciarArrastre(e, bloque) {
-    e.preventDefault();
-    var cont = bloque.parentElement;
-    if (!cont) return;
-    var mover = e.currentTarget;
-    arrastrando = bloque;
-    bloque.classList.add('an-arrastrando');
-    document.body.classList.add('an-arrastrando-activo');
-    try { mover.setPointerCapture(e.pointerId); } catch (_) {}
-
-    function onMove(ev) {
-      if (!arrastrando) return;
-      var ref = null;
-      var hs = hermanosBloque(cont, arrastrando);
-      for (var k = 0; k < hs.length; k++) {
-        var r = hs[k].getBoundingClientRect();
-        if (ev.clientY < r.top + r.height / 2) { ref = hs[k]; break; }
-      }
-      if (ref) { if (arrastrando.nextSibling !== ref) cont.insertBefore(arrastrando, ref); }
-      else if (cont.lastElementChild !== arrastrando) cont.appendChild(arrastrando);
-
-      var margen = 90;
-      if (ev.clientY < margen) window.scrollBy(0, -14);
-      else if (ev.clientY > window.innerHeight - margen) window.scrollBy(0, 14);
-    }
-    function onUp() {
-      mover.removeEventListener('pointermove', onMove);
-      mover.removeEventListener('pointerup', onUp);
-      mover.removeEventListener('pointercancel', onUp);
-      try { mover.releasePointerCapture(e.pointerId); } catch (_) {}
-      bloque.classList.remove('an-arrastrando');
-      document.body.classList.remove('an-arrastrando-activo');
-      if (arrastrando) { guardarOrden(cont); marcarCambios(true); }
-      arrastrando = null;
-    }
-    mover.addEventListener('pointermove', onMove);
-    mover.addEventListener('pointerup', onUp);
-    mover.addEventListener('pointercancel', onUp);
   }
 
   function activarBloques(scope) {
@@ -565,16 +600,16 @@
       el.removeAttribute('contenteditable');
       el.removeAttribute('spellcheck');
       el.removeAttribute('title');
-      ['an-ed', 'an-ed-t', 'an-ed-img', 'an-ed-bg', 'an-ed-icono'].forEach(function (c) { el.classList.remove(c); });
+      ['an-ed', 'an-ed-t', 'an-ed-img', 'an-ed-bg', 'an-ed-ph', 'an-ed-icono'].forEach(function (c) { el.classList.remove(c); });
       el._edC = false;
     });
     document.querySelectorAll('[data-ed-bid]').forEach(function (b) {
-      b.classList.remove('an-ed-bloque', 'an-arrastrando');
+      b.classList.remove('an-ed-bloque');
       b._edB = false;
     });
     document.querySelectorAll('.an-carril-dup').forEach(function (c) { c.classList.remove('an-carril-dup'); });
 
-    document.body.classList.remove('an-admin', 'an-arrastrando-activo');
+    document.body.classList.remove('an-admin');
   }
 
   function avisoSalida(e) {
@@ -606,20 +641,46 @@
       var f = input.files && input.files[0];
       input.remove();
       if (!f) return;
+      if (!/^image\//.test(f.type || '')) {
+        aviso('Elegí un archivo de imagen (JPG, PNG, WebP…).', false);
+        return;
+      }
       var ruta = CARPETA_IMAGENES + '/' + nombreSeguro(f.name);
       var url = URL.createObjectURL(f);
-      var esBg = el.dataset.edt === 'bg';
-      // Se muestra con blob local; el override guarda la ruta final del archivo.
-      if (esBg) el.style.backgroundImage = "url('" + url + "')";
-      else { el.src = url; el.removeAttribute('srcset'); }
-      fijarOverride(el, esBg ? { bg: ruta } : { img: ruta });
-      // El gemelo (marquesina) también debe mostrar la imagen local al instante.
-      var tw = el.getAttribute('data-ed-twin');
+      var tipo = el.getAttribute('data-ed-tipo') || el.dataset.edt || '';
+      var esBg = tipo === 'bg';
+      var esPh = tipo === 'ph' || el.classList.contains('an-placeholder') ||
+        (el.classList.contains('an-imagen-marco') && !el.querySelector('img'));
+
+      var destino = el;
+      if (esBg) {
+        el.style.backgroundImage = "url('" + url + "')";
+        fijarOverride(el, { bg: ruta }, false);
+      } else if (esPh) {
+        destino = reemplazarSlotPorImg(el, url);
+        fijarOverride(destino, { img: ruta }, false);
+        if (adminOn) activarUnEditable(destino);
+      } else {
+        el.src = url;
+        el.removeAttribute('srcset');
+        fijarOverride(el, { img: ruta }, false);
+      }
+
+      // Gemelo de la marquesina: misma vista previa local.
+      var tw = destino.getAttribute('data-ed-twin');
       if (tw) {
         var g = document.querySelector('[data-ed-id="' + tw + '"]');
-        if (g) { if (esBg) g.style.backgroundImage = "url('" + url + "')"; else { g.src = url; g.removeAttribute('srcset'); } }
+        if (g) {
+          if (esBg) g.style.backgroundImage = "url('" + url + "')";
+          else if (g.tagName === 'IMG') { g.src = url; g.removeAttribute('srcset'); }
+          else if (esSlotImagen(g)) {
+            var gImg = reemplazarSlotPorImg(g, url);
+            if (adminOn) activarUnEditable(gImg);
+          }
+        }
       }
       imagenesPend[ruta] = f;
+      aviso(esPh ? 'Imagen agregada. Guardá para publicarla.' : 'Imagen actualizada. Guardá para publicarla.', true);
     });
     input.click();
   }
@@ -989,7 +1050,7 @@
         sessionStorage.setItem('an_admin', '1');
         cerrar();
         activarAdmin();
-        aviso('Modo administrador activado. Clic en un texto para editarlo, en una imagen para cambiarla, o arrastrá los bloques.', true);
+        aviso('Modo administrador activado. Editá textos, cambiá o agregá imágenes en los espacios vacíos, y usá ▲/▼ para reordenar.', true);
       } else { error.textContent = 'Contraseña incorrecta.'; input.value = ''; input.focus(); }
     }
     document.getElementById('an-admin-entrar').addEventListener('click', intentar);

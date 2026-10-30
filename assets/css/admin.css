@@ -24,15 +24,30 @@
   background: transparent;
 }
 
-.an-admin .an-ed-img {
+.an-admin .an-ed-img,
+.an-admin .an-ed-ph {
   outline: 2px dashed rgba(176, 0, 102, 0.7);
   outline-offset: 2px;
   cursor: pointer;
   transition: outline-color 0.15s ease, box-shadow 0.15s ease;
+  position: relative;
 }
-.an-admin .an-ed-img:hover {
+.an-admin .an-ed-img:hover,
+.an-admin .an-ed-ph:hover {
   outline-color: #b00066;
   box-shadow: 0 0 0 3px rgba(176, 0, 102, 0.18);
+}
+/* Slot vacío: resalta que se puede cargar una foto. */
+.an-admin .an-ed-ph {
+  outline-style: solid;
+  outline-color: rgba(176, 0, 102, 0.55);
+}
+.an-admin .an-ed-ph .an-ed-bg-btn {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
 }
 
 /* Íconos editables (Bootstrap Icons) */
@@ -107,7 +122,7 @@
   padding: 9px 16px;
 }
 
-/* ---- Bloques movibles (secciones y tarjetas) -------------------------- */
+/* ---- Bloques (reordenar ▲/▼, duplicar, eliminar) ---------------------- */
 .an-admin .an-ed-bloque {
   position: relative;
   outline: 1px dashed rgba(80, 40, 120, 0.28);
@@ -116,15 +131,6 @@
 }
 .an-admin .an-ed-bloque:hover {
   outline-color: rgba(80, 40, 120, 0.6);
-}
-.an-admin .an-arrastrando {
-  opacity: 0.55;
-  outline: 2px dashed #b00066;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-}
-body.an-arrastrando-activo {
-  cursor: grabbing;
-  user-select: none;
 }
 
 .an-bloque-tools {
@@ -139,10 +145,8 @@ body.an-arrastrando-activo {
   border-radius: 9px;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
 }
-.an-admin .an-ed-bloque:hover > .an-bloque-tools,
-.an-admin .an-ed-bloque.an-arrastrando > .an-bloque-tools { display: inline-flex; }
+.an-admin .an-ed-bloque:hover > .an-bloque-tools { display: inline-flex; }
 
-.an-bloque-mover,
 .an-bloque-btn {
   display: inline-flex;
   align-items: center;
@@ -157,9 +161,6 @@ body.an-arrastrando-activo {
   cursor: pointer;
   transition: background 0.15s ease;
 }
-.an-bloque-mover { cursor: grab; touch-action: none; }
-.an-bloque-mover:active { cursor: grabbing; }
-.an-bloque-mover:hover,
 .an-bloque-btn:hover { background: rgba(255, 255, 255, 0.28); }
 .an-bloque-btn--del:hover { background: #c0284a; }
 
