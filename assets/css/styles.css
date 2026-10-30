@@ -141,18 +141,18 @@ a { text-decoration: none; transition: color var(--an-transicion); }
   transition: color 300ms ease;
 }
 
-/* Foco oscuro discreto detrás del logo blanco, para que no se pierda sobre la portada clara. */
+/* Foco oscuro discreto detrás del logo, para que no se pierda sobre la portada clara. */
 .an-navbar .navbar-brand::before {
   content: '';
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 5.4rem;
-  height: 4.6rem;
+  width: 6.4rem;
+  height: 5.8rem;
   transform: translate(-50%, -50%);
   background: radial-gradient(ellipse at center,
-    rgba(18, 12, 10, 0.5) 0%,
-    rgba(18, 12, 10, 0.22) 48%,
+    rgba(18, 12, 10, 0.42) 0%,
+    rgba(18, 12, 10, 0.18) 48%,
     rgba(18, 12, 10, 0) 74%);
   filter: blur(7px);
   pointer-events: none;
@@ -172,14 +172,14 @@ a { text-decoration: none; transition: color var(--an-transicion); }
   transition: color 300ms ease;
 }
 
-/* Logo institucional: versión clara sobre el hero, oscura al desplazar */
-.an-logo { height: 54px; width: auto; display: block; }
+/* Logo institucional: color sobre el hero, oscuro al desplazar */
+.an-logo { height: 64px; width: auto; display: block; }
 .an-logo--oscuro { display: none; }
 .an-navbar--scroll .an-logo--claro { display: none; }
 .an-navbar--scroll .an-logo--oscuro { display: block; }
 
 @media (max-width: 575.98px) {
-  .an-logo { height: 46px; }
+  .an-logo { height: 54px; }
 }
 
 .an-navbar .nav-link {
