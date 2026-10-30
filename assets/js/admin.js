@@ -379,10 +379,44 @@
     el.appendChild(btn);
   }
 
+  // Enlaces del menú / pie / logo: permiten cambiar de página sin salir del
+  // modo administrador (la sesión se conserva en sessionStorage).
+  function esNavegacionSitio(a) {
+    if (!a || a.closest('.an-admin-ui')) return false;
+    if (a.closest('header, .navbar, .an-navbar, .breadcrumb, footer, .an-footer')) return true;
+    var href = (a.getAttribute('href') || '').trim();
+    if (!href || href === '#' || /^(mailto:|tel:|javascript:)/i.test(href)) return false;
+    try {
+      var u = new URL(href, location.href);
+      if (u.origin !== location.origin) return false;
+      return /(index|formaciones|servicios|terapias|experiencias|eventos|nosotros|contacto|reservar|404)\.html/i.test(u.pathname) ||
+        /\/estudio\/?$/i.test(u.pathname);
+    } catch (_) {
+      return /\.html(?:[?#]|$)/i.test(href);
+    }
+  }
+
+  function confirmarSalidaSiHayCambios() {
+    if (!hayCambios) return true;
+    return confirm('Tenés cambios sin guardar en esta página. Si navegás ahora se pierden. ¿Continuar?');
+  }
+
   function bloquearEnlaces(e) {
     if (!adminOn) return;
     var a = e.target.closest('a');
-    if (a && !a.closest('.an-admin-ui')) e.preventDefault();
+    if (!a || a.closest('.an-admin-ui')) return;
+    if (esNavegacionSitio(a)) {
+      if (!confirmarSalidaSiHayCambios()) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      // Si confirma (o no hay cambios), dejamos que el navegador siga el enlace.
+      // sessionStorage an_admin mantiene el editor activo en la nueva página.
+      return;
+    }
+    // Evitar que otros enlaces del contenido (WhatsApp, tarjetas, etc.) saquen
+    // del flujo de edición por accidente.
+    e.preventDefault();
   }
 
   function activarUnEditable(el) {
@@ -954,13 +988,27 @@
     if (barra) barra.classList.toggle('an-admin-barra--sucio', v);
   }
 
+  function nombrePaginaActual() {
+    var mapa = {
+      'index.html': 'Inicio',
+      'formaciones.html': 'Formaciones',
+      'servicios.html': 'Servicios',
+      'terapias.html': 'Terapias',
+      'experiencias.html': 'Hospedaje',
+      'eventos.html': 'Eventos',
+      'nosotros.html': 'Nosotros',
+      'contacto.html': 'Contacto'
+    };
+    return mapa[PAGINA] || PAGINA;
+  }
+
   function mostrarBarra() {
     if (document.getElementById('an-admin-barra')) return;
     var barra = document.createElement('div');
     barra.id = 'an-admin-barra';
     barra.className = 'an-admin-ui an-admin-barra';
     barra.innerHTML =
-      '<span class="an-admin-barra__marca"><i class="bi bi-pencil-square"></i> Modo administrador</span>' +
+      '<span class="an-admin-barra__marca"><i class="bi bi-pencil-square"></i> Admin · ' + nombrePaginaActual() + '</span>' +
       '<span id="an-admin-estado" class="an-admin-barra__estado">Todo guardado</span>' +
       '<button id="an-btn-seccion" class="an-admin-btn" type="button"><i class="bi bi-plus-lg"></i> Sección</button>' +
       '<button id="an-btn-guardar" class="an-admin-btn an-admin-btn--ok" type="button">Guardar</button>' +
@@ -972,6 +1020,7 @@
     document.getElementById('an-btn-ajustes').addEventListener('click', abrirAjustes);
     document.getElementById('an-btn-salir').addEventListener('click', function () {
       if (hayCambios && !confirm('Tenés cambios sin publicar. ¿Salir de todos modos?')) return;
+      sessionStorage.removeItem('an_admin');
       location.reload();
     });
   }
@@ -1060,7 +1109,7 @@
         sessionStorage.setItem('an_admin', '1');
         cerrar();
         activarAdmin();
-        aviso('Modo administrador activado. Editá textos, cambiá o agregá imágenes en los espacios vacíos, y usá ▲/▼ para reordenar.', true);
+        aviso('Modo administrador activo en todo el sitio. Usá el menú para editar otras páginas; Guardá antes de cambiar si hay cambios.', true);
       } else { error.textContent = 'Contraseña incorrecta.'; input.value = ''; input.focus(); }
     }
     document.getElementById('an-admin-entrar').addEventListener('click', intentar);
@@ -1079,7 +1128,13 @@
       clearTimeout(temporizador);
       if (clics >= 4) { clics = 0; pedirClave(); return; }
       temporizador = setTimeout(function () {
-        if (clics < 4) { var d = marca.getAttribute('href'); if (d) location.href = d; }
+        if (clics < 4) {
+          var d = marca.getAttribute('href');
+          if (d) {
+            if (adminOn && !confirmarSalidaSiHayCambios()) { clics = 0; return; }
+            location.href = d;
+          }
+        }
         clics = 0;
       }, 450);
     });
