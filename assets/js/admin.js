@@ -62,7 +62,8 @@
   }
 
   function esImagenValida(el) {
-    return !el.closest('.an-admin-ui,.modal,.an-flotantes,.an-galeria,.an-tarjeta__fotos,.an-flotante-card__icono');
+    // El logo del menú no se edita como imagen: se usa para abrir el admin (4 clics).
+    return !el.closest('.an-admin-ui,.modal,.an-flotantes,.an-galeria,.an-tarjeta__fotos,.an-flotante-card__icono,.navbar-brand,nav');
   }
 
   // Fondos editables: la PORTADA grande (.an-hero) de cada página SÍ se puede
