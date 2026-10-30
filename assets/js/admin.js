@@ -366,11 +366,12 @@
 
   // Botón visible para fondos y para slots vacíos (placeholders).
   function agregarBotonImagen(el, etiqueta) {
-    if (el.querySelector(':scope > .an-ed-bg-btn')) return;
+    if (el.querySelector('.an-ed-bg-btn, .an-ed-ph-btn')) return;
     var esHero = el.classList.contains('an-hero');
+    var esPh = el.getAttribute('data-ed-tipo') === 'ph' || el.classList.contains('an-placeholder');
     var btn = document.createElement('button');
     btn.type = 'button';
-    btn.className = 'an-admin-ui an-ed-bg-btn' + (esHero ? ' an-ed-bg-btn--hero' : '');
+    btn.className = 'an-admin-ui ' + (esPh ? 'an-ed-ph-btn' : ('an-ed-bg-btn' + (esHero ? ' an-ed-bg-btn--hero' : '')));
     btn.innerHTML = '<i class="bi bi-image"></i> ' + (etiqueta || (esHero ? 'Cambiar foto de portada' : 'Cambiar imagen'));
     btn.addEventListener('click', function (e) {
       e.preventDefault(); e.stopPropagation(); elegirImagen(el);
@@ -446,15 +447,23 @@
     if (bloque._edB) return; bloque._edB = true;
     bloque.classList.add('an-ed-bloque');
 
+    var slot = bloque.querySelector('[data-ed-tipo="ph"], .an-placeholder');
     var tools = document.createElement('div');
     tools.className = 'an-admin-ui an-bloque-tools';
     tools.innerHTML =
+      (slot ? '<button class="an-bloque-btn an-bloque-btn--img" type="button" data-acc="img" title="Agregar imagen"><i class="bi bi-image"></i></button>' : '') +
       '<button class="an-bloque-btn" type="button" data-acc="up" title="Subir"><i class="bi bi-arrow-up"></i></button>' +
       '<button class="an-bloque-btn" type="button" data-acc="down" title="Bajar"><i class="bi bi-arrow-down"></i></button>' +
       '<button class="an-bloque-btn" type="button" data-acc="dup" title="Duplicar"><i class="bi bi-files"></i></button>' +
       '<button class="an-bloque-btn an-bloque-btn--del" type="button" data-acc="del" title="Eliminar"><i class="bi bi-trash"></i></button>';
     bloque.appendChild(tools);
 
+    var btnImg = tools.querySelector('[data-acc="img"]');
+    if (btnImg && slot) {
+      btnImg.addEventListener('click', function (e) {
+        e.preventDefault(); e.stopPropagation(); elegirImagen(slot);
+      });
+    }
     tools.querySelector('[data-acc="up"]').addEventListener('click', function (e) {
       e.preventDefault(); e.stopPropagation(); moverBloque(bloque, -1);
     });
