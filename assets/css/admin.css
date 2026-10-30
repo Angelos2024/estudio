@@ -290,6 +290,12 @@
   border-color: #b00066;
 }
 .an-admin-btn--ok:hover { background: #cc0077; }
+.an-admin-btn--ok:disabled {
+  opacity: 1;
+  background: #5a3a48;
+  border-color: #5a3a48;
+  min-width: 9.5rem;
+}
 
 /* ---- Aviso emergente -------------------------------------------------- */
 .an-admin-aviso {

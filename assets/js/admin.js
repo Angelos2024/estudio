@@ -37,6 +37,11 @@
   var adminOn = false;
   var iniciado = false;
   var dirHandle = null;
+  var publicando = false;       // mutex: un solo commit / publish a la vez
+  var pubTimer = null;
+  var pubGen = 0;
+  var PUB_KEY = 'an_pub_estado';
+  var PUB_MAX_MS = 4 * 60 * 1000; // tope de espera a Pages (~4 min)
 
   /* =================================================================
      Selección de elementos editables
@@ -805,84 +810,353 @@
     return btoa(bin);
   }
 
-  async function ghCommit(cfg, archivos) {
-    var base = 'https://api.github.com/repos/' + cfg.owner + '/' + cfg.repo;
-    var H = {
-      'Authorization': 'Bearer ' + cfg.token,
-      'Accept': 'application/vnd.github+json',
-      'Content-Type': 'application/json'
-    };
-    async function api(url, opt) {
-      var r = await fetch(url, opt || { headers: H });
-      if (!r.ok) {
-        var t = await r.text();
-        var msg = r.status;
-        try { msg = (JSON.parse(t).message) || r.status; } catch (_) {}
-        throw new Error(msg + (r.status === 401 || r.status === 403 ? ' (revisá el token y sus permisos)' : ''));
-      }
-      return r.json();
-    }
-
-    var ref = await api(base + '/git/ref/heads/' + cfg.branch, { headers: H });
-    var baseSha = ref.object.sha;
-    var baseCommit = await api(base + '/git/commits/' + baseSha, { headers: H });
-    var treeSha = baseCommit.tree.sha;
-
-    var entries = [];
-    for (var i = 0; i < archivos.length; i++) {
-      var a = archivos[i];
-      var content = a.file ? await b64file(a.file) : b64utf8(a.contenido);
-      var blob = await api(base + '/git/blobs', {
-        method: 'POST', headers: H,
-        body: JSON.stringify({ content: content, encoding: 'base64' })
-      });
-      entries.push({ path: a.path, mode: '100644', type: 'blob', sha: blob.sha });
-    }
-
-    var tree = await api(base + '/git/trees', {
-      method: 'POST', headers: H,
-      body: JSON.stringify({ base_tree: treeSha, tree: entries })
-    });
-    var commit = await api(base + '/git/commits', {
-      method: 'POST', headers: H,
-      body: JSON.stringify({ message: 'Editor web: actualizar contenido del sitio', tree: tree.sha, parents: [baseSha] })
-    });
-    await api(base + '/git/refs/heads/' + cfg.branch, {
-      method: 'PATCH', headers: H,
-      body: JSON.stringify({ sha: commit.sha, force: false })
-    });
-    return commit;
+  function sleep(ms) {
+    return new Promise(function (res) { setTimeout(res, ms); });
   }
 
-  // Guardado unificado: escribe en la carpeta local, publica en GitHub y, con
-  // eso, la web se actualiza sola. Todo con un solo botón.
-  async function guardarTodo() {
+  function ghHeaders(cfg) {
+    return {
+      'Authorization': 'Bearer ' + cfg.token,
+      'Accept': 'application/vnd.github+json',
+      'Content-Type': 'application/json',
+      'X-GitHub-Api-Version': '2022-11-28'
+    };
+  }
+
+  async function ghApi(cfg, url, opt) {
+    var o = opt || {};
+    var headers = Object.assign({}, ghHeaders(cfg), o.headers || {});
+    var r = await fetch(url, Object.assign({}, o, { headers: headers }));
+    if (!r.ok) {
+      var t = await r.text();
+      var msg = String(r.status);
+      try { msg = (JSON.parse(t).message) || msg; } catch (_) {}
+      var err = new Error(msg + (r.status === 401 || r.status === 403 ? ' (revisá el token y sus permisos)' : ''));
+      err.status = r.status;
+      throw err;
+    }
+    if (r.status === 204) return null;
+    return r.json();
+  }
+
+  function fusionarContenido(remoto, local) {
+    var out = {};
+    var keys = {};
+    Object.keys(remoto || {}).forEach(function (k) { keys[k] = true; });
+    Object.keys(local || {}).forEach(function (k) { keys[k] = true; });
+    Object.keys(keys).forEach(function (pag) {
+      if (pag === '__meta') return;
+      var r = (remoto && remoto[pag]) || {};
+      var l = (local && local[pag]) || {};
+      out[pag] = {
+        content: Object.assign({}, r.content || {}, l.content || {}),
+        order: Object.assign({}, r.order || {}, l.order || {}),
+        added: (l.added && l.added.length) ? l.added.slice() : (r.added || []).slice(),
+        removed: (function () {
+          var set = {};
+          (r.removed || []).concat(l.removed || []).forEach(function (id) { set[id] = true; });
+          return Object.keys(set);
+        })()
+      };
+    });
+    return out;
+  }
+
+  async function leerContenidoRemoto(cfg) {
+    var base = 'https://api.github.com/repos/' + cfg.owner + '/' + cfg.repo;
+    try {
+      var info = await ghApi(cfg, base + '/contents/' + RUTA_CONTENIDO + '?ref=' + encodeURIComponent(cfg.branch));
+      if (!info || !info.content) return {};
+      var bin = atob(String(info.content).replace(/\n/g, ''));
+      var bytes = new Uint8Array(bin.length);
+      for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      var raw = (typeof TextDecoder !== 'undefined')
+        ? new TextDecoder('utf-8').decode(bytes)
+        : decodeURIComponent(escape(bin));
+      return JSON.parse(raw);
+    } catch (e) {
+      if (e && (e.status === 404 || /Not Found/i.test(String(e.message)))) return {};
+      throw e;
+    }
+  }
+
+  async function ghCommit(cfg, archivos, intento) {
+    intento = intento || 0;
+    var base = 'https://api.github.com/repos/' + cfg.owner + '/' + cfg.repo;
+    try {
+      var ref = await ghApi(cfg, base + '/git/ref/heads/' + cfg.branch);
+      var baseSha = ref.object.sha;
+      var baseCommit = await ghApi(cfg, base + '/git/commits/' + baseSha);
+      var treeSha = baseCommit.tree.sha;
+
+      var entries = [];
+      for (var i = 0; i < archivos.length; i++) {
+        var a = archivos[i];
+        var content = a.file ? await b64file(a.file) : b64utf8(a.contenido);
+        var blob = await ghApi(cfg, base + '/git/blobs', {
+          method: 'POST',
+          body: JSON.stringify({ content: content, encoding: 'base64' })
+        });
+        entries.push({ path: a.path, mode: '100644', type: 'blob', sha: blob.sha });
+      }
+
+      var tree = await ghApi(cfg, base + '/git/trees', {
+        method: 'POST',
+        body: JSON.stringify({ base_tree: treeSha, tree: entries })
+      });
+      var commit = await ghApi(cfg, base + '/git/commits', {
+        method: 'POST',
+        body: JSON.stringify({
+          message: 'Editor web: actualizar contenido del sitio',
+          tree: tree.sha,
+          parents: [baseSha]
+        })
+      });
+      await ghApi(cfg, base + '/git/refs/heads/' + cfg.branch, {
+        method: 'PATCH',
+        body: JSON.stringify({ sha: commit.sha, force: false })
+      });
+      return commit;
+    } catch (e) {
+      var msg = String((e && e.message) || e);
+      var choque = e.status === 409 || /fast.?forward|Conflict|does not match|Reference update/i.test(msg);
+      if (choque && intento < 4) {
+        await sleep(700 + intento * 400);
+        return ghCommit(cfg, archivos, intento + 1);
+      }
+      throw e;
+    }
+  }
+
+  function leerPubEstado() {
+    try { return JSON.parse(sessionStorage.getItem(PUB_KEY) || 'null'); } catch (_) { return null; }
+  }
+  function guardarPubEstado(st) {
+    if (!st) sessionStorage.removeItem(PUB_KEY);
+    else sessionStorage.setItem(PUB_KEY, JSON.stringify(st));
+  }
+
+  function fmtCountdown(ms) {
+    var s = Math.max(0, Math.ceil(ms / 1000));
+    var m = Math.floor(s / 60);
+    var r = s % 60;
+    return m + ':' + (r < 10 ? '0' : '') + r;
+  }
+
+  function actualizarBotonGuardar() {
     var boton = document.getElementById('an-btn-guardar');
-    var jsonStr = JSON.stringify(OVER, null, 2);
+    var estado = document.getElementById('an-admin-estado');
+    if (!boton) return;
+    var pub = leerPubEstado();
+    if (publicando || (pub && pub.status === 'pending')) {
+      boton.disabled = true;
+      var falta = pub ? Math.max(0, (pub.startedAt + PUB_MAX_MS) - Date.now()) : PUB_MAX_MS;
+      boton.textContent = 'Publicando… ' + fmtCountdown(falta);
+      if (estado) estado.textContent = 'Esperando a que GitHub Pages publique (sin otro Guardar todavía)';
+      return;
+    }
+    boton.disabled = false;
+    boton.textContent = hayCambios ? 'Guardar' : 'Guardado ✓';
+    if (estado && !hayCambios) estado.textContent = 'Todo guardado · web al día';
+  }
+
+  async function pagesTieneCommit(cfg, sha) {
+    try {
+      var builds = await ghApi(cfg, 'https://api.github.com/repos/' + cfg.owner + '/' + cfg.repo + '/pages/builds');
+      if (!Array.isArray(builds) || !builds.length) return null;
+      var b = builds[0];
+      if (!b) return null;
+      if (b.commit && sha && String(b.commit).indexOf(String(sha).slice(0, 7)) === 0) {
+        if (b.status === 'built') return true;
+        if (b.status === 'errored') return false;
+        return null; // building
+      }
+      // Otro commit más nuevo ya built ⇒ el nuestro quedó atrás pero publicado el árbol.
+      if (b.status === 'built' && b.commit && sha && Date.parse(b.created_at || 0) >= (leerPubEstado() || {}).startedAt) {
+        // Si Pages built algo posterior al inicio, damos por buena la publicación.
+        return true;
+      }
+      return null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  async function verificarContenidoEnPages(firma) {
+    try {
+      var r = await fetch(RUTA_CONTENIDO + '?pub=' + Date.now(), { cache: 'no-store' });
+      if (!r.ok) return false;
+      var txt = await r.text();
+      return !!(firma && txt.indexOf(firma) !== -1);
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function detenerPubTimer() {
+    if (pubTimer) { clearInterval(pubTimer); pubTimer = null; }
+  }
+
+  async function monitorearPublicacion(cfg, commitSha, firma, startedAt) {
+    var my = ++pubGen;
+    publicando = true;
+    var st = {
+      status: 'pending',
+      sha: commitSha,
+      startedAt: startedAt || Date.now(),
+      firma: firma || ''
+    };
+    guardarPubEstado(st);
+    actualizarBotonGuardar();
+    detenerPubTimer();
+
+    pubTimer = setInterval(function () {
+      if (my !== pubGen) return;
+      var cur = leerPubEstado();
+      if (!cur || cur.status !== 'pending') { detenerPubTimer(); actualizarBotonGuardar(); return; }
+      if (Date.now() - cur.startedAt >= PUB_MAX_MS) {
+        cur.status = 'timeout';
+        guardarPubEstado(cur);
+        publicando = false;
+        detenerPubTimer();
+        actualizarBotonGuardar();
+        aviso('GitHub ya tiene los cambios. Pages puede tardar un poco más; si no los ves, recargá con Ctrl+F5.', true);
+        return;
+      }
+      actualizarBotonGuardar();
+    }, 1000);
+
+    while (my === pubGen) {
+      var cur = leerPubEstado();
+      if (!cur || cur.status !== 'pending') break;
+      if (Date.now() - cur.startedAt >= PUB_MAX_MS) break;
+
+      var pagesOk = await pagesTieneCommit(cfg, commitSha);
+      if (my !== pubGen) return;
+      if (pagesOk === true) break;
+      if (pagesOk === false) {
+        cur.status = 'error';
+        guardarPubEstado(cur);
+        break;
+      }
+      if (firma && (await verificarContenidoEnPages(firma))) break;
+      await sleep(8000);
+    }
+
+    if (my !== pubGen) return;
+    detenerPubTimer();
+    var fin = leerPubEstado() || st;
+    if (fin.status === 'error') {
+      publicando = false;
+      guardarPubEstado(fin);
+      actualizarBotonGuardar();
+      aviso('GitHub guardó, pero Pages reportó error al publicar. Revisá Actions en el repo.', false);
+      return;
+    }
+    if (fin.status === 'pending' || fin.status === 'timeout') {
+      if (fin.status === 'pending') fin.status = 'ready';
+      fin.readyAt = Date.now();
+      guardarPubEstado(fin);
+      publicando = false;
+      actualizarBotonGuardar();
+      if (fin.status === 'ready') {
+        aviso('Cambios en GitHub y ya visibles (o listos) en la web. Podés seguir editando.', true);
+      }
+      return;
+    }
+    fin.status = 'ready';
+    fin.readyAt = Date.now();
+    guardarPubEstado(fin);
+    publicando = false;
+    actualizarBotonGuardar();
+    aviso('Cambios en GitHub y ya visibles (o listos) en la web. Podés seguir editando.', true);
+  }
+
+  function reanudarMonitoreoSiCorresponde() {
+    var st = leerPubEstado();
+    if (!st || st.status !== 'pending') { actualizarBotonGuardar(); return; }
+    if (publicando) { actualizarBotonGuardar(); return; }
+    var cfg = ghConfig();
+    if (!cfg.token) {
+      st.status = 'ready';
+      guardarPubEstado(st);
+      actualizarBotonGuardar();
+      return;
+    }
+    if (Date.now() - st.startedAt >= PUB_MAX_MS) {
+      st.status = 'timeout';
+      guardarPubEstado(st);
+      publicando = false;
+      actualizarBotonGuardar();
+      return;
+    }
+    monitorearPublicacion(cfg, st.sha, st.firma, st.startedAt);
+  }
+
+  // Guardado unificado: local + GitHub (sin solapar commits) + espera a Pages.
+  async function guardarTodo() {
+    if (publicando || (leerPubEstado() || {}).status === 'pending') {
+      aviso('Todavía se está publicando el guardado anterior. Esperá el conteo antes de volver a Guardar.', false);
+      actualizarBotonGuardar();
+      return;
+    }
+
+    var boton = document.getElementById('an-btn-guardar');
     var imgs = [];
     for (var r in imagenesPend) if (imagenesPend.hasOwnProperty(r)) imgs.push({ path: r, file: imagenesPend[r] });
+    var imgsSnapshot = imgs.slice();
+    var overSnapshot = JSON.parse(JSON.stringify(OVER));
 
-    var msgs = [], algo = false;
+    var msgs = [], algo = false, commitSha = null, firma = null;
+    publicando = true;
     if (boton) { boton.disabled = true; boton.textContent = 'Guardando…'; }
 
-    // 1) Carpeta local del equipo.
+    var cfg = ghConfig();
+
+    // 1) Fusionar con lo que ya está en GitHub para no pisar otras páginas.
+    var jsonStr;
+    try {
+      if (cfg.token) {
+        var remoto = await leerContenidoRemoto(cfg);
+        OVER = fusionarContenido(remoto, overSnapshot);
+        // La página actual manda: reaplicar snapshot local encima del merge.
+        if (overSnapshot[PAGINA]) OVER[PAGINA] = overSnapshot[PAGINA];
+      }
+      jsonStr = JSON.stringify(OVER, null, 2);
+      firma = '"savedAt":"' + new Date().toISOString() + '"';
+      // Marca verificable en el JSON para detectar cuándo Pages ya sirve este guardado.
+      OVER.__meta = Object.assign({}, OVER.__meta || {}, {
+        savedAt: new Date().toISOString(),
+        page: PAGINA
+      });
+      jsonStr = JSON.stringify(OVER, null, 2);
+      firma = OVER.__meta.savedAt;
+    } catch (e) {
+      publicando = false;
+      actualizarBotonGuardar();
+      aviso('No se pudo leer el contenido remoto: ' + ((e && e.message) || e), false);
+      return;
+    }
+
+    // 2) Carpeta local del equipo (opcional).
     try {
       var raiz = await handleParaGuardar();
       await escribir(raiz, RUTA_CONTENIDO, jsonStr);
-      for (var i = 0; i < imgs.length; i++) await escribir(raiz, imgs[i].path, imgs[i].file);
+      for (var i = 0; i < imgsSnapshot.length; i++) await escribir(raiz, imgsSnapshot[i].path, imgsSnapshot[i].file);
       msgs.push('Local ✓'); algo = true;
     } catch (e) {
       msgs.push('Local ✗ (' + ((e && e.name === 'AbortError') ? 'sin carpeta' : (e && e.message) || e) + ')');
     }
 
-    // 2) GitHub (y con eso, la web).
-    var cfg = ghConfig();
+    // 3) GitHub (commit atómico con reintento si hay carrera).
     if (cfg.token) {
       try {
         var archivos = [{ path: RUTA_CONTENIDO, contenido: jsonStr }];
-        for (var j = 0; j < imgs.length; j++) archivos.push({ path: imgs[j].path, file: imgs[j].file });
-        await ghCommit(cfg, archivos);
-        msgs.push('GitHub + web ✓'); algo = true;
+        for (var j = 0; j < imgsSnapshot.length; j++) archivos.push({ path: imgsSnapshot[j].path, file: imgsSnapshot[j].file });
+        var commit = await ghCommit(cfg, archivos);
+        commitSha = commit && commit.sha;
+        msgs.push('GitHub ✓');
+        algo = true;
       } catch (e) {
         msgs.push('GitHub ✗ (' + ((e && e.message) || e) + ')');
       }
@@ -890,15 +1164,16 @@
       msgs.push('GitHub ✗ (falta el token en ⚙)');
     }
 
-    if (algo) { imagenesPend = {}; marcarCambios(false); }
-    var todoOk = msgs.every(function (m) { return m.indexOf('✓') > -1; });
-    if (boton) { boton.disabled = false; boton.textContent = 'Guardar'; }
-    if (algo) {
-      // Guardado correcto: volver al estado normal (sin modo administrador),
-      // mostrando la página tal como quedará para los visitantes.
-      desactivarAdmin();
-      aviso('Guardado — ' + msgs.join('  ·  ') + (todoOk ? '. La web se actualiza en ~1 minuto.' : ''), todoOk);
+    if (algo && commitSha) {
+      // Solo limpia las imágenes de ESTE guardado; si el usuario subió más mientras,
+      // no estaban en imgsSnapshot.
+      imgsSnapshot.forEach(function (it) { delete imagenesPend[it.path]; });
+      marcarCambios(false);
+      aviso('Guardado en GitHub — ' + msgs.join('  ·  ') + '. Esperando publicación en la web…', true);
+      await monitorearPublicacion(cfg, commitSha, firma);
     } else {
+      publicando = false;
+      actualizarBotonGuardar();
       aviso('No se pudo guardar — ' + msgs.join('  ·  '), false);
       if (!cfg.token) setTimeout(abrirAjustes, 400);
     }
@@ -983,9 +1258,13 @@
   function marcarCambios(v) {
     hayCambios = v;
     var e = document.getElementById('an-admin-estado');
-    if (e) e.textContent = v ? 'Cambios sin guardar' : 'Todo guardado';
+    var pub = leerPubEstado();
+    if (e && !(pub && pub.status === 'pending')) {
+      e.textContent = v ? 'Cambios sin guardar' : 'Todo guardado';
+    }
     var barra = document.getElementById('an-admin-barra');
     if (barra) barra.classList.toggle('an-admin-barra--sucio', v);
+    actualizarBotonGuardar();
   }
 
   function nombrePaginaActual() {
@@ -1019,10 +1298,16 @@
     document.getElementById('an-btn-guardar').addEventListener('click', guardarTodo);
     document.getElementById('an-btn-ajustes').addEventListener('click', abrirAjustes);
     document.getElementById('an-btn-salir').addEventListener('click', function () {
-      if (hayCambios && !confirm('Tenés cambios sin publicar. ¿Salir de todos modos?')) return;
+      if ((leerPubEstado() || {}).status === 'pending') {
+        if (!confirm('Hay una publicación en curso. ¿Salir de todos modos?')) return;
+      } else if (hayCambios && !confirm('Tenés cambios sin publicar. ¿Salir de todos modos?')) {
+        return;
+      }
       sessionStorage.removeItem('an_admin');
       location.reload();
     });
+    actualizarBotonGuardar();
+    reanudarMonitoreoSiCorresponde();
   }
 
   function aviso(texto, ok) {
@@ -1152,6 +1437,7 @@
     aplicarEstructura();
     aplicarContenido();
     if (sessionStorage.getItem('an_admin') === '1') activarAdmin();
+    else reanudarMonitoreoSiCorresponde();
   }
 
   if (document.readyState === 'loading') {
