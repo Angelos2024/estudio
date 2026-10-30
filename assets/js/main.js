@@ -96,6 +96,7 @@
       'Hola Anímales, quisiera información sobre: ' + servicio.nombre + '.';
 
     const tieneGaleria = servicio.galeria && servicio.galeria.length;
+    const tienePrograma = !!(servicio.programa);
     const btnFotos = tieneGaleria
       ? '<button type="button" class="an-tarjeta__fotos" data-abrir-galeria="' +
         esc(servicio.slug) + '" aria-label="Ver fotos de ' + esc(servicio.nombre) + '">' +
@@ -104,17 +105,32 @@
 
     // Cabecera de la tarjeta. Con 'img' muestra la foto; sin ella, un
     // placeholder limpio con el color y el ícono de la categoría.
+    // data-zona-galeria: clic en la imagen abre las fotos (no el programa).
+    const mediaAttrs = tieneGaleria ? ' data-zona-galeria="' + esc(servicio.slug) + '"' : '';
     const media = servicio.img
-      ? '<div class="an-tarjeta__media" style="background-image:url(\'' +
+      ? '<div class="an-tarjeta__media"' + mediaAttrs + ' style="background-image:url(\'' +
           esc(servicio.img) + '\')">' + btnFotos + '</div>'
-      : '<div class="an-tarjeta__media an-tarjeta__media--vacia">' +
+      : '<div class="an-tarjeta__media an-tarjeta__media--vacia"' + mediaAttrs + '>' +
           '<span class="an-tarjeta__icono"><i class="bi ' + cat.icono +
           '"></i></span>' + btnFotos + '</div>';
 
+    const clases = ['an-tarjeta', 'an-cat-' + cat.color];
+    if (tieneGaleria) clases.push('an-tarjeta--galeria');
+    if (tienePrograma) clases.push('an-tarjeta--programa');
+
+    const attrs = [];
+    if (tieneGaleria) attrs.push('data-galeria="' + esc(servicio.slug) + '"');
+    if (tienePrograma) attrs.push('data-programa="' + esc(servicio.programa) + '"');
+
+    const btnPrograma = tienePrograma
+      ? '<a class="btn an-btn-programa btn-sm" href="' + esc(servicio.programa) +
+        '" target="_blank" rel="noopener"><i class="bi bi-file-earmark-text me-1"></i>Ver programa</a>'
+      : '';
+
     return [
       '<div class="col-md-6 col-lg-4 an-revelar">',
-      '  <article class="an-tarjeta an-cat-' + cat.color +
-        (tieneGaleria ? ' an-tarjeta--galeria" data-galeria="' + esc(servicio.slug) + '"' : '"') + '>',
+      '  <article class="' + clases.join(' ') + '"' +
+        (attrs.length ? ' ' + attrs.join(' ') : '') + '>',
       '    ' + media,
       '    <div class="an-meta">',
       '      <span class="an-etiqueta">' + esc(cat.nombre) + '</span>',
@@ -124,6 +140,7 @@
       '    <p class="mb-2"><strong>Dirigido a:</strong> ' + esc(servicio.dirigido) + '</p>',
       '    <p>' + esc(servicio.descripcion) + '</p>',
       '    <div class="an-acciones d-flex flex-wrap gap-2">',
+      '      ' + btnPrograma,
       '      <a class="btn an-btn-principal btn-sm" href="contacto.html?servicio=' +
         encodeURIComponent(servicio.slug) + '">Reservar</a>',
       '      <a class="btn an-btn-contorno btn-sm" href="' + enlaceWhatsApp(mensaje) +
@@ -560,11 +577,36 @@
   function prepararGalerias() {
     document.addEventListener('click', function (e) {
       if (document.body.classList.contains('an-admin')) return;
+
+      // Enlaces (Reservar / Consultar / Ver programa) siguen su ruta normal.
       if (e.target.closest('a')) return;
-      var tarjeta = e.target.closest('[data-galeria]');
+
+      // Clic en la imagen superior (o en el botón Fotos) → galería.
+      var zonaGaleria = e.target.closest('[data-zona-galeria]');
+      if (zonaGaleria) {
+        e.preventDefault();
+        e.stopPropagation();
+        abrirGaleria(zonaGaleria.getAttribute('data-zona-galeria'), 0);
+        return;
+      }
+
+      var tarjeta = e.target.closest('article.an-tarjeta');
       if (!tarjeta) return;
-      e.preventDefault();
-      abrirGaleria(tarjeta.getAttribute('data-galeria'), 0);
+
+      // Si la tarjeta tiene programa PDF: el resto del cuerpo abre el programa.
+      var programa = tarjeta.getAttribute('data-programa');
+      if (programa) {
+        e.preventDefault();
+        window.open(programa, '_blank', 'noopener');
+        return;
+      }
+
+      // Tarjetas solo con galería (sin programa): clic en cualquier parte abre fotos.
+      var slug = tarjeta.getAttribute('data-galeria');
+      if (slug) {
+        e.preventDefault();
+        abrirGaleria(slug, 0);
+      }
     });
 
     document.addEventListener('keydown', function (e) {

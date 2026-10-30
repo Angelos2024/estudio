@@ -613,6 +613,19 @@ a { text-decoration: none; transition: color var(--an-transicion); }
 .an-tarjeta .an-acciones { margin-top: auto; padding-top: 1.25rem; }
 
 .an-tarjeta--galeria { cursor: pointer; }
+.an-tarjeta--programa { cursor: pointer; }
+.an-tarjeta--programa .an-tarjeta__media { cursor: zoom-in; }
+
+.an-btn-programa {
+  background-color: transparent;
+  border: 1px solid var(--an-acento, var(--an-ocre));
+  color: var(--an-acento, var(--an-ocre));
+}
+.an-btn-programa:hover {
+  background-color: var(--an-acento, var(--an-ocre));
+  border-color: var(--an-acento, var(--an-ocre));
+  color: #fff;
+}
 
 .an-tarjeta__fotos {
   position: absolute;

@@ -57,6 +57,7 @@ const SERVICIOS = [
     descripcion:
       'Capacitación técnica e integral en intervención terapéutica asistida. Cubre aspectos motores, cognitivos, psicológicos y neurológicos con práctica directa en campo.',
     destacado: true,
+    programa: 'documentos/programa-equinoterapia-i-2027.pdf',
     galeria: [
       'imagenes/galeria/diplomado-equinoterapia/diplomado-equinoterapia-01.jpg',
       'imagenes/galeria/diplomado-equinoterapia/diplomado-equinoterapia-02.jpg',
