@@ -1454,16 +1454,17 @@
       clics++;
       clearTimeout(temporizador);
       if (clics >= 4) { clics = 0; pedirClave(); return; }
+      // Solo 1 clic = ir a inicio. 2–3 clics se consideran intento de admin
+      // (no recargar: con 450ms bastaba una pausa corta para resetear la página).
       temporizador = setTimeout(function () {
-        if (clics < 4) {
-          var d = marca.getAttribute('href');
-          if (d) {
-            if (adminOn && !confirmarSalidaSiHayCambios()) { clics = 0; return; }
-            location.href = d;
-          }
-        }
+        var n = clics;
         clics = 0;
-      }, 450);
+        if (n !== 1) return;
+        var d = marca.getAttribute('href');
+        if (!d) return;
+        if (adminOn && !confirmarSalidaSiHayCambios()) return;
+        location.href = d;
+      }, 1000);
     });
   }
 
