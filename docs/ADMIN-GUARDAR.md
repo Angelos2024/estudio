@@ -10,7 +10,7 @@ a través del **mismo Google Apps Script** de las reservas.
 1. Abrí el proyecto de Apps Script de las reservas
    (`Extensiones → Apps Script` en la Google Sheet, o el script ya conectado).
 2. Reemplazá / actualizá el código con la versión de
-   `integraciones/apps-script/Codigo.gs` (incluye las funciones del editor).
+   [`docs/apps-script/Codigo.gs`](apps-script/Codigo.gs) (incluye las funciones del editor).
 3. **Implementar → Administrar implementaciones → Editar → Nueva versión → Implementar**.
    Así se mantiene la misma URL `/exec`.
 4. La primera vez que se guarde contenido, Google pedirá permiso de **Drive**

@@ -7,8 +7,8 @@ la clave del admin (`1411`).
 ## Paso obligatorio (una vez, en tu cuenta de Google)
 
 1. Abrí la Google Sheet de reservas → **Extensiones → Apps Script**.
-2. Copiá **todo** el archivo local  
-   `integraciones/apps-script/Codigo.gs`  
+2. Copiá **todo** el archivo  
+   [`docs/apps-script/Codigo.gs`](apps-script/Codigo.gs)  
    (ya incluye `admin_guardar` y `accion=contenido`) y pegalo encima del script.
 3. Guardá.
 4. **Implementar → Administrar implementaciones → ✎ Editar → Nueva versión → Implementar**.
