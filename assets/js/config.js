@@ -57,6 +57,6 @@ const SITIO = {
   admin: {
     // Por defecto reutiliza reservas.endpoint. Solo cambiá esto si desplegás
     // un script aparte para el contenido.
-    endpoint: '',
+    endpoint: 'https://script.google.com/macros/s/AKfycbxZg-lNZ1B8WR81qjCo_pHbest8C0sGoXfd-SY7pcmNSkwzyRluTInWGKc2L77JzMbmwQ/exec',
   },
 };
