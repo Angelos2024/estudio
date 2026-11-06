@@ -48,4 +48,15 @@ const SITIO = {
     // por ejemplo Google Appointment Schedule o Calendly. Vacío = oculta la sección.
     agendaEmbed: '',
   },
+
+  /*
+   * Editor admin (4 clics en el logo + clave 1411).
+   * Usa el mismo Apps Script que reservas: cualquier persona con la clave puede
+   * Guardar sin pegar tokens de GitHub. Ver docs/ADMIN-GUARDAR.md.
+   */
+  admin: {
+    // Por defecto reutiliza reservas.endpoint. Solo cambiá esto si desplegás
+    // un script aparte para el contenido.
+    endpoint: '',
+  },
 };

@@ -31,6 +31,14 @@
   var RUTA_CONTENIDO = 'assets/data/contenido.json';
   var CARPETA_IMAGENES = 'imagenes';
 
+  function adminEndpoint() {
+    try {
+      if (typeof SITIO !== 'undefined' && SITIO.admin && SITIO.admin.endpoint) return SITIO.admin.endpoint;
+      if (typeof SITIO !== 'undefined' && SITIO.reservas && SITIO.reservas.endpoint) return SITIO.reservas.endpoint;
+    } catch (_) {}
+    return '';
+  }
+
   var OVER = {};
   var imagenesPend = {};
   var hayCambios = false;
@@ -294,6 +302,21 @@
   }
 
   async function cargarOverrides() {
+    // 1) Contenido publicado en la nube (Apps Script) — visible para todos.
+    var ep = adminEndpoint();
+    if (ep) {
+      try {
+        var rc = await fetch(ep + (ep.indexOf('?') >= 0 ? '&' : '?') + 'accion=contenido&ts=' + Date.now(), { cache: 'no-store' });
+        if (rc.ok) {
+          var data = await rc.json();
+          if (data && data.ok && data.contenido && typeof data.contenido === 'object') {
+            OVER = data.contenido;
+            return;
+          }
+        }
+      } catch (e) { /* seguir con respaldo local */ }
+    }
+    // 2) Respaldo: JSON estático en GitHub Pages.
     try {
       var r = await fetch(RUTA_CONTENIDO + '?ts=' + Date.now(), { cache: 'no-store' });
       if (r.ok) OVER = await r.json();
@@ -1093,7 +1116,69 @@
     monitorearPublicacion(cfg, st.sha, st.firma, st.startedAt);
   }
 
-  // Guardado unificado: local + GitHub (sin solapar commits) + espera a Pages.
+  async function fileABase64(file) {
+    var buf = await file.arrayBuffer();
+    var bytes = new Uint8Array(buf);
+    var bin = '', paso = 0x8000;
+    for (var i = 0; i < bytes.length; i += paso) {
+      bin += String.fromCharCode.apply(null, bytes.subarray(i, i + paso));
+    }
+    return btoa(bin);
+  }
+
+  // Publicación principal: Apps Script (sin token en el navegador).
+  async function guardarEnNube(overSnapshot, imgsSnapshot) {
+    var ep = adminEndpoint();
+    if (!ep) throw new Error('Falta el endpoint de admin en config.js');
+
+    // Fusionar con lo ya publicado en la nube.
+    try {
+      var rc = await fetch(ep + (ep.indexOf('?') >= 0 ? '&' : '?') + 'accion=contenido&ts=' + Date.now(), { cache: 'no-store' });
+      if (rc.ok) {
+        var data = await rc.json();
+        if (data && data.ok && data.contenido) {
+          OVER = fusionarContenido(data.contenido, overSnapshot);
+          if (overSnapshot[PAGINA]) OVER[PAGINA] = overSnapshot[PAGINA];
+        }
+      }
+    } catch (_) { OVER = overSnapshot; }
+
+    OVER.__meta = Object.assign({}, OVER.__meta || {}, {
+      savedAt: new Date().toISOString(),
+      page: PAGINA
+    });
+
+    var imagenes = [];
+    for (var i = 0; i < imgsSnapshot.length; i++) {
+      var it = imgsSnapshot[i];
+      imagenes.push({
+        path: it.path,
+        name: (it.file && it.file.name) || ('img-' + i + '.jpg'),
+        mime: (it.file && it.file.type) || 'image/jpeg',
+        base64: await fileABase64(it.file)
+      });
+    }
+
+    var cuerpo = {
+      accion: 'admin_guardar',
+      clave: CLAVE,
+      contenido: OVER,
+      imagenes: imagenes
+    };
+
+    // text/plain evita preflight CORS con Apps Script.
+    var r = await fetch(ep, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(cuerpo)
+    });
+    var resp = await r.json();
+    if (!resp || !resp.ok) throw new Error((resp && resp.error) || 'Error al publicar');
+    if (resp.contenido) OVER = resp.contenido;
+    return resp;
+  }
+
+  // Guardado: nube (cualquiera con la clave) → opcional GitHub si hay token.
   async function guardarTodo() {
     if (publicando || (leerPubEstado() || {}).status === 'pending') {
       aviso('Todavía se está publicando el guardado anterior. Esperá el conteo antes de volver a Guardar.', false);
@@ -1107,75 +1192,72 @@
     var imgsSnapshot = imgs.slice();
     var overSnapshot = JSON.parse(JSON.stringify(OVER));
 
-    var msgs = [], algo = false, commitSha = null, firma = null;
+    var msgs = [], algo = false;
     publicando = true;
     if (boton) { boton.disabled = true; boton.textContent = 'Guardando…'; }
 
+    var ep = adminEndpoint();
     var cfg = ghConfig();
 
-    // 1) Fusionar con lo que ya está en GitHub para no pisar otras páginas.
-    var jsonStr;
-    try {
-      if (cfg.token) {
-        var remoto = await leerContenidoRemoto(cfg);
-        OVER = fusionarContenido(remoto, overSnapshot);
-        // La página actual manda: reaplicar snapshot local encima del merge.
-        if (overSnapshot[PAGINA]) OVER[PAGINA] = overSnapshot[PAGINA];
+    // 1) Nube (Apps Script) — camino normal para todo el mundo.
+    if (ep) {
+      try {
+        await guardarEnNube(overSnapshot, imgsSnapshot);
+        msgs.push('Web ✓');
+        algo = true;
+        imgsSnapshot.forEach(function (it) { delete imagenesPend[it.path]; });
+        marcarCambios(false);
+      } catch (e) {
+        msgs.push('Web ✗ (' + ((e && e.message) || e) + ')');
       }
-      jsonStr = JSON.stringify(OVER, null, 2);
-      firma = '"savedAt":"' + new Date().toISOString() + '"';
-      // Marca verificable en el JSON para detectar cuándo Pages ya sirve este guardado.
-      OVER.__meta = Object.assign({}, OVER.__meta || {}, {
-        savedAt: new Date().toISOString(),
-        page: PAGINA
-      });
-      jsonStr = JSON.stringify(OVER, null, 2);
-      firma = OVER.__meta.savedAt;
-    } catch (e) {
-      publicando = false;
-      actualizarBotonGuardar();
-      aviso('No se pudo leer el contenido remoto: ' + ((e && e.message) || e), false);
-      return;
     }
 
-    // 2) Carpeta local del equipo (opcional).
-    try {
-      var raiz = await handleParaGuardar();
-      await escribir(raiz, RUTA_CONTENIDO, jsonStr);
-      for (var i = 0; i < imgsSnapshot.length; i++) await escribir(raiz, imgsSnapshot[i].path, imgsSnapshot[i].file);
-      msgs.push('Local ✓'); algo = true;
-    } catch (e) {
-      msgs.push('Local ✗ (' + ((e && e.name === 'AbortError') ? 'sin carpeta' : (e && e.message) || e) + ')');
-    }
-
-    // 3) GitHub (commit atómico con reintento si hay carrera).
+    // 2) GitHub opcional (solo si alguien configuró token en este navegador).
     if (cfg.token) {
       try {
+        var remoto = await leerContenidoRemoto(cfg);
+        var merged = fusionarContenido(remoto, OVER);
+        if (OVER[PAGINA]) merged[PAGINA] = OVER[PAGINA];
+        merged.__meta = OVER.__meta;
+        var jsonStr = JSON.stringify(merged, null, 2);
         var archivos = [{ path: RUTA_CONTENIDO, contenido: jsonStr }];
-        for (var j = 0; j < imgsSnapshot.length; j++) archivos.push({ path: imgsSnapshot[j].path, file: imgsSnapshot[j].file });
+        for (var j = 0; j < imgsSnapshot.length; j++) {
+          if (imgsSnapshot[j].file) archivos.push({ path: imgsSnapshot[j].path, file: imgsSnapshot[j].file });
+        }
         var commit = await ghCommit(cfg, archivos);
-        commitSha = commit && commit.sha;
         msgs.push('GitHub ✓');
         algo = true;
+        if (commit && commit.sha && !ep) {
+          aviso('Guardado — ' + msgs.join('  ·  ') + '. Esperando Pages…', true);
+          await monitorearPublicacion(cfg, commit.sha, (OVER.__meta && OVER.__meta.savedAt) || '');
+          return;
+        }
       } catch (e) {
         msgs.push('GitHub ✗ (' + ((e && e.message) || e) + ')');
       }
-    } else {
-      msgs.push('GitHub ✗ (falta el token en ⚙)');
     }
 
-    if (algo && commitSha) {
-      // Solo limpia las imágenes de ESTE guardado; si el usuario subió más mientras,
-      // no estaban en imgsSnapshot.
-      imgsSnapshot.forEach(function (it) { delete imagenesPend[it.path]; });
-      marcarCambios(false);
-      aviso('Guardado en GitHub — ' + msgs.join('  ·  ') + '. Esperando publicación en la web…', true);
-      await monitorearPublicacion(cfg, commitSha, firma);
+    // 3) Carpeta local solo si ya estaba vinculada (no abre el selector solo).
+    try {
+      var g = dirHandle || (await idbLeer('dir'));
+      if (g && (await permisoOk(g, true))) {
+        dirHandle = g;
+        await escribir(dirHandle, RUTA_CONTENIDO, JSON.stringify(OVER, null, 2));
+        msgs.push('Local ✓');
+      }
+    } catch (_) { /* opcional */ }
+
+    publicando = false;
+    guardarPubEstado({ status: 'ready', readyAt: Date.now() });
+    actualizarBotonGuardar();
+
+    if (algo) {
+      aviso('Guardado en el sitio web — ' + msgs.join('  ·  ') + '. Cualquier visitante lo ve al recargar.', true);
     } else {
-      publicando = false;
-      actualizarBotonGuardar();
-      aviso('No se pudo guardar — ' + msgs.join('  ·  '), false);
-      if (!cfg.token) setTimeout(abrirAjustes, 400);
+      var hint = ep
+        ? ' Si dice Token inválido / Acción desconocida, hay que actualizar el Apps Script (docs/ADMIN-GUARDAR.md).'
+        : ' Falta el endpoint en config.js.';
+      aviso('No se pudo guardar — ' + msgs.join('  ·  ') + '.' + hint, false);
     }
   }
 
@@ -1291,12 +1373,10 @@
       '<span id="an-admin-estado" class="an-admin-barra__estado">Todo guardado</span>' +
       '<button id="an-btn-seccion" class="an-admin-btn" type="button"><i class="bi bi-plus-lg"></i> Sección</button>' +
       '<button id="an-btn-guardar" class="an-admin-btn an-admin-btn--ok" type="button">Guardar</button>' +
-      '<button id="an-btn-ajustes" class="an-admin-btn" type="button" title="Configurar GitHub y carpeta"><i class="bi bi-gear"></i></button>' +
       '<button id="an-btn-salir" class="an-admin-btn" type="button">Salir</button>';
     document.body.appendChild(barra);
     document.getElementById('an-btn-seccion').addEventListener('click', agregarSeccion);
     document.getElementById('an-btn-guardar').addEventListener('click', guardarTodo);
-    document.getElementById('an-btn-ajustes').addEventListener('click', abrirAjustes);
     document.getElementById('an-btn-salir').addEventListener('click', function () {
       if ((leerPubEstado() || {}).status === 'pending') {
         if (!confirm('Hay una publicación en curso. ¿Salir de todos modos?')) return;
@@ -1326,45 +1406,7 @@
   }
 
   function abrirAjustes() {
-    if (document.getElementById('an-admin-ajustes')) return;
-    var cfg = ghConfig();
-    var modal = document.createElement('div');
-    modal.id = 'an-admin-ajustes';
-    modal.className = 'an-admin-ui an-admin-modal';
-    modal.innerHTML =
-      '<div class="an-admin-modal__caja">' +
-      '  <h3 class="an-admin-modal__titulo">Publicar en GitHub</h3>' +
-      '  <p class="an-admin-modal__texto">Pegá un <b>token de acceso</b> con permiso de escritura en el repositorio. Se guarda solo en este navegador.</p>' +
-      '  <label class="an-admin-campo">Token<input id="an-cfg-token" class="an-admin-modal__input an-admin-modal__input--txt" type="password" autocomplete="off" placeholder="github_pat_…"></label>' +
-      '  <div class="an-admin-fila">' +
-      '    <label class="an-admin-campo">Usuario<input id="an-cfg-owner" class="an-admin-modal__input an-admin-modal__input--txt" type="text" value="' + cfg.owner + '"></label>' +
-      '    <label class="an-admin-campo">Repo<input id="an-cfg-repo" class="an-admin-modal__input an-admin-modal__input--txt" type="text" value="' + cfg.repo + '"></label>' +
-      '    <label class="an-admin-campo">Rama<input id="an-cfg-branch" class="an-admin-modal__input an-admin-modal__input--txt" type="text" value="' + cfg.branch + '"></label>' +
-      '  </div>' +
-      '  <p class="an-admin-modal__texto"><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Crear un token (fine-grained)</a> → permiso <b>Contents: Read and write</b> sobre el repositorio <b>' + cfg.owner + '/' + cfg.repo + '</b>.</p>' +
-      '  <p class="an-admin-modal__texto">Carpeta local del proyecto (para guardar también en tu equipo):</p>' +
-      '  <button class="an-admin-btn an-admin-btn--bloque" id="an-cfg-carpeta" type="button"><i class="bi bi-folder2-open"></i> Vincular carpeta del proyecto</button>' +
-      '  <div class="an-admin-modal__error" id="an-cfg-error"></div>' +
-      '  <div class="an-admin-modal__acciones">' +
-      '    <button class="an-admin-btn" id="an-cfg-cancelar" type="button">Cancelar</button>' +
-      '    <button class="an-admin-btn an-admin-btn--ok" id="an-cfg-guardar" type="button">Guardar</button>' +
-      '  </div>' +
-      '</div>';
-    document.body.appendChild(modal);
-    var tok = document.getElementById('an-cfg-token');
-    if (cfg.token) tok.placeholder = '•••••• (ya configurado, dejalo vacío para no cambiarlo)';
-    function cerrar() { modal.remove(); }
-    document.getElementById('an-cfg-carpeta').addEventListener('click', vincularCarpeta);
-    document.getElementById('an-cfg-cancelar').addEventListener('click', cerrar);
-    modal.addEventListener('click', function (e) { if (e.target === modal) cerrar(); });
-    document.getElementById('an-cfg-guardar').addEventListener('click', function () {
-      if (tok.value.trim()) localStorage.setItem('an_gh_token', tok.value.trim());
-      localStorage.setItem('an_gh_owner', document.getElementById('an-cfg-owner').value.trim());
-      localStorage.setItem('an_gh_repo', document.getElementById('an-cfg-repo').value.trim());
-      localStorage.setItem('an_gh_branch', document.getElementById('an-cfg-branch').value.trim() || 'main');
-      cerrar();
-      aviso('Configuración de GitHub guardada.', true);
-    });
+    /* El guardado público ya no usa token: va por Apps Script + clave admin. */
   }
 
   function pedirClave() {
